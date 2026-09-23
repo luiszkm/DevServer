@@ -14,13 +14,14 @@
 | AD-008 | MVP = foundation, deploy-pipelines, skills, bug-fight, shop-inventory-avatar; office, ranking-season, server-room depois | decisão do usuário no levantamento | active | 2026-09-23 |
 | AD-009 | Level-up tem uma regra só, `player.GainXP`; toda recompensa de XP passa por ela | evita regras de progressão divergentes entre deploy, combate e futuras fontes | active | 2026-09-23 |
 | AD-010 | Tempo de jogo vem de `app.Deps.Now` (relógio injetado) e as respostas com tempo trazem `serverTime` | testes avançam o tempo; o cliente nunca decide quando algo terminou | active | 2026-09-23 |
+| AD-011 | Todo sorteio do jogo vem de `app.Deps.Rand` (injetado), nunca de `rand` global | testes fixam o resultado e provam as regras; o cliente nunca sorteia | active | 2026-09-23 |
 
 ## Handoff
 
-**Feature**: skills - VERIFIED (round 2 PASS, `validate_verification.py` exit 0)
-**Where**: C1–C29 provados; foundation e deploy-pipelines também VERIFIED
-**In progress**: nenhum
-**Next step**: `plan.md` da feature `bug-fight`
-**Blockers**: none (pergunta aberta 1 da foundation - LGPD - bloqueia go-live)
-**Uncommitted**: none
-**Branch**: feat/skills (empilhada sobre feat/deploy-pipelines, sem push)
+**Feature**: bug-fight
+**Where**: plan.md escrito e validado, aguardando revisão humana; foundation, deploy-pipelines e skills VERIFIED
+**In progress**: nenhum código
+**Next step**: revisar `.specs/features/bug-fight/plan.md`; após aprovação, checks, build e Verifier
+**Blockers**: none
+**Uncommitted**: .specs/features/bug-fight/plan.md, .specs/STATE.md
+**Branch**: feat/bug-fight (empilhada sobre feat/skills)
