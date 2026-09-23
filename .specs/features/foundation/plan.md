@@ -208,6 +208,14 @@ One-way constraints: `github_user_id` único (door 3); `dev_name` único sem dis
 (door 4); `coins` e `gems` nunca negativos (door 10); região do jogador é um id do catálogo, não
 chave estrangeira (door 5). No columns and no types here.
 
+Acrescentado no build: a `Session` nasce antes do `Player` (onboarding), então ela se liga ao
+`GithubIdentity` (`github_user_id`) e o `Player` é resolvido por ele.
+
+```mermaid
+erDiagram
+    GithubIdentity ||--o{ Session : "github_user_id"
+```
+
 ## Surface
 
 | Route | In | Out | Status |
@@ -237,6 +245,7 @@ chave estrangeira (door 5). No columns and no types here.
 | 10. moedas não negativas | `CHECK (coins >= 0)` e `CHECK (gems >= 0)` na tabela de jogadores | só validação no Go - um handler futuro que esqueça a checagem grava saldo negativo |
 
 | 11. stack de testes | api: `go test` contra Postgres real do `docker-compose.yml` (banco `devserver_test`), GitHub falso via `httptest.Server` e binário `api/cmd/fakegithub` para e2e; web: `vitest` + `@testing-library/react` + `jsdom` para telas, `@playwright/test` para e2e | banco mockado - não prova `FOR UPDATE` (door 8) nem `CHECK` (door 10) |
+| 12. códigos genéricos de erro | `not_found` (`404`, rota inexistente), `method_not_allowed` (`405`), `invalid_body` (`422`, JSON malformado ou campo com tipo errado), no mesmo envelope da door 7 | resposta texto padrão do roteador - quebra o AC 35 para qualquer URL errada |
 
 - Nothing else in this change is hard to reverse
 

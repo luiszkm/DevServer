@@ -1,0 +1,8 @@
+[
+  { "id": "vila", "name": "VILA LOCALHOST", "tag": "HUB", "minLevel": 1, "description": "Onde todo projeto começa. Oficina, NPC mentor e o primeiro rack de servidor do jogador." },
+  { "id": "floresta", "name": "FLORESTA DE LOGS", "tag": "EXPLORAR", "minLevel": 1, "description": "Árvores de stack trace crescem aqui. Colete logs raros para rastrear a origem dos bugs." },
+  { "id": "mercado", "name": "MERCADO DE PACOTES", "tag": "LOJA", "minLevel": 2, "description": "Dependências à venda — algumas úteis, outras trazem vulnerabilidades escondidas." },
+  { "id": "caverna", "name": "CAVERNA DOS BUGS", "tag": "COMBATE", "minLevel": 5, "description": "Ninho de exceções não tratadas. Combate por turnos com criaturas de erro." },
+  { "id": "torre", "name": "TORRE DE DEPLOY", "tag": "CHEFE", "minLevel": 8, "description": "Suba os andares do pipeline. No topo, o chefe Race Condition espera." },
+  { "id": "nuvem", "name": "PICOS DA NUVEM", "tag": "ENDGAME", "minLevel": 12, "description": "Região de auto-scaling infinito. Conteúdo de fim de jogo." }
+]

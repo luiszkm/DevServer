@@ -168,6 +168,58 @@ Proof: `make ci-build`
 **C47** - `api/go.mod` requer `github.com/go-chi/chi/v5`, `github.com/jackc/pgx/v5`, `github.com/pressly/goose/v3`, `golang.org/x/oauth2` e não requer `gorm.io/gorm` (door 9)
 Proof: `make check-deps`
 
+## Progress
+
+Marcado antes do commit que satisfaz o check.
+
+- [ ] C1
+- [x] C2
+- [x] C3
+- [x] C4
+- [x] C5
+- [ ] C6
+- [x] C7
+- [ ] C8
+- [x] C9
+- [x] C10
+- [x] C11
+- [x] C12
+- [ ] C13
+- [x] C14
+- [x] C15
+- [x] C16
+- [x] C17
+- [x] C18
+- [ ] C19
+- [x] C20
+- [x] C21
+- [x] C22
+- [ ] C23
+- [ ] C24
+- [ ] C25
+- [ ] C26
+- [ ] C27
+- [ ] C28
+- [ ] C29
+- [ ] C30
+- [x] C31
+- [x] C32
+- [ ] C33
+- [ ] C34
+- [x] C35
+- [x] C36
+- [x] C37
+- [x] C38
+- [ ] C39
+- [ ] C40
+- [x] C41
+- [x] C42
+- [x] C43
+- [x] C44
+- [x] C45
+- [ ] C46
+- [x] C47
+
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
