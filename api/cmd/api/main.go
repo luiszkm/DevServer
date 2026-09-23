@@ -9,6 +9,7 @@ import (
 
 	"devserver/api/internal/app"
 	"devserver/api/internal/auth"
+	"devserver/api/internal/battle"
 	"devserver/api/internal/catalog"
 	"devserver/api/internal/db"
 )
@@ -49,6 +50,7 @@ func run(logger *slog.Logger) error {
 		Logger:  logger,
 		Catalog: cat,
 		Now:     time.Now,
+		Rand:    battle.DefaultRand,
 		Auth: auth.Config{
 			ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 			ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),

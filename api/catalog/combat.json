@@ -1,0 +1,46 @@
+{
+  "enemies": [
+    { "region": "vila", "name": "NULL SLIME", "level": 3, "hp": 60, "sp": 50, "weakness": "null-check", "drop": "null_shard", "glyph": "(0x0)" },
+    { "region": "floresta", "name": "LOG WISP", "level": 5, "hp": 70, "sp": 55, "weakness": "referência circular", "drop": "log_essence", "glyph": "(~.~)" },
+    { "region": "mercado", "name": "PACOTE MALICIOSO", "level": 7, "hp": 85, "sp": 60, "weakness": "versão não travada", "drop": "corrupt_dep", "glyph": "[!pkg]" },
+    { "region": "caverna", "name": "EXCEÇÃO SELVAGEM", "level": 10, "hp": 110, "sp": 70, "weakness": "catch ausente", "drop": "wild_trace", "glyph": "{!!}" },
+    { "region": "torre", "name": "RACE CONDITION", "level": 15, "hp": 160, "sp": 85, "weakness": "mutex ausente", "drop": "race_core", "glyph": "//=//" },
+    { "region": "nuvem", "name": "MEMORY LEAK ANCESTRAL", "level": 22, "hp": 220, "sp": 100, "weakness": "garbage collector", "drop": "memory_crystal", "glyph": "^^^^" }
+  ],
+  "commands": [
+    { "id": "fix", "label": "FIX", "hint": "corrige o bug · 14-20 dano", "cost": 10, "damage": [14, 20] },
+    { "id": "test", "label": "TEST", "hint": "expõe a fraqueza · crítico", "cost": 8, "exposesWeakness": true },
+    { "id": "refactor", "label": "REFACTOR", "hint": "recupera 18 HP", "cost": 14, "heal": 18 },
+    { "id": "plain", "label": "PLAIN", "hint": "defende e recupera 3 SP", "cost": 0, "shield": true, "spGain": 3 },
+    { "id": "f1", "label": "</> MARKUP", "hint": "golpe limpo · 12 dano", "cost": 12, "damage": [12, 14], "skill": "f1" },
+    { "id": "f2", "label": "{} GRID", "hint": "ataque em área · 18", "cost": 16, "damage": [16, 20], "skill": "f2" },
+    { "id": "f3", "label": "~ MOTION", "hint": "combo rápido · 22", "cost": 20, "damage": [20, 25], "skill": "f3" },
+    { "id": "b1", "label": "$_ API", "hint": "chamada remota · 15", "cost": 12, "damage": [13, 17], "skill": "b1" },
+    { "id": "b2", "label": "[] CACHE", "hint": "recupera 24 HP", "cost": 16, "heal": 24, "skill": "b2" },
+    { "id": "b3", "label": "## FILA", "hint": "dano em lote · 25", "cost": 20, "damage": [22, 28], "skill": "b3" },
+    { "id": "i1", "label": ">_ SHELL", "hint": "8 dano + expõe fraqueza", "cost": 10, "damage": [8, 10], "exposesWeakness": true, "skill": "i1" },
+    { "id": "i2", "label": ":: CONTAINER", "hint": "metade do dano no turno", "cost": 14, "shield": true, "skill": "i2" },
+    { "id": "i3", "label": "^ SCALING", "hint": "dano massivo · 30", "cost": 24, "damage": [28, 34], "skill": "i3" },
+    { "id": "rollback", "label": "ROLLBACK", "hint": "volta para o mapa", "cost": 0, "flee": true }
+  ],
+  "items": [
+    { "id": "null_shard", "name": "FRAGMENTO NULL", "glyph": "0x0", "rarity": "COMUM", "description": "Resto compilado de um NULL SLIME." },
+    { "id": "log_essence", "name": "ESSÊNCIA DE LOG", "glyph": "</>", "rarity": "COMUM", "description": "Extraída de um LOG WISP." },
+    { "id": "corrupt_dep", "name": "DEPENDÊNCIA CORROMPIDA", "glyph": "!pkg", "rarity": "INCOMUM", "description": "Pacote instável recuperado do Mercado de Pacotes." },
+    { "id": "wild_trace", "name": "STACK TRACE SELVAGEM", "glyph": "{!}", "rarity": "INCOMUM", "description": "Rastro deixado por uma EXCEÇÃO SELVAGEM." },
+    { "id": "race_core", "name": "NÚCLEO DE CONCORRÊNCIA", "glyph": "//", "rarity": "RARO", "description": "Núcleo instável dropado pelo chefe RACE CONDITION." },
+    { "id": "memory_crystal", "name": "CRISTAL DE MEMÓRIA", "glyph": "^^", "rarity": "LENDÁRIO", "description": "Fragmento cristalizado de um vazamento de memória ancestral." },
+    { "id": "sp_potion", "name": "POÇÃO DE CACHE", "glyph": "++", "rarity": "COMUM", "description": "Restaura 30 SP no Bug Fight.", "restore": { "stat": "sp", "amount": 30 } },
+    { "id": "hp_potion", "name": "POÇÃO DE MEMÓRIA", "glyph": "HP+", "rarity": "COMUM", "description": "Restaura 40 HP no Bug Fight.", "restore": { "stat": "hp", "amount": 40 } }
+  ],
+  "rules": {
+    "counter": [7, 14],
+    "spRegen": 5,
+    "weaknessMultiplier": 1.8,
+    "victory": { "xp": 90, "coins": 40, "gems": 1 },
+    "dropChance": 65,
+    "potionChance": 30,
+    "potion": "sp_potion",
+    "startingItems": [{ "item": "sp_potion", "quantity": 2 }]
+  }
+}

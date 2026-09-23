@@ -56,12 +56,75 @@ type SkillTree struct {
 	Nodes []SkillNode `json:"nodes"`
 }
 
+type Enemy struct {
+	Region   string `json:"region"`
+	Name     string `json:"name"`
+	Level    int    `json:"level"`
+	HP       int    `json:"hp"`
+	SP       int    `json:"sp"`
+	Weakness string `json:"weakness"`
+	Drop     string `json:"drop"`
+	Glyph    string `json:"glyph"`
+}
+
+type Command struct {
+	ID              string `json:"id"`
+	Label           string `json:"label"`
+	Hint            string `json:"hint"`
+	Cost            int    `json:"cost"`
+	Damage          []int  `json:"damage,omitempty"`
+	Heal            int    `json:"heal,omitempty"`
+	ExposesWeakness bool   `json:"exposesWeakness,omitempty"`
+	Shield          bool   `json:"shield,omitempty"`
+	SPGain          int    `json:"spGain,omitempty"`
+	Flee            bool   `json:"flee,omitempty"`
+	Skill           string `json:"skill,omitempty"`
+}
+
+type Restore struct {
+	Stat   string `json:"stat"`
+	Amount int    `json:"amount"`
+}
+
+type Item struct {
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	Glyph       string   `json:"glyph"`
+	Rarity      string   `json:"rarity"`
+	Description string   `json:"description"`
+	Restore     *Restore `json:"restore,omitempty"`
+}
+
+type ItemQuantity struct {
+	Item     string `json:"item"`
+	Quantity int    `json:"quantity"`
+}
+
+type CombatRules struct {
+	Counter            []int   `json:"counter"`
+	SPRegen            int     `json:"spRegen"`
+	WeaknessMultiplier float64 `json:"weaknessMultiplier"`
+	Victory            struct {
+		XP    int `json:"xp"`
+		Coins int `json:"coins"`
+		Gems  int `json:"gems"`
+	} `json:"victory"`
+	DropChance    int            `json:"dropChance"`
+	PotionChance  int            `json:"potionChance"`
+	Potion        string         `json:"potion"`
+	StartingItems []ItemQuantity `json:"startingItems"`
+}
+
 type Catalog struct {
 	Version      string
 	Regions      []Region
 	DeployTypes  []DeployType
 	DeployLevels []DeployLevel
 	SkillTrees   []SkillTree
+	Enemies      []Enemy
+	Commands     []Command
+	Items        []Item
+	Combat       CombatRules
 	body         []byte
 }
 
@@ -115,13 +178,32 @@ func Load() (*Catalog, error) {
 	}
 	c.SkillTrees = skills.Trees
 
+	raw, err = data.Files.ReadFile("combat.json")
+	if err != nil {
+		return nil, err
+	}
+	var combat struct {
+		Enemies  []Enemy     `json:"enemies"`
+		Commands []Command   `json:"commands"`
+		Items    []Item      `json:"items"`
+		Rules    CombatRules `json:"rules"`
+	}
+	if err := json.Unmarshal(raw, &combat); err != nil {
+		return nil, fmt.Errorf("combat.json: %w", err)
+	}
+	c.Enemies, c.Commands, c.Items, c.Combat = combat.Enemies, combat.Commands, combat.Items, combat.Rules
+
 	c.body, err = json.Marshal(struct {
 		Version      string        `json:"version"`
 		Regions      []Region      `json:"regions"`
 		DeployTypes  []DeployType  `json:"deployTypes"`
 		DeployLevels []DeployLevel `json:"deployLevels"`
 		SkillTrees   []SkillTree   `json:"skillTrees"`
-	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees})
+		Enemies      []Enemy       `json:"enemies"`
+		Commands     []Command     `json:"commands"`
+		Items        []Item        `json:"items"`
+		Combat       CombatRules   `json:"combat"`
+	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees, c.Enemies, c.Commands, c.Items, c.Combat})
 	if err != nil {
 		return nil, err
 	}
@@ -182,6 +264,54 @@ func (c *Catalog) SkillPosition(id string) int {
 		}
 	}
 	return pos
+}
+
+func (c *Catalog) Enemy(region string) (Enemy, bool) {
+	for _, e := range c.Enemies {
+		if e.Region == region {
+			return e, true
+		}
+	}
+	return Enemy{}, false
+}
+
+func (c *Catalog) Command(id string) (Command, bool) {
+	for _, cmd := range c.Commands {
+		if cmd.ID == id {
+			return cmd, true
+		}
+	}
+	return Command{}, false
+}
+
+func (c *Catalog) Item(id string) (Item, bool) {
+	for _, it := range c.Items {
+		if it.ID == id {
+			return it, true
+		}
+	}
+	return Item{}, false
+}
+
+// ItemPosition orders item ids as the catalog lists them; unknown ids sort last.
+func (c *Catalog) ItemPosition(id string) int {
+	for i, it := range c.Items {
+		if it.ID == id {
+			return i
+		}
+	}
+	return len(c.Items)
+}
+
+// SkillBonus sums the bonus of one type ("hp", "sp", "dmg") over the given skill ids.
+func (c *Catalog) SkillBonus(skills []string, bonusType string) int {
+	sum := 0
+	for _, id := range skills {
+		if n, _, ok := c.Skill(id); ok && n.Bonus.Type == bonusType {
+			sum += n.Bonus.Amount
+		}
+	}
+	return sum
 }
 
 var (

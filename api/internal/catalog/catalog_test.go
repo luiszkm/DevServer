@@ -1,6 +1,7 @@
 package catalog_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -170,5 +171,102 @@ func TestCatalog_SkillPosition(t *testing.T) {
 	}
 	if got := c.SkillPosition("zz"); got != 9 {
 		t.Errorf("SkillPosition(unknown) = %d, want 9 (after every node)", got)
+	}
+}
+
+// C37
+func TestCatalog_ServesCombat(t *testing.T) {
+	env := apptest.New(t)
+	var b struct {
+		Enemies []struct {
+			Region, Name, Weakness, Drop, Glyph string
+			Level, HP, SP                       int
+		} `json:"enemies"`
+		Commands []struct {
+			ID, Label, Hint, Skill        string
+			Cost, Heal, SPGain            int
+			Damage                        []int
+			ExposesWeakness, Shield, Flee bool
+		} `json:"commands"`
+		Items []struct {
+			ID, Name, Glyph, Rarity, Description string
+			Restore                              *struct {
+				Stat   string
+				Amount int
+			}
+		} `json:"items"`
+		Combat struct {
+			Counter            []int
+			SPRegen            int
+			WeaknessMultiplier float64
+			Victory            struct{ XP, Coins, Gems int }
+			DropChance         int
+			PotionChance       int
+			Potion             string
+		} `json:"combat"`
+	}
+	if err := json.Unmarshal(env.Do(http.MethodGet, "/api/catalog", nil).Body.Bytes(), &b); err != nil {
+		t.Fatal(err)
+	}
+	enemies := []string{
+		"vila|NULL SLIME|3|60|50|null-check|null_shard",
+		"floresta|LOG WISP|5|70|55|referência circular|log_essence",
+		"mercado|PACOTE MALICIOSO|7|85|60|versão não travada|corrupt_dep",
+		"caverna|EXCEÇÃO SELVAGEM|10|110|70|catch ausente|wild_trace",
+		"torre|RACE CONDITION|15|160|85|mutex ausente|race_core",
+		"nuvem|MEMORY LEAK ANCESTRAL|22|220|100|garbage collector|memory_crystal",
+	}
+	if len(b.Enemies) != 6 {
+		t.Fatalf("enemies = %d", len(b.Enemies))
+	}
+	for i, e := range b.Enemies {
+		if got := fmt.Sprintf("%s|%s|%d|%d|%d|%s|%s", e.Region, e.Name, e.Level, e.HP, e.SP, e.Weakness, e.Drop); got != enemies[i] || e.Glyph == "" {
+			t.Errorf("enemy %d = %s (glyph %q), want %s", i, got, e.Glyph, enemies[i])
+		}
+	}
+	commands := []string{
+		"fix|FIX|10|14-20|0|false|false|0|false|", "test|TEST|8||0|true|false|0|false|",
+		"refactor|REFACTOR|14||18|false|false|0|false|", "plain|PLAIN|0||0|false|true|3|false|",
+		"f1|</> MARKUP|12|12-14|0|false|false|0|false|f1", "f2|{} GRID|16|16-20|0|false|false|0|false|f2",
+		"f3|~ MOTION|20|20-25|0|false|false|0|false|f3", "b1|$_ API|12|13-17|0|false|false|0|false|b1",
+		"b2|[] CACHE|16||24|false|false|0|false|b2", "b3|## FILA|20|22-28|0|false|false|0|false|b3",
+		"i1|>_ SHELL|10|8-10|0|true|false|0|false|i1", "i2|:: CONTAINER|14||0|false|true|0|false|i2",
+		"i3|^ SCALING|24|28-34|0|false|false|0|false|i3", "rollback|ROLLBACK|0||0|false|false|0|true|",
+	}
+	if len(b.Commands) != 14 {
+		t.Fatalf("commands = %d", len(b.Commands))
+	}
+	for i, c := range b.Commands {
+		dmg := ""
+		if len(c.Damage) == 2 {
+			dmg = fmt.Sprintf("%d-%d", c.Damage[0], c.Damage[1])
+		}
+		got := fmt.Sprintf("%s|%s|%d|%s|%d|%v|%v|%d|%v|%s", c.ID, c.Label, c.Cost, dmg, c.Heal, c.ExposesWeakness, c.Shield, c.SPGain, c.Flee, c.Skill)
+		if got != commands[i] || c.Hint == "" {
+			t.Errorf("command %d = %s (hint %q), want %s", i, got, c.Hint, commands[i])
+		}
+	}
+	items := []string{
+		"null_shard|FRAGMENTO NULL|0x0|COMUM|", "log_essence|ESSÊNCIA DE LOG|</>|COMUM|",
+		"corrupt_dep|DEPENDÊNCIA CORROMPIDA|!pkg|INCOMUM|", "wild_trace|STACK TRACE SELVAGEM|{!}|INCOMUM|",
+		"race_core|NÚCLEO DE CONCORRÊNCIA|//|RARO|", "memory_crystal|CRISTAL DE MEMÓRIA|^^|LENDÁRIO|",
+		"sp_potion|POÇÃO DE CACHE|++|COMUM|sp 30", "hp_potion|POÇÃO DE MEMÓRIA|HP+|COMUM|hp 40",
+	}
+	if len(b.Items) != 8 {
+		t.Fatalf("items = %d", len(b.Items))
+	}
+	for i, it := range b.Items {
+		restore := ""
+		if it.Restore != nil {
+			restore = fmt.Sprintf("%s %d", it.Restore.Stat, it.Restore.Amount)
+		}
+		if got := fmt.Sprintf("%s|%s|%s|%s|%s", it.ID, it.Name, it.Glyph, it.Rarity, restore); got != items[i] || it.Description == "" {
+			t.Errorf("item %d = %s, want %s", i, got, items[i])
+		}
+	}
+	r := b.Combat
+	if fmt.Sprint(r.Counter) != "[7 14]" || r.SPRegen != 5 || r.WeaknessMultiplier != 1.8 || r.Victory.XP != 90 || r.Victory.Coins != 40 ||
+		r.Victory.Gems != 1 || r.DropChance != 65 || r.PotionChance != 30 || r.Potion != "sp_potion" {
+		t.Errorf("combat rules = %+v", r)
 	}
 }

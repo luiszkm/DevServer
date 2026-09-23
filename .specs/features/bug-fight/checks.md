@@ -57,7 +57,7 @@ Proof: `cd api && go test ./internal/battle -run '^TestCommand_CounterRange$'`
 **C14** - `events` sai em ordem: FIX = `damage`, `counter`; TEST = `weakness`, `counter`; PLAIN = `shield`, `sp`, `counter`; REFACTOR = `heal`, `counter`; cada um com seus campos (FIGHT-02, AC 12; door 5)
 Proof: `cd api && go test ./internal/battle -run '^TestCommand_EventsInOrder$'`
 
-**C15** - Com SP 5, FIX responde `409 not_enough_sp` e combate e jogador ficam iguais (FIGHT-02, AC 13)
+**C15** - Com SP 5 e com SP 9, FIX (custo 10) responde `409 not_enough_sp` e combate e jogador ficam iguais; com SP 10, FIX joga e deixa SP 5 (FIGHT-02, AC 13)
 Proof: `cd api && go test ./internal/battle -run '^TestCommand_NotEnoughSP$'`
 
 **C16** - `f1` sem a skill responde `409 command_locked`; com `f1` desbloqueada, responde `200` (FIGHT-02, AC 14)
@@ -87,7 +87,7 @@ Proof: `cd api && go test ./internal/battle -run '^TestCommand_EverySkillCommand
 **C24** - Comandos base custam FIX 10, TEST 8, REFACTOR 14, PLAIN 0, ROLLBACK 0 (FIGHT-02, AC 6)
 Proof: `cd api && go test ./internal/battle -run '^TestCommand_BaseCosts$'`
 
-**C25** - Na própria camada, `battle.ApplyCommand`/`EndTurn`: fraqueza 14 → 25 e 15 → 27; bônus 10% sobre 25 → 28; escudo sobre 7 → 4 e sobre 14 → 7; SP nunca passa do máximo nem fica negativo (FIGHT-02, AC 6, 7, 9, 11)
+**C25** - Na própria camada, `battle.ApplyCommand`/`EndTurn`: fraqueza 14 → 25, 15 → 27 e 17 → 31; bônus 10% sobre 25 → 28; escudo sobre 7 → 4 e sobre 14 → 7; SP nunca passa do máximo nem fica negativo, inclusive o +3 do PLAIN quando o jogador cai no mesmo turno (FIGHT-02, AC 6, 7, 9, 10, 11)
 Proof: `cd api && go test ./internal/battle -run '^TestRules_'`
 
 ### S3 - Vencer, perder e usar itens · ~6 files · ~30 KB · ~8k
@@ -180,46 +180,46 @@ Proof: `cd web && npx playwright test e2e/battle.spec.ts -g "fight to victory"`
 
 ## Progress
 
-- [ ] C1
-- [ ] C2
-- [ ] C3
-- [ ] C4
-- [ ] C5
-- [ ] C6
-- [ ] C7
-- [ ] C8
-- [ ] C9
-- [ ] C10
-- [ ] C11
-- [ ] C12
-- [ ] C13
-- [ ] C14
-- [ ] C15
-- [ ] C16
-- [ ] C17
-- [ ] C18
-- [ ] C19
-- [ ] C20
-- [ ] C21
-- [ ] C22
-- [ ] C23
-- [ ] C24
-- [ ] C25
-- [ ] C26
-- [ ] C27
-- [ ] C28
-- [ ] C29
-- [ ] C30
-- [ ] C31
-- [ ] C32
-- [ ] C33
-- [ ] C34
-- [ ] C35
-- [ ] C36
-- [ ] C37
-- [ ] C38
-- [ ] C39
-- [ ] C40
+- [x] C1
+- [x] C2
+- [x] C3
+- [x] C4
+- [x] C5
+- [x] C6
+- [x] C7
+- [x] C8
+- [x] C9
+- [x] C10
+- [x] C11
+- [x] C12
+- [x] C13
+- [x] C14
+- [x] C15
+- [x] C16
+- [x] C17
+- [x] C18
+- [x] C19
+- [x] C20
+- [x] C21
+- [x] C22
+- [x] C23
+- [x] C24
+- [x] C25
+- [x] C26
+- [x] C27
+- [x] C28
+- [x] C29
+- [x] C30
+- [x] C31
+- [x] C32
+- [x] C33
+- [x] C34
+- [x] C35
+- [x] C36
+- [x] C37
+- [x] C38
+- [x] C39
+- [x] C40
 - [ ] C41
 - [ ] C42
 - [ ] C43

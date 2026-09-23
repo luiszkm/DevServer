@@ -42,9 +42,38 @@ func (c *Clock) Advance(d time.Duration) {
 	c.mu.Unlock()
 }
 
+// Rand hands out pushed values in order; with none left it returns 0. A value >= n fails the test.
+type Rand struct {
+	mu   sync.Mutex
+	t    testing.TB
+	vals []int
+}
+
+func (r *Rand) Push(vals ...int) {
+	r.mu.Lock()
+	r.vals = append(r.vals, vals...)
+	r.mu.Unlock()
+}
+
+func (r *Rand) IntN(n int) int {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if len(r.vals) == 0 {
+		return 0
+	}
+	v := r.vals[0]
+	r.vals = r.vals[1:]
+	if v < 0 || v >= n {
+		r.t.Errorf("pushed draw %d outside [0,%d)", v, n)
+		return 0
+	}
+	return v
+}
+
 type Env struct {
 	T       testing.TB
 	Clock   *Clock
+	Rand    *Rand
 	Pool    *pgxpool.Pool
 	Router  *chi.Mux
 	Fake    *fakegithub.Server
@@ -81,8 +110,10 @@ func New(t testing.TB) *Env {
 	}
 	logs := &SyncBuffer{}
 	clock := &Clock{t: time.Date(2026, 1, 1, 12, 0, 0, 0, time.UTC)}
+	rnd := &Rand{t: t}
 	router := app.NewRouter(app.Deps{
 		Now:     clock.Now,
+		Rand:    rnd,
 		Pool:    pool,
 		Logger:  slog.New(slog.NewJSONHandler(logs, nil)),
 		Catalog: cat,
@@ -95,7 +126,7 @@ func New(t testing.TB) *Env {
 			APIURL:       ts.URL,
 		},
 	})
-	return &Env{T: t, Clock: clock, Pool: pool, Router: router, Fake: fake, FakeURL: ts.URL, Logs: logs}
+	return &Env{T: t, Clock: clock, Rand: rnd, Pool: pool, Router: router, Fake: fake, FakeURL: ts.URL, Logs: logs}
 }
 
 // Do sends a request through the router; body is JSON-encoded unless it is a string.

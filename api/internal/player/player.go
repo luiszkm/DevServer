@@ -32,6 +32,8 @@ type Player struct {
 	Skin         string `json:"skin"`
 	// Skills are the unlocked skill ids in catalog order; never nil so it serializes as [].
 	Skills []string `json:"skills"`
+	// Inventory lists the items held, quantity > 0 only, in catalog order.
+	Inventory []catalog.ItemQuantity `json:"inventory"`
 }
 
 // Classes are the cosmetic classes offered at onboarding.
@@ -52,6 +54,7 @@ func newPlayer(githubUserID int64, devName, class string) *Player {
 		GithubUserID: githubUserID, DevName: devName, Class: class,
 		Level: 1, XP: 0, XPMax: 500, HP: 100, HPMax: 100,
 		Coins: 100, Gems: 20, SkillPoints: 1, Region: "vila", Skin: "default", Skills: []string{},
+		Inventory: []catalog.ItemQuantity{},
 	}
 }
 
@@ -104,7 +107,53 @@ func Get(ctx context.Context, q querier, githubUserID int64) (*Player, error) {
 	if err != nil {
 		return nil, err
 	}
-	return p, loadSkills(ctx, q, p)
+	if err := loadSkills(ctx, q, p); err != nil {
+		return nil, err
+	}
+	return p, loadInventory(ctx, q, p)
+}
+
+func loadInventory(ctx context.Context, q querier, p *Player) error {
+	rows, err := q.Query(ctx, `SELECT item_id, quantity FROM player_items WHERE player_id = $1 AND quantity > 0`, p.ID)
+	if err != nil {
+		return err
+	}
+	items, err := pgx.CollectRows(rows, func(r pgx.CollectableRow) (catalog.ItemQuantity, error) {
+		var it catalog.ItemQuantity
+		return it, r.Scan(&it.Item, &it.Quantity)
+	})
+	if err != nil {
+		return err
+	}
+	cat := catalog.Default()
+	sort.SliceStable(items, func(i, j int) bool { return cat.ItemPosition(items[i].Item) < cat.ItemPosition(items[j].Item) })
+	p.Inventory = items
+	return nil
+}
+
+// Quantity is how many of an item the player holds.
+func (p *Player) Quantity(item string) int {
+	for _, it := range p.Inventory {
+		if it.Item == item {
+			return it.Quantity
+		}
+	}
+	return 0
+}
+
+// AddItem changes the stored quantity of an item by delta inside tx and keeps p.Inventory in step.
+// The table's CHECK refuses a negative quantity.
+func AddItem(ctx context.Context, tx pgx.Tx, p *Player, item string, delta int) error {
+	// The CHECK runs on the proposed row before ON CONFLICT, so a decrement must be an UPDATE.
+	q := `UPDATE player_items SET quantity = quantity + $3 WHERE player_id = $1 AND item_id = $2`
+	if delta > 0 {
+		q = `INSERT INTO player_items (player_id, item_id, quantity) VALUES ($1, $2, $3)
+		ON CONFLICT (player_id, item_id) DO UPDATE SET quantity = player_items.quantity + EXCLUDED.quantity`
+	}
+	if _, err := tx.Exec(ctx, q, p.ID, item, delta); err != nil {
+		return err
+	}
+	return loadInventory(ctx, tx, p)
 }
 
 func loadSkills(ctx context.Context, q querier, p *Player) error {
@@ -145,6 +194,9 @@ func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn 
 		return nil, err
 	}
 	if err := loadSkills(ctx, tx, p); err != nil {
+		return nil, err
+	}
+	if err := loadInventory(ctx, tx, p); err != nil {
 		return nil, err
 	}
 	if err := fn(tx, p); err != nil {

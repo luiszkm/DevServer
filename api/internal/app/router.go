@@ -10,6 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"devserver/api/internal/auth"
+	"devserver/api/internal/battle"
 	"devserver/api/internal/catalog"
 	"devserver/api/internal/deploy"
 	"devserver/api/internal/httpx"
@@ -25,6 +26,8 @@ type Deps struct {
 	Catalog *catalog.Catalog
 	// Now is the game clock (AD-010); nil means time.Now.
 	Now func() time.Time
+	// Rand is every draw of the game (AD-011); nil means math/rand/v2.
+	Rand battle.Rand
 }
 
 func NewRouter(d Deps) *chi.Mux {
@@ -43,6 +46,11 @@ func NewRouter(d Deps) *chi.Mux {
 		now = time.Now
 	}
 	skillsH := &skills.Handlers{Pool: d.Pool, Catalog: d.Catalog}
+	rnd := d.Rand
+	if rnd == nil {
+		rnd = battle.DefaultRand
+	}
+	battleH := &battle.Handlers{Pool: d.Pool, Catalog: d.Catalog, Rand: rnd}
 	deployH := &deploy.Handlers{Pool: d.Pool, Catalog: d.Catalog, Logger: d.Logger, Now: now}
 
 	r.Get("/api/auth/github/login", h(authH.Login))
@@ -60,6 +68,10 @@ func NewRouter(d Deps) *chi.Mux {
 		pr.Post("/api/me/deploys", h(deployH.Start))
 		pr.Post("/api/me/deploys/{type}/claim", h(deployH.Claim))
 		pr.Post("/api/me/skills/{id}/unlock", h(skillsH.Unlock))
+		pr.Get("/api/me/battle", h(battleH.Get))
+		pr.Post("/api/me/battle", h(battleH.Start))
+		pr.Post("/api/me/battle/commands", h(battleH.Command))
+		pr.Post("/api/me/battle/items", h(battleH.Item))
 	})
 	return r
 }

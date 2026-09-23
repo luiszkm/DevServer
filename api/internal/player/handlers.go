@@ -1,6 +1,7 @@
 package player
 
 import (
+	"context"
 	"errors"
 	"net/http"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"devserver/api/internal/auth"
+	"devserver/api/internal/catalog"
 	"devserver/api/internal/httpx"
 )
 
@@ -63,11 +65,7 @@ func (h *Handlers) Create(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	p := newPlayer(id.GithubUserID, name, in.Class)
-	err := h.Pool.QueryRow(ctx, `INSERT INTO players (github_user_id, dev_name, class, level, xp, xp_max,
-		hp, hp_max, coins, gems, skill_points, region, skin)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id`,
-		p.GithubUserID, p.DevName, p.Class, p.Level, p.XP, p.XPMax, p.HP, p.HPMax,
-		p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin).Scan(&p.ID)
+	err := h.insert(ctx, p)
 	var pgErr *pgconn.PgError
 	if errors.As(err, &pgErr) && pgErr.Code == "23505" {
 		// A concurrent request won the race: tell which uniqueness it hit.
@@ -81,4 +79,26 @@ func (h *Handlers) Create(w http.ResponseWriter, r *http.Request) error {
 	}
 	httpx.WriteJSON(w, http.StatusCreated, response{p})
 	return nil
+}
+
+// insert creates the player and its starting items in one transaction.
+func (h *Handlers) insert(ctx context.Context, p *Player) error {
+	tx, err := h.Pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+	if err := tx.QueryRow(ctx, `INSERT INTO players (github_user_id, dev_name, class, level, xp, xp_max,
+		hp, hp_max, coins, gems, skill_points, region, skin)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id`,
+		p.GithubUserID, p.DevName, p.Class, p.Level, p.XP, p.XPMax, p.HP, p.HPMax,
+		p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin).Scan(&p.ID); err != nil {
+		return err
+	}
+	for _, it := range catalog.Default().Combat.StartingItems {
+		if err := AddItem(ctx, tx, p, it.Item, it.Quantity); err != nil {
+			return err
+		}
+	}
+	return tx.Commit(ctx)
 }

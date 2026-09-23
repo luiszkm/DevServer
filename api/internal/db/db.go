@@ -40,3 +40,20 @@ func Migrate(ctx context.Context, url string) error {
 	}
 	return nil
 }
+
+// MigrateTo applies the embedded migrations up to and including version.
+func MigrateTo(ctx context.Context, url string, version int64) error {
+	sqlDB, err := sql.Open("pgx", url)
+	if err != nil {
+		return fmt.Errorf("open migration db: %w", err)
+	}
+	defer sqlDB.Close()
+	provider, err := goose.NewProvider(goose.DialectPostgres, sqlDB, migrations.FS)
+	if err != nil {
+		return fmt.Errorf("migration provider: %w", err)
+	}
+	if _, err := provider.UpTo(ctx, version); err != nil {
+		return fmt.Errorf("migrate up to %d: %w", version, err)
+	}
+	return nil
+}

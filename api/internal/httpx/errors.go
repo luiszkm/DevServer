@@ -40,6 +40,13 @@ var (
 	ErrSkillUnlocked      = &Error{http.StatusConflict, "skill_already_unlocked", "habilidade já está ativa"}
 	ErrNoSkillPoints      = &Error{http.StatusConflict, "no_skill_points", "sem pontos de habilidade. suba de nível com deploys"}
 	ErrUnknownSkill       = &Error{http.StatusUnprocessableEntity, "unknown_skill", "habilidade desconhecida"}
+	ErrBattleNotFound     = &Error{http.StatusNotFound, "battle_not_found", "nenhum encontro em andamento"}
+	ErrBattleOver         = &Error{http.StatusConflict, "battle_over", "o bug já foi resolvido. comece um novo encontro"}
+	ErrNotEnoughSP        = &Error{http.StatusConflict, "not_enough_sp", "SP insuficiente. use uma poção"}
+	ErrCommandLocked      = &Error{http.StatusConflict, "command_locked", "desbloqueie a skill para usar este comando"}
+	ErrNoItem             = &Error{http.StatusConflict, "no_item", "você não tem este item"}
+	ErrUnknownCommand     = &Error{http.StatusUnprocessableEntity, "unknown_command", "comando desconhecido"}
+	ErrUnknownItem        = &Error{http.StatusUnprocessableEntity, "unknown_item", "item desconhecido ou não usável em combate"}
 )
 
 type envelope struct {
