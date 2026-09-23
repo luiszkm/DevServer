@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"devserver/api/internal/apptest"
+	"devserver/api/internal/catalog"
 )
 
 type body struct {
@@ -107,6 +108,12 @@ func TestCatalog_ServesDeploys(t *testing.T) {
 	}
 }
 
+var descriptions = map[string]string{
+	"f1": "+10 HP máximo permanente", "f2": "+8 SP máximo em combate", "f3": "+10% de dano em todos os ataques",
+	"b1": "+10 HP máximo permanente", "b2": "+10 SP máximo em combate", "b3": "+12% de dano em todos os ataques",
+	"i1": "+8 SP máximo em combate", "i2": "+15 HP máximo permanente", "i3": "+15% de dano em todos os ataques",
+}
+
 // C12
 func TestCatalog_ServesSkillTrees(t *testing.T) {
 	env := apptest.New(t)
@@ -143,9 +150,25 @@ func TestCatalog_ServesSkillTrees(t *testing.T) {
 		for j, wn := range w.nodes {
 			n := tr.Nodes[j]
 			got := [5]string{n.ID, n.Glyph, n.Name, n.Bonus.Type, fmt.Sprint(n.Bonus.Amount)}
-			if got != wn || n.Description == "" {
-				t.Errorf("node %s = %v (description %q), want %v", wn[0], got, n.Description, wn)
+			if got != wn {
+				t.Errorf("node %s = %v, want %v", wn[0], got, wn)
+			}
+			if n.Description != descriptions[wn[0]] {
+				t.Errorf("node %s description = %q, want %q", wn[0], n.Description, descriptions[wn[0]])
 			}
 		}
+	}
+}
+
+// C27 (own layer): catalog position of skill ids, unknown ids last.
+func TestCatalog_SkillPosition(t *testing.T) {
+	c := catalog.Default()
+	for i, id := range []string{"f1", "f2", "f3", "b1", "b2", "b3", "i1", "i2", "i3"} {
+		if got := c.SkillPosition(id); got != i {
+			t.Errorf("SkillPosition(%s) = %d, want %d", id, got, i)
+		}
+	}
+	if got := c.SkillPosition("zz"); got != 9 {
+		t.Errorf("SkillPosition(unknown) = %d, want 9 (after every node)", got)
 	}
 }

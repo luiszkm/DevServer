@@ -297,3 +297,37 @@ func TestUnlock_SerializesOnPlayerRowLock(t *testing.T) {
 		t.Fatal("unlock did not finish after the lock was released")
 	}
 }
+
+// C28
+func TestMe_SkillsLoadError(t *testing.T) {
+	env := apptest.New(t)
+	c := env.NewPlayer(1, "DEV_01", "BACKEND")
+	if _, err := env.Pool.Exec(context.Background(), `ALTER TABLE player_skills RENAME TO player_skills_gone`); err != nil {
+		t.Fatal(err)
+	}
+	rec := env.Do(http.MethodGet, "/api/me", nil, c)
+	mustStatus(t, rec, http.StatusInternalServerError, "internal")
+	if id := rec.Header().Get(httpx.RequestIDHeader); !strings.Contains(env.Logs.String(), `"request_id":"`+id+`"`) {
+		t.Fatalf("log lacks request id %s", id)
+	}
+}
+
+// C29
+func TestUnlock_InsertError(t *testing.T) {
+	env := apptest.New(t)
+	c := env.NewPlayer(1, "DEV_01", "BACKEND")
+	ctx := context.Background()
+	for _, stmt := range []string{
+		`CREATE FUNCTION reject_skill() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'nope'; END $$`,
+		`CREATE TRIGGER reject_skill BEFORE INSERT ON player_skills FOR EACH ROW EXECUTE FUNCTION reject_skill()`,
+	} {
+		if _, err := env.Pool.Exec(ctx, stmt); err != nil {
+			t.Fatal(err)
+		}
+	}
+	before := playerRow(t, env)
+	mustStatus(t, unlock(env, c, "f1"), http.StatusInternalServerError, "internal")
+	if after := playerRow(t, env); !reflect.DeepEqual(before, after) {
+		t.Fatalf("player changed after a failed unlock:\n%v\n%v", before, after)
+	}
+}

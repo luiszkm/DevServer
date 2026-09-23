@@ -46,4 +46,12 @@ describe("Hud", () => {
     if (skills.length) expect(within(card).getByLabelText("habilidades ativas").textContent).toBe(text);
     else expect(within(card).getByText(text)).toBeInTheDocument();
   });
+
+  it("shows no skill section without a catalog", () => {
+    render(<Hud player={player({ skills: ["f1"] })} />);
+    const hud = screen.getByRole("contentinfo", { name: "HUD" });
+    expect(within(hud).queryByLabelText("habilidades ativas")).not.toBeInTheDocument();
+    expect(within(hud).queryByText("sem habilidades ativas")).not.toBeInTheDocument();
+    expect(within(hud).getByText("SKILL PTS")).toBeInTheDocument();
+  });
 });

@@ -58,3 +58,15 @@ func TestGainXP(t *testing.T) {
 		}
 	}
 }
+
+// C27 (own layer): SortSkills orders by catalog and keeps ids unknown to the catalog last.
+func TestSortSkills(t *testing.T) {
+	p := &player.Player{Skills: []string{"i3", "zz", "b1", "f2", "f1"}}
+	player.SortSkills(p)
+	want := []string{"f1", "f2", "b1", "i3", "zz"}
+	for i := range want {
+		if p.Skills[i] != want[i] {
+			t.Fatalf("SortSkills = %v, want %v", p.Skills, want)
+		}
+	}
+}

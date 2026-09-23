@@ -5,7 +5,7 @@ Plan: `.specs/features/skills/plan.md`
 
 ## Intent
 
-26 checks in 2 slices · 6 one-way doors · 0 open
+29 checks in 2 slices · 6 one-way doors · 0 open
 
 Pré-requisitos: os mesmos da foundation (`docker compose up -d --wait db`; vitest com `fetch` mockado; Playwright sobe a stack).
 
@@ -46,7 +46,7 @@ Proof: `cd api && go test ./internal/skills -run '^TestPlayerSkills_InEveryPlaye
 **C11** - Sem sessão responde `401 unauthenticated`, sessão sem jogador responde `404 player_not_found` e erro inesperado de banco responde `500 internal` com log do `request_id`, em `POST /api/me/skills/f1/unlock` (SKILL-01)
 Proof: `cd api && go test ./internal/skills -run '^TestUnlockRoute_SessionPlayerAndUnexpected$'`
 
-**C12** - `GET /api/catalog` inclui `skillTrees` = `frontend`, `backend`, `infra` nessa ordem, cada um com `name` e os nós da tabela do plano com `id`, `glyph`, `name`, `description` e `bonus` (`type`, `amount`) (SKILL-02, AC 19; door 3)
+**C12** - `GET /api/catalog` inclui `skillTrees` = `frontend`, `backend`, `infra` nessa ordem, cada um com `name` e os nós da tabela do plano com `id`, `glyph`, `name`, `description` (o texto exato de cada um dos 9) e `bonus` (`type`, `amount`) (SKILL-02, AC 19; door 3)
 Proof: `cd api && go test ./internal/catalog -run '^TestCatalog_ServesSkillTrees$'`
 
 ### S2 - Ver a árvore · ~6 files · ~22 KB · ~6k
@@ -93,6 +93,15 @@ Proof: `cd web && npx playwright test e2e/skills.spec.ts -g "unlock persists"`
 **C26** - `POST /api/me/skills/f1/unlock` passa pelo mesmo `player.WithLocked`: com uma transação de teste segurando `FOR UPDATE` na linha do jogador, o desbloqueio só responde depois do `COMMIT`, e lê os pontos gravados por ela (SKILL-01, AC 8)
 Proof: `cd api && go test ./internal/skills -run '^TestUnlock_SerializesOnPlayerRowLock$'`
 
+**C27** - Na própria camada, `SkillPosition` dá 0..8 para `f1`..`i3` e 9 para um id fora do catálogo, e `SortSkills` ordena `["i3","zz","b1","f2","f1"]` como `["f1","f2","b1","i3","zz"]` (SKILL-01, AC 9; door 4)
+Proof: `cd api && go test ./internal/catalog ./internal/player -run '^(TestCatalog_SkillPosition|TestSortSkills)$'`
+
+**C28** - Com a tabela de skills indisponível, `GET /api/me` responde `500 internal` com log do `request_id` (SKILL-01, AC 9)
+Proof: `cd api && go test ./internal/skills -run '^TestMe_SkillsLoadError$'`
+
+**C29** - Se a gravação do nó falha no banco, o desbloqueio responde `500 internal` e o jogador fica igual (SKILL-01, AC 1)
+Proof: `cd api && go test ./internal/skills -run '^TestUnlock_InsertError$'`
+
 ## Progress
 
 - [x] C1
@@ -121,13 +130,20 @@ Proof: `cd api && go test ./internal/skills -run '^TestUnlock_SerializesOnPlayer
 - [x] C24
 - [x] C25
 - [x] C26
+- [x] C27
+- [x] C28
+- [x] C29
 
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
 | --- | --- | --- |
-| `POST /api/me/skills/{id}/unlock` statuses (6) | 200 C1 · 401 C11 · 404 C11 · 409 C4 · 422 C7 · 500 C11 | - |
+| `POST /api/me/skills/{id}/unlock` statuses (6) | 200 C1 · 401 C11 · 404 C11 · 409 C4 · 422 C7 · 500 C11, C29 | - |
 | `GET /api/me` body with `skills` (1) | 200 C10 | - |
+| `GET /api/me` new failure cause (1) | skills load error C28 | - |
+| skill ordering (2) | known ids C27 · id outside the catalog C27 | - |
+| node descriptions (9) | C12, table-driven over all 9 | - |
+| HUD without catalog (1) | no skill section `Hud.test.tsx` C22 | - |
 | `GET /api/catalog` new key (1) | `skillTrees` C12 | - |
 | skill nodes (9) | C12, table-driven over all 9 | - |
 | bonus types (3) | `hp` C2 · `sp` C3 · `dmg` C3 | - |
@@ -144,7 +160,8 @@ Proof: `cd api && go test ./internal/skills -run '^TestUnlock_SerializesOnPlayer
 
 - Claims naming a status code, route or response shape: C1–C8, C10–C12, C26 - each proof issues a real HTTP request through `NewRouter`, except C9 (constraint, straight SQL)
 - Web claims at unit level assert the rendered screen; the browser round trip is C25
-- `GET /api/me` statuses 401, 404 and 500 are untouched by this feature and stay proven by the foundation checks (C9, C38, C49 there)
+- `GET /api/me` statuses 401 and 404 are untouched by this feature and stay proven by the foundation checks; the 500 gained a cause here (skills load), proven by C28
+- Equivalent mutant noted: ignoring the error of the `player_skills` INSERT still answers `500` with no change, because Postgres aborts the transaction and the following player UPDATE fails; C29 asserts that outcome
 
 ## Test policy
 
@@ -180,3 +197,9 @@ Evidence:
 - **Boundary:** C1-C26 closed on `feat/skills`
 - **Settled mid-build:** `player.Get`/`WithLocked` load skills and sort them by `catalog.Default()` (catalog loaded once); unreachable `nil` guard in `SortSkills` removed; C10 strengthened to assert the unlock response order
 - **Abandoned:** none; 24 self-mutations (12 api, 12 web) before verification - 3 survivors (unlock response order, dead nil guard, HUD not receiving the catalog) closed by C10, removal of the dead code, and a `GameShell` HUD test
+
+Round 2 (after verification round 1 FAIL):
+
+- **Boundary:** C27 (own-layer ordering incl. unknown ids), C28 (`GET /api/me` skills load error), C29 (unlock INSERT error) added; C12 asserts all 9 descriptions; HUD without catalog asserted
+- **Settled mid-build:** none
+- **Abandoned:** none
