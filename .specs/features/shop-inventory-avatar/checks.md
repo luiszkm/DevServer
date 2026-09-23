@@ -213,7 +213,7 @@ Proof: `cd api && go test ./internal/shop -run '^TestMigration_ExistingPlayers$'
 - [x] C42
 - [x] C43
 - [x] C44
-- [ ] C45
+- [x] C45
 - [x] C46
 - [x] C47
 
@@ -299,3 +299,6 @@ Evidence:
 ## Handoff
 
 - Leitura: api ~89 KB + web ~52 KB ≈ 141 KB / 4 ≈ 35k, mais ~40k de código novo - abaixo do budget de 150k: um builder, sem handoff
+- Boundary: one builder, all 47 checks, `d783bb1..HEAD` (api `2b32f50`, web `21400d2` and `e046c82`, round trip and handoff in the last commit); every proof and the api, web and e2e suites green at HEAD
+- Settled mid-build: nothing by the user; the builder recorded two consequences of the approved plan under `Impact on earlier checks` - bug-fight C37's item count moves from 8 to 9 with `boost_deploy`, and `ComingSoon` is removed once no scene uses it
+- Abandoned: none

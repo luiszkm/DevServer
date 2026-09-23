@@ -20,9 +20,9 @@
 ## Handoff
 
 **Feature**: shop-inventory-avatar
-**Where**: plano aprovado; `checks.md` escrito (C1–C47, `validate_checks.py` exit 0); build em andamento. bug-fight fechado com Verifier round 4 PASS (`d783bb1`)
+**Where**: C1–C47 closed; falta o Verifier. Build em `2b32f50` (api), `21400d2`, `e046c82` (web) e no commit do round trip; `go test ./...`, `vitest`, `tsc`, `eslint`, `playwright`, `make ci-build` e `make check-deps` verdes
 **In progress**: nenhum
-**Next step**: build S1–S7, depois Verifier fresco sobre `d783bb1..HEAD`
+**Next step**: Verifier fresco sobre `d783bb1..HEAD` com todos os 47 checks (profile standard)
 **Blockers**: none
-**Uncommitted**: `.specs/features/shop-inventory-avatar/plan.md`, `.specs/STATE.md`
+**Uncommitted**: none
 **Branch**: feat/shop-inventory-avatar (empilhada sobre feat/bug-fight)
