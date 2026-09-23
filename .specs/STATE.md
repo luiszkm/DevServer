@@ -17,10 +17,10 @@
 
 ## Handoff
 
-**Feature**: deploy-pipelines - VERIFIED (round 2 PASS, `validate_verification.py` exit 0)
-**Where**: C1–C39 provados; foundation também VERIFIED
-**In progress**: nenhum
-**Next step**: `plan.md` da feature `skills`
-**Blockers**: none (pergunta aberta 1 da foundation - LGPD - bloqueia go-live)
-**Uncommitted**: none
-**Branch**: feat/deploy-pipelines (empilhada sobre feat/foundation, sem push)
+**Feature**: skills
+**Where**: plan.md escrito e validado, aguardando revisão humana; foundation e deploy-pipelines VERIFIED
+**In progress**: nenhum código
+**Next step**: revisar `.specs/features/skills/plan.md`; após aprovação, derivar `checks.md` e construir
+**Blockers**: none
+**Uncommitted**: .specs/features/skills/plan.md, .specs/STATE.md
+**Branch**: feat/skills (empilhada sobre feat/deploy-pipelines)
