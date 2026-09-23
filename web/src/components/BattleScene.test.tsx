@@ -51,7 +51,10 @@ describe("BattleScene", () => {
     expect(ids).toEqual(["fix", "test", "refactor", "plain", "f1", "rollback"]);
     const costs: Record<string, string> = { fix: "10 SP", test: "8 SP", refactor: "14 SP", plain: "grátis", f1: "12 SP", rollback: "grátis" };
     for (const [id, cost] of Object.entries(costs)) expect(command(id)).toHaveTextContent(cost);
-    expect(command("fix")).toHaveTextContent("FIX");
+    for (const c of COMMANDS.filter((c) => !c.skill || c.skill === "f1")) {
+      expect(command(c.id)).toHaveTextContent(c.label);
+      expect(command(c.id)).toHaveTextContent(c.hint);
+    }
     for (const id of ["refactor", "f1"]) expect(command(id)).toBeDisabled();
     for (const id of ["fix", "test", "plain", "rollback"]) expect(command(id)).toBeEnabled();
     expect(document.querySelector('[data-command="b2"]')).toBeNull();

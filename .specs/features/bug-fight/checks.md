@@ -5,7 +5,7 @@ Plan: `.specs/features/bug-fight/plan.md`
 
 ## Intent
 
-53 checks in 4 slices · 7 one-way doors · 0 open
+55 checks in 4 slices · 10 one-way doors · 0 open
 
 Pré-requisitos: os mesmos da foundation. Testes Go fixam o sorteio por `apptest.Env.Rand` (door 3): cada `Intn(n)` consome o próximo valor empurrado, na ordem dano → contra-ataque → drop → poção; sem valor empurrado, devolve 0.
 
@@ -107,7 +107,7 @@ Proof: `cd api && go test ./internal/battle -run '^TestVictory_PotionChanceBound
 **C30** - Com HP 7 e contra-ataque 7, o jogador cai: HP = HP máximo, região `vila`, `battle` = `null`, evento `defeat`, sem recompensa; com HP 8, fica com 1 e o combate segue (FIGHT-03, AC 24)
 Proof: `cd api && go test ./internal/battle -run '^TestDefeat_RespawnAtVila$'`
 
-**C31** - `sp_potion` com 2 no inventário deixa 1, soma 30 SP sem passar do máximo e aplica o contra-ataque; `hp_potion` soma 40 HP sem passar do máximo (FIGHT-03, AC 25)
+**C31** - `sp_potion` com 2 no inventário deixa 1, gera o evento `item` com `item` = `sp_potion`, `stat` = `sp` e `amount` = 30, soma 30 SP sem passar do máximo e aplica o contra-ataque; `hp_potion` soma 40 HP sem passar do máximo (FIGHT-03, AC 25)
 Proof: `cd api && go test ./internal/battle -run '^TestItem_PotionsRestoreAndCostTurn$'`
 
 **C32** - `hp_potion` sem nenhuma no inventário responde `409 no_item` e não joga o turno (FIGHT-03, AC 26)
@@ -142,7 +142,7 @@ Proof: `cd api && go test ./internal/battle -run '^TestCommand_SerializesOnPlaye
 **C41** - Ao abrir, a cena chama `POST /api/me/battle` e exibe `ENCONTRO · VILA LOCALHOST`, `NULL SLIME`, `Lv.3`, `HP 60/60` e `fraqueza: null-check` (FIGHT-04, AC 30)
 Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "starts and shows the enemy"`
 
-**C42** - Com `skills` = `["f1"]` e SP 11, os comandos aparecem na ordem FIX, TEST, REFACTOR, PLAIN, `</> MARKUP`, ROLLBACK, com `10 SP`, `8 SP`, `14 SP`, `grátis`, `12 SP`, `grátis`; REFACTOR e `</> MARKUP` ficam desabilitados (FIGHT-04, AC 31)
+**C42** - Com `skills` = `["f1"]` e SP 11, os comandos aparecem na ordem FIX, TEST, REFACTOR, PLAIN, `</> MARKUP`, ROLLBACK, cada um com seu rótulo e descrição do catálogo e com `10 SP`, `8 SP`, `14 SP`, `grátis`, `12 SP`, `grátis`; REFACTOR e `</> MARKUP` ficam desabilitados (FIGHT-04, AC 31)
 Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "lists commands with costs"`
 
 **C43** - A cena exibe `HP 80/100` e `SP 40/50` do jogador e `POÇÃO DE CACHE x2` e `POÇÃO DE MEMÓRIA x0`, esta desabilitada; clicar na de cache chama `POST /api/me/battle/items` com `{"item":"sp_potion"}` (FIGHT-04, AC 32)
@@ -177,6 +177,12 @@ Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "bug-fig
 
 **C53** - No navegador, um dev novo na Vila joga FIX até `RESOLVIDO` e o HUD mostra `90/500` de XP (FIGHT-01..04)
 Proof: `cd web && npx playwright test e2e/battle.spec.ts -g "fight to victory"`
+
+**C54** - Se a gravação dos itens iniciais falha, `POST /api/players` responde `500 internal` e nenhum jogador fica gravado (FIGHT-03, AC 29)
+Proof: `cd api && go test ./internal/battle -run '^TestCreatePlayer_StartingItemsFailureRollsBack$'`
+
+**C55** - Com a tabela de itens indisponível, uma mutação que passa por `player.WithLocked` (`POST /api/me/travel`) responde `500 internal` com log do `request_id` e não muda o jogador (FIGHT-03, AC 28)
+Proof: `cd api && go test ./internal/battle -run '^TestLockedMutation_InventoryLoadError$'`
 
 ## Progress
 
@@ -233,6 +239,8 @@ Proof: `cd web && npx playwright test e2e/battle.spec.ts -g "fight to victory"`
 - [x] C51
 - [x] C52
 - [x] C53
+- [x] C54
+- [x] C55
 
 ## Coverage
 
@@ -257,13 +265,18 @@ Proof: `cd web && npx playwright test e2e/battle.spec.ts -g "fight to victory"`
 | screen end states (2) | vencido C46 · encerrado C47 | - |
 | turn outcomes on screen (4) | 200 C45 · erro com mensagem C49 · sem corpo C49 · rede C49 | - |
 | start outcomes on screen (3) | pendente C50 · 5xx C50 · rede C50 | - |
-| Landing doors (7) | 1 C36 · 2 C36 · 3 C7 · 4 C37 · 5 C14 · 6 C15 · 7 C1 | - |
+| Landing doors (10) | 1 C36 · 1a C11 · 2 C36 · 3 C7 · 3a C25 · 4 C37 · 4a C34 · 5 C14 · 6 C15 · 7 C1 | - |
+| `POST /api/players` statuses changed by this feature (2) | 201 com inventário C34 · 500 na gravação dos itens C54 | - |
+| `WithLocked` load failures (1) | inventário C55 | - |
+| `item` event fields (3) | `item` C31 · `stat` C31 · `amount` C31 | - |
+| command button text (3) | rótulo C42 · descrição C42 · custo C42 | - |
 | entities (2) | `Battle` C36 · `PlayerItem` C36 | - |
 | stored data (1) | backfill de poções C35 | - |
 | startup config: rand (1 shared assembly) | `app.Deps.Rand` em `main` e em `apptest` C7 | - |
 
 - Claims naming a status code, route or response shape go through `NewRouter`, except C25 (own layer), C35 (migration) and C36 (constraints)
 - Web claims at unit level assert the rendered screen; the browser round trip is C53
+- Equivalent mutant noted: ignoring the inventory load error inside `player.WithLocked` still answers `500` with no change, because Postgres aborts the transaction and the next statement fails; C55 asserts that outcome
 
 ## Test policy
 
@@ -299,3 +312,9 @@ Evidence:
 - **Boundary:** C1-C53 closed on `feat/bug-fight`
 - **Settled mid-build:** `player.AddItem` uses an UPDATE to decrement (the CHECK runs before ON CONFLICT); player creation and its starting items share one transaction; unreachable catalog-lookup fallbacks in the scene removed
 - **Abandoned:** none; 40 self-mutations (24 api, 16 web) before verification - 3 api survivors (weakness rounding case, PLAIN cap on a defeat turn, SP boundary) closed by stronger C15 and C25; e2e C53 fixed for a turn-end race and an ambiguous `RESOLVIDO` locator (test harness, not assertions)
+
+Round 2 (after verification round 1 FAIL):
+
+- **Boundary:** C54 (starting-item failure rolls the player back) and C55 (inventory load failure under `WithLocked`) added; C31 asserts the `item` event's `item`; C42 asserts label and description of every visible command; plan `Landing` gains 1a (shield not stored), 3a (`IntN`), 4a (`startingItems`), `Surface` gains the changed `POST /api/players`
+- **Settled mid-build:** none
+- **Abandoned:** none

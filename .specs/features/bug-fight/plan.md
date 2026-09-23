@@ -179,6 +179,7 @@ No columns and no types here.
 | `POST /api/me/battle` | - | `battle`, `player` | `200`, `401`, `404`, `500` |
 | `POST /api/me/battle/commands` | `command` | `battle`, `player`, `events` · `{error}` | `200`, `401`, `404`, `409`, `422`, `500` |
 | `POST /api/me/battle/items` | `item` | `battle`, `player`, `events` · `{error}` | `200`, `401`, `404`, `409`, `422`, `500` |
+| `POST /api/players` (changed: grava itens iniciais na mesma transação) | `devName`, `class` | `player` com `inventory` · `{error}` | `201`, `401`, `409`, `422`, `500` |
 | `GET /api/me` (changed; same for every route returning `player`) | cookie `ds_session` | `player` gains `inventory` | `200`, `401`, `404`, `500` |
 | `GET /api/catalog` (changed) | `If-None-Match` | adds `enemies`, `commands`, `items`, `combat` | `200`, `304` |
 
@@ -193,6 +194,9 @@ No columns and no types here.
 | 5. eventos do turno | `events` é uma lista de `{type, ...}` com `type` em `damage` (`command`, `amount`, `weakness`), `heal` (`amount`), `weakness`, `shield`, `sp` (`amount`), `item` (`item`, `stat`, `amount`), `counter` (`amount`, `blocked`), `victory`, `reward` (`xp`, `coins`, `gems`, `levelsGained`), `drop` (`item`), `defeat`, `fled`; o web traduz para texto | texto pronto vindo da api - o web não conseguiria destacar valores nem mudar a redação sem mexer na api |
 | 6. códigos de erro novos | `battle_not_found` `404`, `battle_over` `409`, `not_enough_sp` `409`, `command_locked` `409`, `no_item` `409`, `unknown_command` `422`, `unknown_item` `422` | um `409 battle_invalid` genérico - o web não diz ao jogador o que falta |
 | 7. rotas | `GET` e `POST /api/me/battle`, `POST /api/me/battle/commands` `{command}`, `POST /api/me/battle/items` `{item}` | `/api/battles/{id}` - só existe 1 combate por jogador |
+| 1a. escudo não é gravado (acrescentado na verificação) | o escudo vale só para o contra-ataque do turno em que é usado (AC 9), então não existe coluna nem campo de estado para ele; a door 1 citava "escudo" entre os campos gravados | uma coluna `shield` - guardaria um valor que nenhum turno seguinte lê |
+| 3a. nome do método (acrescentado na verificação) | o método é `IntN(n int) int`, a grafia de `math/rand/v2`; a door 3 escrevia `Intn` | adaptar `rand/v2` a `Intn` - um wrapper só para mudar a caixa |
+| 4a. itens iniciais no catálogo (acrescentado na verificação) | `rules.startingItems` = `[{item: sp_potion, quantity: 2}]` em `combat.json`, servido em `combat` | quantidade fixa no código de criação - número de balanceamento fora do catálogo (AD-003) |
 
 - Nothing else in this change is hard to reverse
 

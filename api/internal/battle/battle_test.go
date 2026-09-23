@@ -640,7 +640,7 @@ func TestItem_PotionsRestoreAndCostTurn(t *testing.T) {
 	if quantity(got, "sp_potion") != 1 || got.Battle.SP != 45 || got.Player.HP != 93 {
 		t.Fatalf("sp potion: qty %d sp %d hp %d, want 1 45 93", quantity(got, "sp_potion"), got.Battle.SP, got.Player.HP)
 	}
-	if !reflect.DeepEqual(types(got.Events), []string{"item", "counter"}) || got.Events[0].Stat != "sp" || got.Events[0].Amount != 30 {
+	if !reflect.DeepEqual(types(got.Events), []string{"item", "counter"}) || got.Events[0].Item != "sp_potion" || got.Events[0].Stat != "sp" || got.Events[0].Amount != 30 {
 		t.Fatalf("events = %+v", got.Events)
 	}
 	f.sql(`UPDATE battles SET sp = 40`)
@@ -871,5 +871,33 @@ func TestCommand_SerializesOnPlayerRowLock(t *testing.T) {
 		}
 	case <-time.After(5 * time.Second):
 		t.Fatal("turn did not finish")
+	}
+}
+
+// C54
+func TestCreatePlayer_StartingItemsFailureRollsBack(t *testing.T) {
+	env := apptest.New(t)
+	f := &fixture{t, env, env.Session(1, "u")}
+	f.sql(`CREATE FUNCTION reject_item() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'nope'; END $$`)
+	f.sql(`CREATE TRIGGER reject_item BEFORE INSERT ON player_items FOR EACH ROW EXECUTE FUNCTION reject_item()`)
+	rec := f.do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"})
+	f.status(rec, 500, "internal")
+	if n := env.Count("players"); n != 0 {
+		t.Fatalf("players = %d, want 0 (player insert must roll back with its items)", n)
+	}
+}
+
+// C55
+func TestLockedMutation_InventoryLoadError(t *testing.T) {
+	f := newFixture(t)
+	f.sql(`ALTER TABLE player_items RENAME TO player_items_gone`)
+	rec := f.do(http.MethodPost, "/api/me/travel", map[string]string{"region": "floresta"})
+	f.status(rec, 500, "internal")
+	if id := rec.Header().Get(httpx.RequestIDHeader); !strings.Contains(f.env.Logs.String(), `"request_id":"`+id+`"`) {
+		t.Fatalf("log lacks request id %s", id)
+	}
+	var region string
+	if err := f.env.Pool.QueryRow(context.Background(), `SELECT region FROM players`).Scan(&region); err != nil || region != "vila" {
+		t.Fatalf("region = %q (%v), want vila unchanged", region, err)
 	}
 }
