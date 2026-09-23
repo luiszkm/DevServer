@@ -12,13 +12,15 @@
 | AD-006 | Login só via OAuth GitHub; sessão opaca em cookie `ds_session` | decisão do usuário no levantamento | active | 2026-09-23 |
 | AD-007 | UI pt-BR, desktop-first 1200px, identidade visual do protótipo (Press Start 2P + VT323, paleta azul/ciano/verde/roxo/amarelo, grade 32px) | protótipo `docs/DevServer RPG.html` é a referência visual | active | 2026-09-23 |
 | AD-008 | MVP = foundation, deploy-pipelines, skills, bug-fight, shop-inventory-avatar; office, ranking-season, server-room depois | decisão do usuário no levantamento | active | 2026-09-23 |
+| AD-009 | Level-up tem uma regra só, `player.GainXP`; toda recompensa de XP passa por ela | evita regras de progressão divergentes entre deploy, combate e futuras fontes | active | 2026-09-23 |
+| AD-010 | Tempo de jogo vem de `app.Deps.Now` (relógio injetado) e as respostas com tempo trazem `serverTime` | testes avançam o tempo; o cliente nunca decide quando algo terminou | active | 2026-09-23 |
 
 ## Handoff
 
-**Feature**: foundation - VERIFIED (round 4 PASS, `validate_verification.py` exit 0)
-**Where**: C1–C52 provados; 6 lições candidatas em `.specs/LESSONS.md`
-**In progress**: nenhum
-**Next step**: `plan.md` da feature `deploy-pipelines`
-**Blockers**: none (pergunta aberta 1 - LGPD - bloqueia go-live)
-**Uncommitted**: none
-**Branch**: feat/foundation (sem push)
+**Feature**: deploy-pipelines
+**Where**: plan.md escrito e validado, aguardando revisão humana; foundation VERIFIED em `feat/foundation`
+**In progress**: nenhum código
+**Next step**: revisar `.specs/features/deploy-pipelines/plan.md`; após aprovação, derivar `checks.md`
+**Blockers**: none
+**Uncommitted**: .specs/features/deploy-pipelines/plan.md, .specs/STATE.md
+**Branch**: feat/deploy-pipelines (empilhada sobre feat/foundation)
