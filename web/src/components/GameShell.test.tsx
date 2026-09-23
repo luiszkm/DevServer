@@ -60,4 +60,20 @@ describe("GameShell", () => {
     expect(await within(hud).findByText("999")).toBeInTheDocument();
     expect(f.calls("GET /api/me")).toBe(1);
   });
+
+  it("404 with another code shows server down, not onboarding", async () => {
+    mockFetch({ "GET /api/me": json(404, { error: { code: "not_found", message: "x" } }) });
+    render(<GameShell><p>cena</p></GameShell>);
+    expect(await screen.findByText("SERVIDOR FORA DO AR")).toBeInTheDocument();
+  });
+
+  it("catalog failure shows server down", async () => {
+    mockFetch({
+      "GET /api/me": json(200, { player: player() }),
+      "GET /api/catalog": json(500, { error: { code: "internal", message: "x" } }),
+    });
+    render(<GameShell><p>cena</p></GameShell>);
+    expect(await screen.findByText("SERVIDOR FORA DO AR")).toBeInTheDocument();
+    expect(screen.queryByText("cena")).not.toBeInTheDocument();
+  });
 });

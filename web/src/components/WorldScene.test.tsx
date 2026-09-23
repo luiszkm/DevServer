@@ -1,7 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import type { Catalog, Player } from "@/lib/types";
-import { CATALOG, REGIONS, player } from "@/test/helpers";
+import { CATALOG, REGIONS, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 import { WorldScene } from "./WorldScene";
 
@@ -45,5 +46,32 @@ describe("WorldScene", () => {
     const current = container.querySelectorAll('[aria-current="location"]');
     expect(current).toHaveLength(1);
     expect(current[0]).toHaveAttribute("data-region", "floresta");
+  });
+
+  it("renders regions in catalog order", () => {
+    const reversed = { ...CATALOG, regions: [...REGIONS].reverse() };
+    renderWorld(player(), reversed);
+    const names = screen.getAllByRole("article").map((a) => a.getAttribute("aria-label"));
+    expect(names).toEqual([...REGIONS].reverse().map((r) => r.name));
+  });
+
+  it("shows the api message when travel is refused and keeps the player", async () => {
+    mockFetch({ "POST /api/me/travel": json(422, { error: { code: "level_too_low", message: "nível insuficiente para esta região" } }) });
+    const setPlayer = vi.fn();
+    render(
+      <GameContext.Provider value={{ player: player(), catalog: CATALOG, setPlayer }}>
+        <WorldScene />
+      </GameContext.Provider>,
+    );
+    await userEvent.click(button("FLORESTA DE LOGS"));
+    expect(await screen.findByRole("alert")).toHaveTextContent("nível insuficiente para esta região");
+    expect(setPlayer).not.toHaveBeenCalled();
+  });
+
+  it("shows SERVIDOR FORA DO AR when travel hits a network error", async () => {
+    mockFetch({ "POST /api/me/travel": () => Promise.reject(new TypeError("Failed to fetch")) });
+    renderWorld(player());
+    await userEvent.click(button("FLORESTA DE LOGS"));
+    expect(await screen.findByRole("alert")).toHaveTextContent("SERVIDOR FORA DO AR");
   });
 });

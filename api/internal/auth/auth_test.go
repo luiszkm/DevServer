@@ -69,6 +69,10 @@ func TestLogin_RedirectsWithState(t *testing.T) {
 	if c.MaxAge != 600 {
 		t.Fatalf("state cookie Max-Age = %d, want 600", c.MaxAge)
 	}
+	second, _ := url.Parse(env.Do(http.MethodGet, "/api/auth/github/login", nil).Header().Get("Location"))
+	if second.Query().Get("state") == state {
+		t.Fatal("two logins produced the same state; it must be random")
+	}
 }
 
 // C3
@@ -120,8 +124,11 @@ func TestCallback_BadState(t *testing.T) {
 // C5
 func TestCallback_GithubFailure(t *testing.T) {
 	cases := map[string]func(*fakegithub.Server){
-		"code exchange fails": func(f *fakegithub.Server) { f.FailToken(true) },
-		"GET /user fails":     func(f *fakegithub.Server) { f.FailUser(true) },
+		"code exchange fails":     func(f *fakegithub.Server) { f.FailToken(true) },
+		"GET /user fails":         func(f *fakegithub.Server) { f.FailUser(true) },
+		"GET /user body not JSON": func(f *fakegithub.Server) { f.SetUserBody("<html>") },
+		"GET /user without id":    func(f *fakegithub.Server) { f.SetUserBody(`{"login":"u"}`) },
+		"GET /user without login": func(f *fakegithub.Server) { f.SetUserBody(`{"id":7}`) },
 	}
 	for name, breakIt := range cases {
 		t.Run(name, func(t *testing.T) {
@@ -169,8 +176,8 @@ func TestSession_ExpiryBoundary(t *testing.T) {
 	}
 	fresh := env.Session(1, "a")
 	age(fresh, 2591999)
-	if rec := env.Do(http.MethodGet, "/api/me", nil, fresh); rec.Code == http.StatusUnauthorized {
-		t.Fatalf("session aged 2591999s rejected: %s", rec.Body.String())
+	if rec := env.Do(http.MethodGet, "/api/me", nil, fresh); rec.Code != http.StatusNotFound || apptest.ErrorCode(t, rec) != "player_not_found" {
+		t.Fatalf("session aged 2591999s: status %d body %s, want it accepted (404 player_not_found, no player yet)", rec.Code, rec.Body.String())
 	}
 
 	old := env.Session(2, "b")
@@ -198,5 +205,21 @@ func TestSession_StoresOnlyHash(t *testing.T) {
 	}
 	if bytes.Contains(stored, []byte(token)) {
 		t.Fatal("raw token stored in sessions")
+	}
+}
+
+// C50
+func TestCallback_SessionStoreFailure(t *testing.T) {
+	env := apptest.New(t)
+	if _, err := env.Pool.Exec(context.Background(), `DROP TABLE sessions`); err != nil {
+		t.Fatal(err)
+	}
+	code := env.Fake.IssueCode(fakegithub.User{ID: 5, Login: "u"})
+	rec := callback(env, "code="+code+"&state=abc", "abc")
+	if rec.Code != http.StatusInternalServerError || apptest.ErrorCode(t, rec) != "internal" {
+		t.Fatalf("status %d body %s, want 500 internal", rec.Code, rec.Body.String())
+	}
+	if raw := rawSetCookie(rec, auth.SessionCookie); raw != "" {
+		t.Fatalf("session cookie set despite failure: %q", raw)
 	}
 }

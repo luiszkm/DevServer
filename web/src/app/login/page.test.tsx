@@ -13,8 +13,11 @@ describe("LoginPage", () => {
     expect(banner.compareDocumentPosition(button) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it("shows error banner only with an error param", async () => {
-    render(await LoginPage({ searchParams: Promise.resolve({}) }));
+  it.each([
+    ["no error param", {}],
+    ["unknown error value", { error: "whatever" }],
+  ])("shows error banner only for known errors (%s)", async (_name, params) => {
+    render(await LoginPage({ searchParams: Promise.resolve(params) }));
     expect(screen.queryByText(BANNER)).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "ENTRAR COM GITHUB" })).toBeInTheDocument();
   });

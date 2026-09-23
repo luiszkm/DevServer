@@ -1,6 +1,7 @@
 package httpx_test
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -89,7 +90,7 @@ func TestErrorEnvelope_EveryCode(t *testing.T) {
 	}
 }
 
-// Door 12: generic router errors use the same envelope.
+// C48
 func TestErrorEnvelope_GenericCodes(t *testing.T) {
 	env := apptest.New(t)
 	c := env.NewPlayer(1, "DEV_01", "BACKEND")
@@ -119,5 +120,32 @@ func TestRecover_Returns500AndLogsRequestID(t *testing.T) {
 	}
 	if !strings.Contains(env.Logs.String(), `"request_id":"`+id+`"`) {
 		t.Fatalf("log does not carry request id %s: %s", id, env.Logs.String())
+	}
+}
+
+// C49
+func TestHandlerError_Returns500AndLogsRequestID(t *testing.T) {
+	env := apptest.New(t)
+	c := env.NewPlayer(1, "DEV_01", "BACKEND")
+	if _, err := env.Pool.Exec(context.Background(), `ALTER TABLE players RENAME TO players_gone`); err != nil {
+		t.Fatal(err)
+	}
+	for _, rt := range []struct {
+		method, path string
+		body         any
+	}{
+		{http.MethodGet, "/api/me", nil},
+		{http.MethodPost, "/api/players", map[string]string{"devName": "DEV_02", "class": "BACKEND"}},
+		{http.MethodPost, "/api/me/travel", map[string]string{"region": "floresta"}},
+	} {
+		rec := env.Do(rt.method, rt.path, rt.body, c)
+		if rec.Code != http.StatusInternalServerError || apptest.ErrorCode(t, rec) != "internal" {
+			t.Errorf("%s %s: status %d body %s, want 500 internal", rt.method, rt.path, rec.Code, rec.Body.String())
+			continue
+		}
+		id := rec.Header().Get(httpx.RequestIDHeader)
+		if id == "" || !strings.Contains(env.Logs.String(), `"request_id":"`+id+`"`) {
+			t.Errorf("%s %s: log lacks request id %q: %s", rt.method, rt.path, id, env.Logs.String())
+		}
 	}
 }

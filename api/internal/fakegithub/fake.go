@@ -24,6 +24,7 @@ type Server struct {
 	tokens    map[string]User
 	failToken bool
 	failUser  bool
+	userBody  string
 	mux       *http.ServeMux
 }
 
@@ -69,6 +70,13 @@ func (s *Server) FailToken(v bool) {
 func (s *Server) FailUser(v bool) {
 	s.mu.Lock()
 	s.failUser = v
+	s.mu.Unlock()
+}
+
+// SetUserBody makes GET /user answer 200 with this raw body instead of the real user.
+func (s *Server) SetUserBody(body string) {
+	s.mu.Lock()
+	s.userBody = body
 	s.mu.Unlock()
 }
 
@@ -121,6 +129,10 @@ func (s *Server) user(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
+	if s.userBody != "" {
+		_, _ = w.Write([]byte(s.userBody))
+		return
+	}
 	_ = json.NewEncoder(w).Encode(u)
 }
 

@@ -5,7 +5,7 @@ Plan: `.specs/features/foundation/plan.md`
 
 ## Intent
 
-47 checks in 6 slices · 11 one-way doors · 2 open, of which 0 block the build (1 blocks go-live)
+50 checks in 6 slices · 12 one-way doors · 2 open, of which 0 block the build (1 blocks go-live)
 
 Pré-requisitos das provas (criados pelo próprio build, door 1 e door 11):
 
@@ -168,6 +168,15 @@ Proof: `make ci-build`
 **C47** - `api/go.mod` requer `github.com/go-chi/chi/v5`, `github.com/jackc/pgx/v5`, `github.com/pressly/goose/v3`, `golang.org/x/oauth2` e não requer `gorm.io/gorm` (door 9)
 Proof: `make check-deps`
 
+**C48** - Rota inexistente responde `404 not_found`, método errado responde `405 method_not_allowed` e JSON malformado em `POST /api/me/travel` responde `422 invalid_body`, todos no envelope (API-01, AC 35; door 12)
+Proof: `cd api && go test ./internal/httpx -run '^TestErrorEnvelope_GenericCodes$'`
+
+**C49** - Quando o handler de `GET /api/me`, `POST /api/players` ou `POST /api/me/travel` devolve um erro inesperado (tabela `players` indisponível), a api responde `500 internal` e grava log com o `request_id` do header `X-Request-Id` (API-01, AC 38)
+Proof: `cd api && go test ./internal/httpx -run '^TestHandlerError_Returns500AndLogsRequestID$'`
+
+**C50** - Se a gravação da sessão falha no callback, a api responde `500 internal` e não envia `ds_session` (AUTH-01, AC 38)
+Proof: `cd api && go test ./internal/auth -run '^TestCallback_SessionStoreFailure$'`
+
 ## Progress
 
 Marcado antes do commit que satisfaz o check.
@@ -219,20 +228,23 @@ Marcado antes do commit que satisfaz o check.
 - [x] C45
 - [x] C46
 - [x] C47
+- [x] C48
+- [x] C49
+- [x] C50
 
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
 | --- | --- | --- |
 | `GET /api/auth/github/login` statuses (1) | 302 C2 | - |
-| `GET /api/auth/github/callback` statuses (1) | 302 C3 · C4 · C5 | - |
+| `GET /api/auth/github/callback` statuses (2) | 302 C3 · C4 · C5 · 500 C50 | - |
 | `POST /api/auth/logout` statuses (2) | 204 C7 · 401 C9 | - |
-| `GET /api/me` statuses (4) | 200 C22 · 401 C9 · 404 C38 · 500 C45 | - |
+| `GET /api/me` statuses (4) | 200 C22 · 401 C9 · 404 C38 · 500 C49 | - |
 | `GET /api/onboarding` statuses (2) | 200 C12 · 401 C9 | - |
-| `POST /api/players` statuses (5) | 201 C14 · 401 C9 · 409 C16 · 422 C15 · 500 C45 | - |
+| `POST /api/players` statuses (5) | 201 C14 · 401 C9 · 409 C16 · 422 C15 · 500 C49 | - |
 | `GET /api/catalog` statuses (2) | 200 C31 · 304 C32 | - |
-| `POST /api/me/travel` statuses (5) | 200 C35 · 401 C9 · 404 C38 · 422 C36 · 500 C45 | - |
-| callback failure paths (4) | state ausente C4 · state diferente C4 · troca do code C5 · `GET /user` C5 | - |
+| `POST /api/me/travel` statuses (5) | 200 C35 · 401 C9 · 404 C38 · 422 C36 · 500 C49 | - |
+| callback failure paths (8) | state ausente C4 · cookie ausente C4 · state diferente C4 · troca do code C5 · `GET /user` falha C5 · corpo não-JSON C5 · sem id C5 · sem login C5 | - |
 | session age boundary (2) | 2591999 s C10 · 2592001 s C10 | - |
 | protected routes (5) | C9, table-driven over all 5 | - |
 | error codes (9) | C41, table-driven over all 9 | - |
@@ -249,9 +261,11 @@ Marcado antes do commit que satisfaz o check.
 | title signs (4) | C29, table-driven over all 4 | - |
 | regions (6) | C31, table-driven over all 6 | - |
 | region lock at level 1 (6) | C34, table-driven over all 6 | - |
-| login error banner (3) | `error=github` C6 · `error=state` C6 · sem `error` C6 | - |
-| Landing doors (11) | 1 C46 · 2 C11 · 3 C20 · 4 C21 · 5 C32 · 6 C27 · 7 C41 · 8 C42 · 9 C47 · 10 C44 · 11 C46 | - |
+| login error banner (4) | `error=github` C6 · `error=state` C6 · sem `error` C6 · valor desconhecido C6 | - |
+| Landing doors (12) | 1 C46 · 2 C11 · 3 C20 · 4 C21 · 5 C32 · 6 C27 · 7 C41 · 8 C42 · 9 C47 · 10 C44 · 11 C46 · 12 C48 | - |
 | entities (3) | `Player` C14 · `Session` C3 · `GithubIdentity` C20 | - |
+| unexpected-error paths (2) | pânico C45 · erro devolvido pelo handler C49 | - |
+| generic router codes (3) | `not_found` C48 · `method_not_allowed` C48 · `invalid_body` C48 | - |
 | startup config: router + middleware (1 shared assembly) | `NewRouter` usado por `main` e pelos testes C45 | - |
 | startup config: `/api` rewrite (1 assembly) | `web/next.config` exercitado no navegador C27 | - |
 
@@ -284,14 +298,14 @@ Cost: ~34 provas Go + vitest na própria camada em ~14 arquivos de teste, 3 e2e.
 ## Swept
 
 - validation: C15, C17, C37
-- failure modes: C4, C5, C45
+- failure modes: C4, C5, C45, C49, C50
 - idempotency: C18, C20
 - authorization: C9, C10
 - concurrency: C20, C21, C42, C43
 - data lifecycle: C10; exclusão de conta é pergunta aberta 1 do plano (blocks go-live), fora desta build
 - dependency failure: C5, C25
 - state transitions: C13, C35, C36
-- observability: C45
+- observability: C45, C49
 
 ## Handoff
 
@@ -300,3 +314,9 @@ Cost: ~34 provas Go + vitest na própria camada em ~14 arquivos de teste, 3 e2e.
 - **Boundary:** C1-C47 closed on `feat/foundation`
 - **Settled mid-build:** rota `GET /api/onboarding` (Surface) e door 11 acrescentadas antes dos checks; door 12 (códigos genéricos `not_found`, `method_not_allowed`, `invalid_body`) e nota em Relations (`Session` liga a `GithubIdentity`) acrescentadas antes do código; e2e roda com `workers: 1` porque o GitHub falso entrega um "próximo usuário" por vez
 - **Abandoned:** primeira versão do teste de C42 só segurava o lock e passava sem `FOR UPDATE` (o `UPDATE` final também bloqueia); reescrito para subir o nível dentro da transação travada, e agora falha sem o lock
+
+Round 2 (after verification round 1 FAIL):
+
+- **Boundary:** C48-C50 added for door 12 and AC 38 paths the round-1 Verifier found unproven; C2, C5, C10, C19 tests strengthened (no assertion weakened); extra screen tests for the Test policy rows
+- **Settled mid-build:** callback `500` added to the plan's `Surface`
+- **Abandoned:** none

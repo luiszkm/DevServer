@@ -15,8 +15,57 @@ describe("Onboarding", () => {
     render(<Onboarding onCreated={onCreated} />);
     await userEvent.click(await screen.findByRole("button", { name: "BACKEND" }));
     await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
-    expect(await screen.findByText("NOME JÁ EM USO")).toBeInTheDocument();
-    expect(screen.getByRole("textbox")).toBeInTheDocument();
+    const message = await screen.findByText("NOME JÁ EM USO");
+    const input = screen.getByRole("textbox");
+    const field = input.closest("label");
+    expect(field).not.toBeNull();
+    expect(field).toContainElement(message);
+    expect(input.compareDocumentPosition(message) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(onCreated).not.toHaveBeenCalled();
+  });
+});
+
+describe("Onboarding other outcomes", () => {
+  const ONB = json(200, { suggestedDevName: "DEV_01", classes: ["FRONTEND", "BACKEND", "DEVOPS", "FULLSTACK"] });
+
+  it("shows the api message when onboarding data fails to load", async () => {
+    mockFetch({ "GET /api/onboarding": json(500, { error: { code: "internal", message: "erro interno" } }) });
+    render(<Onboarding onCreated={vi.fn()} />);
+    expect(await screen.findByText("erro interno")).toBeInTheDocument();
+  });
+
+  it("shows the api message for any other create error and keeps the form", async () => {
+    mockFetch({
+      "GET /api/onboarding": ONB,
+      "POST /api/players": json(422, { error: { code: "invalid_dev_name", message: "nome inválido" } }),
+    });
+    const onCreated = vi.fn();
+    render(<Onboarding onCreated={onCreated} />);
+    await userEvent.click(await screen.findByRole("button", { name: "FRONTEND" }));
+    await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
+    expect(await screen.findByText("nome inválido")).toBeInTheDocument();
+    expect(screen.queryByText("NOME JÁ EM USO")).not.toBeInTheDocument();
+    expect(onCreated).not.toHaveBeenCalled();
+  });
+
+  it("keeps CRIAR DEV disabled until a class is chosen", async () => {
+    mockFetch({ "GET /api/onboarding": ONB });
+    render(<Onboarding onCreated={vi.fn()} />);
+    expect(await screen.findByRole("button", { name: "CRIAR DEV" })).toBeDisabled();
+  });
+
+  it("hands the created player to onCreated with the typed name and class", async () => {
+    const created = { devName: "NEO", class: "DEVOPS" };
+    const f = mockFetch({ "GET /api/onboarding": ONB, "POST /api/players": json(201, { player: created }) });
+    const onCreated = vi.fn();
+    render(<Onboarding onCreated={onCreated} />);
+    const input = await screen.findByRole("textbox");
+    await userEvent.clear(input);
+    await userEvent.type(input, "neo");
+    await userEvent.click(screen.getByRole("button", { name: "DEVOPS" }));
+    await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
+    await vi.waitFor(() => expect(onCreated).toHaveBeenCalledWith(created));
+    const body = JSON.parse(f.fn.mock.calls.find(([u]) => String(u) === "/api/players")![1]!.body as string);
+    expect(body).toEqual({ devName: "NEO", class: "DEVOPS" });
   });
 });

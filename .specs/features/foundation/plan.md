@@ -169,6 +169,7 @@ o nível. É o chão onde deploy, skills, combate e loja vão apoiar.
 | API `GET /api/auth/github/login` | response shape | AC 2 |
 | API `GET /api/auth/github/callback` | response shape | AC 3 |
 | API `GET /api/auth/github/callback` | error shape and codes | AC 4 |
+| API `GET /api/auth/github/callback` | error on our own failure | AC 38 |
 | API `POST /api/auth/logout` | response shape | AC 7 |
 | API `GET /api/me` | error shape and codes | AC 8 |
 | API `GET /api/onboarding` | response shape | AC 10 |
@@ -222,6 +223,7 @@ erDiagram
 | --- | --- | --- | --- |
 | `GET /api/auth/github/login` | - | redirect para GitHub · cookie `ds_oauth_state` | `302` |
 | `GET /api/auth/github/callback` | `code`, `state` | redirect `/` ou `/login?error=` · cookie `ds_session` | `302` |
+| `GET /api/auth/github/callback` (acrescentado na verificação) | `code`, `state` | `{error}` quando a sessão não pode ser gravada | `500` |
 | `POST /api/auth/logout` | cookie `ds_session` | - | `204`, `401` |
 | `GET /api/me` | cookie `ds_session` | `player` · `{error}` | `200`, `401`, `404`, `500` |
 | `GET /api/onboarding` | cookie `ds_session` | `suggestedDevName`, `classes` | `200`, `401` |
