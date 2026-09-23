@@ -15,13 +15,14 @@
 | AD-009 | Level-up tem uma regra só, `player.GainXP`; toda recompensa de XP passa por ela | evita regras de progressão divergentes entre deploy, combate e futuras fontes | active | 2026-09-23 |
 | AD-010 | Tempo de jogo vem de `app.Deps.Now` (relógio injetado) e as respostas com tempo trazem `serverTime` | testes avançam o tempo; o cliente nunca decide quando algo terminou | active | 2026-09-23 |
 | AD-011 | Todo sorteio do jogo vem de `app.Deps.Rand` (injetado), nunca de `rand` global | testes fixam o resultado e provam as regras; o cliente nunca sorteia | active | 2026-09-23 |
+| AD-012 | Bônus de combate e de HP têm uma regra só, `player.Bonus(cat, p, type)`: skills + equipamentos equipados + skin vestida; toda fonte nova entra nela | evita que a próxima fonte (office) seja esquecida em algum chamador | active | 2026-09-23 |
 
 ## Handoff
 
-**Feature**: bug-fight
-**Where**: C1–C53 fechados, todos os proofs verdes com exit 0; falta o Verifier independente
+**Feature**: shop-inventory-avatar
+**Where**: plano aprovado; `checks.md` escrito (C1–C47, `validate_checks.py` exit 0); build em andamento. bug-fight fechado com Verifier round 4 PASS (`d783bb1`)
 **In progress**: nenhum
-**Next step**: Verifier fresco sobre `6a7dddc..HEAD`
+**Next step**: build S1–S7, depois Verifier fresco sobre `d783bb1..HEAD`
 **Blockers**: none
-**Uncommitted**: none
-**Branch**: feat/bug-fight (empilhada sobre feat/skills)
+**Uncommitted**: `.specs/features/shop-inventory-avatar/plan.md`, `.specs/STATE.md`
+**Branch**: feat/shop-inventory-avatar (empilhada sobre feat/bug-fight)
