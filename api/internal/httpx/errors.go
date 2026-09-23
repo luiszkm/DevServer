@@ -19,18 +19,23 @@ type Error struct {
 func (e *Error) Error() string { return e.Code }
 
 var (
-	ErrUnauthenticated  = &Error{http.StatusUnauthorized, "unauthenticated", "sessão ausente ou expirada"}
-	ErrPlayerNotFound   = &Error{http.StatusNotFound, "player_not_found", "jogador não encontrado"}
-	ErrPlayerExists     = &Error{http.StatusConflict, "player_exists", "este usuário GitHub já tem um dev"}
-	ErrInvalidDevName   = &Error{http.StatusUnprocessableEntity, "invalid_dev_name", "o nome deve ter de 3 a 16 caracteres entre A-Z, 0-9 e _"}
-	ErrDevNameTaken     = &Error{http.StatusConflict, "dev_name_taken", "nome já em uso"}
-	ErrInvalidClass     = &Error{http.StatusUnprocessableEntity, "invalid_class", "classe inválida"}
-	ErrLevelTooLow      = &Error{http.StatusUnprocessableEntity, "level_too_low", "nível insuficiente para esta região"}
-	ErrUnknownRegion    = &Error{http.StatusUnprocessableEntity, "unknown_region", "região desconhecida"}
-	ErrInternal         = &Error{http.StatusInternalServerError, "internal", "erro interno"}
-	ErrNotFound         = &Error{http.StatusNotFound, "not_found", "rota não encontrada"}
-	ErrMethodNotAllowed = &Error{http.StatusMethodNotAllowed, "method_not_allowed", "método não permitido"}
-	ErrInvalidBody      = &Error{http.StatusUnprocessableEntity, "invalid_body", "corpo da requisição inválido"}
+	ErrUnauthenticated    = &Error{http.StatusUnauthorized, "unauthenticated", "sessão ausente ou expirada"}
+	ErrPlayerNotFound     = &Error{http.StatusNotFound, "player_not_found", "jogador não encontrado"}
+	ErrPlayerExists       = &Error{http.StatusConflict, "player_exists", "este usuário GitHub já tem um dev"}
+	ErrInvalidDevName     = &Error{http.StatusUnprocessableEntity, "invalid_dev_name", "o nome deve ter de 3 a 16 caracteres entre A-Z, 0-9 e _"}
+	ErrDevNameTaken       = &Error{http.StatusConflict, "dev_name_taken", "nome já em uso"}
+	ErrInvalidClass       = &Error{http.StatusUnprocessableEntity, "invalid_class", "classe inválida"}
+	ErrLevelTooLow        = &Error{http.StatusUnprocessableEntity, "level_too_low", "nível insuficiente para esta região"}
+	ErrUnknownRegion      = &Error{http.StatusUnprocessableEntity, "unknown_region", "região desconhecida"}
+	ErrInternal           = &Error{http.StatusInternalServerError, "internal", "erro interno"}
+	ErrNotFound           = &Error{http.StatusNotFound, "not_found", "rota não encontrada"}
+	ErrMethodNotAllowed   = &Error{http.StatusMethodNotAllowed, "method_not_allowed", "método não permitido"}
+	ErrInvalidBody        = &Error{http.StatusUnprocessableEntity, "invalid_body", "corpo da requisição inválido"}
+	ErrDeployRunning      = &Error{http.StatusConflict, "deploy_running", "já existe um deploy deste tipo em andamento"}
+	ErrDeployNotReady     = &Error{http.StatusConflict, "deploy_not_ready", "o deploy ainda não terminou"}
+	ErrDeployNotFound     = &Error{http.StatusNotFound, "deploy_not_found", "nenhum deploy deste tipo em andamento"}
+	ErrUnknownDeployType  = &Error{http.StatusUnprocessableEntity, "unknown_deploy_type", "tipo de deploy desconhecido"}
+	ErrUnknownDeployLevel = &Error{http.StatusUnprocessableEntity, "unknown_deploy_level", "nível de deploy desconhecido"}
 )
 
 type envelope struct {

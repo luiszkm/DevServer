@@ -99,8 +99,9 @@ func Get(ctx context.Context, q querier, githubUserID int64) (*Player, error) {
 }
 
 // WithLocked runs fn inside one transaction holding FOR UPDATE on the player's row, then
-// saves the player and commits. Every player mutation goes through here (AD-004).
-func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn func(p *Player) error) (*Player, error) {
+// saves the player and commits. Every player mutation goes through here (AD-004); fn gets the
+// transaction for any other row it has to write in the same unit.
+func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn func(tx pgx.Tx, p *Player) error) (*Player, error) {
 	tx, err := pool.Begin(ctx)
 	if err != nil {
 		return nil, err
@@ -112,7 +113,7 @@ func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn 
 	if err != nil {
 		return nil, err
 	}
-	if err := fn(p); err != nil {
+	if err := fn(tx, p); err != nil {
 		return nil, err
 	}
 	_, err = tx.Exec(ctx, `UPDATE players SET level = $2, xp = $3, xp_max = $4, hp = $5, hp_max = $6,
@@ -122,4 +123,21 @@ func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn 
 		return nil, err
 	}
 	return p, tx.Commit(ctx)
+}
+
+// GainXP adds xp and applies every level-up it pays for; it is the only level-up rule (AD-009).
+// It returns how many levels were gained.
+func GainXP(p *Player, xp int) int {
+	levels := 0
+	p.XP += xp
+	for p.XP >= p.XPMax {
+		p.XP -= p.XPMax
+		p.Level++
+		p.XPMax += 250
+		p.SkillPoints++
+		p.HPMax += 20
+		p.HP = p.HPMax
+		levels++
+	}
+	return levels
 }

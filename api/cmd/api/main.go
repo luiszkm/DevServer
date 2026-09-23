@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"time"
 
 	"devserver/api/internal/app"
 	"devserver/api/internal/auth"
@@ -47,6 +48,7 @@ func run(logger *slog.Logger) error {
 		Pool:    pool,
 		Logger:  logger,
 		Catalog: cat,
+		Now:     time.Now,
 		Auth: auth.Config{
 			ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 			ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),

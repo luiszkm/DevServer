@@ -3,6 +3,7 @@ package catalog_test
 import (
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"devserver/api/internal/apptest"
@@ -61,5 +62,35 @@ func TestCatalog_ETag(t *testing.T) {
 	}
 	if code, _ := withINM(`"other"`); code != http.StatusOK {
 		t.Errorf("different If-None-Match: %d, want 200", code)
+	}
+}
+
+// C12
+func TestCatalog_ServesDeploys(t *testing.T) {
+	env := apptest.New(t)
+	b := apptest.Decode[struct {
+		DeployTypes []struct {
+			ID string `json:"id"`
+		} `json:"deployTypes"`
+		DeployLevels []struct {
+			Level, MinLevel, Minutes, XP, Coins, Gems int
+		} `json:"deployLevels"`
+	}](t, env.Do(http.MethodGet, "/api/catalog", nil))
+	var ids []string
+	for _, d := range b.DeployTypes {
+		ids = append(ids, d.ID)
+	}
+	if strings.Join(ids, ",") != "backend,frontend,mobile,database,microservices" {
+		t.Errorf("deployTypes = %v", ids)
+	}
+	want := [][6]int{{1, 1, 15, 80, 40, 0}, {2, 3, 30, 150, 70, 1}, {3, 6, 60, 260, 110, 2}, {4, 10, 180, 420, 180, 4}, {5, 15, 360, 700, 300, 8}}
+	if len(b.DeployLevels) != 5 {
+		t.Fatalf("deployLevels = %d, want 5", len(b.DeployLevels))
+	}
+	for i, l := range b.DeployLevels {
+		got := [6]int{l.Level, l.MinLevel, l.Minutes, l.XP, l.Coins, l.Gems}
+		if got != want[i] {
+			t.Errorf("level %d = %v, want %v", i+1, got, want[i])
+		}
 	}
 }

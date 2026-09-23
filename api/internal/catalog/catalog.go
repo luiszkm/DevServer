@@ -21,10 +21,27 @@ type Region struct {
 	Description string `json:"description"`
 }
 
+type DeployType struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Glyph string `json:"glyph"`
+}
+
+type DeployLevel struct {
+	Level    int `json:"level"`
+	MinLevel int `json:"minLevel"`
+	Minutes  int `json:"minutes"`
+	XP       int `json:"xp"`
+	Coins    int `json:"coins"`
+	Gems     int `json:"gems"`
+}
+
 type Catalog struct {
-	Version string
-	Regions []Region
-	body    []byte
+	Version      string
+	Regions      []Region
+	DeployTypes  []DeployType
+	DeployLevels []DeployLevel
+	body         []byte
 }
 
 func Load() (*Catalog, error) {
@@ -52,10 +69,25 @@ func Load() (*Catalog, error) {
 		return nil, fmt.Errorf("regions.json: %w", err)
 	}
 
+	raw, err = data.Files.ReadFile("deploys.json")
+	if err != nil {
+		return nil, err
+	}
+	var deploys struct {
+		Types  []DeployType  `json:"types"`
+		Levels []DeployLevel `json:"levels"`
+	}
+	if err := json.Unmarshal(raw, &deploys); err != nil {
+		return nil, fmt.Errorf("deploys.json: %w", err)
+	}
+	c.DeployTypes, c.DeployLevels = deploys.Types, deploys.Levels
+
 	c.body, err = json.Marshal(struct {
-		Version string   `json:"version"`
-		Regions []Region `json:"regions"`
-	}{c.Version, c.Regions})
+		Version      string        `json:"version"`
+		Regions      []Region      `json:"regions"`
+		DeployTypes  []DeployType  `json:"deployTypes"`
+		DeployLevels []DeployLevel `json:"deployLevels"`
+	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels})
 	if err != nil {
 		return nil, err
 	}
@@ -69,6 +101,24 @@ func (c *Catalog) Region(id string) (Region, bool) {
 		}
 	}
 	return Region{}, false
+}
+
+func (c *Catalog) DeployType(id string) (DeployType, bool) {
+	for _, t := range c.DeployTypes {
+		if t.ID == id {
+			return t, true
+		}
+	}
+	return DeployType{}, false
+}
+
+func (c *Catalog) DeployLevel(level int) (DeployLevel, bool) {
+	for _, l := range c.DeployLevels {
+		if l.Level == level {
+			return l, true
+		}
+	}
+	return DeployLevel{}, false
 }
 
 func (c *Catalog) ServeHTTP(w http.ResponseWriter, r *http.Request) {

@@ -4,6 +4,8 @@ package world
 import (
 	"net/http"
 
+	"github.com/jackc/pgx/v5"
+
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"devserver/api/internal/auth"
@@ -24,7 +26,7 @@ func (h *Handlers) Travel(w http.ResponseWriter, r *http.Request) error {
 	if err := httpx.DecodeJSON(r, &in); err != nil {
 		return err
 	}
-	p, err := player.WithLocked(r.Context(), h.Pool, auth.IdentityFrom(r.Context()).GithubUserID, func(p *player.Player) error {
+	p, err := player.WithLocked(r.Context(), h.Pool, auth.IdentityFrom(r.Context()).GithubUserID, func(_ pgx.Tx, p *player.Player) error {
 		region, ok := h.Catalog.Region(in.Region)
 		if !ok {
 			return httpx.ErrUnknownRegion

@@ -12,6 +12,7 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -23,8 +24,27 @@ import (
 	"devserver/api/internal/testdb"
 )
 
+// Clock is the game clock the tests move by hand.
+type Clock struct {
+	mu sync.Mutex
+	t  time.Time
+}
+
+func (c *Clock) Now() time.Time {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.t
+}
+
+func (c *Clock) Advance(d time.Duration) {
+	c.mu.Lock()
+	c.t = c.t.Add(d)
+	c.mu.Unlock()
+}
+
 type Env struct {
 	T       testing.TB
+	Clock   *Clock
 	Pool    *pgxpool.Pool
 	Router  *chi.Mux
 	Fake    *fakegithub.Server
@@ -60,7 +80,9 @@ func New(t testing.TB) *Env {
 		t.Fatalf("catalog: %v", err)
 	}
 	logs := &SyncBuffer{}
+	clock := &Clock{t: time.Date(2026, 1, 1, 12, 0, 0, 0, time.UTC)}
 	router := app.NewRouter(app.Deps{
+		Now:     clock.Now,
 		Pool:    pool,
 		Logger:  slog.New(slog.NewJSONHandler(logs, nil)),
 		Catalog: cat,
@@ -73,7 +95,7 @@ func New(t testing.TB) *Env {
 			APIURL:       ts.URL,
 		},
 	})
-	return &Env{T: t, Pool: pool, Router: router, Fake: fake, FakeURL: ts.URL, Logs: logs}
+	return &Env{T: t, Clock: clock, Pool: pool, Router: router, Fake: fake, FakeURL: ts.URL, Logs: logs}
 }
 
 // Do sends a request through the router; body is JSON-encoded unless it is a string.

@@ -4,12 +4,14 @@ package app
 import (
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"devserver/api/internal/auth"
 	"devserver/api/internal/catalog"
+	"devserver/api/internal/deploy"
 	"devserver/api/internal/httpx"
 	"devserver/api/internal/player"
 	"devserver/api/internal/world"
@@ -20,6 +22,8 @@ type Deps struct {
 	Logger  *slog.Logger
 	Auth    auth.Config
 	Catalog *catalog.Catalog
+	// Now is the game clock (AD-010); nil means time.Now.
+	Now func() time.Time
 }
 
 func NewRouter(d Deps) *chi.Mux {
@@ -33,6 +37,11 @@ func NewRouter(d Deps) *chi.Mux {
 	authH := &auth.Handlers{Config: d.Auth, Sessions: sessions, Logger: d.Logger}
 	playerH := &player.Handlers{Pool: d.Pool}
 	worldH := &world.Handlers{Pool: d.Pool, Catalog: d.Catalog}
+	now := d.Now
+	if now == nil {
+		now = time.Now
+	}
+	deployH := &deploy.Handlers{Pool: d.Pool, Catalog: d.Catalog, Logger: d.Logger, Now: now}
 
 	r.Get("/api/auth/github/login", h(authH.Login))
 	r.Get("/api/auth/github/callback", h(authH.Callback))
@@ -45,6 +54,9 @@ func NewRouter(d Deps) *chi.Mux {
 		pr.Get("/api/onboarding", h(playerH.Onboarding))
 		pr.Post("/api/players", h(playerH.Create))
 		pr.Post("/api/me/travel", h(worldH.Travel))
+		pr.Get("/api/me/deploys", h(deployH.List))
+		pr.Post("/api/me/deploys", h(deployH.Start))
+		pr.Post("/api/me/deploys/{type}/claim", h(deployH.Claim))
 	})
 	return r
 }

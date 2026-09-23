@@ -133,18 +133,18 @@ Proof: `cd api && go test ./internal/deploy -run '^TestDeployRoutes_UnexpectedEr
 
 ## Progress
 
-- [ ] C1
-- [ ] C2
-- [ ] C3
-- [ ] C4
-- [ ] C5
-- [ ] C6
-- [ ] C7
-- [ ] C8
-- [ ] C9
-- [ ] C10
-- [ ] C11
-- [ ] C12
+- [x] C1
+- [x] C2
+- [x] C3
+- [x] C4
+- [x] C5
+- [x] C6
+- [x] C7
+- [x] C8
+- [x] C9
+- [x] C10
+- [x] C11
+- [x] C12
 - [ ] C13
 - [ ] C14
 - [ ] C15
@@ -157,20 +157,20 @@ Proof: `cd api && go test ./internal/deploy -run '^TestDeployRoutes_UnexpectedEr
 - [ ] C22
 - [ ] C23
 - [ ] C24
-- [ ] C25
-- [ ] C26
-- [ ] C27
-- [ ] C28
-- [ ] C29
-- [ ] C30
-- [ ] C31
-- [ ] C32
-- [ ] C33
-- [ ] C34
+- [x] C25
+- [x] C26
+- [x] C27
+- [x] C28
+- [x] C29
+- [x] C30
+- [x] C31
+- [x] C32
+- [x] C33
+- [x] C34
 - [ ] C35
 - [ ] C36
 - [ ] C37
-- [ ] C38
+- [x] C38
 
 ## Coverage
 
