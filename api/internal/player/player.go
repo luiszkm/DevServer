@@ -5,11 +5,13 @@ import (
 	"context"
 	"errors"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"devserver/api/internal/catalog"
 	"devserver/api/internal/httpx"
 )
 
@@ -28,6 +30,8 @@ type Player struct {
 	SkillPoints  int    `json:"skillPoints"`
 	Region       string `json:"region"`
 	Skin         string `json:"skin"`
+	// Skills are the unlocked skill ids in catalog order; never nil so it serializes as [].
+	Skills []string `json:"skills"`
 }
 
 // Classes are the cosmetic classes offered at onboarding.
@@ -47,7 +51,7 @@ func newPlayer(githubUserID int64, devName, class string) *Player {
 	return &Player{
 		GithubUserID: githubUserID, DevName: devName, Class: class,
 		Level: 1, XP: 0, XPMax: 500, HP: 100, HPMax: 100,
-		Coins: 100, Gems: 20, SkillPoints: 1, Region: "vila", Skin: "default",
+		Coins: 100, Gems: 20, SkillPoints: 1, Region: "vila", Skin: "default", Skills: []string{},
 	}
 }
 
@@ -91,11 +95,38 @@ func scan(row pgx.Row) (*Player, error) {
 
 type querier interface {
 	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
+	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
 }
 
 // Get returns the player of a GitHub user, or httpx.ErrPlayerNotFound.
 func Get(ctx context.Context, q querier, githubUserID int64) (*Player, error) {
-	return scan(q.QueryRow(ctx, `SELECT `+columns+` FROM players WHERE github_user_id = $1`, githubUserID))
+	p, err := scan(q.QueryRow(ctx, `SELECT `+columns+` FROM players WHERE github_user_id = $1`, githubUserID))
+	if err != nil {
+		return nil, err
+	}
+	return p, loadSkills(ctx, q, p)
+}
+
+func loadSkills(ctx context.Context, q querier, p *Player) error {
+	rows, err := q.Query(ctx, `SELECT skill_id FROM player_skills WHERE player_id = $1`, p.ID)
+	if err != nil {
+		return err
+	}
+	ids, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		return err
+	}
+	p.Skills = ids
+	SortSkills(p)
+	return nil
+}
+
+// SortSkills puts p.Skills in catalog order (door 4 of the skills plan).
+func SortSkills(p *Player) {
+	cat := catalog.Default()
+	sort.SliceStable(p.Skills, func(i, j int) bool {
+		return cat.SkillPosition(p.Skills[i]) < cat.SkillPosition(p.Skills[j])
+	})
 }
 
 // WithLocked runs fn inside one transaction holding FOR UPDATE on the player's row, then
@@ -111,6 +142,9 @@ func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn 
 	p, err := scan(tx.QueryRow(ctx,
 		`SELECT `+columns+` FROM players WHERE github_user_id = $1 FOR UPDATE`, githubUserID))
 	if err != nil {
+		return nil, err
+	}
+	if err := loadSkills(ctx, tx, p); err != nil {
 		return nil, err
 	}
 	if err := fn(tx, p); err != nil {

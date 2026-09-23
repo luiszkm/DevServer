@@ -1,0 +1,28 @@
+{
+  "trees": [
+    {
+      "id": "frontend", "name": "FRONTEND",
+      "nodes": [
+        { "id": "f1", "glyph": "</>", "name": "MARKUP SEMÂNTICO", "description": "+10 HP máximo permanente", "bonus": { "type": "hp", "amount": 10 } },
+        { "id": "f2", "glyph": "{}", "name": "GRID MASTER", "description": "+8 SP máximo em combate", "bonus": { "type": "sp", "amount": 8 } },
+        { "id": "f3", "glyph": "~", "name": "MOTION", "description": "+10% de dano em todos os ataques", "bonus": { "type": "dmg", "amount": 10 } }
+      ]
+    },
+    {
+      "id": "backend", "name": "BACKEND",
+      "nodes": [
+        { "id": "b1", "glyph": "$_", "name": "API REST", "description": "+10 HP máximo permanente", "bonus": { "type": "hp", "amount": 10 } },
+        { "id": "b2", "glyph": "[]", "name": "CAMADA DE CACHE", "description": "+10 SP máximo em combate", "bonus": { "type": "sp", "amount": 10 } },
+        { "id": "b3", "glyph": "##", "name": "FILA DE EVENTOS", "description": "+12% de dano em todos os ataques", "bonus": { "type": "dmg", "amount": 12 } }
+      ]
+    },
+    {
+      "id": "infra", "name": "INFRA",
+      "nodes": [
+        { "id": "i1", "glyph": ">_", "name": "SHELL SCRIPT", "description": "+8 SP máximo em combate", "bonus": { "type": "sp", "amount": 8 } },
+        { "id": "i2", "glyph": "::", "name": "CONTAINERS", "description": "+15 HP máximo permanente", "bonus": { "type": "hp", "amount": 15 } },
+        { "id": "i3", "glyph": "^", "name": "AUTO-SCALING", "description": "+15% de dano em todos os ataques", "bonus": { "type": "dmg", "amount": 15 } }
+      ]
+    }
+  ]
+}

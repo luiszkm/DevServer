@@ -36,6 +36,10 @@ var (
 	ErrDeployNotFound     = &Error{http.StatusNotFound, "deploy_not_found", "nenhum deploy deste tipo em andamento"}
 	ErrUnknownDeployType  = &Error{http.StatusUnprocessableEntity, "unknown_deploy_type", "tipo de deploy desconhecido"}
 	ErrUnknownDeployLevel = &Error{http.StatusUnprocessableEntity, "unknown_deploy_level", "nível de deploy desconhecido"}
+	ErrSkillLocked        = &Error{http.StatusConflict, "skill_locked", "desbloqueie a habilidade anterior da trilha primeiro"}
+	ErrSkillUnlocked      = &Error{http.StatusConflict, "skill_already_unlocked", "habilidade já está ativa"}
+	ErrNoSkillPoints      = &Error{http.StatusConflict, "no_skill_points", "sem pontos de habilidade. suba de nível com deploys"}
+	ErrUnknownSkill       = &Error{http.StatusUnprocessableEntity, "unknown_skill", "habilidade desconhecida"}
 )
 
 type envelope struct {

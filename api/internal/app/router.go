@@ -14,6 +14,7 @@ import (
 	"devserver/api/internal/deploy"
 	"devserver/api/internal/httpx"
 	"devserver/api/internal/player"
+	"devserver/api/internal/skills"
 	"devserver/api/internal/world"
 )
 
@@ -41,6 +42,7 @@ func NewRouter(d Deps) *chi.Mux {
 	if now == nil {
 		now = time.Now
 	}
+	skillsH := &skills.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 	deployH := &deploy.Handlers{Pool: d.Pool, Catalog: d.Catalog, Logger: d.Logger, Now: now}
 
 	r.Get("/api/auth/github/login", h(authH.Login))
@@ -57,6 +59,7 @@ func NewRouter(d Deps) *chi.Mux {
 		pr.Get("/api/me/deploys", h(deployH.List))
 		pr.Post("/api/me/deploys", h(deployH.Start))
 		pr.Post("/api/me/deploys/{type}/claim", h(deployH.Claim))
+		pr.Post("/api/me/skills/{id}/unlock", h(skillsH.Unlock))
 	})
 	return r
 }

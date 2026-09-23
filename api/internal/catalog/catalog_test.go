@@ -1,6 +1,7 @@
 package catalog_test
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -102,6 +103,49 @@ func TestCatalog_ServesDeploys(t *testing.T) {
 		got := [6]int{l.Level, l.MinLevel, l.Minutes, l.XP, l.Coins, l.Gems}
 		if got != want[i] {
 			t.Errorf("level %d = %v, want %v", i+1, got, want[i])
+		}
+	}
+}
+
+// C12
+func TestCatalog_ServesSkillTrees(t *testing.T) {
+	env := apptest.New(t)
+	type node struct {
+		ID, Glyph, Name, Description string
+		Bonus                        struct {
+			Type   string
+			Amount int
+		}
+	}
+	b := apptest.Decode[struct {
+		SkillTrees []struct {
+			ID, Name string
+			Nodes    []node
+		} `json:"skillTrees"`
+	}](t, env.Do(http.MethodGet, "/api/catalog", nil))
+	want := []struct {
+		id, name string
+		nodes    [][5]string
+	}{
+		{"frontend", "FRONTEND", [][5]string{{"f1", "</>", "MARKUP SEMÂNTICO", "hp", "10"}, {"f2", "{}", "GRID MASTER", "sp", "8"}, {"f3", "~", "MOTION", "dmg", "10"}}},
+		{"backend", "BACKEND", [][5]string{{"b1", "$_", "API REST", "hp", "10"}, {"b2", "[]", "CAMADA DE CACHE", "sp", "10"}, {"b3", "##", "FILA DE EVENTOS", "dmg", "12"}}},
+		{"infra", "INFRA", [][5]string{{"i1", ">_", "SHELL SCRIPT", "sp", "8"}, {"i2", "::", "CONTAINERS", "hp", "15"}, {"i3", "^", "AUTO-SCALING", "dmg", "15"}}},
+	}
+	if len(b.SkillTrees) != 3 {
+		t.Fatalf("skillTrees = %d, want 3", len(b.SkillTrees))
+	}
+	for i, w := range want {
+		tr := b.SkillTrees[i]
+		if tr.ID != w.id || tr.Name != w.name || len(tr.Nodes) != 3 {
+			t.Errorf("tree %d = %s/%s with %d nodes", i, tr.ID, tr.Name, len(tr.Nodes))
+			continue
+		}
+		for j, wn := range w.nodes {
+			n := tr.Nodes[j]
+			got := [5]string{n.ID, n.Glyph, n.Name, n.Bonus.Type, fmt.Sprint(n.Bonus.Amount)}
+			if got != wn || n.Description == "" {
+				t.Errorf("node %s = %v (description %q), want %v", wn[0], got, n.Description, wn)
+			}
 		}
 	}
 }

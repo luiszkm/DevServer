@@ -40,7 +40,7 @@ Proof: `cd api && go test ./internal/skills -run '^TestUnlock_ConcurrentOnce$'`
 **C9** - Inserir direto no banco o mesmo (jogador, nó) duas vezes falha com `unique_violation` (SKILL-01, AC 8; door 1)
 Proof: `cd api && go test ./internal/skills -run '^TestPlayerSkills_UniquePerNode$'`
 
-**C10** - Jogador novo recebe `skills` = `[]` (não `null`) em `POST /api/players` e `GET /api/me`; depois de desbloquear `b1` e então `f1`, `GET /api/me` e `POST /api/me/travel` devolvem `skills` = `["f1","b1"]` (SKILL-01, AC 9; door 4)
+**C10** - Jogador novo recebe `skills` = `[]` (não `null`) em `POST /api/players` e `GET /api/me`; depois de desbloquear `b1` e então `f1`, a resposta desse desbloqueio, `GET /api/me` e `POST /api/me/travel` devolvem `skills` = `["f1","b1"]` (SKILL-01, AC 9; door 4)
 Proof: `cd api && go test ./internal/skills -run '^TestPlayerSkills_InEveryPlayerInCatalogOrder$'`
 
 **C11** - Sem sessão responde `401 unauthenticated`, sessão sem jogador responde `404 player_not_found` e erro inesperado de banco responde `500 internal` com log do `request_id`, em `POST /api/me/skills/f1/unlock` (SKILL-01)
@@ -95,18 +95,18 @@ Proof: `cd api && go test ./internal/skills -run '^TestUnlock_SerializesOnPlayer
 
 ## Progress
 
-- [ ] C1
-- [ ] C2
-- [ ] C3
-- [ ] C4
-- [ ] C5
-- [ ] C6
-- [ ] C7
-- [ ] C8
-- [ ] C9
-- [ ] C10
-- [ ] C11
-- [ ] C12
+- [x] C1
+- [x] C2
+- [x] C3
+- [x] C4
+- [x] C5
+- [x] C6
+- [x] C7
+- [x] C8
+- [x] C9
+- [x] C10
+- [x] C11
+- [x] C12
 - [ ] C13
 - [ ] C14
 - [ ] C15
@@ -120,7 +120,7 @@ Proof: `cd api && go test ./internal/skills -run '^TestUnlock_SerializesOnPlayer
 - [ ] C23
 - [ ] C24
 - [ ] C25
-- [ ] C26
+- [x] C26
 
 ## Coverage
 
@@ -137,7 +137,7 @@ Proof: `cd api && go test ./internal/skills -run '^TestUnlock_SerializesOnPlayer
 | node states on screen (3) | `ATIVA` C14 · `1 PT` C14 · `BLOQ.` C14 | - |
 | active-skill displays (4) | cena com skills C21 · cena vazia C21 · HUD com skills C22 · HUD vazio C22 | - |
 | unlock outcomes on screen (4) | 200 C17 · erro com mensagem C18 · sem corpo C18 · rede C18 | - |
-| routes returning `player` with `skills` (3) | `POST /api/players` C10 · `GET /api/me` C10 · `POST /api/me/travel` C10 | - |
+| routes returning `player` with `skills` (4) | `POST /api/players` C10 · `GET /api/me` C10 · `POST /api/me/travel` C10 · `POST /api/me/skills/{id}/unlock` C10 | - |
 | Landing doors (6) | 1 C9 · 2 C2, C3 · 3 C12 · 4 C10 · 5 C4 · 6 C1 | - |
 | entities (1) | `PlayerSkill` C9 | - |
 
