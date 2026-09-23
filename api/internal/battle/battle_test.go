@@ -17,6 +17,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 
 	"devserver/api/internal/apptest"
+	"devserver/api/internal/catalog"
 	"devserver/api/internal/db"
 	"devserver/api/internal/httpx"
 )
@@ -899,5 +900,27 @@ func TestLockedMutation_InventoryLoadError(t *testing.T) {
 	var region string
 	if err := f.env.Pool.QueryRow(context.Background(), `SELECT region FROM players`).Scan(&region); err != nil || region != "vila" {
 		t.Fatalf("region = %q (%v), want vila unchanged", region, err)
+	}
+	if !strings.Contains(f.env.Logs.String(), "player_items") {
+		t.Fatalf("logged cause is not the inventory load: %s", f.env.Logs.String())
+	}
+	// A guard-first mutation (no points, so the guard would answer 409) must still fail on the load.
+	f.sql(`UPDATE players SET skill_points = 0`)
+	f.status(f.do(http.MethodPost, "/api/me/skills/f1/unlock", nil), 500, "internal")
+}
+
+// C56
+func TestCreatePlayer_StartingItemsFromCatalog(t *testing.T) {
+	env := apptest.NewWithCatalog(t, func(c *catalog.Catalog) {
+		c.Combat.StartingItems = []catalog.ItemQuantity{{Item: "hp_potion", Quantity: 3}, {Item: "sp_potion", Quantity: 1}}
+	})
+	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"}, env.Session(1, "u"))
+	got := apptest.Decode[turnJSON](t, rec).Player.Inventory
+	want := []struct {
+		Item     string `json:"item"`
+		Quantity int    `json:"quantity"`
+	}{{"sp_potion", 1}, {"hp_potion", 3}}
+	if len(got) != 2 || got[0] != want[0] || got[1] != want[1] {
+		t.Fatalf("inventory = %+v, want %+v (read from the catalog)", got, want)
 	}
 }

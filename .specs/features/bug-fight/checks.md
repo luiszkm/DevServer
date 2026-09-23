@@ -5,7 +5,7 @@ Plan: `.specs/features/bug-fight/plan.md`
 
 ## Intent
 
-55 checks in 4 slices · 10 one-way doors · 0 open
+56 checks in 4 slices · 10 one-way doors · 0 open
 
 Pré-requisitos: os mesmos da foundation. Testes Go fixam o sorteio por `apptest.Env.Rand` (door 3): cada `Intn(n)` consome o próximo valor empurrado, na ordem dano → contra-ataque → drop → poção; sem valor empurrado, devolve 0.
 
@@ -125,7 +125,7 @@ Proof: `cd api && go test ./internal/battle -run '^TestMigration_GivesExistingPl
 **C36** - `UPDATE player_items SET quantity = -1` falha com `check_violation`; segundo `Battle` ou segundo (jogador, item) falham com `unique_violation` (doors 1, 2)
 Proof: `cd api && go test ./internal/battle -run '^TestTables_Constraints$'`
 
-**C37** - `GET /api/catalog` inclui `enemies` (6, com `region`, `name`, `level`, `hp`, `sp`, `weakness`, `drop`, `glyph` da tabela do plano), `commands` (14, com `label`, `cost`, `damage`, `heal`, `exposesWeakness`, `shield`, `spGain`, `flee`, `skill`), `items` (8, com `name`, `glyph`, `rarity`, `description`, `restore`) e `combat` (`counter`, `spRegen`, `weaknessMultiplier`, `victory`, `dropChance`, `potionChance`, `potion`) (FIGHT-04, AC 40; door 4)
+**C37** - `GET /api/catalog` inclui `enemies` (6, com `region`, `name`, `level`, `hp`, `sp`, `weakness`, `drop`, `glyph` da tabela do plano), `commands` (14, com `label`, `cost`, `damage`, `heal`, `exposesWeakness`, `shield`, `spGain`, `flee`, `skill`), `items` (8, com `name`, `glyph`, `rarity`, `description`, `restore`) e `combat` (`counter`, `spRegen`, `weaknessMultiplier`, `victory`, `dropChance`, `potionChance`, `potion`, `startingItems` = `sp_potion` × 2) (FIGHT-04, AC 40; door 4)
 Proof: `cd api && go test ./internal/catalog -run '^TestCatalog_ServesCombat$'`
 
 **C38** - Nas 4 rotas de combate: sem sessão `401 unauthenticated`, sessão sem jogador `404 player_not_found`, erro inesperado de banco `500 internal` com log do `request_id`; e `GET /api/me` com a tabela de itens indisponível responde `500 internal` (FIGHT-01, FIGHT-02, FIGHT-03)
@@ -181,8 +181,11 @@ Proof: `cd web && npx playwright test e2e/battle.spec.ts -g "fight to victory"`
 **C54** - Se a gravação dos itens iniciais falha, `POST /api/players` responde `500 internal` e nenhum jogador fica gravado (FIGHT-03, AC 29)
 Proof: `cd api && go test ./internal/battle -run '^TestCreatePlayer_StartingItemsFailureRollsBack$'`
 
-**C55** - Com a tabela de itens indisponível, uma mutação que passa por `player.WithLocked` (`POST /api/me/travel`) responde `500 internal` com log do `request_id` e não muda o jogador (FIGHT-03, AC 28)
+**C55** - Com a tabela de itens indisponível, mutações que passam por `player.WithLocked` respondem `500 internal`: `POST /api/me/travel` com log do `request_id`, causa `player_items` no log e jogador sem mudança, e `POST /api/me/skills/f1/unlock` com 0 pontos (onde uma guarda responderia `409`) (FIGHT-03, AC 28)
 Proof: `cd api && go test ./internal/battle -run '^TestLockedMutation_InventoryLoadError$'`
+
+**C56** - Com um catálogo de teste em que `startingItems` = `hp_potion` × 3 e `sp_potion` × 1, um jogador novo recebe exatamente esse inventário, na ordem do catálogo (FIGHT-03, AC 29; door 4a)
+Proof: `cd api && go test ./internal/battle -run '^TestCreatePlayer_StartingItemsFromCatalog$'`
 
 ## Progress
 
@@ -241,6 +244,7 @@ Proof: `cd api && go test ./internal/battle -run '^TestLockedMutation_InventoryL
 - [x] C53
 - [x] C54
 - [x] C55
+- [x] C56
 
 ## Coverage
 
@@ -265,7 +269,7 @@ Proof: `cd api && go test ./internal/battle -run '^TestLockedMutation_InventoryL
 | screen end states (2) | vencido C46 · encerrado C47 | - |
 | turn outcomes on screen (4) | 200 C45 · erro com mensagem C49 · sem corpo C49 · rede C49 | - |
 | start outcomes on screen (3) | pendente C50 · 5xx C50 · rede C50 | - |
-| Landing doors (10) | 1 C36 · 1a C11 · 2 C36 · 3 C7 · 3a C25 · 4 C37 · 4a C34 · 5 C14 · 6 C15 · 7 C1 | - |
+| Landing doors (10) | 1 C36 · 1a C11 · 2 C36 · 3 C7 · 3a C25 · 4 C37 · 4a C37, C56 · 5 C14 · 6 C15 · 7 C1 | - |
 | `POST /api/players` statuses changed by this feature (2) | 201 com inventário C34 · 500 na gravação dos itens C54 | - |
 | `WithLocked` load failures (1) | inventário C55 | - |
 | `item` event fields (3) | `item` C31 · `stat` C31 · `amount` C31 | - |
@@ -276,7 +280,7 @@ Proof: `cd api && go test ./internal/battle -run '^TestLockedMutation_InventoryL
 
 - Claims naming a status code, route or response shape go through `NewRouter`, except C25 (own layer), C35 (migration) and C36 (constraints)
 - Web claims at unit level assert the rendered screen; the browser round trip is C53
-- Equivalent mutant noted: ignoring the inventory load error inside `player.WithLocked` still answers `500` with no change, because Postgres aborts the transaction and the next statement fails; C55 asserts that outcome
+- Round 2 found the earlier "equivalent mutant" note wrong: swallowing the inventory load error changes the answer of a guard-first route (skills unlock with 0 points answers 409 instead of 500); C55 now pins that route and the logged cause
 
 ## Test policy
 
@@ -318,3 +322,9 @@ Round 2 (after verification round 1 FAIL):
 - **Boundary:** C54 (starting-item failure rolls the player back) and C55 (inventory load failure under `WithLocked`) added; C31 asserts the `item` event's `item`; C42 asserts label and description of every visible command; plan `Landing` gains 1a (shield not stored), 3a (`IntN`), 4a (`startingItems`), `Surface` gains the changed `POST /api/players`
 - **Settled mid-build:** none
 - **Abandoned:** none
+
+Round 3 (after verification round 2 FAIL):
+
+- **Boundary:** C55 extended to a guard-first route and the logged cause (kills the inventory-load survivor); C37 asserts `combat.startingItems`; C56 proves creation reads the starting items from the catalog; `player.Handlers` receives the catalog instead of `catalog.Default()`, and `apptest.NewWithCatalog` lets a test change it
+- **Settled mid-build:** none
+- **Abandoned:** the round-2 "equivalent mutant" note, which the Verifier showed false

@@ -14,7 +14,8 @@ import (
 )
 
 type Handlers struct {
-	Pool *pgxpool.Pool
+	Pool    *pgxpool.Pool
+	Catalog *catalog.Catalog
 }
 
 type response struct {
@@ -95,7 +96,7 @@ func (h *Handlers) insert(ctx context.Context, p *Player) error {
 		p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin).Scan(&p.ID); err != nil {
 		return err
 	}
-	for _, it := range catalog.Default().Combat.StartingItems {
+	for _, it := range h.Catalog.Combat.StartingItems {
 		if err := AddItem(ctx, tx, p, it.Item, it.Quantity); err != nil {
 			return err
 		}

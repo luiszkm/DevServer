@@ -98,7 +98,10 @@ func (b *SyncBuffer) String() string {
 	return b.buf.String()
 }
 
-func New(t testing.TB) *Env {
+func New(t testing.TB) *Env { return NewWithCatalog(t, nil) }
+
+// NewWithCatalog lets a test change the balance data the router serves and uses.
+func NewWithCatalog(t testing.TB, edit func(*catalog.Catalog)) *Env {
 	t.Helper()
 	pool := testdb.New(t)
 	fake := fakegithub.New()
@@ -107,6 +110,9 @@ func New(t testing.TB) *Env {
 	cat, err := catalog.Load()
 	if err != nil {
 		t.Fatalf("catalog: %v", err)
+	}
+	if edit != nil {
+		edit(cat)
 	}
 	logs := &SyncBuffer{}
 	clock := &Clock{t: time.Date(2026, 1, 1, 12, 0, 0, 0, time.UTC)}

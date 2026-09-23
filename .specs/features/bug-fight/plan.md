@@ -210,5 +210,5 @@ No columns and no types here.
 | domain | existing term: `Catalog` ganha `enemies`, `commands`, `items`, `combat`; `version` muda |
 | code | `app.Deps` ganha `Rand`; `apptest` passa um sorteio fixável |
 | screen | `/bug-fight` deixa de ser `EM BREVE`: o conjunto do check C28 da foundation cai para `/loja`, `/avatar`; a placa BUG da tela-título já aponta para `/bug-fight` |
-| code | `player.Get`/`WithLocked` carregam o inventário; `POST /api/players` grava jogador e itens iniciais numa transação; `player.AddItem` é o único caminho para mudar quantidade |
+| code | `player.Get`/`WithLocked` carregam o inventário; `POST /api/players` grava jogador e itens iniciais numa transação; `player.AddItem` é o único caminho para mudar quantidade; o handler de criação recebe o catálogo pelo `app.Deps` (itens iniciais) |
 | stored data | migration cria `battles` e `player_items` e insere 2 `sp_potion` para cada jogador existente |

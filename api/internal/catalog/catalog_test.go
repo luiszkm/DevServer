@@ -203,6 +203,10 @@ func TestCatalog_ServesCombat(t *testing.T) {
 			DropChance         int
 			PotionChance       int
 			Potion             string
+			StartingItems      []struct {
+				Item     string
+				Quantity int
+			}
 		} `json:"combat"`
 	}
 	if err := json.Unmarshal(env.Do(http.MethodGet, "/api/catalog", nil).Body.Bytes(), &b); err != nil {
@@ -266,7 +270,8 @@ func TestCatalog_ServesCombat(t *testing.T) {
 	}
 	r := b.Combat
 	if fmt.Sprint(r.Counter) != "[7 14]" || r.SPRegen != 5 || r.WeaknessMultiplier != 1.8 || r.Victory.XP != 90 || r.Victory.Coins != 40 ||
-		r.Victory.Gems != 1 || r.DropChance != 65 || r.PotionChance != 30 || r.Potion != "sp_potion" {
+		r.Victory.Gems != 1 || r.DropChance != 65 || r.PotionChance != 30 || r.Potion != "sp_potion" ||
+		len(r.StartingItems) != 1 || r.StartingItems[0].Item != "sp_potion" || r.StartingItems[0].Quantity != 2 {
 		t.Errorf("combat rules = %+v", r)
 	}
 }

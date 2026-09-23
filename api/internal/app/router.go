@@ -39,7 +39,7 @@ func NewRouter(d Deps) *chi.Mux {
 	h := func(fn httpx.HandlerFunc) http.HandlerFunc { return httpx.Handle(d.Logger, fn) }
 	sessions := auth.Sessions{Pool: d.Pool}
 	authH := &auth.Handlers{Config: d.Auth, Sessions: sessions, Logger: d.Logger}
-	playerH := &player.Handlers{Pool: d.Pool}
+	playerH := &player.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 	worldH := &world.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 	now := d.Now
 	if now == nil {
