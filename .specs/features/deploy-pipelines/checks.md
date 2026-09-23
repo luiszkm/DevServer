@@ -145,18 +145,18 @@ Proof: `cd api && go test ./internal/deploy -run '^TestDeployRoutes_UnexpectedEr
 - [x] C10
 - [x] C11
 - [x] C12
-- [ ] C13
-- [ ] C14
-- [ ] C15
-- [ ] C16
-- [ ] C17
-- [ ] C18
-- [ ] C19
-- [ ] C20
-- [ ] C21
-- [ ] C22
-- [ ] C23
-- [ ] C24
+- [x] C13
+- [x] C14
+- [x] C15
+- [x] C16
+- [x] C17
+- [x] C18
+- [x] C19
+- [x] C20
+- [x] C21
+- [x] C22
+- [x] C23
+- [x] C24
 - [x] C25
 - [x] C26
 - [x] C27
@@ -167,9 +167,9 @@ Proof: `cd api && go test ./internal/deploy -run '^TestDeployRoutes_UnexpectedEr
 - [x] C32
 - [x] C33
 - [x] C34
-- [ ] C35
-- [ ] C36
-- [ ] C37
+- [x] C35
+- [x] C36
+- [x] C37
 - [x] C38
 
 ## Coverage
@@ -190,6 +190,9 @@ Proof: `cd api && go test ./internal/deploy -run '^TestDeployRoutes_UnexpectedEr
 | level-up cases (4) | 0 XP C30 · abaixo do máximo C30 · igual ao máximo C30 · 2 níveis C30 | - |
 | type status on screen (3) | `ocioso` C13 · `restante` C13 · `pronto p/ coletar` C13 | - |
 | stages (4) | `LINT` C15 · `BUILD` C15 · `TEST` C15 · `SHIP` C15 | - |
+| stage boundaries (3) | 25% C15 · 50% C15 · 75% C15 | - |
+| ready at `endsAt` on screen (2) | status C13 · botão e estágio C36 | - |
+| in-flight disables (2) | `INICIAR DEPLOY` C22 · `COLETAR RECOMPENSA` C36 | - |
 | time formats (2) | `mm:ss` C15 · `h:mm:ss` C15 | - |
 | list outcomes on screen (4) | 200 C13 · pendente C17 · 5xx C18 · rede C18 | - |
 | Landing doors (8) | 1 C8 · 2 C26 · 3 C11 · 4 C12 · 5 C2 · 6 C30 · 7 C25 · 8 C25 | - |
@@ -226,7 +229,12 @@ Evidence:
 ## Impact on earlier checks
 
 - foundation C28: `/deploy` sai do conjunto "EM BREVE"; o teste passa a cobrir `/bug-fight`, `/skills`, `/loja`, `/avatar` no commit que entrega a cena
+- foundation C27 (e2e `shell.spec.ts`): a asserção extra `EM BREVE` depois de clicar DEPLOY vira `PIPELINES DE DEPLOY`; o que o C27 afirma (URL sem reload, HUD visível) não muda
 
 ## Handoff
 
 - S1–S3 ≈ 8k + 9k + 7k ≈ 24k de leitura, abaixo do budget de 150k - um builder, sem handoff
+
+- **Boundary:** C1-C38 closed on `feat/deploy-pipelines`
+- **Settled mid-build:** `player.WithLocked` recebe a transação (`fn(tx, p)`) para gravar o job na mesma unidade; `world` ajustado; fallbacks inalcançáveis de tipo/nível removidos da cena
+- **Abandoned:** none; 26 self-mutations (12 api, 14 web) ran before verification - 2 web survivors (status exactly at `endsAt`, stage boundaries) led to stronger C13/C15, now killed

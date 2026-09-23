@@ -10,7 +10,23 @@ export const REGIONS: Catalog["regions"] = [
   { id: "nuvem", name: "PICOS DA NUVEM", tag: "ENDGAME", minLevel: 12, description: "nuvem" },
 ];
 
-export const CATALOG: Catalog = { version: "v1", regions: REGIONS };
+export const DEPLOY_TYPES: Catalog["deployTypes"] = [
+  { id: "backend", name: "BACKEND", glyph: "$_" },
+  { id: "frontend", name: "FRONTEND", glyph: "</>" },
+  { id: "mobile", name: "MOBILE", glyph: "[]" },
+  { id: "database", name: "BANCO DE DADOS", glyph: "##" },
+  { id: "microservices", name: "MICROSSERVIÇOS", glyph: "::" },
+];
+
+export const DEPLOY_LEVELS: Catalog["deployLevels"] = [
+  { level: 1, minLevel: 1, minutes: 15, xp: 80, coins: 40, gems: 0 },
+  { level: 2, minLevel: 3, minutes: 30, xp: 150, coins: 70, gems: 1 },
+  { level: 3, minLevel: 6, minutes: 60, xp: 260, coins: 110, gems: 2 },
+  { level: 4, minLevel: 10, minutes: 180, xp: 420, coins: 180, gems: 4 },
+  { level: 5, minLevel: 15, minutes: 360, xp: 700, coins: 300, gems: 8 },
+];
+
+export const CATALOG: Catalog = { version: "v1", regions: REGIONS, deployTypes: DEPLOY_TYPES, deployLevels: DEPLOY_LEVELS };
 
 export function player(overrides: Partial<Player> = {}): Player {
   return {

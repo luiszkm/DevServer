@@ -21,9 +21,30 @@ export type Region = {
   description: string;
 };
 
+export type DeployType = { id: string; name: string; glyph: string };
+
+export type DeployLevel = {
+  level: number;
+  minLevel: number;
+  minutes: number;
+  xp: number;
+  coins: number;
+  gems: number;
+};
+
 export type Catalog = {
   version: string;
   regions: Region[];
+  deployTypes: DeployType[];
+  deployLevels: DeployLevel[];
+};
+
+export type DeployJob = {
+  type: string;
+  level: number;
+  startedAt: string;
+  endsAt: string;
+  ready: boolean;
 };
 
 export type ApiErrorBody = {

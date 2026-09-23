@@ -11,7 +11,7 @@ test("tab click keeps document and HUD", async ({ page }) => {
   await expect(page).toHaveURL(/\/mundo$/);
   await nav.getByRole("link", { name: "DEPLOY" }).click();
   await expect(page).toHaveURL(/\/deploy$/);
-  await expect(page.getByText("EM BREVE")).toBeVisible();
+  await expect(page.getByText("PIPELINES DE DEPLOY")).toBeVisible();
 
   expect(await page.evaluate(() => (window as unknown as { __marker?: number }).__marker)).toBe(42);
   await expect(page.getByRole("contentinfo", { name: "HUD" })).toContainText("LEVEL 1");

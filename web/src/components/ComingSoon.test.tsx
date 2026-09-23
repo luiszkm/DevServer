@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import DeployPage from "@/app/(game)/deploy/page";
 import BugFightPage from "@/app/(game)/bug-fight/page";
 import SkillsPage from "@/app/(game)/skills/page";
 import ShopPage from "@/app/(game)/loja/page";
@@ -9,7 +8,6 @@ import AvatarPage from "@/app/(game)/avatar/page";
 describe("ComingSoon", () => {
   // C28
   it.each([
-    ["/deploy", DeployPage, "DEPLOY"],
     ["/bug-fight", BugFightPage, "BUG FIGHT"],
     ["/skills", SkillsPage, "SKILLS"],
     ["/loja", ShopPage, "LOJA"],

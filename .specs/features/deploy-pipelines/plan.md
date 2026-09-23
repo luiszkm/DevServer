@@ -173,4 +173,6 @@ guardado (door 8). No columns and no types here.
 | domain | new term: level-up (`player.GainXP`) - regra única de progressão por XP; vive em `api/internal/player` |
 | domain | existing term: `Catalog` passa a ter `deployTypes` e `deployLevels`; `version` muda, então clientes com `ETag` antigo recebem `200` |
 | screen | a cena `/deploy` deixa de ser `EM BREVE`: o check C28 da foundation passa a cobrir só `/bug-fight`, `/skills`, `/loja`, `/avatar` - o teste muda no commit que entrega a cena |
+| screen | e2e `shell.spec.ts` (foundation C27) deixa de esperar `EM BREVE` após clicar DEPLOY e passa a esperar `PIPELINES DE DEPLOY` |
+| code | `player.WithLocked` passa a entregar a transação a `fn` (`fn(tx, p)`); `world.Travel` atualizado - próximas mutações que gravam outras linhas usam a mesma transação |
 | stored data | nothing to migrate - tabela nova, vazia |

@@ -18,9 +18,9 @@
 ## Handoff
 
 **Feature**: deploy-pipelines
-**Where**: plan.md escrito e validado, aguardando revisão humana; foundation VERIFIED em `feat/foundation`
-**In progress**: nenhum código
-**Next step**: revisar `.specs/features/deploy-pipelines/plan.md`; após aprovação, derivar `checks.md`
+**Where**: C1–C38 fechados, todos os proofs verdes com exit 0; falta o Verifier independente
+**In progress**: nenhum
+**Next step**: Verifier fresco sobre `00411c5..HEAD` com todos os checks
 **Blockers**: none
-**Uncommitted**: .specs/features/deploy-pipelines/plan.md, .specs/STATE.md
+**Uncommitted**: none
 **Branch**: feat/deploy-pipelines (empilhada sobre feat/foundation)

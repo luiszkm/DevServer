@@ -1,5 +1,5 @@
-import { ComingSoon } from "@/components/ComingSoon";
+import { DeployScene } from "@/components/DeployScene";
 
 export default function DeployPage() {
-  return <ComingSoon scene="DEPLOY" />;
+  return <DeployScene />;
 }
