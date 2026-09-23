@@ -16,9 +16,9 @@
 ## Handoff
 
 **Feature**: foundation
-**Where**: plan.md aprovado; checks.md C1–C47 escrito e validado (`validate_checks.py` exit 0); nenhum código
+**Where**: C1–C47 fechados, todos os proofs verdes; falta o Verifier independente
 **In progress**: nenhum
-**Next step**: build - scaffold `web/` + `api/` + `docker-compose.yml`, testes a partir dos checks, depois implementação
-**Blockers**: none (pergunta aberta 1 - LGPD - bloqueia go-live, não o build)
-**Uncommitted**: .specs/, AGENTS.md
-**Branch**: main
+**Next step**: orquestrador despacha Verifier fresco sobre `591b2c4..HEAD` com todos os checks
+**Blockers**: none (pergunta aberta 1 - LGPD - bloqueia go-live)
+**Uncommitted**: none
+**Branch**: feat/foundation

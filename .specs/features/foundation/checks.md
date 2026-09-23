@@ -172,52 +172,52 @@ Proof: `make check-deps`
 
 Marcado antes do commit que satisfaz o check.
 
-- [ ] C1
+- [x] C1
 - [x] C2
 - [x] C3
 - [x] C4
 - [x] C5
-- [ ] C6
+- [x] C6
 - [x] C7
-- [ ] C8
+- [x] C8
 - [x] C9
 - [x] C10
 - [x] C11
 - [x] C12
-- [ ] C13
+- [x] C13
 - [x] C14
 - [x] C15
 - [x] C16
 - [x] C17
 - [x] C18
-- [ ] C19
+- [x] C19
 - [x] C20
 - [x] C21
 - [x] C22
-- [ ] C23
-- [ ] C24
-- [ ] C25
-- [ ] C26
-- [ ] C27
-- [ ] C28
-- [ ] C29
-- [ ] C30
+- [x] C23
+- [x] C24
+- [x] C25
+- [x] C26
+- [x] C27
+- [x] C28
+- [x] C29
+- [x] C30
 - [x] C31
 - [x] C32
-- [ ] C33
-- [ ] C34
+- [x] C33
+- [x] C34
 - [x] C35
 - [x] C36
 - [x] C37
 - [x] C38
-- [ ] C39
-- [ ] C40
+- [x] C39
+- [x] C40
 - [x] C41
 - [x] C42
 - [x] C43
 - [x] C44
 - [x] C45
-- [ ] C46
+- [x] C46
 - [x] C47
 
 ## Coverage
@@ -296,3 +296,7 @@ Cost: ~34 provas Go + vitest na própria camada em ~14 arquivos de teste, 3 e2e.
 ## Handoff
 
 - S1–S6 ≈ 8k + 7k + 12k + 3k + 5k + 4k ≈ 39k de leitura estimada (greenfield, arquivos pequenos), abaixo do budget de 150k - um builder, sem handoff
+
+- **Boundary:** C1-C47 closed on `feat/foundation`
+- **Settled mid-build:** rota `GET /api/onboarding` (Surface) e door 11 acrescentadas antes dos checks; door 12 (códigos genéricos `not_found`, `method_not_allowed`, `invalid_body`) e nota em Relations (`Session` liga a `GithubIdentity`) acrescentadas antes do código; e2e roda com `workers: 1` porque o GitHub falso entrega um "próximo usuário" por vez
+- **Abandoned:** primeira versão do teste de C42 só segurava o lock e passava sem `FOR UPDATE` (o `UPDATE` final também bloqueia); reescrito para subir o nível dentro da transação travada, e agora falha sem o lock
