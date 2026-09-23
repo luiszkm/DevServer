@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 
@@ -34,6 +35,23 @@ type Player struct {
 	Skills []string `json:"skills"`
 	// Inventory lists the items held, quantity > 0 only, in catalog order.
 	Inventory []catalog.ItemQuantity `json:"inventory"`
+	// Gear is the owned gear ids in catalog order; never nil.
+	Gear []string `json:"gear"`
+	// Equipment has every catalog slot as a key, with the equipped gear id or null.
+	Equipment map[string]*string `json:"equipment"`
+	// Skins is the owned skin ids in catalog order, always with DefaultSkin.
+	Skins []string `json:"skins"`
+}
+
+// DefaultSkin is owned by every player without a stored row (door 3).
+const DefaultSkin = "default"
+
+func emptyEquipment() map[string]*string {
+	eq := map[string]*string{}
+	for _, s := range catalog.Default().GearSlots {
+		eq[s.ID] = nil
+	}
+	return eq
 }
 
 // Classes are the cosmetic classes offered at onboarding.
@@ -55,6 +73,7 @@ func newPlayer(githubUserID int64, devName, class string) *Player {
 		Level: 1, XP: 0, XPMax: 500, HP: 100, HPMax: 100,
 		Coins: 100, Gems: 20, SkillPoints: 1, Region: "vila", Skin: "default", Skills: []string{},
 		Inventory: []catalog.ItemQuantity{},
+		Gear:      []string{}, Equipment: emptyEquipment(), Skins: []string{DefaultSkin},
 	}
 }
 
@@ -110,7 +129,53 @@ func Get(ctx context.Context, q querier, githubUserID int64) (*Player, error) {
 	if err := loadSkills(ctx, q, p); err != nil {
 		return nil, err
 	}
-	return p, loadInventory(ctx, q, p)
+	if err := loadInventory(ctx, q, p); err != nil {
+		return nil, err
+	}
+	return p, LoadGear(ctx, q, p)
+}
+
+// LoadGear reads the owned gear, the equipped slots and the owned skins into p.
+// Order follows the embedded catalog, like SortSkills.
+func LoadGear(ctx context.Context, q querier, p *Player) error {
+	cat := catalog.Default()
+	rows, err := q.Query(ctx, `SELECT gear_id FROM player_gear WHERE player_id = $1`, p.ID)
+	if err != nil {
+		return err
+	}
+	gear, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		return err
+	}
+	sort.SliceStable(gear, func(i, j int) bool { return cat.GearPosition(gear[i]) < cat.GearPosition(gear[j]) })
+	p.Gear = gear
+
+	rows, err = q.Query(ctx, `SELECT slot, gear_id FROM player_equipment WHERE player_id = $1`, p.ID)
+	if err != nil {
+		return err
+	}
+	p.Equipment = emptyEquipment()
+	var slot, id string
+	if _, err := pgx.ForEachRow(rows, []any{&slot, &id}, func() error {
+		g := id
+		p.Equipment[slot] = &g
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	rows, err = q.Query(ctx, `SELECT skin_id FROM player_skins WHERE player_id = $1`, p.ID)
+	if err != nil {
+		return err
+	}
+	skins, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		return err
+	}
+	skins = append([]string{DefaultSkin}, skins...)
+	sort.SliceStable(skins, func(i, j int) bool { return cat.SkinPosition(skins[i]) < cat.SkinPosition(skins[j]) })
+	p.Skins = skins
+	return nil
 }
 
 func loadInventory(ctx context.Context, q querier, p *Player) error {
@@ -200,6 +265,9 @@ func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn 
 	if err := loadInventory(ctx, tx, p); err != nil {
 		return nil, err
 	}
+	if err := LoadGear(ctx, tx, p); err != nil {
+		return nil, err
+	}
 	if err := fn(tx, p); err != nil {
 		return nil, err
 	}
@@ -227,4 +295,28 @@ func GainXP(p *Player, xp int) int {
 		levels++
 	}
 	return levels
+}
+
+// Owns reports whether p owns a piece of gear.
+func (p *Player) Owns(gear string) bool { return slices.Contains(p.Gear, gear) }
+
+// OwnsSkin reports whether p owns a skin; DefaultSkin is always owned.
+func (p *Player) OwnsSkin(skin string) bool { return slices.Contains(p.Skins, skin) }
+
+// Bonus is the one bonus rule (AD-012): the bonus of one type ("hp", "sp", "dmg") summed over
+// the unlocked skills, the equipped gear and the worn skin. Owned but unequipped gear adds nothing.
+func Bonus(cat *catalog.Catalog, p *Player, bonusType string) int {
+	sum := cat.SkillBonus(p.Skills, bonusType)
+	for _, id := range p.Equipment {
+		if id == nil {
+			continue
+		}
+		if g, ok := cat.GearItem(*id); ok && g.Bonus.Type == bonusType {
+			sum += g.Bonus.Amount
+		}
+	}
+	if s, ok := cat.Skin(p.Skin); ok && s.Bonus != nil && s.Bonus.Type == bonusType {
+		sum += s.Bonus.Amount
+	}
+	return sum
 }

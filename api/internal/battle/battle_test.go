@@ -924,3 +924,42 @@ func TestCreatePlayer_StartingItemsFromCatalog(t *testing.T) {
 		t.Fatalf("inventory = %+v, want %+v (read from the catalog)", got, want)
 	}
 }
+
+// shop-inventory-avatar C16
+func TestStart_SPMaxIncludesGearAndSkin(t *testing.T) {
+	f := newFixture(t)
+	f.unlock("f1", "f2")
+	f.sql(`UPDATE players SET gems = 1000, coins = 1000`)
+	for _, path := range []string{"/api/me/shop/gear/monitor", "/api/me/gear/monitor/unequip", "/api/me/shop/gear/cafe", "/api/me/shop/skins/shadow"} {
+		if rec := f.do(http.MethodPost, path, nil); rec.Code != 200 {
+			t.Fatalf("%s: %d %s", path, rec.Code, rec.Body.String())
+		}
+	}
+	if got := f.start().Battle; got.SP != 80 || got.SPMax != 80 {
+		t.Fatalf("sp = %d/%d, want 80/80 (50 + f2 8 + cafe 12 + shadow 10, monitor not equipped)", got.SP, got.SPMax)
+	}
+}
+
+// shop-inventory-avatar C17
+func TestCommand_DamageBonusFromGearAndSkin(t *testing.T) {
+	f := newFixture(t)
+	f.sql(`UPDATE players SET gems = 1000, coins = 1000, hp = 1000, hp_max = 1000`)
+	for _, path := range []string{"/api/me/shop/gear/macbook", "/api/me/shop/gear/fone", "/api/me/shop/skins/neon"} {
+		if rec := f.do(http.MethodPost, path, nil); rec.Code != 200 {
+			t.Fatalf("%s: %d %s", path, rec.Code, rec.Body.String())
+		}
+	}
+	f.start()
+	f.sql(`UPDATE battles SET enemy_hp = 500, enemy_hp_max = 500, sp = 999, sp_max = 999`)
+	f.env.Rand.Push(6, 0)
+	if e := f.turn(f.cmd("fix")).Events[0]; e.Amount != 24 {
+		t.Fatalf("fix with macbook + fone + neon (19%%) = %d, want 24", e.Amount)
+	}
+	if rec := f.do(http.MethodPost, "/api/me/gear/fone/unequip", nil); rec.Code != 200 {
+		t.Fatalf("unequip fone: %d %s", rec.Code, rec.Body.String())
+	}
+	f.env.Rand.Push(6, 0)
+	if e := f.turn(f.cmd("fix")).Events[0]; e.Amount != 23 {
+		t.Fatalf("fix with macbook + neon (13%%) = %d, want 23", e.Amount)
+	}
+}

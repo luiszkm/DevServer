@@ -174,3 +174,61 @@ func (h *Handlers) Claim(w http.ResponseWriter, r *http.Request) error {
 	}{p, got})
 	return nil
 }
+
+// BoostItem is the inventory item a boost consumes.
+const BoostItem = "boost_deploy"
+
+// BoostCut is how much a boost takes off a running deploy.
+const BoostCut = 15 * time.Minute
+
+// Boost consumes one booster and moves a running deploy's end 15 minutes earlier, never before
+// now (door 8). A ready deploy is refused without spending anything.
+func (h *Handlers) Boost(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+	typ := chi.URLParam(r, "type")
+	if _, ok := h.Catalog.DeployType(typ); !ok {
+		return httpx.ErrUnknownDeployType
+	}
+	now := h.now()
+	var boosted job
+	p, err := player.WithLocked(ctx, h.Pool, auth.IdentityFrom(ctx).GithubUserID, func(tx pgx.Tx, p *player.Player) error {
+		var id int64
+		var started, ends time.Time
+		err := tx.QueryRow(ctx, `SELECT id, level, started_at, ends_at FROM deploy_jobs
+			WHERE player_id = $1 AND type = $2 AND collected_at IS NULL`, p.ID, typ).
+			Scan(&id, &boosted.Level, &started, &ends)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return httpx.ErrDeployNotFound
+		}
+		if err != nil {
+			return err
+		}
+		if !now.Before(ends) {
+			return httpx.ErrDeployReady
+		}
+		if p.Quantity(BoostItem) < 1 {
+			return httpx.ErrNoItem
+		}
+		if err := player.AddItem(ctx, tx, p, BoostItem, -1); err != nil {
+			return err
+		}
+		ends = ends.Add(-BoostCut)
+		if ends.Before(now) {
+			ends = now
+		}
+		if _, err := tx.Exec(ctx, `UPDATE deploy_jobs SET ends_at = $2 WHERE id = $1`, id, ends); err != nil {
+			return err
+		}
+		boosted.Type, boosted.StartedAt, boosted.EndsAt, boosted.Ready = typ, stamp(started), stamp(ends), !now.Before(ends)
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	httpx.WriteJSON(w, http.StatusOK, struct {
+		Deploy     job            `json:"deploy"`
+		Player     *player.Player `json:"player"`
+		ServerTime string         `json:"serverTime"`
+	}{boosted, p, stamp(now)})
+	return nil
+}

@@ -15,6 +15,7 @@ import (
 	"devserver/api/internal/deploy"
 	"devserver/api/internal/httpx"
 	"devserver/api/internal/player"
+	"devserver/api/internal/shop"
 	"devserver/api/internal/skills"
 	"devserver/api/internal/world"
 )
@@ -52,6 +53,7 @@ func NewRouter(d Deps) *chi.Mux {
 	}
 	battleH := &battle.Handlers{Pool: d.Pool, Catalog: d.Catalog, Rand: rnd}
 	deployH := &deploy.Handlers{Pool: d.Pool, Catalog: d.Catalog, Logger: d.Logger, Now: now}
+	shopH := &shop.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 
 	r.Get("/api/auth/github/login", h(authH.Login))
 	r.Get("/api/auth/github/callback", h(authH.Callback))
@@ -72,6 +74,14 @@ func NewRouter(d Deps) *chi.Mux {
 		pr.Post("/api/me/battle", h(battleH.Start))
 		pr.Post("/api/me/battle/commands", h(battleH.Command))
 		pr.Post("/api/me/battle/items", h(battleH.Item))
+		pr.Post("/api/me/shop/items/{id}", h(shopH.BuyItem))
+		pr.Post("/api/me/shop/gear/{id}", h(shopH.BuyGear))
+		pr.Post("/api/me/shop/skins/{id}", h(shopH.BuySkin))
+		pr.Post("/api/me/gear/{id}/equip", h(shopH.EquipGear))
+		pr.Post("/api/me/gear/{id}/unequip", h(shopH.UnequipGear))
+		pr.Post("/api/me/skins/{id}/equip", h(shopH.EquipSkin))
+		pr.Post("/api/me/items/{id}/discard", h(shopH.Discard))
+		pr.Post("/api/me/deploys/{type}/boost", h(deployH.Boost))
 	})
 	return r
 }

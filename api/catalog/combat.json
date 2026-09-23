@@ -30,8 +30,9 @@
     { "id": "wild_trace", "name": "STACK TRACE SELVAGEM", "glyph": "{!}", "rarity": "INCOMUM", "description": "Rastro deixado por uma EXCEÇÃO SELVAGEM." },
     { "id": "race_core", "name": "NÚCLEO DE CONCORRÊNCIA", "glyph": "//", "rarity": "RARO", "description": "Núcleo instável dropado pelo chefe RACE CONDITION." },
     { "id": "memory_crystal", "name": "CRISTAL DE MEMÓRIA", "glyph": "^^", "rarity": "LENDÁRIO", "description": "Fragmento cristalizado de um vazamento de memória ancestral." },
-    { "id": "sp_potion", "name": "POÇÃO DE CACHE", "glyph": "++", "rarity": "COMUM", "description": "Restaura 30 SP no Bug Fight.", "restore": { "stat": "sp", "amount": 30 } },
-    { "id": "hp_potion", "name": "POÇÃO DE MEMÓRIA", "glyph": "HP+", "rarity": "COMUM", "description": "Restaura 40 HP no Bug Fight.", "restore": { "stat": "hp", "amount": 40 } }
+    { "id": "sp_potion", "name": "POÇÃO DE CACHE", "glyph": "++", "rarity": "COMUM", "description": "Restaura 30 SP no Bug Fight.", "restore": { "stat": "sp", "amount": 30 }, "price": { "currency": "gems", "amount": 15 } },
+    { "id": "hp_potion", "name": "POÇÃO DE MEMÓRIA", "glyph": "HP+", "rarity": "COMUM", "description": "Restaura 40 HP no Bug Fight.", "restore": { "stat": "hp", "amount": 40 }, "price": { "currency": "gems", "amount": 12 } },
+    { "id": "boost_deploy", "name": "ACELERADOR DE DEPLOY", "glyph": ">>", "rarity": "COMUM", "description": "Reduz 15 minutos de um deploy em andamento.", "price": { "currency": "gems", "amount": 35 } }
   ],
   "rules": {
     "counter": [7, 14],

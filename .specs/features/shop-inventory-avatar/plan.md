@@ -233,6 +233,7 @@ por (jogador, slot) e referencia um `PlayerGear` do mesmo jogador (door 2); `Pla
 | domain | new term: `PlayerSkin` - skins compradas; `default` é implícita |
 | domain | existing term: bônus de combate era a soma das skills (`catalog.SkillBonus`) e passa a ser skills + equipamentos + skin via `player.Bonus` - quem ramifica hoje: `battle` Start (SP máximo) e turno (dano); o HP das skills continua gravado no unlock |
 | domain | existing term: `Item` ganha `price`; `boost_deploy` entra no catálogo sem `restore`, então o Bug Fight continua listando só as duas poções |
+| domain | existing check: bug-fight C37 contava 8 `items`; com `boost_deploy` são 9, e `TestCatalog_ServesCombat` passa a exigir a nona linha `boost_deploy` sem `restore` |
 | stored data | três tabelas novas vazias; nada a migrar; `players.skin` já é `default` para todos |
 | screen | `/loja` e `/avatar` deixam de ser `EM BREVE`: o conjunto do check C28 da foundation fica vazio - o teste de `ComingSoon` passa a cobrir só o componente ou sai no commit que entrega a última cena |
 | screen | `/deploy` ganha o botão de acelerar no cartão do deploy em andamento |

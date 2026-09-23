@@ -97,7 +97,7 @@ func (h *Handlers) Start(w http.ResponseWriter, r *http.Request) error {
 		if !ok {
 			return errors.New("no enemy for region " + p.Region)
 		}
-		spMax := enemy.SP + h.Catalog.SkillBonus(p.Skills, "sp")
+		spMax := enemy.SP + player.Bonus(h.Catalog, p, "sp")
 		st = &State{Region: p.Region, EnemyHP: enemy.HP, EnemyHPMax: enemy.HP, SP: spMax, SPMax: spMax, Status: "active"}
 		return save(ctx, tx, p.ID, st)
 	})
@@ -129,7 +129,7 @@ func (h *Handlers) turn(w http.ResponseWriter, r *http.Request, check func(*play
 			return err
 		}
 		enemy, _ := h.Catalog.Enemy(st.Region)
-		rules := Rules{Combat: h.Catalog.Combat, Enemy: enemy, DamageBonus: h.Catalog.SkillBonus(p.Skills, "dmg")}
+		rules := Rules{Combat: h.Catalog.Combat, Enemy: enemy, DamageBonus: player.Bonus(h.Catalog, p, "dmg")}
 		if out, err = play(tx, p, st, rules); err != nil {
 			return err
 		}

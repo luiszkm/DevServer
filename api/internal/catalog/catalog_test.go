@@ -255,8 +255,10 @@ func TestCatalog_ServesCombat(t *testing.T) {
 		"corrupt_dep|DEPENDÊNCIA CORROMPIDA|!pkg|INCOMUM|", "wild_trace|STACK TRACE SELVAGEM|{!}|INCOMUM|",
 		"race_core|NÚCLEO DE CONCORRÊNCIA|//|RARO|", "memory_crystal|CRISTAL DE MEMÓRIA|^^|LENDÁRIO|",
 		"sp_potion|POÇÃO DE CACHE|++|COMUM|sp 30", "hp_potion|POÇÃO DE MEMÓRIA|HP+|COMUM|hp 40",
+		// shop-inventory-avatar AC 1 adds the deploy booster, which restores nothing in combat.
+		"boost_deploy|ACELERADOR DE DEPLOY|>>|COMUM|",
 	}
-	if len(b.Items) != 8 {
+	if len(b.Items) != len(items) {
 		t.Fatalf("items = %d", len(b.Items))
 	}
 	for i, it := range b.Items {
@@ -273,5 +275,135 @@ func TestCatalog_ServesCombat(t *testing.T) {
 		r.Victory.Gems != 1 || r.DropChance != 65 || r.PotionChance != 30 || r.Potion != "sp_potion" ||
 		len(r.StartingItems) != 1 || r.StartingItems[0].Item != "sp_potion" || r.StartingItems[0].Quantity != 2 {
 		t.Errorf("combat rules = %+v", r)
+	}
+}
+
+// C1
+func TestCatalog_ServesShop(t *testing.T) {
+	env := apptest.New(t)
+	type price struct {
+		Currency string `json:"currency"`
+		Amount   int    `json:"amount"`
+	}
+	type bonus struct {
+		Type   string `json:"type"`
+		Amount int    `json:"amount"`
+	}
+	var b struct {
+		GearSlots []struct{ ID, Name string } `json:"gearSlots"`
+		Gear      []struct {
+			ID, Name, Glyph, Slot, Rarity, Description string
+			Price                                      *price
+			Bonus                                      *bonus
+		} `json:"gear"`
+		Skins []struct {
+			ID, Name, Rarity, Description, Filter string
+			Price                                 *price
+			Bonus                                 *bonus
+		} `json:"skins"`
+		Items []struct {
+			ID, Name, Glyph, Rarity string
+			Price                   *price
+		} `json:"items"`
+	}
+	rec := env.Do(http.MethodGet, "/api/catalog", nil)
+	if err := json.Unmarshal(rec.Body.Bytes(), &b); err != nil {
+		t.Fatal(err)
+	}
+	var raw struct {
+		Skins []map[string]json.RawMessage `json:"skins"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &raw); err != nil {
+		t.Fatal(err)
+	}
+
+	slots := []string{"setup|CONFIGURAÇÃO", "bebida|BEBIDA", "vestuario|VESTUÁRIO", "acessorio|ACESSÓRIO"}
+	if len(b.GearSlots) != len(slots) {
+		t.Fatalf("gearSlots = %d, want 4", len(b.GearSlots))
+	}
+	for i, s := range b.GearSlots {
+		if got := s.ID + "|" + s.Name; got != slots[i] {
+			t.Errorf("slot %d = %s, want %s", i, got, slots[i])
+		}
+	}
+
+	gear := []string{
+		"macbook|MACBOOK PRO|setup|RARO|gems 120|dmg 8",
+		"monitor|MONITOR ULTRAWIDE|setup|LENDÁRIO|gems 200|sp 20",
+		"cafe|CAFÉ EXPRESSO|bebida|COMUM|coins 50|sp 12",
+		"moletom|MOLETOM CONFORTÁVEL|vestuario|COMUM|coins 70|hp 15",
+		"cadeira|CADEIRA ERGONÔMICA|vestuario|RARO|gems 150|hp 30",
+		"fone|FONE COM CANCELAMENTO|acessorio|INCOMUM|gems 90|dmg 6",
+	}
+	if len(b.Gear) != len(gear) {
+		t.Fatalf("gear = %d, want 6", len(b.Gear))
+	}
+	for i, g := range b.Gear {
+		if g.Price == nil || g.Bonus == nil {
+			t.Errorf("gear %s lacks price or bonus", g.ID)
+			continue
+		}
+		got := fmt.Sprintf("%s|%s|%s|%s|%s %d|%s %d", g.ID, g.Name, g.Slot, g.Rarity, g.Price.Currency, g.Price.Amount, g.Bonus.Type, g.Bonus.Amount)
+		if got != gear[i] || g.Glyph == "" || g.Description == "" {
+			t.Errorf("gear %d = %s (glyph %q), want %s", i, got, g.Glyph, gear[i])
+		}
+	}
+
+	skins := []string{
+		"default|DEV PADRÃO|PADRÃO|gems 0|-",
+		"neon|DEV NEON|INCOMUM|gems 60|dmg 5",
+		"shadow|DEV SOMBRIO|RARO|gems 80|sp 10",
+		"golden|DEV DOURADO|LENDÁRIO|gems 150|hp 20",
+	}
+	if len(b.Skins) != len(skins) {
+		t.Fatalf("skins = %d, want 4", len(b.Skins))
+	}
+	for i, s := range b.Skins {
+		bonusTxt := "-"
+		if s.Bonus != nil {
+			bonusTxt = fmt.Sprintf("%s %d", s.Bonus.Type, s.Bonus.Amount)
+		}
+		if s.Price == nil {
+			t.Errorf("skin %s lacks price", s.ID)
+			continue
+		}
+		got := fmt.Sprintf("%s|%s|%s|%s %d|%s", s.ID, s.Name, s.Rarity, s.Price.Currency, s.Price.Amount, bonusTxt)
+		if got != skins[i] || s.Description == "" {
+			t.Errorf("skin %d = %s, want %s", i, got, skins[i])
+		}
+		if s.ID == "default" {
+			if s.Filter != "none" {
+				t.Errorf("default filter = %q, want none", s.Filter)
+			}
+			if string(raw.Skins[i]["bonus"]) != "null" {
+				t.Errorf("default bonus = %s, want null", raw.Skins[i]["bonus"])
+			}
+		} else if s.Filter == "" || s.Filter == "none" {
+			t.Errorf("skin %s filter = %q, want a CSS filter", s.ID, s.Filter)
+		}
+	}
+
+	prices := map[string]string{"sp_potion": "gems 15", "hp_potion": "gems 12", "boost_deploy": "gems 35"}
+	seen := map[string]bool{}
+	for _, it := range b.Items {
+		want, priced := prices[it.ID]
+		switch {
+		case priced && (it.Price == nil || fmt.Sprintf("%s %d", it.Price.Currency, it.Price.Amount) != want):
+			t.Errorf("item %s price = %+v, want %s", it.ID, it.Price, want)
+		case it.ID == "null_shard" && it.Price != nil:
+			t.Errorf("null_shard price = %+v, want none", it.Price)
+		}
+		if it.ID == "boost_deploy" && (it.Name != "ACELERADOR DE DEPLOY" || it.Glyph != ">>" || it.Rarity != "COMUM") {
+			t.Errorf("boost_deploy = %+v", it)
+		}
+		seen[it.ID] = true
+	}
+	for id := range prices {
+		if !seen[id] {
+			t.Errorf("item %s missing", id)
+		}
+	}
+	if !seen["null_shard"] {
+		t.Error("null_shard missing")
 	}
 }

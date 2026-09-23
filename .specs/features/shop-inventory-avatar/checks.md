@@ -169,33 +169,33 @@ Proof: `cd api && go test ./internal/shop -run '^TestMigration_ExistingPlayers$'
 
 ## Progress
 
-- [ ] C1
-- [ ] C2
-- [ ] C3
-- [ ] C4
-- [ ] C5
-- [ ] C6
-- [ ] C7
-- [ ] C8
-- [ ] C9
-- [ ] C10
-- [ ] C11
-- [ ] C12
-- [ ] C13
-- [ ] C14
-- [ ] C15
-- [ ] C16
-- [ ] C17
-- [ ] C18
-- [ ] C19
-- [ ] C20
-- [ ] C21
-- [ ] C22
-- [ ] C23
-- [ ] C24
-- [ ] C25
-- [ ] C26
-- [ ] C27
+- [x] C1
+- [x] C2
+- [x] C3
+- [x] C4
+- [x] C5
+- [x] C6
+- [x] C7
+- [x] C8
+- [x] C9
+- [x] C10
+- [x] C11
+- [x] C12
+- [x] C13
+- [x] C14
+- [x] C15
+- [x] C16
+- [x] C17
+- [x] C18
+- [x] C19
+- [x] C20
+- [x] C21
+- [x] C22
+- [x] C23
+- [x] C24
+- [x] C25
+- [x] C26
+- [x] C27
 - [ ] C28
 - [ ] C29
 - [ ] C30
@@ -215,7 +215,7 @@ Proof: `cd api && go test ./internal/shop -run '^TestMigration_ExistingPlayers$'
 - [ ] C44
 - [ ] C45
 - [ ] C46
-- [ ] C47
+- [x] C47
 
 ## Coverage
 

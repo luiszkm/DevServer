@@ -86,6 +86,12 @@ type Restore struct {
 	Amount int    `json:"amount"`
 }
 
+// Price is what the shop charges; Currency is "gems" or "coins".
+type Price struct {
+	Currency string `json:"currency"`
+	Amount   int    `json:"amount"`
+}
+
 type Item struct {
 	ID          string   `json:"id"`
 	Name        string   `json:"name"`
@@ -93,6 +99,35 @@ type Item struct {
 	Rarity      string   `json:"rarity"`
 	Description string   `json:"description"`
 	Restore     *Restore `json:"restore,omitempty"`
+	// Price is nil for items the shop does not sell (drops).
+	Price *Price `json:"price,omitempty"`
+}
+
+type GearSlot struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type Gear struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Glyph       string `json:"glyph"`
+	Slot        string `json:"slot"`
+	Rarity      string `json:"rarity"`
+	Description string `json:"description"`
+	Price       Price  `json:"price"`
+	Bonus       Bonus  `json:"bonus"`
+}
+
+type Skin struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Rarity      string `json:"rarity"`
+	Description string `json:"description"`
+	Filter      string `json:"filter"`
+	Price       Price  `json:"price"`
+	// Bonus is nil for a skin without an attribute bonus.
+	Bonus *Bonus `json:"bonus"`
 }
 
 type ItemQuantity struct {
@@ -125,6 +160,9 @@ type Catalog struct {
 	Commands     []Command
 	Items        []Item
 	Combat       CombatRules
+	GearSlots    []GearSlot
+	Gear         []Gear
+	Skins        []Skin
 	body         []byte
 }
 
@@ -193,6 +231,20 @@ func Load() (*Catalog, error) {
 	}
 	c.Enemies, c.Commands, c.Items, c.Combat = combat.Enemies, combat.Commands, combat.Items, combat.Rules
 
+	raw, err = data.Files.ReadFile("shop.json")
+	if err != nil {
+		return nil, err
+	}
+	var shop struct {
+		Slots []GearSlot `json:"slots"`
+		Gear  []Gear     `json:"gear"`
+		Skins []Skin     `json:"skins"`
+	}
+	if err := json.Unmarshal(raw, &shop); err != nil {
+		return nil, fmt.Errorf("shop.json: %w", err)
+	}
+	c.GearSlots, c.Gear, c.Skins = shop.Slots, shop.Gear, shop.Skins
+
 	c.body, err = json.Marshal(struct {
 		Version      string        `json:"version"`
 		Regions      []Region      `json:"regions"`
@@ -203,7 +255,11 @@ func Load() (*Catalog, error) {
 		Commands     []Command     `json:"commands"`
 		Items        []Item        `json:"items"`
 		Combat       CombatRules   `json:"combat"`
-	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees, c.Enemies, c.Commands, c.Items, c.Combat})
+		GearSlots    []GearSlot    `json:"gearSlots"`
+		Gear         []Gear        `json:"gear"`
+		Skins        []Skin        `json:"skins"`
+	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees, c.Enemies, c.Commands, c.Items, c.Combat,
+		c.GearSlots, c.Gear, c.Skins})
 	if err != nil {
 		return nil, err
 	}
@@ -301,6 +357,44 @@ func (c *Catalog) ItemPosition(id string) int {
 		}
 	}
 	return len(c.Items)
+}
+
+func (c *Catalog) GearItem(id string) (Gear, bool) {
+	for _, g := range c.Gear {
+		if g.ID == id {
+			return g, true
+		}
+	}
+	return Gear{}, false
+}
+
+// GearPosition orders gear ids as the catalog lists them; unknown ids sort last.
+func (c *Catalog) GearPosition(id string) int {
+	for i, g := range c.Gear {
+		if g.ID == id {
+			return i
+		}
+	}
+	return len(c.Gear)
+}
+
+func (c *Catalog) Skin(id string) (Skin, bool) {
+	for _, s := range c.Skins {
+		if s.ID == id {
+			return s, true
+		}
+	}
+	return Skin{}, false
+}
+
+// SkinPosition orders skin ids as the catalog lists them; unknown ids sort last.
+func (c *Catalog) SkinPosition(id string) int {
+	for i, s := range c.Skins {
+		if s.ID == id {
+			return i
+		}
+	}
+	return len(c.Skins)
 }
 
 // SkillBonus sums the bonus of one type ("hp", "sp", "dmg") over the given skill ids.

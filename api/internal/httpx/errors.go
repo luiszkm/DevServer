@@ -47,6 +47,15 @@ var (
 	ErrNoItem             = &Error{http.StatusConflict, "no_item", "você não tem este item"}
 	ErrUnknownCommand     = &Error{http.StatusUnprocessableEntity, "unknown_command", "comando desconhecido"}
 	ErrUnknownItem        = &Error{http.StatusUnprocessableEntity, "unknown_item", "item desconhecido ou não usável em combate"}
+	ErrUnknownShopItem    = &Error{http.StatusUnprocessableEntity, "unknown_item", "item desconhecido"}
+	ErrNotEnoughGems      = &Error{http.StatusConflict, "not_enough_gems", "gems insuficientes"}
+	ErrNotEnoughCoins     = &Error{http.StatusConflict, "not_enough_coins", "coins insuficientes"}
+	ErrAlreadyOwned       = &Error{http.StatusConflict, "already_owned", "você já possui este item"}
+	ErrNotForSale         = &Error{http.StatusUnprocessableEntity, "not_for_sale", "este item não está à venda"}
+	ErrUnknownGear        = &Error{http.StatusUnprocessableEntity, "unknown_gear", "equipamento desconhecido"}
+	ErrUnknownSkin        = &Error{http.StatusUnprocessableEntity, "unknown_skin", "skin desconhecida"}
+	ErrNotOwned           = &Error{http.StatusConflict, "not_owned", "você não possui este item. compre na Loja"}
+	ErrDeployReady        = &Error{http.StatusConflict, "deploy_ready", "o deploy já terminou. colete a recompensa"}
 )
 
 type envelope struct {
