@@ -125,6 +125,7 @@ func loadInventory(ctx context.Context, q querier, p *Player) error {
 	if err != nil {
 		return err
 	}
+	// Order follows the embedded catalog, like SortSkills, not a catalog injected into the router.
 	cat := catalog.Default()
 	sort.SliceStable(items, func(i, j int) bool { return cat.ItemPosition(items[i].Item) < cat.ItemPosition(items[j].Item) })
 	p.Inventory = items

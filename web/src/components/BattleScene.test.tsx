@@ -60,6 +60,23 @@ describe("BattleScene", () => {
     expect(document.querySelector('[data-command="b2"]')).toBeNull();
   });
 
+  // C57
+  it("SP equal to cost pays", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ sp: 10 })) });
+    renderScene();
+    await screen.findByLabelText("inimigo");
+    for (const id of ["fix", "test"]) expect(command(id)).toBeEnabled();
+    expect(command("refactor")).toBeDisabled();
+  });
+
+  // C58
+  it("active fight hides new encounter", async () => {
+    mockFetch({ "POST /api/me/battle": startWith() });
+    renderScene();
+    await screen.findByLabelText("inimigo");
+    expect(screen.queryByRole("button", { name: "NOVO ENCONTRO" })).toBeNull();
+  });
+
   // C43
   it("shows hero bars and potions", async () => {
     const p = player({ hp: 80, hpMax: 100, inventory: [{ item: "sp_potion", quantity: 2 }] });

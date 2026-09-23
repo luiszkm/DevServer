@@ -100,7 +100,9 @@ func (b *SyncBuffer) String() string {
 
 func New(t testing.TB) *Env { return NewWithCatalog(t, nil) }
 
-// NewWithCatalog lets a test change the balance data the router serves and uses.
+// NewWithCatalog lets a test change the catalog that handlers receive through app.Deps.
+// GET /api/catalog keeps serving the embedded data (its body is marshalled by catalog.Load),
+// and inventory and skill order keep following catalog.Default().
 func NewWithCatalog(t testing.TB, edit func(*catalog.Catalog)) *Env {
 	t.Helper()
 	pool := testdb.New(t)

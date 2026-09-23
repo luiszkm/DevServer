@@ -187,6 +187,12 @@ Proof: `cd api && go test ./internal/battle -run '^TestLockedMutation_InventoryL
 **C56** - Com um catálogo de teste em que `startingItems` = `hp_potion` × 3 e `sp_potion` × 1, um jogador novo recebe exatamente esse inventário, na ordem do catálogo (FIGHT-03, AC 29; door 4a)
 Proof: `cd api && go test ./internal/battle -run '^TestCreatePlayer_StartingItemsFromCatalog$'`
 
+**C57** - Com SP 10, FIX (`10 SP`) fica habilitado e TEST (`8 SP`) também; REFACTOR (`14 SP`) fica desabilitado: SP igual ao custo paga o comando (FIGHT-04, AC 31)
+Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "SP equal to cost pays"`
+
+**C58** - Com o combate ativo, a cena não exibe `NOVO ENCONTRO` (FIGHT-04, AC 35, AC 36)
+Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "active fight hides new encounter"`
+
 ## Progress
 
 - [x] C1
@@ -245,6 +251,8 @@ Proof: `cd api && go test ./internal/battle -run '^TestCreatePlayer_StartingItem
 - [x] C54
 - [x] C55
 - [x] C56
+- [x] C57
+- [x] C58
 
 ## Coverage
 
@@ -267,6 +275,8 @@ Proof: `cd api && go test ./internal/battle -run '^TestCreatePlayer_StartingItem
 | usable items (2) | `sp_potion` C31 · `hp_potion` C31 | - |
 | event types on screen (14) | C44, table-driven over all 14 | - |
 | screen end states (2) | vencido C46 · encerrado C47 | - |
+| command button enabled vs SP, AC 31 (3) | SP > custo C42 · SP == custo C57 · SP < custo C42, C57 | - |
+| `NOVO ENCONTRO` visibility by screen state (3) | ativo C58 · vencido C46 · encerrado C47 | - |
 | turn outcomes on screen (4) | 200 C45 · erro com mensagem C49 · sem corpo C49 · rede C49 | - |
 | start outcomes on screen (3) | pendente C50 · 5xx C50 · rede C50 | - |
 | Landing doors (10) | 1 C36 · 1a C11 · 2 C36 · 3 C7 · 3a C25 · 4 C37 · 4a C37, C56 · 5 C14 · 6 C15 · 7 C1 | - |
@@ -290,7 +300,7 @@ Evidence:
 
 - turn rules (`battle.ApplyCommand`, `EndTurn`): dano, fraqueza, bônus, cura, escudo, SP, contra-ataque, vitória, derrota -> decides, own layer C25 and boundary C7–C31
 - handler guards: combate existe, vencido, skill, SP, item -> decides, boundary C15–C19, C32, C33
-- `BattleScene`: comandos, custos, poções, log, estados de fim -> decides at screen level (C41–C52)
+- `BattleScene`: comandos, custos, poções, log, estados de fim -> decides at screen level (C41–C52, C57, C58)
 - closest analogue: `api/internal/deploy` (guards inside `WithLocked`, injected clock) and `player.GainXP` (own layer + boundary)
 
 ## Swept
@@ -328,3 +338,9 @@ Round 3 (after verification round 2 FAIL):
 - **Boundary:** C55 extended to a guard-first route and the logged cause (kills the inventory-load survivor); C37 asserts `combat.startingItems`; C56 proves creation reads the starting items from the catalog; `player.Handlers` receives the catalog instead of `catalog.Default()`, and `apptest.NewWithCatalog` lets a test change it
 - **Settled mid-build:** none
 - **Abandoned:** the round-2 "equivalent mutant" note, which the Verifier showed false
+
+Round 4 (after verification round 3 FAIL):
+
+- **Boundary:** C57 pins the AC 31 boundary SP == cost (kills the `<=` survivor F4); C58 asserts `NOVO ENCONTRO` is absent during an active fight (kills the always-rendered survivor F5); coverage gains both sweep rows
+- **Settled mid-build:** the two round-3 notes are resolved by documenting the real reach of a test catalog, not by threading it further: `apptest.NewWithCatalog` changes the catalog handlers receive through `app.Deps`, while `GET /api/catalog` and inventory order stay on the embedded data (`loadInventory` orders by `catalog.Default()`, same as `SortSkills`); no check relies on either
+- **Abandoned:** none
