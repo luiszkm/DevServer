@@ -267,6 +267,7 @@ Marcado antes do commit que satisfaz o check.
 | HUD fields (6) | `LEVEL` C23 · XP C23 · HP C23 · `COINS` C23 · `GEMS` C23 · `SKILL PTS` C23 | - |
 | tabs (7) | C26, table-driven over all 7 | - |
 | unshipped scenes (5) | C28, table-driven over all 5 | - |
+| unshipped scenes after deploy-pipelines (4) | C28, table-driven over all 4; `/deploy` moved to deploy-pipelines C23 | - |
 | title signs (4) | C29, table-driven over all 4 | - |
 | regions (6) | C31, table-driven over all 6 | - |
 | region lock at level 1 (6) | C34, table-driven over all 6 | - |

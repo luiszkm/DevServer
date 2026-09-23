@@ -93,9 +93,9 @@ tempo real e coleta XP, coins e gems; ao acumular XP ele sobe de nível, ganha s
 
 | ID | Slice | Criteria | Status |
 | --- | --- | --- | --- |
-| DEPLOY-01 | S1 | 1, 2, 3, 4, 5, 6, 7 | Pending |
-| DEPLOY-02 | S2 | 8, 9, 10, 11, 12, 13, 14, 15, 16 | Pending |
-| DEPLOY-03 | S3 | 17, 18, 19, 20, 21, 22, 23, 24, 25 | Pending |
+| DEPLOY-01 | S1 | 1, 2, 3, 4, 5, 6, 7 | Verified |
+| DEPLOY-02 | S2 | 8, 9, 10, 11, 12, 13, 14, 15, 16 | Verified |
+| DEPLOY-03 | S3 | 17, 18, 19, 20, 21, 22, 23, 24, 25 | Verified |
 
 ## Observable
 

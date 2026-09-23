@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 7,
+  "next_id": 10,
   "lessons": [
     {
       "id": "L-001",
@@ -112,6 +112,60 @@
       ],
       "created": "2026-09-23T18:09:49Z",
       "last_seen": "2026-09-23T18:09:49Z"
+    },
+    {
+      "id": "L-007",
+      "key": "surviving_mutant::assert every field a landing door fixes for a catalog entry id name glyph not only the ids",
+      "text": "Assert every field a Landing door fixes for a catalog entry (id, name, glyph), not only the ids.",
+      "signal": "surviving_mutant",
+      "scope": "api/catalog",
+      "status": "candidate",
+      "features": [
+        "deploy-pipelines"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/catalog/catalog.go:27 (api/catalog)"
+      ],
+      "created": "2026-09-23T19:27:55Z",
+      "last_seen": "2026-09-23T19:27:55Z"
+    },
+    {
+      "id": "L-008",
+      "key": "ac_gap::every json route owes its own invalid body proof door 12 is per route not proven once for the api",
+      "text": "Every JSON route owes its own invalid_body proof; door 12 is per route, not proven once for the api.",
+      "signal": "ac_gap",
+      "scope": "api/httpx",
+      "status": "candidate",
+      "features": [
+        "deploy-pipelines"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/deploy/deploy.go:83 (api/httpx)"
+      ],
+      "created": "2026-09-23T19:27:55Z",
+      "last_seen": "2026-09-23T19:27:55Z"
+    },
+    {
+      "id": "L-009",
+      "key": "surviving_mutant::threshold tables need cases exactly at each boundary 25 50 75 remaining 0 not only mid band values",
+      "text": "Threshold tables need cases exactly at each boundary (25/50/75%, remaining = 0), not only mid-band values.",
+      "signal": "surviving_mutant",
+      "scope": "web/screens",
+      "status": "candidate",
+      "features": [
+        "deploy-pipelines"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "web/src/components/DeployScene.tsx:192 (web/screens)"
+      ],
+      "created": "2026-09-23T19:27:55Z",
+      "last_seen": "2026-09-23T19:27:55Z"
     }
   ]
 }

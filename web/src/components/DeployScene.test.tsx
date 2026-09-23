@@ -118,7 +118,7 @@ describe("DeployScene", () => {
     expect(within(panel()).getByText("CARREGANDO...")).toBeInTheDocument();
   });
 
-  it("leaves type statuses blank while the list loads", () => {
+  it("shows blank statuses while the list loads", () => {
     vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
     renderScene();
     for (const t of CATALOG.deployTypes) {

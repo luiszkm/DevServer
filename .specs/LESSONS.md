@@ -50,6 +50,24 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: web/src/components/Onboarding.tsx:75,82 (web/screens)
 - last seen: 2026-09-23T18:09:49Z
 
+### L-007 - Assert every field a Landing door fixes for a catalog entry (id, name, glyph), not only the ids.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `api/catalog` · harmful: 0
+- features: deploy-pipelines
+- evidence: api/internal/catalog/catalog.go:27 (api/catalog)
+- last seen: 2026-09-23T19:27:55Z
+
+### L-008 - Every JSON route owes its own invalid_body proof; door 12 is per route, not proven once for the api.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `api/httpx` · harmful: 0
+- features: deploy-pipelines
+- evidence: api/internal/deploy/deploy.go:83 (api/httpx)
+- last seen: 2026-09-23T19:27:55Z
+
+### L-009 - Threshold tables need cases exactly at each boundary (25/50/75%, remaining = 0), not only mid-band values.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `web/screens` · harmful: 0
+- features: deploy-pipelines
+- evidence: web/src/components/DeployScene.tsx:192 (web/screens)
+- last seen: 2026-09-23T19:27:55Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

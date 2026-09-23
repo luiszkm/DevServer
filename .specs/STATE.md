@@ -17,10 +17,10 @@
 
 ## Handoff
 
-**Feature**: deploy-pipelines
-**Where**: C1–C38 fechados, todos os proofs verdes com exit 0; falta o Verifier independente
+**Feature**: deploy-pipelines - VERIFIED (round 2 PASS, `validate_verification.py` exit 0)
+**Where**: C1–C39 provados; foundation também VERIFIED
 **In progress**: nenhum
-**Next step**: Verifier fresco sobre `00411c5..HEAD` com todos os checks
-**Blockers**: none
+**Next step**: `plan.md` da feature `skills`
+**Blockers**: none (pergunta aberta 1 da foundation - LGPD - bloqueia go-live)
 **Uncommitted**: none
-**Branch**: feat/deploy-pipelines (empilhada sobre feat/foundation)
+**Branch**: feat/deploy-pipelines (empilhada sobre feat/foundation, sem push)
