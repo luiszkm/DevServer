@@ -68,4 +68,43 @@ describe("Onboarding other outcomes", () => {
     const body = JSON.parse(f.fn.mock.calls.find(([u]) => String(u) === "/api/players")![1]!.body as string);
     expect(body).toEqual({ devName: "NEO", class: "DEVOPS" });
   });
+
+  it("shows CARREGANDO... while onboarding data loads", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
+    render(<Onboarding onCreated={vi.fn()} />);
+    expect(screen.getByText("CARREGANDO...")).toBeInTheDocument();
+    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+  });
+
+  it("shows SERVIDOR FORA DO AR when onboarding data hits a network error", async () => {
+    mockFetch({ "GET /api/onboarding": () => Promise.reject(new TypeError("Failed to fetch")) });
+    render(<Onboarding onCreated={vi.fn()} />);
+    expect(await screen.findByText("SERVIDOR FORA DO AR")).toBeInTheDocument();
+    expect(screen.queryByText("CARREGANDO...")).not.toBeInTheDocument();
+  });
+
+  it("falls back to a generic message when a load error has no body", async () => {
+    mockFetch({ "GET /api/onboarding": new Response(null, { status: 502 }) });
+    render(<Onboarding onCreated={vi.fn()} />);
+    expect(await screen.findByText("erro ao carregar")).toBeInTheDocument();
+  });
+
+  it("shows SERVIDOR FORA DO AR when create hits a network error and allows retry", async () => {
+    mockFetch({ "GET /api/onboarding": ONB, "POST /api/players": () => Promise.reject(new TypeError("Failed to fetch")) });
+    const onCreated = vi.fn();
+    render(<Onboarding onCreated={onCreated} />);
+    await userEvent.click(await screen.findByRole("button", { name: "BACKEND" }));
+    await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
+    expect(await screen.findByText("SERVIDOR FORA DO AR")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "CRIAR DEV" })).toBeEnabled();
+    expect(onCreated).not.toHaveBeenCalled();
+  });
+
+  it("falls back to a generic message when a create error has no body", async () => {
+    mockFetch({ "GET /api/onboarding": ONB, "POST /api/players": new Response(null, { status: 502 }) });
+    render(<Onboarding onCreated={vi.fn()} />);
+    await userEvent.click(await screen.findByRole("button", { name: "BACKEND" }));
+    await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
+    expect(await screen.findByText("erro ao criar dev")).toBeInTheDocument();
+  });
 });

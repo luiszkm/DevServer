@@ -25,6 +25,7 @@ type Server struct {
 	failToken bool
 	failUser  bool
 	userBody  string
+	dropUser  bool
 	mux       *http.ServeMux
 }
 
@@ -70,6 +71,13 @@ func (s *Server) FailToken(v bool) {
 func (s *Server) FailUser(v bool) {
 	s.mu.Lock()
 	s.failUser = v
+	s.mu.Unlock()
+}
+
+// DropUserConnection makes GET /user close the connection without answering (transport error).
+func (s *Server) DropUserConnection(v bool) {
+	s.mu.Lock()
+	s.dropUser = v
 	s.mu.Unlock()
 }
 
@@ -119,6 +127,14 @@ func (s *Server) accessToken(w http.ResponseWriter, r *http.Request) {
 func (s *Server) user(w http.ResponseWriter, r *http.Request) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	if s.dropUser {
+		if hj, ok := w.(http.Hijacker); ok {
+			if conn, _, err := hj.Hijack(); err == nil {
+				_ = conn.Close()
+				return
+			}
+		}
+	}
 	if s.failUser {
 		http.Error(w, "user failure", http.StatusInternalServerError)
 		return

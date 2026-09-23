@@ -16,9 +16,9 @@
 ## Handoff
 
 **Feature**: foundation
-**Where**: C1–C47 fechados, todos os proofs verdes; falta o Verifier independente
+**Where**: C1–C50 fechados; rounds 1 e 2 do Verifier FAIL, correções do round 3 aplicadas
 **In progress**: nenhum
-**Next step**: orquestrador despacha Verifier fresco sobre `591b2c4..HEAD` com todos os checks
+**Next step**: Verifier round 3 (último antes de escalar ao usuário)
 **Blockers**: none (pergunta aberta 1 - LGPD - bloqueia go-live)
 **Uncommitted**: none
 **Branch**: feat/foundation

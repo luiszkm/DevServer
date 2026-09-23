@@ -27,4 +27,11 @@ describe("Hud", () => {
     expect(within(hud).getByText("CARREGANDO...")).toBeInTheDocument();
     expect(hud.textContent).not.toMatch(/\d/);
   });
+
+  it("shows SAIR only when a logout handler is given", () => {
+    const { rerender } = render(<Hud player={player()} />);
+    expect(screen.queryByRole("button", { name: "SAIR" })).not.toBeInTheDocument();
+    rerender(<Hud player={player()} onLogout={vi.fn()} />);
+    expect(screen.getByRole("button", { name: "SAIR" })).toBeInTheDocument();
+  });
 });

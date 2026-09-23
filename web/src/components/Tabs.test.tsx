@@ -20,4 +20,12 @@ describe("Tabs", () => {
       ["AVATAR", "/avatar"],
     ]);
   });
+
+  it("marks only the current route's tab as current", () => {
+    render(<Tabs />);
+    const current = within(screen.getByRole("navigation", { name: "Cenas" }))
+      .getAllByRole("link")
+      .filter((l) => l.getAttribute("aria-current") === "page");
+    expect(current.map((l) => l.getAttribute("href"))).toEqual(["/mundo"]);
+  });
 });

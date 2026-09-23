@@ -244,7 +244,7 @@ Marcado antes do commit que satisfaz o check.
 | `POST /api/players` statuses (5) | 201 C14 · 401 C9 · 409 C16 · 422 C15 · 500 C49 | - |
 | `GET /api/catalog` statuses (2) | 200 C31 · 304 C32 | - |
 | `POST /api/me/travel` statuses (5) | 200 C35 · 401 C9 · 404 C38 · 422 C36 · 500 C49 | - |
-| callback failure paths (8) | state ausente C4 · cookie ausente C4 · state diferente C4 · troca do code C5 · `GET /user` falha C5 · corpo não-JSON C5 · sem id C5 · sem login C5 | - |
+| callback failure paths (9) | state ausente C4 · cookie ausente C4 · state diferente C4 · troca do code C5 · `GET /user` inalcançável C5 · `GET /user` falha C5 · corpo não-JSON C5 · sem id C5 · sem login C5 | - |
 | session age boundary (2) | 2591999 s C10 · 2592001 s C10 | - |
 | protected routes (5) | C9, table-driven over all 5 | - |
 | error codes (9) | C41, table-driven over all 9 | - |
@@ -319,4 +319,10 @@ Round 2 (after verification round 1 FAIL):
 
 - **Boundary:** C48-C50 added for door 12 and AC 38 paths the round-1 Verifier found unproven; C2, C5, C10, C19 tests strengthened (no assertion weakened); extra screen tests for the Test policy rows
 - **Settled mid-build:** callback `500` added to the plan's `Surface`
+- **Abandoned:** none
+
+Round 3 (after verification round 2 FAIL):
+
+- **Boundary:** C5 gains the `GET /user` transport-error member; `Handle` proven not to log expected errors; every remaining screen branch in `GameShell`, `Onboarding`, `WorldScene`, `Hud`, `Tabs` has an asserted case; 15 self-mutations run over the new tests, all killed
+- **Settled mid-build:** none
 - **Abandoned:** none

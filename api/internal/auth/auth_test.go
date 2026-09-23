@@ -126,6 +126,7 @@ func TestCallback_GithubFailure(t *testing.T) {
 	cases := map[string]func(*fakegithub.Server){
 		"code exchange fails":     func(f *fakegithub.Server) { f.FailToken(true) },
 		"GET /user fails":         func(f *fakegithub.Server) { f.FailUser(true) },
+		"GET /user unreachable":   func(f *fakegithub.Server) { f.DropUserConnection(true) },
 		"GET /user body not JSON": func(f *fakegithub.Server) { f.SetUserBody("<html>") },
 		"GET /user without id":    func(f *fakegithub.Server) { f.SetUserBody(`{"login":"u"}`) },
 		"GET /user without login": func(f *fakegithub.Server) { f.SetUserBody(`{"id":7}`) },

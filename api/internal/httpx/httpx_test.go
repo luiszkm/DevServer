@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 
@@ -147,5 +148,27 @@ func TestHandlerError_Returns500AndLogsRequestID(t *testing.T) {
 		if id == "" || !strings.Contains(env.Logs.String(), `"request_id":"`+id+`"`) {
 			t.Errorf("%s %s: log lacks request id %q: %s", rt.method, rt.path, id, env.Logs.String())
 		}
+	}
+}
+
+// Handle logs only unexpected errors: an api error the client caused stays out of the log.
+func TestHandle_DoesNotLogExpectedErrors(t *testing.T) {
+	env := apptest.New(t)
+	c := env.NewPlayer(1, "DEV_01", "BACKEND")
+	before := env.Logs.String()
+	for _, rec := range []*httptest.ResponseRecorder{
+		env.Do(http.MethodPost, "/api/me/travel", map[string]string{"region": "caverna"}, c),
+		env.Do(http.MethodPost, "/api/me/travel", map[string]string{"region": "marte"}, c),
+		env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "OTHER", "class": "BACKEND"}, c),
+	} {
+		if rec.Code < 400 || rec.Code >= 500 {
+			t.Fatalf("setup: expected a 4xx, got %d", rec.Code)
+		}
+		if id := rec.Header().Get(httpx.RequestIDHeader); strings.Contains(env.Logs.String(), id) {
+			t.Errorf("expected error %s was logged: %s", apptest.ErrorCode(t, rec), env.Logs.String())
+		}
+	}
+	if env.Logs.String() != before {
+		t.Errorf("log grew on expected errors: %s", strings.TrimPrefix(env.Logs.String(), before))
 	}
 }

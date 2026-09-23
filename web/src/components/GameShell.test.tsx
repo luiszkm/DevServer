@@ -76,4 +76,48 @@ describe("GameShell", () => {
     expect(await screen.findByText("SERVIDOR FORA DO AR")).toBeInTheDocument();
     expect(screen.queryByText("cena")).not.toBeInTheDocument();
   });
+
+  const onboardingRoutes = {
+    "GET /api/me": json(404, { error: { code: "player_not_found", message: "x" } }),
+    "GET /api/onboarding": json(200, { suggestedDevName: "NEO", classes: ["FRONTEND", "BACKEND", "DEVOPS", "FULLSTACK"] }),
+    "POST /api/players": json(201, { player: player({ devName: "NEO" }) }),
+  };
+  async function createDev() {
+    await userEvent.click(await screen.findByRole("button", { name: "BACKEND" }));
+    await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
+  }
+
+  it("enters the game after onboarding creates the dev", async () => {
+    mockFetch({ ...onboardingRoutes, "GET /api/catalog": json(200, CATALOG) });
+    render(<GameShell><p>cena</p></GameShell>);
+    await createDev();
+    expect(await screen.findByText("cena")).toBeInTheDocument();
+    expect(within(screen.getByRole("contentinfo", { name: "HUD" })).getByText("NEO")).toBeInTheDocument();
+  });
+
+  it.each([
+    ["catalog 500", () => json(500, { error: { code: "internal", message: "x" } })],
+    ["catalog network error", () => Promise.reject(new TypeError("Failed to fetch"))],
+  ])("catalog failure after onboarding shows server down (%s)", async (_name, failure) => {
+    mockFetch({ ...onboardingRoutes, "GET /api/catalog": failure as () => Response });
+    render(<GameShell><p>cena</p></GameShell>);
+    await createDev();
+    expect(await screen.findByText("SERVIDOR FORA DO AR")).toBeInTheDocument();
+    expect(screen.queryByText("cena")).not.toBeInTheDocument();
+  });
+
+  it.each([
+    ["logout 204", () => new Response(null, { status: 204 })],
+    ["logout network error", () => Promise.reject(new TypeError("Failed to fetch"))],
+  ])("SAIR returns to the login screen (%s)", async (_name, outcome) => {
+    const f = mockFetch({
+      "GET /api/me": json(200, { player: player() }),
+      "GET /api/catalog": json(200, CATALOG),
+      "POST /api/auth/logout": outcome as () => Response,
+    });
+    render(<GameShell><p>cena</p></GameShell>);
+    await userEvent.click(await screen.findByRole("button", { name: "SAIR" }));
+    expect(await screen.findByRole("link", { name: "ENTRAR COM GITHUB" })).toBeInTheDocument();
+    expect(f.calls("POST /api/auth/logout")).toBe(1);
+  });
 });

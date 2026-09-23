@@ -74,4 +74,41 @@ describe("WorldScene", () => {
     await userEvent.click(button("FLORESTA DE LOGS"));
     expect(await screen.findByRole("alert")).toHaveTextContent("SERVIDOR FORA DO AR");
   });
+
+  it("falls back to a generic message when a travel error has no body", async () => {
+    mockFetch({ "POST /api/me/travel": new Response(null, { status: 502 }) });
+    renderWorld(player());
+    await userEvent.click(button("FLORESTA DE LOGS"));
+    expect(await screen.findByRole("alert")).toHaveTextContent("erro ao viajar");
+  });
+
+  it("disables travel buttons while a travel is pending", async () => {
+    mockFetch({ "POST /api/me/travel": () => new Promise<Response>(() => {}) });
+    renderWorld(player());
+    await userEvent.click(button("FLORESTA DE LOGS"));
+    expect(button("VILA LOCALHOST")).toBeDisabled();
+    expect(button("FLORESTA DE LOGS")).toBeDisabled();
+  });
+
+  it("places a region unknown to the map and names an unknown current region by its id", () => {
+    const extra = { id: "lua", name: "LUA", tag: "NOVO", minLevel: 1, description: "nova" };
+    const { container } = renderWorld(player({ region: "lua" }), { ...CATALOG, regions: [...REGIONS, extra] });
+    const node = container.querySelector('[data-region="lua"]') as HTMLElement;
+    expect(node.style.left).toBe("50%");
+    expect(node.style.top).toBe("50%");
+    expect(screen.getByText("região atual: LUA")).toBeInTheDocument();
+  });
+
+  it("names the current region by its id when the catalog lacks it", () => {
+    renderWorld(player({ region: "sumida" }));
+    expect(screen.getByText("região atual: sumida")).toBeInTheDocument();
+  });
+
+  it("marks map nodes as here, open or locked", () => {
+    const { container } = renderWorld(player({ level: 1, region: "vila" }));
+    const diamond = (id: string) => container.querySelector(`[data-region="${id}"] .node-diamond`)!.className;
+    expect(diamond("vila")).toContain("here");
+    expect(diamond("floresta")).toContain("open");
+    expect(diamond("caverna")).not.toMatch(/here|open/);
+  });
 });
