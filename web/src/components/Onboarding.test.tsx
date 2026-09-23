@@ -107,4 +107,24 @@ describe("Onboarding other outcomes", () => {
     await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
     expect(await screen.findByText("erro ao criar dev")).toBeInTheDocument();
   });
+
+  it("disables CRIAR DEV while the create request is in flight", async () => {
+    mockFetch({ "GET /api/onboarding": ONB, "POST /api/players": () => new Promise<Response>(() => {}) });
+    render(<Onboarding onCreated={vi.fn()} />);
+    await userEvent.click(await screen.findByRole("button", { name: "BACKEND" }));
+    const submit = screen.getByRole("button", { name: "CRIAR DEV" });
+    expect(submit).toBeEnabled();
+    await userEvent.click(submit);
+    expect(submit).toBeDisabled();
+  });
+
+  it("marks only the chosen class as pressed", async () => {
+    mockFetch({ "GET /api/onboarding": ONB });
+    render(<Onboarding onCreated={vi.fn()} />);
+    await userEvent.click(await screen.findByRole("button", { name: "DEVOPS" }));
+    await userEvent.click(screen.getByRole("button", { name: "FRONTEND" }));
+    for (const c of ["FRONTEND", "BACKEND", "DEVOPS", "FULLSTACK"]) {
+      expect(screen.getByRole("button", { name: c })).toHaveAttribute("aria-pressed", String(c === "FRONTEND"));
+    }
+  });
 });

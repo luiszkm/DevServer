@@ -16,9 +16,9 @@
 ## Handoff
 
 **Feature**: foundation
-**Where**: C1–C50 fechados; rounds 1 e 2 do Verifier FAIL, correções do round 3 aplicadas
+**Where**: C1–C50 fechados; rounds 1–3 do Verifier FAIL; correções do round 4 aplicadas
 **In progress**: nenhum
-**Next step**: Verifier round 3 (último antes de escalar ao usuário)
+**Next step**: Verifier round 4 (aprovado pelo usuário além do limite de 3)
 **Blockers**: none (pergunta aberta 1 - LGPD - bloqueia go-live)
 **Uncommitted**: none
 **Branch**: feat/foundation

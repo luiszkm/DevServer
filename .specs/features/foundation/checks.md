@@ -266,6 +266,8 @@ Marcado antes do commit que satisfaz o check.
 | entities (3) | `Player` C14 · `Session` C3 · `GithubIdentity` C20 | - |
 | unexpected-error paths (2) | pânico C45 · erro devolvido pelo handler C49 | - |
 | generic router codes (3) | `not_found` C48 · `method_not_allowed` C48 · `invalid_body` C48 | - |
+| `invalid_body` routes (2) | `POST /api/me/travel` C48 · `POST /api/players` `TestCreatePlayer_InvalidBody` | - |
+| session lookup outcomes (3) | válida C22 · inválida/expirada C9, C10 · erro do banco `TestSessionLookupError_Returns500AndLogsRequestID` | - |
 | startup config: router + middleware (1 shared assembly) | `NewRouter` usado por `main` e pelos testes C45 | - |
 | startup config: `/api` rewrite (1 assembly) | `web/next.config` exercitado no navegador C27 | - |
 
@@ -323,6 +325,12 @@ Round 2 (after verification round 1 FAIL):
 
 Round 3 (after verification round 2 FAIL):
 
-- **Boundary:** C5 gains the `GET /user` transport-error member; `Handle` proven not to log expected errors; every remaining screen branch in `GameShell`, `Onboarding`, `WorldScene`, `Hud`, `Tabs` has an asserted case; 15 self-mutations run over the new tests, all killed
+- **Boundary:** C5 gains the `GET /user` transport-error member; `Handle` proven not to log expected errors; screen branch tests added in `GameShell`, `WorldScene`, `Hud`, `Tabs` and part of `Onboarding` (the claim that every branch was covered was wrong: round 3 found `Onboarding.tsx:75` and `:82` untested); 15 self-mutations, all killed
 - **Settled mid-build:** none
+- **Abandoned:** none
+
+Round 4 (after verification round 3 FAIL; user chose to run a fourth round):
+
+- **Boundary:** logout no longer leaks a rejection when offline (`GameShell.tsx`); a session lookup error now logs its `request_id` before `500 internal`; tests for in-flight `CRIAR DEV`, `aria-pressed`, `invalid_body` on `POST /api/players`, session lookup error; exit codes of every suite checked, not only the summary line; 5 self-mutations, all killed
+- **Settled mid-build:** user approved a fourth verification round past the three-round bound
 - **Abandoned:** none

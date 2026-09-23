@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
@@ -86,7 +87,7 @@ func IdentityFrom(ctx context.Context) Identity {
 }
 
 // RequireSession answers 401 unless the request carries a valid ds_session cookie.
-func RequireSession(s Sessions) func(http.Handler) http.Handler {
+func RequireSession(s Sessions, logger *slog.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			c, err := r.Cookie(SessionCookie)
@@ -96,7 +97,8 @@ func RequireSession(s Sessions) func(http.Handler) http.Handler {
 			}
 			id, ok, err := s.Lookup(r.Context(), c.Value)
 			if err != nil {
-				httpx.WriteError(w, err)
+				logger.Error("session lookup failed", "request_id", httpx.RequestIDFrom(r.Context()), "error", err.Error())
+				httpx.WriteError(w, httpx.ErrInternal)
 				return
 			}
 			if !ok {

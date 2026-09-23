@@ -172,3 +172,34 @@ func TestHandle_DoesNotLogExpectedErrors(t *testing.T) {
 		t.Errorf("log grew on expected errors: %s", strings.TrimPrefix(env.Logs.String(), before))
 	}
 }
+
+// A failing session lookup is an unexpected error: 500 internal, logged with the request id.
+func TestSessionLookupError_Returns500AndLogsRequestID(t *testing.T) {
+	env := apptest.New(t)
+	c := env.Session(1, "u")
+	if _, err := env.Pool.Exec(context.Background(), `ALTER TABLE sessions RENAME TO sessions_gone`); err != nil {
+		t.Fatal(err)
+	}
+	rec := env.Do(http.MethodGet, "/api/me", nil, c)
+	if rec.Code != http.StatusInternalServerError || apptest.ErrorCode(t, rec) != "internal" {
+		t.Fatalf("status %d body %s, want 500 internal", rec.Code, rec.Body.String())
+	}
+	id := rec.Header().Get(httpx.RequestIDHeader)
+	if id == "" || !strings.Contains(env.Logs.String(), `"request_id":"`+id+`"`) {
+		t.Fatalf("log lacks request id %q: %s", id, env.Logs.String())
+	}
+}
+
+// Door 12 on the other JSON route: malformed body on POST /api/players.
+func TestCreatePlayer_InvalidBody(t *testing.T) {
+	env := apptest.New(t)
+	for name, body := range map[string]string{"not json": "{nope", "wrong type": `{"devName": 42, "class": "BACKEND"}`} {
+		rec := env.Do(http.MethodPost, "/api/players", body, env.Session(int64(len(name)), "u"))
+		if rec.Code != 422 || apptest.ErrorCode(t, rec) != "invalid_body" {
+			t.Errorf("%s: %d %s, want 422 invalid_body", name, rec.Code, rec.Body.String())
+		}
+	}
+	if n := env.Count("players"); n != 0 {
+		t.Fatalf("players = %d, want 0", n)
+	}
+}

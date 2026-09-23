@@ -61,9 +61,10 @@ export function GameShell({ children }: { children: React.ReactNode }) {
   const logout = useCallback(async () => {
     try {
       await post("/api/auth/logout");
-    } finally {
-      setState({ kind: "unauthenticated" });
+    } catch {
+      // Offline: the cookie outlives this tab, but the player still leaves the game here.
     }
+    setState({ kind: "unauthenticated" });
   }, []);
 
   switch (state.kind) {

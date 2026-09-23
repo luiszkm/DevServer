@@ -39,7 +39,7 @@ func NewRouter(d Deps) *chi.Mux {
 	r.Method(http.MethodGet, "/api/catalog", d.Catalog)
 
 	r.Group(func(pr chi.Router) {
-		pr.Use(auth.RequireSession(sessions))
+		pr.Use(auth.RequireSession(sessions, d.Logger))
 		pr.Post("/api/auth/logout", h(authH.Logout))
 		pr.Get("/api/me", h(playerH.Me))
 		pr.Get("/api/onboarding", h(playerH.Onboarding))
