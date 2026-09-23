@@ -136,12 +136,12 @@ o nível. É o chão onde deploy, skills, combate e loja vão apoiar.
 
 | ID | Slice | Criteria | Status |
 | --- | --- | --- | --- |
-| AUTH-01 | S1 | 1, 2, 3, 4, 5, 6, 7, 8, 9 | Pending |
-| PLAYER-01 | S2 | 10, 11, 12, 13, 14, 15, 16, 17 | Pending |
-| SHELL-01 | S3 | 18, 19, 20, 21, 22, 23, 24, 25, 26 | Pending |
-| CATALOG-01 | S4 | 27, 28, 29 | Pending |
-| WORLD-01 | S5 | 30, 31, 32, 33, 34 | Pending |
-| API-01 | S6 | 35, 36, 37, 38 | Pending |
+| AUTH-01 | S1 | 1, 2, 3, 4, 5, 6, 7, 8, 9 | Verified |
+| PLAYER-01 | S2 | 10, 11, 12, 13, 14, 15, 16, 17 | Verified |
+| SHELL-01 | S3 | 18, 19, 20, 21, 22, 23, 24, 25, 26 | Verified |
+| CATALOG-01 | S4 | 27, 28, 29 | Verified |
+| WORLD-01 | S5 | 30, 31, 32, 33, 34 | Verified |
+| API-01 | S6 | 35, 36, 37, 38 | Verified |
 
 ## Observable
 

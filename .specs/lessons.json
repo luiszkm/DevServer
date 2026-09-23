@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 7,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "surviving_mutant::prove the 500 path with a handler that returns an error on a real route e g rename the table not only with a synthetic panic route",
+      "text": "Prove the 500 path with a handler that returns an error on a real route (e.g. rename the table), not only with a synthetic panic route.",
+      "signal": "surviving_mutant",
+      "scope": "api/httpx",
+      "status": "candidate",
+      "features": [
+        "foundation"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/httpx/errors.go:49 (api/httpx)"
+      ],
+      "created": "2026-09-23T18:09:49Z",
+      "last_seen": "2026-09-23T18:09:49Z"
+    },
+    {
+      "id": "L-002",
+      "key": "surviving_mutant::when a check says where a message appears assert its container and order closest label comparedocumentposition not just that the text exists",
+      "text": "When a check says where a message appears, assert its container and order (closest label, compareDocumentPosition), not just that the text exists.",
+      "signal": "surviving_mutant",
+      "scope": "web/screens",
+      "status": "candidate",
+      "features": [
+        "foundation"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "web/src/components/Onboarding.tsx:66 (web/screens)"
+      ],
+      "created": "2026-09-23T18:09:49Z",
+      "last_seen": "2026-09-23T18:09:49Z"
+    },
+    {
+      "id": "L-003",
+      "key": "surviving_mutant::a row lock test must change the row inside the locked transaction and assert the waiter read the new value merely blocking passes without for update because the final update also waits",
+      "text": "A row-lock test must change the row inside the locked transaction and assert the waiter read the new value; merely blocking passes without FOR UPDATE because the final UPDATE also waits.",
+      "signal": "surviving_mutant",
+      "scope": "api/locking",
+      "status": "candidate",
+      "features": [
+        "foundation"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/world/world_test.go (C42 v1) (api/locking)"
+      ],
+      "created": "2026-09-23T18:09:49Z",
+      "last_seen": "2026-09-23T18:09:49Z"
+    },
+    {
+      "id": "L-004",
+      "key": "ac_gap::a landing door added during the build needs its check and coverage row in the same commit the doors row count must match the plan",
+      "text": "A Landing door added during the build needs its check and Coverage row in the same commit; the doors row count must match the plan.",
+      "signal": "ac_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "foundation"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "Landing door 12 (specs)"
+      ],
+      "created": "2026-09-23T18:09:49Z",
+      "last_seen": "2026-09-23T18:09:49Z"
+    },
+    {
+      "id": "L-005",
+      "key": "gate_fail::judge a suite by its exit code not its summary line vitest reports unhandled rejections as a failure even when every test passes",
+      "text": "Judge a suite by its exit code, not its summary line; vitest reports unhandled rejections as a failure even when every test passes.",
+      "signal": "gate_fail",
+      "scope": "web/tests",
+      "status": "candidate",
+      "features": [
+        "foundation"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "web vitest exit 2 (round 3) (web/tests)"
+      ],
+      "created": "2026-09-23T18:09:49Z",
+      "last_seen": "2026-09-23T18:09:49Z"
+    },
+    {
+      "id": "L-006",
+      "key": "ac_gap::before claiming every screen branch is covered grep each conditional in the component and name the test that asserts it",
+      "text": "Before claiming every screen branch is covered, grep each conditional in the component and name the test that asserts it.",
+      "signal": "ac_gap",
+      "scope": "web/screens",
+      "status": "candidate",
+      "features": [
+        "foundation"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "web/src/components/Onboarding.tsx:75,82 (web/screens)"
+      ],
+      "created": "2026-09-23T18:09:49Z",
+      "last_seen": "2026-09-23T18:09:49Z"
+    }
+  ]
+}

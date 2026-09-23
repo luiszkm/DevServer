@@ -15,10 +15,10 @@
 
 ## Handoff
 
-**Feature**: foundation
-**Where**: C1–C50 fechados; rounds 1–3 do Verifier FAIL; correções do round 4 aplicadas
+**Feature**: foundation - VERIFIED (round 4 PASS, `validate_verification.py` exit 0)
+**Where**: C1–C52 provados; 6 lições candidatas em `.specs/LESSONS.md`
 **In progress**: nenhum
-**Next step**: Verifier round 4 (aprovado pelo usuário além do limite de 3)
+**Next step**: `plan.md` da feature `deploy-pipelines`
 **Blockers**: none (pergunta aberta 1 - LGPD - bloqueia go-live)
 **Uncommitted**: none
-**Branch**: feat/foundation
+**Branch**: feat/foundation (sem push)
