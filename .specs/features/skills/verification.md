@@ -1,136 +1,145 @@
 # Skills verification
 
-**Verdict**: FAIL
+**Verdict**: PASS
 **Profile**: standard
-**Diff range**: 7b5df87..3b32f30e463809a1e802317b0af392b305596f0c
-**Round**: 1 - full
+**Diff range**: 7b5df87..93506c05341f1a783f0884564c0c4bd0f31748a3
+**Round**: 2 - scoped
 **Verifier**: independent sub-agent (author != verifier)
 
-All 26 checks are proven at HEAD with located assertions. Every suite exits 0, and all 5 injected faults were killed. The verdict is FAIL because the recomputed coverage has three unproven members and one `Test policy` row is unmet. Those gaps sit in the new ordering rule (`SortSkills` / `SkillPosition`), in a new `GET /api/me` error path, and in the api assertion on catalog descriptions. They are ranked at the end.
+All 29 checks are proven at HEAD 93506c0 with located assertions. Every suite exits 0. Five faults were injected on the surfaces the fix touched. Four were killed, and the fifth is the equivalent mutant the checks predict, which I confirmed by running it. The four round-1 gaps are closed.
+
+The fix range 3b32f30..93506c0 changes only tests and specs. The files are `catalog_test.go`, `devname_test.go`, `skills_test.go`, `Hud.test.tsx`, `checks.md` and this report. No production file changed, so every production citation from round 1 still holds.
 
 ## Binding sources
 
-Step 1 does not run: the plan marks no source as binding, and the profile is `standard`, not `ui`.
+Carried from 3b32f30. The fix did not touch the interface.
 
 | Source | Opened | Contradiction | Uncovered |
 | --- | --- | --- | --- |
 | none marked binding | n/a - step 1 is `ui`-only | - | - |
 
-I opened the prototype `docs/DevServer RPG.html` `treeData` only to recompute the catalog node set (Coverage). `api/catalog/skills.json` matches it on all 9 ids, glyphs, names, descriptions and bonuses.
+To check the strengthened C12, I compared the 9 description strings at `api/internal/catalog/catalog_test.go:111-115` with the prototype `docs/DevServer RPG.html:382` `treeData`. All 9 match.
 
 ## Checks
 
-Proof runs, all at HEAD 3b32f30:
+Verified at 93506c0. Every proof was re-run in full, in two batched invocations plus e2e:
 
-- api: `cd api && go test ./internal/skills ./internal/catalog -run '^(TestUnlock_SpendsPointAndRecords|...|TestUnlock_SerializesOnPlayerRowLock)$' -v -count=1` - exit 0. All 13 named tests appear in the output as `--- PASS`.
-- web: `cd web && npx vitest run src/components/SkillsScene.test.tsx src/components/Hud.test.tsx src/components/GameShell.test.tsx src/components/ComingSoon.test.tsx --reporter=verbose` - exit 0, 37 passed. Every `-t` pattern named in the checks appears as a passing test.
-- e2e: `cd web && npx playwright test` - exit 0. `e2e/skills.spec.ts:5 unlock persists` passed.
+- api: `cd api && go test ./internal/skills ./internal/catalog ./internal/player -run '^(TestUnlock_SpendsPointAndRecords|TestUnlock_HPBonus|TestUnlock_NonHPBonusChangesOnlyPoints|TestUnlock_PreviousRequired|TestUnlock_AlreadyUnlocked|TestUnlock_NoPoints|TestUnlock_UnknownSkill|TestUnlock_ConcurrentOnce|TestPlayerSkills_UniquePerNode|TestPlayerSkills_InEveryPlayerInCatalogOrder|TestUnlockRoute_SessionPlayerAndUnexpected|TestCatalog_ServesSkillTrees|TestUnlock_SerializesOnPlayerRowLock|TestCatalog_SkillPosition|TestSortSkills|TestMe_SkillsLoadError|TestUnlock_InsertError)$' -v -count=1` - exit 0. All 17 named tests appear individually as `--- PASS`.
+- web: `cd web && npx vitest run src/components/SkillsScene.test.tsx src/components/Hud.test.tsx src/components/GameShell.test.tsx src/components/ComingSoon.test.tsx --reporter=verbose` - exit 0, 4 files, 38 passed. Every `-t` pattern in C13-C24 appears as a passing test, and so does `Hud > shows no skill section without a catalog`.
+- e2e: `cd web && npx playwright test` - exit 0, 5 passed, including `e2e/skills.spec.ts:5:5 unlock persists`.
 
-Every proof test is new in this diff (`skills_test.go`, the `TestCatalog_ServesSkillTrees` hunk, `SkillsScene.test.tsx`, the Hud and GameShell hunks, `e2e/skills.spec.ts`).
+The fix diff did not touch `skills_test.go:1-296`, `SkillsScene.test.tsx`, `GameShell.test.tsx`, `e2e/skills.spec.ts` or `Hud.test.tsx:1-48`. I re-read those citations with `rg -n` at HEAD and they are unchanged. The `catalog_test.go` citations moved and are refreshed.
 
 | Check | Claim | Proof run | Evidence | Result |
 | --- | --- | --- | --- | --- |
 | C1 | 1 point, unlock f1: 200, points 0, skills [f1], 1 row | `TestUnlock_SpendsPointAndRecords` PASS | `api/internal/skills/skills_test.go:73` `mustStatus(t, rec, http.StatusOK, "")`; `:74` `p.SkillPoints != 0`; `:77` `reflect.DeepEqual(got, []string{"f1"})`; `:80` `env.Count("player_skills"); n != 1` | PASS |
 | C2 | f1, b1, i2 add 10/10/15 to HP and HP max | `TestUnlock_HPBonus` PASS | `api/internal/skills/skills_test.go:94` steps `{"f1", 10}, {"b1", 10}, {"i1", 0}, {"i2", 15}`; `:99` `p.HP != hp OR p.HPMax != hpMax` | PASS |
-| C3 | f2 (sp) and f3 (dmg) change only skill points, by -1 | `TestUnlock_NonHPBonusChangesOnlyPoints` PASS | `api/internal/skills/skills_test.go:115` `after["skill_points"] != before["skill_points"]-1`; `:120` `reflect.DeepEqual(before, after)` over the whole `row_to_json(p)` row, minus skill_points | PASS |
-| C4 | f2 without f1, i3 with only i1: 409 skill_locked, no point spent | `TestUnlock_PreviousRequired` PASS | `api/internal/skills/skills_test.go:131` `StatusConflict, "skill_locked"` (f2); `:133` same (i3); `:134` `skill_points != 2` | PASS |
+| C3 | f2 (sp) and f3 (dmg) change only skill points, by -1 | `TestUnlock_NonHPBonusChangesOnlyPoints` PASS | `api/internal/skills/skills_test.go:115` `after["skill_points"] != before["skill_points"]-1`; `:120` `reflect.DeepEqual(before, after)` over the whole row minus skill_points | PASS |
+| C4 | f2 without f1, i3 with only i1: 409 skill_locked, no point spent | `TestUnlock_PreviousRequired` PASS | `api/internal/skills/skills_test.go:131` `StatusConflict, "skill_locked"`; `:133` same for i3; `:134` `skill_points != 2` | PASS |
 | C5 | f1 again: 409 skill_already_unlocked, no point spent | `TestUnlock_AlreadyUnlocked` PASS | `api/internal/skills/skills_test.go:145` `StatusConflict, "skill_already_unlocked"`; `:146` `skill_points != 2` | PASS |
 | C6 | 0 points: 409 no_skill_points, no row | `TestUnlock_NoPoints` PASS | `api/internal/skills/skills_test.go:156` `StatusConflict, "no_skill_points"`; `:157` `env.Count("player_skills"); n != 0` | PASS |
 | C7 | x9: 422 unknown_skill | `TestUnlock_UnknownSkill` PASS | `api/internal/skills/skills_test.go:166` `StatusUnprocessableEntity, "unknown_skill"` | PASS |
-| C8 | 10 concurrent f1 unlocks, 3 points: one 200, nine 409, 2 points left | `TestUnlock_ConcurrentOnce` PASS | `api/internal/skills/skills_test.go:196` `reflect.DeepEqual(out, want)` with want = 1 x `200` + 9 x `409 skill_already_unlocked` (`:192-195`); `:199` `skill_points != 2` | PASS |
-| C9 | duplicate (player, node) insert fails unique_violation | `TestPlayerSkills_UniquePerNode` PASS | `api/internal/skills/skills_test.go:214` `pgErr.Code != "23505"`; schema `api/migrations/00003_player_skills.sql:6` `PRIMARY KEY (player_id, skill_id)` | PASS |
-| C10 | `skills` = [] (not null) on create and GET /api/me; after b1 then f1, `[f1,b1]` on unlock, GET /api/me, travel | `TestPlayerSkills_InEveryPlayerInCatalogOrder` PASS | `api/internal/skills/skills_test.go:33` null is rejected (`raw.Player.Skills == nil`); `:225` and `:228` `len(got) != 0`; `:236`, `:239`, `:242` `reflect.DeepEqual(got, want)` with want `[]string{"f1", "b1"}` (`:235`) | PASS |
-| C11 | unlock: 401 unauthenticated, 404 player_not_found, 500 internal with request_id log | `TestUnlockRoute_SessionPlayerAndUnexpected` PASS | `api/internal/skills/skills_test.go:250` `StatusUnauthorized, "unauthenticated"`; `:251` `StatusNotFound, "player_not_found"`; `:258` `StatusInternalServerError, "internal"`; `:259` log contains `"request_id":"<id>"` | PASS |
-| C12 | GET /api/catalog skillTrees frontend, backend, infra, each node's id, glyph, name, description, bonus | `TestCatalog_ServesSkillTrees` PASS | `api/internal/catalog/catalog_test.go:134` `len(b.SkillTrees) != 3`; `:139` `tr.ID != w.id OR tr.Name != w.name OR len(tr.Nodes) != 3`; `:146` `got != wn OR n.Description == ""` (description is checked only for being non-empty; precision gap below) | PASS |
+| C8 | 10 concurrent f1 unlocks with 3 points: one 200, nine 409, 2 points left | `TestUnlock_ConcurrentOnce` PASS | `api/internal/skills/skills_test.go:196` `reflect.DeepEqual(out, want)` with want = 1 x 200 + 9 x 409 skill_already_unlocked; `:199` `skill_points != 2` | PASS |
+| C9 | duplicate (player, node) insert fails unique_violation | `TestPlayerSkills_UniquePerNode` PASS | `api/internal/skills/skills_test.go:214` `pgErr.Code != "23505"` | PASS |
+| C10 | skills [] (not null) on create and GET /api/me; after b1 then f1, [f1,b1] on unlock, GET /api/me, travel | `TestPlayerSkills_InEveryPlayerInCatalogOrder` PASS | `api/internal/skills/skills_test.go:33` `raw.Player.Skills == nil` rejected; `:225`, `:228` `len(got) != 0`; `:236`, `:239`, `:242` `reflect.DeepEqual(got, want)` with want `[f1 b1]` | PASS |
+| C11 | unlock: 401, 404, 500 with request_id log | `TestUnlockRoute_SessionPlayerAndUnexpected` PASS | `api/internal/skills/skills_test.go:250` `StatusUnauthorized, "unauthenticated"`; `:251` `StatusNotFound, "player_not_found"`; `:258` `StatusInternalServerError, "internal"`; `:259` log contains `"request_id":"<id>"` | PASS |
+| C12 | skillTrees frontend, backend, infra in order; each node's id, glyph, name, exact description, bonus | `TestCatalog_ServesSkillTrees` PASS | `api/internal/catalog/catalog_test.go:141` `len(b.SkillTrees) != 3`; `:146` `tr.ID != w.id OR tr.Name != w.name OR len(tr.Nodes) != 3`; `:153` `got != wn` (id, glyph, name, bonus type and amount); `:156` `n.Description != descriptions[wn[0]]` with the 9 literal strings at `:111-115` | PASS |
 | C13 | 3 trees in catalog order, 3 nodes each with glyph, name, description | vitest `renders trees in catalog order` PASS | `web/src/components/SkillsScene.test.tsx:28` `toEqual(["FRONTEND", "BACKEND", "INFRA"])`; `:31` node ids in order; `:33-35` `toHaveTextContent(n.glyph / n.name / n.description)` | PASS |
-| C14 | skills [f1]: f1 ATIVA, f2 1 PT, f3 BLOQ., b1 1 PT, b2 BLOQ., i1 1 PT | vitest `marks node states` PASS | `web/src/components/SkillsScene.test.tsx:43` `toEqual({ f1: "ATIVA", f2: "1 PT", f3: "BLOQ.", b1: "1 PT", b2: "BLOQ.", b3: "BLOQ.", i1: "1 PT", i2: "BLOQ.", i3: "BLOQ." })`; `:44` visible text matches state | PASS |
+| C14 | skills [f1]: node states | vitest `marks node states` PASS | `web/src/components/SkillsScene.test.tsx:43` `toEqual({ f1: "ATIVA", f2: "1 PT", f3: "BLOQ.", b1: "1 PT", b2: "BLOQ.", ... i1: "1 PT", ... })` | PASS |
 | C15 | 3 points: `PONTOS: 3` | vitest `shows points` PASS | `web/src/components/SkillsScene.test.tsx:50` `getByText("PONTOS: 3")` | PASS |
-| C16 | bonus band sums; empty case +0 | vitest `sums active bonus` (3 cases) PASS | `web/src/components/SkillsScene.test.tsx:55` `"bônus ativo: +20 HP · +18 SP · +12% dano"`; `:56` `"+0 HP · +0 SP · +0% dano"`; `:60` `getByText(text)` | PASS |
-| C17 | click API REST calls POST b1/unlock, passes player to HUD, shows message | vitest `unlock calls api and reports` PASS | `web/src/components/SkillsScene.test.tsx:69` `toHaveTextContent("> API REST desbloqueada · +10 HP máximo permanente")`; `:70` `setPlayer toHaveBeenCalledWith(updated)`; `:71` `f.calls("POST /api/me/skills/b1/unlock")).toBe(1)` | PASS |
-| C18 | 409 message, no body, network: message shown, states unchanged, no setPlayer | vitest `unlock error shows message` (3 cases) PASS | `web/src/components/SkillsScene.test.tsx:76-78` expected texts; `:84` `toHaveTextContent(text)`; `:85` `states()).toEqual(before)`; `:86` `setPlayer).not.toHaveBeenCalled()` | PASS |
-| C19 | pending: all 9 nodes disabled | vitest `disables nodes while unlocking` PASS | `web/src/components/SkillsScene.test.tsx:95` `toHaveLength(9)`; `:96` `toBeDisabled()` for each | PASS |
-| C20 | ATIVA and BLOQ. disabled and do not call api | vitest `only available nodes are clickable` PASS | `web/src/components/SkillsScene.test.tsx:104` `toBeDisabled()`; `:107` 1 PT nodes `toBeEnabled()`; `:108` `f.fn).not.toHaveBeenCalled()` | PASS |
-| C21 | ATIVAS EM COMBATE chips in catalog order, or `nenhuma habilidade equipada` | vitest `lists active skills` + `(none)` PASS | `web/src/components/SkillsScene.test.tsx:114` `textContent).toBe("</>MARKUP$_API")` from skills `["b1","f1"]`; `:119` `getByText("nenhuma habilidade equipada")` | PASS |
-| C22 | HUD SKILL PTS card: `</>$_` for [f1,b1], `sem habilidades ativas` for [] | vitest `shows active skill glyphs` (2 cases) PASS | `web/src/components/Hud.test.tsx:46` `textContent).toBe(text)` with `"</>$_"` (`:40`); `:47` `getByText("sem habilidades ativas")`; GameShell wiring `web/src/components/GameShell.test.tsx:132` `toHaveTextContent("</>")` | PASS |
+| C16 | bonus band sums; empty +0 | vitest `sums active bonus` (3 cases) PASS | `web/src/components/SkillsScene.test.tsx:55` `"bônus ativo: +20 HP · +18 SP · +12% dano"`; `:56` `"+0 HP · +0 SP · +0% dano"`; `:60` `getByText(text)` | PASS |
+| C17 | click API REST: POST b1/unlock, player passed to HUD, message | vitest `unlock calls api and reports` PASS | `web/src/components/SkillsScene.test.tsx:69` `toHaveTextContent("> API REST desbloqueada · +10 HP máximo permanente")`; `:70` `setPlayer toHaveBeenCalledWith(updated)`; `:71` `f.calls("POST /api/me/skills/b1/unlock")).toBe(1)` | PASS |
+| C18 | 409 message, no body, network: message shown, states unchanged, no setPlayer | vitest `unlock error shows message` (3 cases) PASS | `web/src/components/SkillsScene.test.tsx:84` `toHaveTextContent(text)`; `:85` `states()).toEqual(before)`; `:86` `setPlayer).not.toHaveBeenCalled()` | PASS |
+| C19 | pending: all 9 nodes disabled | vitest `disables nodes while unlocking` PASS | `web/src/components/SkillsScene.test.tsx:95` `toHaveLength(9)`; `:96` `toBeDisabled()` | PASS |
+| C20 | ATIVA and BLOQ. disabled, no api call | vitest `only available nodes are clickable` PASS | `web/src/components/SkillsScene.test.tsx:104` `toBeDisabled()`; `:108` `f.fn).not.toHaveBeenCalled()` | PASS |
+| C21 | chips in catalog order, or `nenhuma habilidade equipada` | vitest `lists active skills` + `(none)` PASS | `web/src/components/SkillsScene.test.tsx:114` `textContent).toBe("</>MARKUP$_API")`; `:119` `getByText("nenhuma habilidade equipada")` | PASS |
+| C22 | HUD SKILL PTS: `</>$_` for [f1,b1], `sem habilidades ativas` for [] | vitest `shows active skill glyphs` (2 cases) PASS | `web/src/components/Hud.test.tsx:46` `textContent).toBe(text)` with `"</>$_"` (`:40`); `:47` `getByText(text)` with `"sem habilidades ativas"` (`:41`); GameShell wiring `web/src/components/GameShell.test.tsx:132` `toHaveTextContent("</>")` | PASS |
 | C23 | mocked catalog f1 = HTML PURO +99 HP is shown | vitest `tree comes from catalog` PASS | `web/src/components/SkillsScene.test.tsx:130` `toHaveTextContent("HTML PURO")`; `:131` `getByText("bônus ativo: +99 HP · +0 SP · +0% dano")` | PASS |
 | C24 | /skills renders the scene, not EM BREVE | vitest `skills page renders the scene` PASS | `web/src/components/SkillsScene.test.tsx:141` `getByText("ÁRVORE DE HABILIDADES")`; `:142` `queryByText("EM BREVE")).not.toBeInTheDocument()` | PASS |
-| C25 | browser: unlock MARKUP, ATIVA, PONTOS 0, HP 110/110, `</>` in HUD, after reload too | playwright `unlock persists` PASS | `web/e2e/skills.spec.ts:13` `toHaveAttribute("data-state", "ATIVA")`; `:14` `PONTOS: 0`; `:16` `toContainText("HP 110/110")`; `:17` `toHaveText("</>")`; `:20` `page.reload()` then re-check | PASS |
-| C26 | unlock waits on the player row lock and reads the committed points | `TestUnlock_SerializesOnPlayerRowLock` PASS | `api/internal/skills/skills_test.go:282` fails if it answers while locked (500 ms); `:293` `code != http.StatusOK` after the commit that set points 0 to 1 (`:285`) | PASS |
+| C25 | browser: unlock MARKUP, ATIVA, PONTOS 0, HP 110/110, `</>`, survives reload | playwright `unlock persists` PASS | `web/e2e/skills.spec.ts:13` `toHaveAttribute("data-state", "ATIVA")`; `:14` `PONTOS: 0`; `:16` `toContainText("HP 110/110")`; `:17` `toHaveText("</>")`; `:20` `page.reload()` then re-check | PASS |
+| C26 | unlock waits on the player row lock and reads the committed points | `TestUnlock_SerializesOnPlayerRowLock` PASS | `api/internal/skills/skills_test.go:282` fails if it answers while locked; `:293` `code != http.StatusOK` after the commit that granted the point | PASS |
+| C27 | own layer: SkillPosition 0..8 for f1..i3, 9 for unknown; SortSkills orders `[i3 zz b1 f2 f1]` as `[f1 f2 b1 i3 zz]` | `TestCatalog_SkillPosition`, `TestSortSkills` PASS | `api/internal/catalog/catalog_test.go:167` `c.SkillPosition(id); got != i` over the 9 ids in order; `:171` `c.SkillPosition("zz"); got != 9`; `api/internal/player/devname_test.go:66` want `[]string{"f1", "f2", "b1", "i3", "zz"}`, `:68` `p.Skills[i] != want[i]` | PASS |
+| C28 | skills table unavailable: GET /api/me 500 internal with request_id log | `TestMe_SkillsLoadError` PASS | `api/internal/skills/skills_test.go:305` renames `player_skills`; `:309` `mustStatus(t, rec, http.StatusInternalServerError, "internal")`; `:310` log contains `"request_id":"<id>"` | PASS |
+| C29 | node INSERT fails: unlock 500 internal, player unchanged | `TestUnlock_InsertError` PASS | `api/internal/skills/skills_test.go:321-322` BEFORE INSERT trigger raising; `:329` `StatusInternalServerError, "internal"`; `:330` `reflect.DeepEqual(before, after)` over the player row | PASS |
 
 ## Coverage
 
-I recomputed each set from its authority: the prototype `treeData` for nodes and bonuses, the router and handler for statuses, and the code for decision rows.
+Verified at 93506c0 for the rows the fix touched: skill ordering, error paths, catalog node fields and the HUD guard. The other rows are carried from 3b32f30, because no production file changed and their authority is untouched.
 
 | Set (size) | Recomputed from | Member -> proof | Unproven |
 | --- | --- | --- | --- |
-| unlock statuses (6) | `api/internal/skills/skills.go:25-57`, `router.go`, `httpx/errors.go:39-42` | 200 C1 · 401 C11 · 404 C11 · 409 C4, C5, C6 · 422 C7 · 500 C11 | - |
-| unlock guards in handler (5 rows) | `api/internal/skills/skills.go:26,30,33,36,43` | unknown C7 · already C5 · previous missing C4 · first node (previous nil) C1 · previous present C2, C3 · 0 points C6 · hp bonus C2 · non-hp C3 | - |
-| new error codes (4) | `api/internal/httpx/errors.go:39-42` | skill_locked C4 · skill_already_unlocked C5 · no_skill_points C6 · unknown_skill C7 | - |
-| skill nodes (9) | prototype `treeData` (`docs/DevServer RPG.html:382`) | C12, table-driven over all 9 (`api/internal/catalog/catalog_test.go:126-128`) | - |
-| catalog node fields (5) | Landing door 3 and prototype | id, glyph, name, bonus.type, bonus.amount by value at `catalog_test.go:146` · description checked only for being non-empty (`catalog_test.go:146` `n.Description == ""`) | description value: the api asserts none of the 9 description strings, and the web tests read them from a hand-copied mock (`web/src/test/helpers.ts:29-45`) |
-| bonus types (3) | `skills.json` | hp C2 · sp C3 (f2) · dmg C3 (f3); web sums C16 | - |
-| HP nodes (3) | `skills.json` | f1, b1, i2 C2 | - |
-| skill ordering decision (2 rows) | `api/internal/player/player.go:125-130`, `api/internal/catalog/catalog.go:174-184` | known id by catalog position C10 (F3 killed) | unknown id sorts last (`catalog.go:184` fall-through, stated in the doc comment at `:173`): no asserted case at any layer. It is reachable, because node ids are not foreign keys (foundation door 5) |
-| routes returning `player` with `skills` (4) | router | POST /api/players C10 · GET /api/me C10 · POST /api/me/travel C10 · unlock C10 | - |
-| error paths added by this feature (3) | `player.go:106-107`, `player.go:147-149`, `skills.go:39-41` | WithLocked loadSkills failure: C11 (the 500 comes from renaming the `player_skills` table) | `player.Get` loadSkills failure (`player.go:106-107`) is a new cause of `GET /api/me` 500. The checks say those statuses are "untouched by this feature", but foundation C49 fails only the `players` table (`api/internal/httpx/httpx_test.go:131`). The unlock INSERT error (`skills.go:39-41`) has no case either |
-| node states on screen (3) | `web/src/components/SkillsScene.tsx:45-49` | ATIVA, 1 PT, BLOQ. C14 (F4 killed) | - |
-| unlock outcomes on screen (4) | `SkillsScene.tsx:23-29` | 200 C17 · error with message C18 · no body C18 · network C18 | - |
-| active-skill displays (4) | `SkillsScene.tsx:78-87`, `Hud.tsx:61-72` | scene with skills C21 · scene empty C21 · HUD with skills C22 · HUD empty C22 | - |
-| Landing doors (6) | plan Landing | 1 C9 · 2 C2, C3 · 3 C12 (description value above) · 4 C10 · 5 C4-C7 · 6 C1 | - |
-| entities (1) | plan Relations | PlayerSkill C9 | - |
+| unlock statuses (6) - carried from 3b32f30 | `api/internal/skills/skills.go:25-57`, router, `httpx/errors.go:39-42` | 200 C1 · 401 C11 · 404 C11 · 409 C4, C5, C6 · 422 C7 · 500 C11, C29 | - |
+| unlock guards in handler (5 rows) - carried from 3b32f30 | `skills.go:26,30,33,36,43` | unknown C7 · already C5 · previous missing C4 · first node C1 · previous present C2, C3 · 0 points C6 · hp bonus C2 · non-hp C3 | - |
+| new error codes (4) - carried from 3b32f30 | `httpx/errors.go:39-42` | skill_locked C4 · skill_already_unlocked C5 · no_skill_points C6 · unknown_skill C7 | - |
+| skill nodes (9) - carried from 3b32f30 | prototype `treeData` (`docs/DevServer RPG.html:382`) | C12, table-driven over all 9 (`catalog_test.go:137-139`) | - |
+| catalog node fields (5) - verified at 93506c0 | Landing door 3 and prototype | id, glyph, name, bonus.type, bonus.amount at `catalog_test.go:153` · description by exact value at `catalog_test.go:156` (all 9 match the prototype strings) | - |
+| bonus types (3) - carried from 3b32f30 | `skills.json` | hp C2 · sp C3 · dmg C3 | - |
+| HP nodes (3) - carried from 3b32f30 | `skills.json` | f1, b1, i2 C2 | - |
+| skill ordering decision (2 rows) - verified at 93506c0 | `api/internal/player/player.go:125-130`, `api/internal/catalog/catalog.go:173-184` | known id by catalog position: C27 own layer, C10 boundary · unknown id sorts last: C27 (`catalog_test.go:171`, `devname_test.go:66`) | - |
+| routes returning `player` with `skills` (4) - carried from 3b32f30 | router | POST /api/players, GET /api/me, POST /api/me/travel, unlock: C10 | - |
+| error paths added by this feature (3) - verified at 93506c0 | `player.go:106-107` (Get loadSkills), `player.go:147-149` (WithLocked loadSkills), `skills.go:39-41` (INSERT) | Get loadSkills: C28 (fault F2 killed) · WithLocked loadSkills: C11 · INSERT: C29 (outcome asserted, and swallowing the error is equivalent, see Faults) | - |
+| HUD SKILL PTS display branches (3) - verified at 93506c0 | `web/src/components/Hud.tsx:47`, `:61-72` | with skills C22 · empty C22 · no catalog `Hud.test.tsx:50-56` (fault F5 killed) | - |
+| node states on screen (3) - carried from 3b32f30 | `SkillsScene.tsx:45-49` | ATIVA, 1 PT, BLOQ. C14 | - |
+| unlock outcomes on screen (4) - carried from 3b32f30 | `SkillsScene.tsx:23-29` | 200 C17 · error with message, no body, network C18 | - |
+| active-skill displays (4) - carried from 3b32f30 | `SkillsScene.tsx:78-87`, `Hud.tsx:61-72` | scene C21 (2) · HUD C22 (2) | - |
+| Landing doors (6) - carried from 3b32f30 | plan Landing | 1 C9 · 2 C2, C3 · 3 C12 · 4 C10, C27 · 5 C4-C7 · 6 C1 | - |
+| entities (1) - carried from 3b32f30 | plan Relations | PlayerSkill C9 | - |
 
-Swept rows that resolve to existing: `RequireSession` guards the unlock route. It is mounted inside the protected group at `api/internal/app/router.go:62`, and C11 asserts 401 on it. The existing `GameShell` 401 login screen still stands (foundation C9 and GameShell tests pass).
+The checks note that "`GET /api/me` statuses 401/404 are untouched and the 500 gained a cause, proven by C28". That note now matches the code. F2 shows C28 is the proof that fails when `Get` drops the load error.
 
-Impact on earlier checks: foundation C28 dropped exactly the `/skills` row (`web/src/components/ComingSoon.test.tsx`), as the plan's Impact states. `/bug-fight`, `/loja` and `/avatar` remain and pass. The removed assertion is replaced by C24 `SkillsScene.test.tsx:142`. Foundation C23 (`Hud.test.tsx` `renders player values`) is untouched and passes. The deploy-pipelines checks all pass in the full suites. No earlier check was weakened beyond the planned C28 shrink.
+Notes that do not fail the gate:
+
+- The no-catalog HUD test at `Hud.test.tsx:50` is not selected by any check's `Proof:` command. C22's `-t "shows active skill glyphs"` does not match it, although the checks' Coverage row credits it to C22. It ran and passed in the batched vitest run above. Folding it into C22's pattern would keep the attribution honest.
+- That test asserts that a HUD without a catalog shows neither glyphs nor `sem habilidades ativas`. Read literally, AC 18 always asks for one of the two. The state cannot be reached in the app: `GameShell` renders `Hud` with a player only in the `ready` state, whose type always carries `catalog` (`web/src/components/GameShell.tsx:18`, `:89`). So this is not a contradiction of reachable behaviour.
+- The checks' `Test policy` evidence line still says `player.skills` ordering is proven at "boundary C10". C27 now adds the own-layer proof, but that line was not updated.
 
 ## Test policy rows
 
+Verified at 93506c0 for the round-1 unmet or partly-met rows and for the rows that classify touched files. The other rows are carried from 3b32f30.
+
 | Row | Files it classifies | Required proof | Expectation met |
 | --- | --- | --- | --- |
-| Decides, reached across a boundary (unlock rule) | `api/internal/skills/skills.go:23-58`, `catalog.go:159-171` (`Skill`) | boundary C1-C8, C11, C26 through `NewRouter`. The rule lives in the handler, so boundary and own layer coincide, as for the deploy start rule | yes. Every guard row is asserted (Coverage "unlock guards"), and F1 and F2 were killed |
-| Decides, reached across a boundary (skill ordering) | `api/internal/player/player.go:125-130` (`SortSkills`), `catalog.go:174-184` (`SkillPosition`) | boundary C10 AND an own-layer test in `player` or `catalog`, as the level-up rule `GainXP` got in deploy-pipelines (C30 own layer, C31 boundary) | unmet. It has only the boundary proof: `rg SortSkills OR SkillPosition` over `*_test.go` finds nothing, and the unknown-id-last row has no case at any layer |
-| Decides, not reached across a boundary (web) | `web/src/components/SkillsScene.tsx`, `Hud.tsx:47,61-72` (`ActiveSkillGlyphs`) | own layer | partly met. SkillsScene covers every row (C13-C24, F4 and F5 killed), and `ActiveSkillGlyphs` is covered by C22. The `catalog &&` guard at `Hud.tsx:47` has an unasserted false branch: without a catalog the HUD shows neither glyphs nor `sem habilidades ativas`, although AC 18 requires one of the two. The app always passes a catalog (`GameShell.tsx:89`), so this is low severity |
-| Entry point that decides nothing | `GET /api/catalog` (`catalog.go` Load and serialize), `GET /api/me` read path | boundary | partly met. The catalog returns 200 with the field shape (C12), and 304 is covered by the existing `catalog_test.go`. The description value is not asserted, and the new `player.Get` error path (`player.go:106-107`) has no case |
-| Instrumentation, pass-throughs | `router.go`, `httpx/errors.go` (4 new values), `types.ts`, `helpers.ts`, `skills/page.tsx`, `GameShell.tsx:89`, migration | none of its own | yes. The consumers prove them: C4-C7 for errors.go, C24 for page.tsx, `GameShell.test.tsx:132` for the HUD catalog prop, C9 for the migration |
+| Decides, reached across a boundary (unlock rule) - carried from 3b32f30 | `api/internal/skills/skills.go:23-58`, `catalog.go` `Skill` | boundary C1-C8, C11, C26, C29 through `NewRouter` | yes |
+| Decides, reached across a boundary (skill ordering) - verified at 93506c0 | `api/internal/player/player.go:125-130` (`SortSkills`), `api/internal/catalog/catalog.go:173-184` (`SkillPosition`) | boundary C10 AND own layer | yes. C27 own layer covers both functions, including the unknown-id-last row (F3 killed by both tests), and C10 is the boundary |
+| Decides, not reached across a boundary (web) - verified at 93506c0 | `web/src/components/SkillsScene.tsx`, `web/src/components/Hud.tsx:47,61-72` | own layer | yes. SkillsScene C13-C24 · `ActiveSkillGlyphs` C22 · `catalog &&` false branch `Hud.test.tsx:50-56` (F5 killed) |
+| Entry point that decides nothing - verified at 93506c0 | `GET /api/catalog`, `GET /api/me` read path (`player.go:101-108`) | boundary | yes. C12 asserts every field by value, including the descriptions (F4 killed). C28 asserts the new `GET /api/me` 500 cause (F2 killed) |
+| Instrumentation, pass-throughs - carried from 3b32f30 | `router.go`, `httpx/errors.go`, `types.ts`, `helpers.ts`, `skills/page.tsx`, `GameShell.tsx:89`, migration | none of its own | yes |
 
 ## Faults injected
 
-Worktree at `/private/tmp/claude-501/-Users-luissoares-Repos-DevServer-1/028d56a0-a5ef-4417-92ad-b44805e91365/scratchpad/wt` (HEAD 3b32f30), with `web/node_modules` symlinked. Real tree porcelain was `?? .claude/` before and after, identical. The worktree was removed with `git worktree remove --force`, and `git stash` was not used. Every mutant passed `go vet` or `tsc`. The worktree's `tsc` baseline has 1 pre-existing error, `LayoutProps` from missing Next typegen, and the mutants added none.
+Verified at 93506c0. I worked in the worktree `/private/tmp/claude-501/-Users-luissoares-Repos-DevServer-1/028d56a0-a5ef-4417-92ad-b44805e91365/scratchpad/wt2` (HEAD 93506c0), with the real `web/node_modules` symlinked in. The real tree's `git status --porcelain` was `?? .claude/` before and after, and the two captures were identical when diffed. The worktree was removed with `git worktree remove --force`, and `git stash` was not used (the stash list is empty). Every mutant passed `go vet` or `tsc --noEmit`, with 0 errors beyond the known `LayoutProps` typegen one.
 
 | Mutation | Location | Killed |
 | --- | --- | --- |
-| F1 previous-node guard disabled (`if false && previous != nil ...`) | `api/internal/skills/skills.go:33` | yes - C4 `TestUnlock_PreviousRequired` FAIL `want 409 skill_locked` |
-| F2 HP bonus applied only to HP max (`p.HP += ...` removed) | `api/internal/skills/skills.go:45` | yes - C2 `TestUnlock_HPBonus` FAIL `after i2: hp 100/135, want 135/135` |
-| F3 catalog order reversed (`<` to `>` in SortSkills) | `api/internal/player/player.go:128` | yes - C10 FAIL `GET /api/me skills = [b1 f1], want [f1 b1]` |
-| F4 `1 PT` only for first node (`i === 0 OR previous unlocked` became `i === 0`) | `web/src/components/SkillsScene.tsx:47` | yes - C14 `marks node states` FAIL |
-| F5 pending no longer disables nodes (`pending OR` dropped) | `web/src/components/SkillsScene.tsx:57` | yes - C19 `disables nodes while unlocking` FAIL |
+| F2 `Get` swallows the loadSkills error (`_ = loadSkills(...)`; `return p, nil`) | `api/internal/player/player.go:107` | yes - C28 `TestMe_SkillsLoadError` FAIL `want 500 internal` |
+| F3 `SkillPosition` returns -1 for an unknown id instead of `pos` | `api/internal/catalog/catalog.go:184` | yes - C27 `TestCatalog_SkillPosition` FAIL `SkillPosition(unknown) = -1, want 9` AND `TestSortSkills` FAIL `[zz f1 f2 b1 i3], want [f1 f2 b1 i3 zz]` |
+| F4 i3 description `+15% de dano em todos os ataques` changed to `+15% de dano em ataques` | `api/catalog/skills.json:24` | yes - C12 `TestCatalog_ServesSkillTrees` FAIL at `catalog_test.go:157` |
+| F5 HUD guard dropped: `ActiveSkillGlyphs` always rendered, with an empty catalog fallback | `web/src/components/Hud.tsx:47` | yes - `Hud > shows no skill section without a catalog` FAIL |
 
-Not injected (the cap of 5 was reached): `SkillPosition` unknown returning `-1`, and `Get` swallowing the loadSkills error. The search shows neither has an asserting test, so both are recorded as unproven Coverage members rather than guessed as killed.
+The fifth fault is the equivalent-mutant claim, and I tested it on its own:
+
+| Mutation | Location | Outcome |
+| --- | --- | --- |
+| F1 unlock swallows the `player_skills` INSERT error (`_, _ = tx.Exec(...)`, no return) | `api/internal/skills/skills.go:39-41` | equivalent: C29 `TestUnlock_InsertError` still PASS, and so do C1, C8 and C10 |
+
+The claim in the checks holds. With the mutant in place, the logged error for the failed unlock was `ERROR: current transaction is aborted, commands ignored until end of transaction block (SQLSTATE 25P02)`. So the swallowed INSERT failure resurfaces in the following `UPDATE players` inside `WithLocked`, and the handler still answers `500 internal`. The row lock serialises unlocks (C26), so no path lets a failed INSERT be followed by a successful UPDATE in the same transaction. There is no observable behaviour for an assertion to catch, so this is not a surviving mutant.
 
 ## Suites
 
+Verified at 93506c0.
+
 | Command | Exit |
 | --- | --- |
-| `cd api && go test -count=1 ./...` | 0 |
-| `cd web && npx vitest run` | 0 (11 files, 115 tests) |
+| `cd api && go test -count=1 ./...` | 0 (auth, catalog, deploy, httpx, player, skills, world all ok) |
+| `cd web && npx vitest run` | 0 (11 files, 116 tests) |
 | `cd web && npx eslint` | 0 |
 | `cd web && npx tsc --noEmit` | 0 |
 | `cd web && npx playwright test` | 0 (5 passed) |
 | `make ci-build` | 0 |
 | `make check-deps` | 0 (`deps ok`) |
 
-## Ranked gaps
-
-1. Skill ordering has no own-layer proof, and its unknown-id-last row is unasserted. This is `Test policy` row "Decides, reached across a boundary (skill ordering)", affecting C10 and door 4. Locations: `api/internal/catalog/catalog.go:174-184`, `api/internal/player/player.go:125-130`.
-2. The new `player.Get` loadSkills error path has no case, so `GET /api/me` gets a new 500 cause. It sits in the Coverage "error paths" row and contradicts the checks' note that GET /api/me statuses are "untouched". Location: `api/internal/player/player.go:106-107`. The unlock INSERT error at `api/internal/skills/skills.go:39-41` has no case either.
-3. C12 has a precision gap: node `description` is checked only for being non-empty at the api. None of the 9 prototype strings are asserted, and web tests read a hand-copied mock. Location: `api/internal/catalog/catalog_test.go:146`.
-4. The HUD `catalog &&` guard's false branch is unasserted (low severity). Location: `web/src/components/Hud.tsx:47`.
-
 ## Gate
 
-`python3 .claude/skills/tlc-spec-lean/scripts/validate_verification.py skills` - exit 1:
+`python3 .claude/skills/tlc-spec-lean/scripts/validate_verification.py skills` - exit 0:
 
-    ERROR skills: verdict is FAIL - route the ranked gaps back as fixes, then re-verify
-    validate_verification: 1 error(s), 0 warning(s) across [skills]
-
-The only error is the FAIL verdict itself. No row contradicts the verdict.
+    validate_verification: 0 error(s), 0 warning(s) across [skills]

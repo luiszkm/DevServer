@@ -143,7 +143,9 @@ Proof: `cd api && go test ./internal/skills -run '^TestUnlock_InsertError$'`
 | `GET /api/me` new failure cause (1) | skills load error C28 | - |
 | skill ordering (2) | known ids C27 · id outside the catalog C27 | - |
 | node descriptions (9) | C12, table-driven over all 9 | - |
-| HUD without catalog (1) | no skill section `Hud.test.tsx` C22 | - |
+| HUD without catalog (1) | no skill section, selected by C22's pattern C22 | - |
+
+- The HUD without a catalog is unreachable in the app (`GameShell` ready state always has one); the test pins that it renders nothing rather than a wrong empty state
 | `GET /api/catalog` new key (1) | `skillTrees` C12 | - |
 | skill nodes (9) | C12, table-driven over all 9 | - |
 | bonus types (3) | `hp` C2 · `sp` C3 · `dmg` C3 | - |
@@ -170,7 +172,7 @@ Same rows as the repo's guide in `AGENTS.md` (`## Test policy`).
 Evidence:
 
 - unlock rule: 4 guards (known node, already unlocked, previous unlocked, points) + HP bonus -> decides, reached across a boundary (C1–C8)
-- `player.skills` ordering: 1 sort by catalog position -> decides, boundary C10
+- `player.skills` ordering: 1 sort by catalog position -> decides, own layer C27 and boundary C10
 - `SkillsScene`: node state, bonus sum, chips -> decides at screen level (C13–C24)
 - closest analogue: `api/internal/deploy/deploy.go` claim (guards inside `WithLocked`), proven at the boundary
 

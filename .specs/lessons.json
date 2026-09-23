@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 10,
+  "next_id": 13,
   "lessons": [
     {
       "id": "L-001",
@@ -166,6 +166,60 @@
       ],
       "created": "2026-09-23T19:27:55Z",
       "last_seen": "2026-09-23T19:27:55Z"
+    },
+    {
+      "id": "L-010",
+      "key": "ac_gap::a sort or lookup with a fallback unknown id sorts last needs an own layer test that exercises the fallback",
+      "text": "A sort or lookup with a fallback (unknown id sorts last) needs an own-layer test that exercises the fallback.",
+      "signal": "ac_gap",
+      "scope": "api/ordering",
+      "status": "candidate",
+      "features": [
+        "skills"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/catalog/catalog.go:184 (api/ordering)"
+      ],
+      "created": "2026-09-23T20:20:14Z",
+      "last_seen": "2026-09-23T20:20:14Z"
+    },
+    {
+      "id": "L-011",
+      "key": "ac_gap::when a feature adds a query to an existing route that route gains a 500 cause and owes a proof for it",
+      "text": "When a feature adds a query to an existing route, that route gains a 500 cause and owes a proof for it.",
+      "signal": "ac_gap",
+      "scope": "api/httpx",
+      "status": "candidate",
+      "features": [
+        "skills"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/player/player.go:106 (api/httpx)"
+      ],
+      "created": "2026-09-23T20:20:14Z",
+      "last_seen": "2026-09-23T20:20:14Z"
+    },
+    {
+      "id": "L-012",
+      "key": "spec_precision_gap::assert catalog text fields by value not just non empty the web mocks copy them by hand",
+      "text": "Assert catalog text fields by value, not just non-empty; the web mocks copy them by hand.",
+      "signal": "spec_precision_gap",
+      "scope": "api/catalog",
+      "status": "candidate",
+      "features": [
+        "skills"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/catalog/catalog_test.go:146 (api/catalog)"
+      ],
+      "created": "2026-09-23T20:20:14Z",
+      "last_seen": "2026-09-23T20:20:14Z"
     }
   ]
 }

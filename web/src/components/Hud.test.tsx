@@ -47,7 +47,7 @@ describe("Hud", () => {
     else expect(within(card).getByText(text)).toBeInTheDocument();
   });
 
-  it("shows no skill section without a catalog", () => {
+  it("shows active skill glyphs only with a catalog (none without one)", () => {
     render(<Hud player={player({ skills: ["f1"] })} />);
     const hud = screen.getByRole("contentinfo", { name: "HUD" });
     expect(within(hud).queryByLabelText("habilidades ativas")).not.toBeInTheDocument();

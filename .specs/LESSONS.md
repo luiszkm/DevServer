@@ -68,6 +68,24 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: web/src/components/DeployScene.tsx:192 (web/screens)
 - last seen: 2026-09-23T19:27:55Z
 
+### L-010 - A sort or lookup with a fallback (unknown id sorts last) needs an own-layer test that exercises the fallback.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `api/ordering` · harmful: 0
+- features: skills
+- evidence: api/internal/catalog/catalog.go:184 (api/ordering)
+- last seen: 2026-09-23T20:20:14Z
+
+### L-011 - When a feature adds a query to an existing route, that route gains a 500 cause and owes a proof for it.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `api/httpx` · harmful: 0
+- features: skills
+- evidence: api/internal/player/player.go:106 (api/httpx)
+- last seen: 2026-09-23T20:20:14Z
+
+### L-012 - Assert catalog text fields by value, not just non-empty; the web mocks copy them by hand.
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `api/catalog` · harmful: 0
+- features: skills
+- evidence: api/internal/catalog/catalog_test.go:146 (api/catalog)
+- last seen: 2026-09-23T20:20:14Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
