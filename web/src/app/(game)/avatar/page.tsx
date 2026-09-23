@@ -1,5 +1,5 @@
-import { ComingSoon } from "@/components/ComingSoon";
+import { AvatarScene } from "@/components/AvatarScene";
 
 export default function AvatarPage() {
-  return <ComingSoon scene="AVATAR" />;
+  return <AvatarScene />;
 }

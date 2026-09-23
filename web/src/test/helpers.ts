@@ -61,20 +61,46 @@ export const COMMANDS: Catalog["commands"] = [
 
 export const ITEMS: Catalog["items"] = [
   { id: "null_shard", name: "FRAGMENTO NULL", glyph: "0x0", rarity: "COMUM", description: "resto de slime" },
-  { id: "sp_potion", name: "POÇÃO DE CACHE", glyph: "++", rarity: "COMUM", description: "30 SP", restore: { stat: "sp", amount: 30 } },
-  { id: "hp_potion", name: "POÇÃO DE MEMÓRIA", glyph: "HP+", rarity: "COMUM", description: "40 HP", restore: { stat: "hp", amount: 40 } },
+  { id: "sp_potion", name: "POÇÃO DE CACHE", glyph: "++", rarity: "COMUM", description: "30 SP", restore: { stat: "sp", amount: 30 }, price: { currency: "gems", amount: 15 } },
+  { id: "hp_potion", name: "POÇÃO DE MEMÓRIA", glyph: "HP+", rarity: "COMUM", description: "40 HP", restore: { stat: "hp", amount: 40 }, price: { currency: "gems", amount: 12 } },
+  { id: "boost_deploy", name: "ACELERADOR DE DEPLOY", glyph: ">>", rarity: "COMUM", description: "-15 min", price: { currency: "gems", amount: 35 } },
+];
+
+export const GEAR_SLOTS: Catalog["gearSlots"] = [
+  { id: "setup", name: "CONFIGURAÇÃO" },
+  { id: "bebida", name: "BEBIDA" },
+  { id: "vestuario", name: "VESTUÁRIO" },
+  { id: "acessorio", name: "ACESSÓRIO" },
+];
+
+export const GEAR: Catalog["gear"] = [
+  { id: "macbook", name: "MACBOOK PRO", glyph: "[Mac]", slot: "setup", rarity: "RARO", description: "compila sem travar", price: { currency: "gems", amount: 120 }, bonus: { type: "dmg", amount: 8 } },
+  { id: "monitor", name: "MONITOR ULTRAWIDE", glyph: "[==]", slot: "setup", rarity: "LENDÁRIO", description: "mais tela", price: { currency: "gems", amount: 200 }, bonus: { type: "sp", amount: 20 } },
+  { id: "cafe", name: "CAFÉ EXPRESSO", glyph: "{C}", slot: "bebida", rarity: "COMUM", description: "cafeína", price: { currency: "coins", amount: 50 }, bonus: { type: "sp", amount: 12 } },
+  { id: "moletom", name: "MOLETOM CONFORTÁVEL", glyph: "[[]]", slot: "vestuario", rarity: "COMUM", description: "conforto", price: { currency: "coins", amount: 70 }, bonus: { type: "hp", amount: 15 } },
+  { id: "cadeira", name: "CADEIRA ERGONÔMICA", glyph: "[|]", slot: "vestuario", rarity: "RARO", description: "postura", price: { currency: "gems", amount: 150 }, bonus: { type: "hp", amount: 30 } },
+  { id: "fone", name: "FONE COM CANCELAMENTO", glyph: "((o))", slot: "acessorio", rarity: "INCOMUM", description: "foco", price: { currency: "gems", amount: 90 }, bonus: { type: "dmg", amount: 6 } },
+];
+
+export const SKINS: Catalog["skins"] = [
+  { id: "default", name: "DEV PADRÃO", rarity: "PADRÃO", description: "visual clássico", filter: "none", price: { currency: "gems", amount: 0 }, bonus: null },
+  { id: "neon", name: "DEV NEON", rarity: "INCOMUM", description: "ciano", filter: "hue-rotate(140deg) saturate(1.8) brightness(1.1)", price: { currency: "gems", amount: 60 }, bonus: { type: "dmg", amount: 5 } },
+  { id: "shadow", name: "DEV SOMBRIO", rarity: "RARO", description: "roxa", filter: "hue-rotate(210deg) saturate(1.4) brightness(0.8)", price: { currency: "gems", amount: 80 }, bonus: { type: "sp", amount: 10 } },
+  { id: "golden", name: "DEV DOURADO", rarity: "LENDÁRIO", description: "dourada", filter: "hue-rotate(60deg) saturate(2.2) brightness(1.25)", price: { currency: "gems", amount: 150 }, bonus: { type: "hp", amount: 20 } },
 ];
 
 export const CATALOG: Catalog = {
   version: "v1", regions: REGIONS, deployTypes: DEPLOY_TYPES, deployLevels: DEPLOY_LEVELS, skillTrees: SKILL_TREES,
   enemies: ENEMIES, commands: COMMANDS, items: ITEMS,
   combat: { counter: [7, 14], spRegen: 5, weaknessMultiplier: 1.8, victory: { xp: 90, coins: 40, gems: 1 }, dropChance: 65, potionChance: 30, potion: "sp_potion" },
+  gearSlots: GEAR_SLOTS, gear: GEAR, skins: SKINS,
 };
 
 export function player(overrides: Partial<Player> = {}): Player {
   return {
     devName: "DEV_01", class: "BACKEND", level: 1, xp: 0, xpMax: 500, hp: 100, hpMax: 100,
-    coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], inventory: [{ item: "sp_potion", quantity: 2 }], ...overrides,
+    coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], inventory: [{ item: "sp_potion", quantity: 2 }],
+    gear: [], equipment: { setup: null, bebida: null, vestuario: null, acessorio: null }, skins: ["default"], ...overrides,
   };
 }
 

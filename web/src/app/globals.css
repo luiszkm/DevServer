@@ -89,8 +89,6 @@ button { font-family: inherit; }
 .classes legend { margin-bottom: 8px; text-align: left; }
 .class-btn[aria-pressed="true"] { background: var(--cyan); color: var(--edge); }
 
-.coming-soon { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; font-size: 14px; }
-.coming-soon-tag { color: var(--yellow); font-size: 11px; }
 
 .title-scene .title-art { position: absolute; top: 0; left: 0; width: 100%; height: 960px; }
 .title-art img { width: 100%; display: block; }
@@ -176,3 +174,81 @@ button { font-family: inherit; }
 .battle-command:disabled, .battle-potion:disabled { opacity: .5; cursor: default; }
 .battle-potions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .battle-hero { display: flex; gap: 18px; align-items: center; padding: 12px 16px; font-size: 11px; }
+.battle-hero-sprite { width: 34px; height: 58px; object-fit: cover; border: 2px solid var(--edge); }
+
+.hero-sprite { display: block; object-fit: cover; object-position: top; }
+
+.shop { display: flex; gap: 16px; padding: 18px; }
+.shop-main { flex: 1; display: flex; flex-direction: column; gap: 14px; min-height: 0; overflow: auto; }
+.shop-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; font-size: 11px; }
+.shop-gems { color: var(--cyan); }
+.shop-section { display: flex; flex-direction: column; gap: 12px; background: var(--panel-2); padding: 16px; }
+.shop-section-title { font-size: 10px; color: var(--muted); }
+.shop-grid { display: grid; gap: 10px; }
+.shop-grid-2 { grid-template-columns: repeat(3, 1fr); }
+.shop-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.shop-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.shop-card { display: flex; align-items: center; gap: 10px; padding: 11px; border: 3px solid var(--edge); background: var(--panel); color: var(--text); cursor: pointer; text-align: left; box-shadow: inset 0 -4px 0 var(--edge); }
+.shop-card:hover { filter: brightness(1.25); }
+.shop-card[aria-pressed="true"] { border-color: var(--green); }
+.shop-card .term { font-size: 16px; }
+.shop-glyph { min-width: 32px; height: 32px; padding: 0 3px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); background: var(--panel-3); font-size: 9px; }
+.shop-card-text { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.shop-card-name { font-size: 8px; line-height: 1.4; }
+.shop-bonus { color: var(--green); }
+.shop-price, .shop-status { font-size: 8px; color: var(--yellow); text-align: right; }
+.shop-skin { flex-direction: column; text-align: center; }
+.shop-skin-sprite { width: 56px; height: 72px; border: 2px solid var(--edge); background: #0a1622; }
+.shop-side { width: 340px; display: flex; flex-direction: column; gap: 14px; }
+.shop-detail { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+.shop-detail-glyph { align-self: center; min-width: 64px; height: 64px; padding: 0 6px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--edge); background: var(--panel-3); font-size: 12px; }
+.shop-detail-sprite { align-self: center; width: 80px; height: 104px; border: 3px solid var(--edge); background: #0a1622; }
+.shop-rarity { align-self: flex-start; font-size: 9px; padding: 6px 8px; border: 2px solid var(--edge); background: var(--panel-3); color: var(--yellow); }
+.shop-detail-name { font-size: 12px; line-height: 1.6; }
+.shop-desc { color: #a9c6dd; }
+.shop-spacer { flex: 1; }
+.shop-message { background: var(--panel-3); font-size: 19px; line-height: 1.35; }
+
+.avatar { display: grid; grid-template-columns: 466px 1fr; grid-template-rows: 1fr auto; gap: 12px 14px; padding: 16px; }
+.avatar-bag { grid-row: 1 / 3; display: flex; flex-direction: column; gap: 9px; min-height: 0; }
+.avatar-bag-head { display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; font-size: 11px; }
+.avatar-bag-head .term { font-size: 18px; }
+.avatar-cells { flex: 1; display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 66px; gap: 5px; align-content: start; background: #101c27; padding: 9px; overflow: auto; }
+.avatar-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 2px solid var(--line-2); background: var(--panel); color: var(--text); cursor: pointer; font-size: 9px; overflow: hidden; }
+.avatar-cell[data-active="true"] { border-color: var(--green); color: var(--green); }
+.avatar-cell[aria-pressed="true"] { background: #20364a; border-color: var(--text); }
+.avatar-cell-tag { font-size: 13px; line-height: 1; }
+.avatar-cell-sprite { width: 26px; height: 40px; }
+.avatar-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.avatar-tab { padding: 12px 3px; border: 3px solid var(--edge); background: #1b2b3a; color: #a9c6dd; cursor: pointer; font-size: 9px; }
+.avatar-tab[aria-selected="true"] { background: var(--green); border-color: var(--green); color: var(--edge); }
+.avatar-detail { display: flex; flex-direction: column; gap: 9px; background: var(--panel-2); padding: 12px 13px; }
+.avatar-detail .term { font-size: 18px; line-height: 1.25; }
+.avatar-detail-head { display: flex; align-items: center; gap: 10px; }
+.avatar-detail-glyph { min-width: 34px; height: 34px; padding: 0 3px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); background: var(--panel-3); font-size: 9px; }
+.avatar-detail-name { flex: 1; font-size: 9px; }
+.avatar-doll { display: grid; grid-template-columns: 118px 1fr 118px; gap: 12px; background: #0f1c28; padding: 14px; min-height: 0; }
+.avatar-col { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.avatar-skins { border: 3px solid var(--edge); background: var(--panel-2); padding: 8px; display: flex; flex-direction: column; gap: 7px; }
+.avatar-skins-title { font-size: 8px; color: var(--dim); text-align: center; }
+.avatar-skins-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+.avatar-skin { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border: 2px solid var(--line-2); background: var(--panel-3); cursor: pointer; overflow: hidden; padding: 0; }
+.avatar-skin[aria-pressed="true"] { border-color: var(--green); }
+.avatar-skin[aria-disabled="true"] { cursor: default; border-color: #1b2b3a; }
+.avatar-skin .hero-sprite { width: 22px; height: 36px; }
+.avatar-skin-locked { opacity: .35; }
+.avatar-slots { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.avatar-slot { flex: 1; min-height: 96px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 6px; border: 3px solid var(--line-2); background: #101c27; color: #3f5b73; cursor: pointer; }
+.avatar-slot[data-filled="true"] { border-color: var(--green); background: #17303f; color: var(--green); }
+.avatar-slot-glyph { font-size: 10px; }
+.avatar-slot-label { font-size: 15px; line-height: 1; text-align: center; }
+.avatar-center { display: flex; flex-direction: column; align-items: center; gap: 10px; min-height: 0; }
+.avatar-preview { flex: 1; width: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; border: 3px solid var(--edge); box-shadow: inset 0 0 0 2px #22384c; background: radial-gradient(circle at 50% 42%, #1a3247 0%, #0a1622 70%); overflow: hidden; }
+.avatar-hero { height: 100%; max-height: 404px; width: auto; }
+.avatar-name { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 11px 14px; border: 3px solid var(--edge); background: var(--panel); font-size: 11px; }
+.avatar-skin-name { color: var(--green); font-size: 19px; }
+.avatar-stats { border: 3px solid var(--edge); background: var(--panel-2); padding: 9px 8px; display: flex; flex-direction: column; gap: 6px; }
+.avatar-stats .term { font-size: 17px; line-height: 1; }
+.avatar-message { background: var(--panel-3); padding: 12px 16px; font-size: 19px; color: var(--green); }
+
+.deploy-boost { align-self: flex-start; }

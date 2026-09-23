@@ -1,5 +1,5 @@
-import { ComingSoon } from "@/components/ComingSoon";
+import { ShopScene } from "@/components/ShopScene";
 
 export default function ShopPage() {
-  return <ComingSoon scene="LOJA" />;
+  return <ShopScene />;
 }

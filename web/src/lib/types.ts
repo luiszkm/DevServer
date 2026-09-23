@@ -13,6 +13,12 @@ export type Player = {
   skin: string;
   skills: string[];
   inventory: { item: string; quantity: number }[];
+  /** Owned gear ids, catalog order. */
+  gear: string[];
+  /** Every catalog slot, with the equipped gear id or null. */
+  equipment: Record<string, string | null>;
+  /** Owned skin ids, catalog order, always with "default". */
+  skins: string[];
 };
 
 export type Region = {
@@ -39,7 +45,7 @@ export type SkillNode = {
   glyph: string;
   name: string;
   description: string;
-  bonus: { type: "hp" | "sp" | "dmg"; amount: number };
+  bonus: Bonus;
 };
 
 export type SkillTree = { id: string; name: string; nodes: SkillNode[] };
@@ -60,6 +66,10 @@ export type Command = {
   skill?: string;
 };
 
+export type Bonus = { type: "hp" | "sp" | "dmg"; amount: number };
+
+export type Price = { currency: "gems" | "coins"; amount: number };
+
 export type Item = {
   id: string;
   name: string;
@@ -67,6 +77,31 @@ export type Item = {
   rarity: string;
   description: string;
   restore?: { stat: "sp" | "hp"; amount: number };
+  /** Absent for items the shop does not sell (drops). */
+  price?: Price;
+};
+
+export type GearSlot = { id: string; name: string };
+
+export type Gear = {
+  id: string;
+  name: string;
+  glyph: string;
+  slot: string;
+  rarity: string;
+  description: string;
+  price: Price;
+  bonus: Bonus;
+};
+
+export type Skin = {
+  id: string;
+  name: string;
+  rarity: string;
+  description: string;
+  filter: string;
+  price: Price;
+  bonus: Bonus | null;
 };
 
 export type CombatRules = {
@@ -89,6 +124,9 @@ export type Catalog = {
   commands: Command[];
   items: Item[];
   combat: CombatRules;
+  gearSlots: GearSlot[];
+  gear: Gear[];
+  skins: Skin[];
 };
 
 export type Battle = {

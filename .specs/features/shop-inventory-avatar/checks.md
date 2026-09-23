@@ -196,25 +196,25 @@ Proof: `cd api && go test ./internal/shop -run '^TestMigration_ExistingPlayers$'
 - [x] C25
 - [x] C26
 - [x] C27
-- [ ] C28
-- [ ] C29
-- [ ] C30
-- [ ] C31
-- [ ] C32
-- [ ] C33
-- [ ] C34
-- [ ] C35
-- [ ] C36
-- [ ] C37
-- [ ] C38
-- [ ] C39
-- [ ] C40
-- [ ] C41
+- [x] C28
+- [x] C29
+- [x] C30
+- [x] C31
+- [x] C32
+- [x] C33
+- [x] C34
+- [x] C35
+- [x] C36
+- [x] C37
+- [x] C38
+- [x] C39
+- [x] C40
+- [x] C41
 - [ ] C42
 - [ ] C43
 - [ ] C44
 - [ ] C45
-- [ ] C46
+- [x] C46
 - [x] C47
 
 ## Coverage
@@ -292,6 +292,8 @@ Evidence:
 ## Impact on earlier checks
 
 - foundation C28 (unshipped scenes show `EM BREVE`): its set becomes empty; C46 replaces the proof
+- `ComingSoon` had no scene left to render once `/loja` and `/avatar` shipped: the component and its `.coming-soon` styles are removed, and `ComingSoon.test.tsx` now holds only C46 over the 7 scene pages
+- bug-fight C37 (`items` = 8): `boost_deploy` makes 9; `TestCatalog_ServesCombat` now requires the ninth row `boost_deploy` with no `restore` (plan `Impact`)
 - bug-fight C44-C52 and C53: the hero card gains a sprite; no asserted text changes
 
 ## Handoff
