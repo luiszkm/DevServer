@@ -44,14 +44,37 @@ export const SKILL_TREES: Catalog["skillTrees"] = [
   ] },
 ];
 
+export const ENEMIES: Catalog["enemies"] = [
+  { region: "vila", name: "NULL SLIME", level: 3, hp: 60, sp: 50, weakness: "null-check", drop: "null_shard", glyph: "(0x0)" },
+  { region: "floresta", name: "LOG WISP", level: 5, hp: 70, sp: 55, weakness: "referência circular", drop: "log_essence", glyph: "(~.~)" },
+];
+
+export const COMMANDS: Catalog["commands"] = [
+  { id: "fix", label: "FIX", hint: "corrige o bug", cost: 10, damage: [14, 20] },
+  { id: "test", label: "TEST", hint: "expõe a fraqueza", cost: 8, exposesWeakness: true },
+  { id: "refactor", label: "REFACTOR", hint: "recupera 18 HP", cost: 14, heal: 18 },
+  { id: "plain", label: "PLAIN", hint: "defende e recupera 3 SP", cost: 0, shield: true, spGain: 3 },
+  { id: "f1", label: "</> MARKUP", hint: "golpe limpo", cost: 12, damage: [12, 14], skill: "f1" },
+  { id: "b2", label: "[] CACHE", hint: "recupera 24 HP", cost: 16, heal: 24, skill: "b2" },
+  { id: "rollback", label: "ROLLBACK", hint: "volta para o mapa", cost: 0, flee: true },
+];
+
+export const ITEMS: Catalog["items"] = [
+  { id: "null_shard", name: "FRAGMENTO NULL", glyph: "0x0", rarity: "COMUM", description: "resto de slime" },
+  { id: "sp_potion", name: "POÇÃO DE CACHE", glyph: "++", rarity: "COMUM", description: "30 SP", restore: { stat: "sp", amount: 30 } },
+  { id: "hp_potion", name: "POÇÃO DE MEMÓRIA", glyph: "HP+", rarity: "COMUM", description: "40 HP", restore: { stat: "hp", amount: 40 } },
+];
+
 export const CATALOG: Catalog = {
   version: "v1", regions: REGIONS, deployTypes: DEPLOY_TYPES, deployLevels: DEPLOY_LEVELS, skillTrees: SKILL_TREES,
+  enemies: ENEMIES, commands: COMMANDS, items: ITEMS,
+  combat: { counter: [7, 14], spRegen: 5, weaknessMultiplier: 1.8, victory: { xp: 90, coins: 40, gems: 1 }, dropChance: 65, potionChance: 30, potion: "sp_potion" },
 };
 
 export function player(overrides: Partial<Player> = {}): Player {
   return {
     devName: "DEV_01", class: "BACKEND", level: 1, xp: 0, xpMax: 500, hp: 100, hpMax: 100,
-    coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], ...overrides,
+    coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], inventory: [{ item: "sp_potion", quantity: 2 }], ...overrides,
   };
 }
 

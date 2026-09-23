@@ -19,9 +19,9 @@
 ## Handoff
 
 **Feature**: bug-fight
-**Where**: plan.md escrito e validado, aguardando revisão humana; foundation, deploy-pipelines e skills VERIFIED
-**In progress**: nenhum código
-**Next step**: revisar `.specs/features/bug-fight/plan.md`; após aprovação, checks, build e Verifier
+**Where**: C1–C53 fechados, todos os proofs verdes com exit 0; falta o Verifier independente
+**In progress**: nenhum
+**Next step**: Verifier fresco sobre `6a7dddc..HEAD`
 **Blockers**: none
-**Uncommitted**: .specs/features/bug-fight/plan.md, .specs/STATE.md
+**Uncommitted**: none
 **Branch**: feat/bug-fight (empilhada sobre feat/skills)

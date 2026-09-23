@@ -1,5 +1,5 @@
-import { ComingSoon } from "@/components/ComingSoon";
+import { BattleScene } from "@/components/BattleScene";
 
 export default function BugFightPage() {
-  return <ComingSoon scene="BUG FIGHT" />;
+  return <BattleScene />;
 }

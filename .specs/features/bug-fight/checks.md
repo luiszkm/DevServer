@@ -220,19 +220,19 @@ Proof: `cd web && npx playwright test e2e/battle.spec.ts -g "fight to victory"`
 - [x] C38
 - [x] C39
 - [x] C40
-- [ ] C41
-- [ ] C42
-- [ ] C43
-- [ ] C44
-- [ ] C45
-- [ ] C46
-- [ ] C47
-- [ ] C48
-- [ ] C49
-- [ ] C50
-- [ ] C51
-- [ ] C52
-- [ ] C53
+- [x] C41
+- [x] C42
+- [x] C43
+- [x] C44
+- [x] C45
+- [x] C46
+- [x] C47
+- [x] C48
+- [x] C49
+- [x] C50
+- [x] C51
+- [x] C52
+- [x] C53
 
 ## Coverage
 
@@ -295,3 +295,7 @@ Evidence:
 ## Handoff
 
 - S1–S4 ≈ 8k + 10k + 8k + 10k ≈ 36k de leitura, abaixo do budget de 150k - um builder, sem handoff
+
+- **Boundary:** C1-C53 closed on `feat/bug-fight`
+- **Settled mid-build:** `player.AddItem` uses an UPDATE to decrement (the CHECK runs before ON CONFLICT); player creation and its starting items share one transaction; unreachable catalog-lookup fallbacks in the scene removed
+- **Abandoned:** none; 40 self-mutations (24 api, 16 web) before verification - 3 api survivors (weakness rounding case, PLAIN cap on a defeat turn, SP boundary) closed by stronger C15 and C25; e2e C53 fixed for a turn-end race and an ambiguous `RESOLVIDO` locator (test harness, not assertions)
