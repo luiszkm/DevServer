@@ -7,6 +7,8 @@ import type { DeployJob, DeployLevel, Player } from "@/lib/types";
 import { useGame } from "./GameContext";
 
 const STAGES = ["LINT", "BUILD", "TEST", "SHIP"];
+/** The inventory item a boost consumes. */
+const BOOST_ITEM = "boost_deploy";
 const INITIAL_LOG = ["$ devserver --version  v0.4.2-alpha", "> escolha um tipo de deploy e um nível para iniciar."];
 
 function rewardText(l: DeployLevel) {
@@ -91,7 +93,26 @@ export function DeployScene() {
     }
   }
 
+  async function boost(job: DeployJob) {
+    setPending(true);
+    setMessage(null);
+    try {
+      const r = await post<{ deploy: DeployJob; player: Player; serverTime: string }>(`/api/me/deploys/${job.type}/boost`);
+      if (!r.ok) return setMessage(r.error?.message ?? "erro ao acelerar");
+      sync(r.data.serverTime);
+      setNow(Date.now());
+      setJobs((js) => (js ?? []).map((j) => (j.type === job.type ? r.data.deploy : j)));
+      setPlayer(r.data.player);
+      addLog(`> acelerador aplicado ao deploy de ${typeName(job.type)}: -15min.`);
+    } catch {
+      setMessage("SERVIDOR FORA DO AR");
+    } finally {
+      setPending(false);
+    }
+  }
+
   const current = jobs?.find((j) => j.type === selType);
+  const boosters = player.inventory.find((i) => i.item === BOOST_ITEM)?.quantity ?? 0;
 
   return (
     <section className="scene deploy" aria-label="DEPLOY">
@@ -141,7 +162,14 @@ export function DeployScene() {
           ) : jobs === null ? (
             <p className="term">CARREGANDO...</p>
           ) : current ? (
-            <Running job={current} remainingMs={remaining(current)} pending={pending} onClaim={() => claim(current)} />
+            <Running
+              job={current}
+              remainingMs={remaining(current)}
+              pending={pending}
+              boosters={boosters}
+              onClaim={() => claim(current)}
+              onBoost={() => boost(current)}
+            />
           ) : (
             <>
               <span className="term">escolha o nível do deploy — níveis maiores levam mais tempo real, mas rendem mais recompensa.</span>
@@ -185,7 +213,16 @@ export function DeployScene() {
   );
 }
 
-function Running({ job, remainingMs, pending, onClaim }: { job: DeployJob; remainingMs: number; pending: boolean; onClaim: () => void }) {
+type RunningProps = {
+  job: DeployJob;
+  remainingMs: number;
+  pending: boolean;
+  boosters: number;
+  onClaim: () => void;
+  onBoost: () => void;
+};
+
+function Running({ job, remainingMs, pending, boosters, onClaim, onBoost }: RunningProps) {
   const total = Date.parse(job.endsAt) - Date.parse(job.startedAt);
   const ready = remainingMs <= 0;
   const pct = ready ? 100 : Math.max(0, Math.min(100, ((total - remainingMs) / total) * 100));
@@ -200,6 +237,11 @@ function Running({ job, remainingMs, pending, onClaim }: { job: DeployJob; remai
         <span className="pixel deploy-stage">{stage}</span>
         <span className="pixel deploy-remaining">{ready ? "CONCLUÍDO" : formatRemaining(remainingMs)}</span>
       </div>
+      {!ready && (
+        <button type="button" className={`btn deploy-boost ${boosters ? "btn-yellow" : "btn-locked"}`} disabled={pending || !boosters} onClick={onBoost}>
+          {boosters ? `ACELERAR (-15min) · ${boosters} disponíveis` : "SEM ACELERADORES · veja a Loja"}
+        </button>
+      )}
       <button type="button" className="btn btn-green" disabled={!ready || pending} onClick={onClaim}>
         COLETAR RECOMPENSA
       </button>

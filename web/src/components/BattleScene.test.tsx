@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import BugFightPage from "@/app/(game)/bug-fight/page";
@@ -246,5 +246,19 @@ describe("BattleScene", () => {
     );
     expect(await screen.findByLabelText("inimigo")).toBeInTheDocument();
     expect(screen.queryByText("EM BREVE")).not.toBeInTheDocument();
+  });
+
+  // shop-inventory-avatar C44
+  it.each([
+    ["neon", "hue-rotate(140deg) saturate(1.8) brightness(1.1)"],
+    ["default", "none"],
+  ])("hero sprite wears skin (%s)", async (skin, filter) => {
+    const p = player({ skin, skins: ["default", "neon"] });
+    mockFetch({ "POST /api/me/battle": startWith(battle(), p) });
+    renderScene({ p });
+    const hero = await screen.findByLabelText("dev em combate");
+    const img = within(hero).getByRole("img");
+    expect(img.getAttribute("src")).toBe("/hero.png");
+    expect(img.style.filter).toBe(filter);
   });
 });

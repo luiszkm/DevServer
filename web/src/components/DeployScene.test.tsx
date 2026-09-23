@@ -295,4 +295,49 @@ describe("DeployScene", () => {
     expect(lines).toHaveLength(8);
     expect(screen.getByRole("log")).not.toHaveTextContent("v0.4.2-alpha");
   });
+
+  // shop-inventory-avatar C42
+  it("boost button", async () => {
+    const boost = /^ACELERAR|^SEM ACELERADORES/;
+    const f = mockFetch({
+      "GET /api/me/deploys": list([job("backend", 2, 0, 30), job("frontend", 1, 15, 15)]),
+      "POST /api/me/deploys/backend/boost": () => new Promise<Response>(() => {}),
+    });
+    renderScene({ p: player({ level: 3, inventory: [{ item: "boost_deploy", quantity: 1 }] }) });
+    const btn = await within(panel()).findByRole("button", { name: "ACELERAR (-15min) · 1 disponíveis" });
+    expect(btn).toBeEnabled();
+    await userEvent.click(btn);
+    expect(f.calls("POST /api/me/deploys/backend/boost")).toBe(1);
+
+    await userEvent.click(typeButton("FRONTEND"));
+    expect(within(panel()).getByText("PRONTO PARA COLETAR")).toBeInTheDocument();
+    expect(within(panel()).queryByRole("button", { name: boost })).not.toBeInTheDocument();
+  });
+
+  it("boost button (no boosters)", async () => {
+    const f = mockFetch({ "GET /api/me/deploys": list([job("backend", 2, 0, 30)]) });
+    renderScene({ p: player({ level: 3, inventory: [] }) });
+    const btn = await within(panel()).findByRole("button", { name: "SEM ACELERADORES · veja a Loja" });
+    expect(btn).toBeDisabled();
+    await userEvent.click(btn);
+    expect(f.fn).toHaveBeenCalledTimes(1);
+  });
+
+  // shop-inventory-avatar C43
+  it("boost updates remaining", async () => {
+    const running = job("backend", 2, 1, 30);
+    const boosted = { ...running, endsAt: iso(Date.parse(running.endsAt) - 15 * MIN) };
+    const updated = player({ level: 3, inventory: [] });
+    mockFetch({
+      "GET /api/me/deploys": list([running]),
+      "POST /api/me/deploys/backend/boost": json(200, { deploy: boosted, player: updated, serverTime: iso(T0) }),
+    });
+    const { setPlayer } = renderScene({ p: player({ level: 3, inventory: [{ item: "boost_deploy", quantity: 1 }] }) });
+    await screen.findByText("29:00 restante");
+    expect(typeButton("BACKEND")).toHaveTextContent("29:00 restante");
+    await userEvent.click(within(panel()).getByRole("button", { name: "ACELERAR (-15min) · 1 disponíveis" }));
+    expect(await screen.findByText("14:00 restante")).toBeInTheDocument();
+    expect(typeButton("BACKEND")).toHaveTextContent("14:00 restante");
+    expect(setPlayer).toHaveBeenCalledWith(updated);
+  });
 });

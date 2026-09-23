@@ -3,8 +3,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { post } from "@/lib/api";
 import { eventText } from "@/lib/battleLog";
+import { skinFilter } from "@/lib/gear";
 import type { Battle, BattleEvent, Player } from "@/lib/types";
 import { useGame } from "./GameContext";
+import { HeroSprite } from "./HeroSprite";
 
 type TurnResponse = { battle: Battle | null; player: Player; events: BattleEvent[] };
 
@@ -142,6 +144,7 @@ export function BattleScene() {
         </div>
       </div>
       <div className="panel battle-hero" aria-label="dev em combate">
+        <HeroSprite filter={skinFilter(catalog, player.skin)} className="battle-hero-sprite" />
         <span className="pixel">{player.devName}</span>
         <span className="term">{`HP ${player.hp}/${player.hpMax}`}</span>
         {battle && <span className="term">{`SP ${battle.sp}/${battle.spMax}`}</span>}

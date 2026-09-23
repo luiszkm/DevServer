@@ -210,9 +210,9 @@ Proof: `cd api && go test ./internal/shop -run '^TestMigration_ExistingPlayers$'
 - [x] C39
 - [x] C40
 - [x] C41
-- [ ] C42
-- [ ] C43
-- [ ] C44
+- [x] C42
+- [x] C43
+- [x] C44
 - [ ] C45
 - [x] C46
 - [x] C47
