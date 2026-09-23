@@ -18,9 +18,9 @@
 ## Handoff
 
 **Feature**: skills
-**Where**: plan.md escrito e validado, aguardando revisão humana; foundation e deploy-pipelines VERIFIED
-**In progress**: nenhum código
-**Next step**: revisar `.specs/features/skills/plan.md`; após aprovação, derivar `checks.md` e construir
+**Where**: C1–C26 fechados, todos os proofs verdes com exit 0; falta o Verifier independente
+**In progress**: nenhum
+**Next step**: Verifier fresco sobre `7b5df87..HEAD`
 **Blockers**: none
-**Uncommitted**: .specs/features/skills/plan.md, .specs/STATE.md
+**Uncommitted**: none
 **Branch**: feat/skills (empilhada sobre feat/deploy-pipelines)

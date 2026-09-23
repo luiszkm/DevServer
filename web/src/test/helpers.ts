@@ -26,12 +26,32 @@ export const DEPLOY_LEVELS: Catalog["deployLevels"] = [
   { level: 5, minLevel: 15, minutes: 360, xp: 700, coins: 300, gems: 8 },
 ];
 
-export const CATALOG: Catalog = { version: "v1", regions: REGIONS, deployTypes: DEPLOY_TYPES, deployLevels: DEPLOY_LEVELS };
+export const SKILL_TREES: Catalog["skillTrees"] = [
+  { id: "frontend", name: "FRONTEND", nodes: [
+    { id: "f1", glyph: "</>", name: "MARKUP SEMÂNTICO", description: "+10 HP máximo permanente", bonus: { type: "hp", amount: 10 } },
+    { id: "f2", glyph: "{}", name: "GRID MASTER", description: "+8 SP máximo em combate", bonus: { type: "sp", amount: 8 } },
+    { id: "f3", glyph: "~", name: "MOTION", description: "+10% de dano em todos os ataques", bonus: { type: "dmg", amount: 10 } },
+  ] },
+  { id: "backend", name: "BACKEND", nodes: [
+    { id: "b1", glyph: "$_", name: "API REST", description: "+10 HP máximo permanente", bonus: { type: "hp", amount: 10 } },
+    { id: "b2", glyph: "[]", name: "CAMADA DE CACHE", description: "+10 SP máximo em combate", bonus: { type: "sp", amount: 10 } },
+    { id: "b3", glyph: "##", name: "FILA DE EVENTOS", description: "+12% de dano em todos os ataques", bonus: { type: "dmg", amount: 12 } },
+  ] },
+  { id: "infra", name: "INFRA", nodes: [
+    { id: "i1", glyph: ">_", name: "SHELL SCRIPT", description: "+8 SP máximo em combate", bonus: { type: "sp", amount: 8 } },
+    { id: "i2", glyph: "::", name: "CONTAINERS", description: "+15 HP máximo permanente", bonus: { type: "hp", amount: 15 } },
+    { id: "i3", glyph: "^", name: "AUTO-SCALING", description: "+15% de dano em todos os ataques", bonus: { type: "dmg", amount: 15 } },
+  ] },
+];
+
+export const CATALOG: Catalog = {
+  version: "v1", regions: REGIONS, deployTypes: DEPLOY_TYPES, deployLevels: DEPLOY_LEVELS, skillTrees: SKILL_TREES,
+};
 
 export function player(overrides: Partial<Player> = {}): Player {
   return {
     devName: "DEV_01", class: "BACKEND", level: 1, xp: 0, xpMax: 500, hp: 100, hpMax: 100,
-    coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", ...overrides,
+    coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], ...overrides,
   };
 }
 

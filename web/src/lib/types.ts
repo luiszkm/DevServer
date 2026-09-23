@@ -11,6 +11,7 @@ export type Player = {
   skillPoints: number;
   region: string;
   skin: string;
+  skills: string[];
 };
 
 export type Region = {
@@ -32,11 +33,22 @@ export type DeployLevel = {
   gems: number;
 };
 
+export type SkillNode = {
+  id: string;
+  glyph: string;
+  name: string;
+  description: string;
+  bonus: { type: "hp" | "sp" | "dmg"; amount: number };
+};
+
+export type SkillTree = { id: string; name: string; nodes: SkillNode[] };
+
 export type Catalog = {
   version: string;
   regions: Region[];
   deployTypes: DeployType[];
   deployLevels: DeployLevel[];
+  skillTrees: SkillTree[];
 };
 
 export type DeployJob = {

@@ -86,7 +86,7 @@ export function GameShell({ children }: { children: React.ReactNode }) {
         <GameContext.Provider value={{ player: state.player, catalog: state.catalog, setPlayer }}>
           <Frame>
             {children}
-            <Hud player={state.player} onLogout={logout} />
+            <Hud player={state.player} catalog={state.catalog} onLogout={logout} />
           </Frame>
         </GameContext.Provider>
       );

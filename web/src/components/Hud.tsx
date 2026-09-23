@@ -1,6 +1,6 @@
-import type { Player } from "@/lib/types";
+import type { Catalog, Player } from "@/lib/types";
 
-type Props = { player?: Player; onLogout?: () => void };
+type Props = { player?: Player; catalog?: Catalog; onLogout?: () => void };
 
 function Bar({ value, max, color }: { value: number; max: number; color: string }) {
   const pct = Math.max(0, Math.min(100, (value / max) * 100));
@@ -11,7 +11,7 @@ function Bar({ value, max, color }: { value: number; max: number; color: string 
   );
 }
 
-export function Hud({ player, onLogout }: Props) {
+export function Hud({ player, catalog, onLogout }: Props) {
   if (!player) {
     return (
       <footer className="hud" aria-label="HUD">
@@ -44,6 +44,7 @@ export function Hud({ player, onLogout }: Props) {
       <div className="hud-card">
         <span className="pixel hud-label">SKILL PTS</span>
         <span className="pixel hud-value" style={{ color: "var(--purple)" }}>{player.skillPoints}</span>
+        {catalog && <ActiveSkillGlyphs skills={player.skills} catalog={catalog} />}
       </div>
       <div className="hud-card">
         <span className="pixel hud-label">{player.devName}</span>
@@ -54,5 +55,19 @@ export function Hud({ player, onLogout }: Props) {
         )}
       </div>
     </footer>
+  );
+}
+
+function ActiveSkillGlyphs({ skills, catalog }: { skills: string[]; catalog: Catalog }) {
+  const nodes = catalog.skillTrees.flatMap((t) => t.nodes).filter((n) => skills.includes(n.id));
+  if (nodes.length === 0) return <span className="term hud-skills-empty">sem habilidades ativas</span>;
+  return (
+    <span className="hud-skills" aria-label="habilidades ativas">
+      {nodes.map((n) => (
+        <span key={n.id} className="pixel skill-chip">
+          {n.glyph}
+        </span>
+      ))}
+    </span>
   );
 }

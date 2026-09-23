@@ -120,4 +120,15 @@ describe("GameShell", () => {
     expect(await screen.findByRole("link", { name: "ENTRAR COM GITHUB" })).toBeInTheDocument();
     expect(f.calls("POST /api/auth/logout")).toBe(1);
   });
+
+  it("gives the HUD the catalog so it shows active skill glyphs", async () => {
+    mockFetch({
+      "GET /api/me": json(200, { player: player({ skills: ["f1"] }) }),
+      "GET /api/catalog": json(200, CATALOG),
+    });
+    render(<GameShell><p>cena</p></GameShell>);
+    await screen.findByText("cena");
+    const hud = screen.getByRole("contentinfo", { name: "HUD" });
+    expect(within(hud).getByLabelText("habilidades ativas")).toHaveTextContent("</>");
+  });
 });

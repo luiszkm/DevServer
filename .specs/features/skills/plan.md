@@ -150,4 +150,5 @@ não chave estrangeira (foundation door 5). No columns and no types here.
 | domain | existing term: `Catalog` ganha `skillTrees`; `version` muda |
 | screen | `/skills` deixa de ser `EM BREVE`: o conjunto do check C28 da foundation cai para `/bug-fight`, `/loja`, `/avatar` |
 | screen | HUD: o card SKILL PTS passa a mostrar glifos; o check C23 da foundation (valores do HUD) continua valendo |
+| code | `player.Get` e `player.WithLocked` carregam `skills` do banco e ordenam pelo catálogo (`catalog.Default()`); o HUD recebe o catálogo do `GameShell` |
 | stored data | nothing to migrate - tabela nova, vazia; jogadores existentes têm `skills` = `[]` |

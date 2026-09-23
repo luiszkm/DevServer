@@ -107,19 +107,19 @@ Proof: `cd api && go test ./internal/skills -run '^TestUnlock_SerializesOnPlayer
 - [x] C10
 - [x] C11
 - [x] C12
-- [ ] C13
-- [ ] C14
-- [ ] C15
-- [ ] C16
-- [ ] C17
-- [ ] C18
-- [ ] C19
-- [ ] C20
-- [ ] C21
-- [ ] C22
-- [ ] C23
-- [ ] C24
-- [ ] C25
+- [x] C13
+- [x] C14
+- [x] C15
+- [x] C16
+- [x] C17
+- [x] C18
+- [x] C19
+- [x] C20
+- [x] C21
+- [x] C22
+- [x] C23
+- [x] C24
+- [x] C25
 - [x] C26
 
 ## Coverage
@@ -135,6 +135,7 @@ Proof: `cd api && go test ./internal/skills -run '^TestUnlock_SerializesOnPlayer
 | new error codes (4) | `skill_locked` C4 · `skill_already_unlocked` C5 · `no_skill_points` C6 · `unknown_skill` C7 | - |
 | `409` on unlock (3) | `skill_locked` C4 · `skill_already_unlocked` C5 · `no_skill_points` C6 | - |
 | node states on screen (3) | `ATIVA` C14 · `1 PT` C14 · `BLOQ.` C14 | - |
+| HUD receives catalog from `GameShell` (1) | `GameShell.test.tsx` shows glyphs C22 | - |
 | active-skill displays (4) | cena com skills C21 · cena vazia C21 · HUD com skills C22 · HUD vazio C22 | - |
 | unlock outcomes on screen (4) | 200 C17 · erro com mensagem C18 · sem corpo C18 · rede C18 | - |
 | routes returning `player` with `skills` (4) | `POST /api/players` C10 · `GET /api/me` C10 · `POST /api/me/travel` C10 · `POST /api/me/skills/{id}/unlock` C10 | - |
@@ -175,3 +176,7 @@ Evidence:
 ## Handoff
 
 - S1–S2 ≈ 7k + 6k ≈ 13k de leitura, abaixo do budget de 150k - um builder, sem handoff
+
+- **Boundary:** C1-C26 closed on `feat/skills`
+- **Settled mid-build:** `player.Get`/`WithLocked` load skills and sort them by `catalog.Default()` (catalog loaded once); unreachable `nil` guard in `SortSkills` removed; C10 strengthened to assert the unlock response order
+- **Abandoned:** none; 24 self-mutations (12 api, 12 web) before verification - 3 survivors (unlock response order, dead nil guard, HUD not receiving the catalog) closed by C10, removal of the dead code, and a `GameShell` HUD test

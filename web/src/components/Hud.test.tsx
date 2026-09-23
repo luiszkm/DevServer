@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { player } from "@/test/helpers";
+import { CATALOG, player } from "@/test/helpers";
 import { GameShell } from "./GameShell";
 import { Hud } from "./Hud";
 
@@ -33,5 +33,17 @@ describe("Hud", () => {
     expect(screen.queryByRole("button", { name: "SAIR" })).not.toBeInTheDocument();
     rerender(<Hud player={player()} onLogout={vi.fn()} />);
     expect(screen.getByRole("button", { name: "SAIR" })).toBeInTheDocument();
+  });
+
+  // C22
+  it.each([
+    [["f1", "b1"], "</>$_"],
+    [[], "sem habilidades ativas"],
+  ])("shows active skill glyphs (%j)", (skills, text) => {
+    render(<Hud player={player({ skills })} catalog={CATALOG} />);
+    const hud = screen.getByRole("contentinfo", { name: "HUD" });
+    const card = within(hud).getByText("SKILL PTS").parentElement!;
+    if (skills.length) expect(within(card).getByLabelText("habilidades ativas").textContent).toBe(text);
+    else expect(within(card).getByText(text)).toBeInTheDocument();
   });
 });
