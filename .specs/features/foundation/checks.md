@@ -5,7 +5,7 @@ Plan: `.specs/features/foundation/plan.md`
 
 ## Intent
 
-50 checks in 6 slices · 12 one-way doors · 2 open, of which 0 block the build (1 blocks go-live)
+52 checks in 6 slices · 12 one-way doors · 2 open, of which 0 block the build (1 blocks go-live)
 
 Pré-requisitos das provas (criados pelo próprio build, door 1 e door 11):
 
@@ -177,6 +177,12 @@ Proof: `cd api && go test ./internal/httpx -run '^TestHandlerError_Returns500And
 **C50** - Se a gravação da sessão falha no callback, a api responde `500 internal` e não envia `ds_session` (AUTH-01, AC 38)
 Proof: `cd api && go test ./internal/auth -run '^TestCallback_SessionStoreFailure$'`
 
+**C51** - JSON malformado e campo com tipo errado em `POST /api/players` respondem `422 invalid_body` sem criar jogador (API-01, AC 35; door 12)
+Proof: `cd api && go test ./internal/httpx -run '^TestCreatePlayer_InvalidBody$'`
+
+**C52** - Quando a busca da sessão falha no banco, a rota protegida responde `500 internal` e grava log com o `request_id` do header `X-Request-Id` (AUTH-01, AC 38)
+Proof: `cd api && go test ./internal/httpx -run '^TestSessionLookupError_Returns500AndLogsRequestID$'`
+
 ## Progress
 
 Marcado antes do commit que satisfaz o check.
@@ -231,6 +237,8 @@ Marcado antes do commit que satisfaz o check.
 - [x] C48
 - [x] C49
 - [x] C50
+- [x] C51
+- [x] C52
 
 ## Coverage
 
@@ -264,10 +272,10 @@ Marcado antes do commit que satisfaz o check.
 | login error banner (4) | `error=github` C6 · `error=state` C6 · sem `error` C6 · valor desconhecido C6 | - |
 | Landing doors (12) | 1 C46 · 2 C11 · 3 C20 · 4 C21 · 5 C32 · 6 C27 · 7 C41 · 8 C42 · 9 C47 · 10 C44 · 11 C46 · 12 C48 | - |
 | entities (3) | `Player` C14 · `Session` C3 · `GithubIdentity` C20 | - |
-| unexpected-error paths (2) | pânico C45 · erro devolvido pelo handler C49 | - |
+| unexpected-error paths (3) | pânico C45 · erro devolvido pelo handler C49 · falha na busca da sessão C52 | - |
 | generic router codes (3) | `not_found` C48 · `method_not_allowed` C48 · `invalid_body` C48 | - |
-| `invalid_body` routes (2) | `POST /api/me/travel` C48 · `POST /api/players` `TestCreatePlayer_InvalidBody` | - |
-| session lookup outcomes (3) | válida C22 · inválida/expirada C9, C10 · erro do banco `TestSessionLookupError_Returns500AndLogsRequestID` | - |
+| `invalid_body` routes (2) | `POST /api/me/travel` C48 · `POST /api/players` C51 | - |
+| session lookup outcomes (3) | válida C22 · inválida/expirada C9, C10 · erro do banco C52 | - |
 | startup config: router + middleware (1 shared assembly) | `NewRouter` usado por `main` e pelos testes C45 | - |
 | startup config: `/api` rewrite (1 assembly) | `web/next.config` exercitado no navegador C27 | - |
 
