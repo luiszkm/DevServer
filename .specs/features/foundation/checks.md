@@ -104,6 +104,7 @@ Proof: `cd web && npx playwright test e2e/shell.spec.ts -g "tab click keeps docu
 
 **C28** - `/deploy`, `/bug-fight`, `/skills`, `/loja`, `/avatar` exibem `EM BREVE` com o nome da cena (SHELL-01, AC 24)
 Proof: `cd web && npx vitest run src/components/ComingSoon.test.tsx -t "every unshipped scene shows EM BREVE"`
+Superseded in part by deploy-pipelines C23: `/deploy` left the unshipped set; the proof now covers `/bug-fight`, `/skills`, `/loja`, `/avatar`.
 
 **C29** - Na tela-título, as placas `MUNDO`, `DEPLOY`, `SKILLS`, `BUG` apontam para `/mundo`, `/deploy`, `/skills`, `/bug-fight` (SHELL-01, AC 25)
 Proof: `cd web && npx vitest run src/components/TitleScene.test.tsx -t "signs link to scenes"`

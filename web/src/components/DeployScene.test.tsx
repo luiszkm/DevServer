@@ -49,6 +49,9 @@ describe("DeployScene", () => {
     const names = screen.getAllByRole("button").filter((b) => b.hasAttribute("data-type")).map((b) => b.getAttribute("data-type"));
     expect(names).toEqual(["backend", "frontend", "mobile", "database", "microservices"]);
     expect(typeButton("BACKEND")).toHaveTextContent("ocioso");
+    for (const t of CATALOG.deployTypes) {
+      expect(screen.getByRole("button", { name: t.name })).toHaveTextContent(`${t.glyph} ${t.name}`);
+    }
     expect(typeButton("FRONTEND")).toHaveTextContent("14:00 restante");
     expect(typeButton("MOBILE")).toHaveTextContent("pronto p/ coletar");
     expect(typeButton("BANCO DE DADOS")).toHaveTextContent("pronto p/ coletar");
@@ -113,6 +116,15 @@ describe("DeployScene", () => {
     vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
     renderScene();
     expect(within(panel()).getByText("CARREGANDO...")).toBeInTheDocument();
+  });
+
+  it("leaves type statuses blank while the list loads", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
+    renderScene();
+    for (const t of CATALOG.deployTypes) {
+      const btn = screen.getByRole("button", { name: t.name });
+      expect(btn).not.toHaveTextContent(/ocioso|restante|pronto/);
+    }
   });
 
   // C18

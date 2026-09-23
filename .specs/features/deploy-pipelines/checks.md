@@ -5,7 +5,7 @@ Plan: `.specs/features/deploy-pipelines/plan.md`
 
 ## Intent
 
-38 checks in 3 slices · 8 one-way doors · 0 open
+39 checks in 3 slices · 8 one-way doors · 0 open
 
 Pré-requisitos: os mesmos da foundation (`docker compose up -d --wait db`; vitest com `fetch` mockado; Playwright sobe a stack). Testes Go controlam o tempo por `apptest.Env.Clock` (door 3).
 
@@ -48,7 +48,7 @@ Proof: `cd api && go test ./internal/deploy -run '^TestList_ActiveJobs$'`
 **C11** - Um minuto e um segundo antes de `endsAt`, `ready` = `false`; exatamente em `endsAt`, `ready` = `true` (DEPLOY-02, AC 9; door 3)
 Proof: `cd api && go test ./internal/deploy -run '^TestList_ReadyBoundary$'`
 
-**C12** - `GET /api/catalog` inclui `deployTypes` = `backend`, `frontend`, `mobile`, `database`, `microservices` nessa ordem e `deployLevels` com os 5 níveis e seus `minLevel`, `minutes`, `xp`, `coins`, `gems` da tabela do plano (DEPLOY-02, AC 16; door 4)
+**C12** - `GET /api/catalog` inclui `deployTypes` = `backend`, `frontend`, `mobile`, `database`, `microservices` nessa ordem, cada um com `name` e `glyph` do catálogo, e `deployLevels` com os 5 níveis e seus `minLevel`, `minutes`, `xp`, `coins`, `gems` da tabela do plano (DEPLOY-02, AC 16; door 4)
 Proof: `cd api && go test ./internal/catalog -run '^TestCatalog_ServesDeploys$'`
 
 **C13** - A cena exibe os 5 tipos na ordem do catálogo com `ocioso` (sem job), `14:00 restante` (job de 15 min iniciado há 1 min) e `pronto p/ coletar` (job terminado) (DEPLOY-02, AC 10)
@@ -131,6 +131,9 @@ Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx -t "claim e
 **C38** - `GET /api/me/deploys` com erro inesperado de banco responde `500 internal` com o log do `request_id`, e o mesmo em `POST /api/me/deploys` e na coleta (DEPLOY-01, DEPLOY-02, DEPLOY-03)
 Proof: `cd api && go test ./internal/deploy -run '^TestDeployRoutes_UnexpectedError$'`
 
+**C39** - JSON malformado, `level` como texto ou fração e `type` como número em `POST /api/me/deploys` respondem `422 invalid_body` sem criar job (DEPLOY-01, AC 5; foundation door 12)
+Proof: `cd api && go test ./internal/deploy -run '^TestStart_InvalidBody$'`
+
 ## Progress
 
 - [x] C1
@@ -171,6 +174,7 @@ Proof: `cd api && go test ./internal/deploy -run '^TestDeployRoutes_UnexpectedEr
 - [x] C36
 - [x] C37
 - [x] C38
+- [x] C39
 
 ## Coverage
 
@@ -180,6 +184,8 @@ Proof: `cd api && go test ./internal/deploy -run '^TestDeployRoutes_UnexpectedEr
 | `POST /api/me/deploys` statuses (6) | 201 C1 · 401 C9 · 404 C9 · 409 C2 · 422 C3 · 500 C38 | - |
 | `POST /api/me/deploys/{type}/claim` statuses (6) | 200 C25 · 401 C9 · 404 C28 · 409 C27 · 422 C29 · 500 C38 | - |
 | `GET /api/catalog` new keys (2) | `deployTypes` C12 · `deployLevels` C12 | - |
+| deploy type fields (3) | `id` C12 · `name` C12, C13 · `glyph` C12, C13 | - |
+| `POST /api/me/deploys` 422 codes (4) | `level_too_low` C3 · `unknown_deploy_type` C4 · `unknown_deploy_level` C5 · `invalid_body` C39 | - |
 | deploy levels (5) | C1, table-driven over all 5 | - |
 | deploy types (5) | C7, table-driven over all 5 | - |
 | invalid level values (4) | 0 C5 · 6 C5 · -1 C5 · ausente C5 | - |
@@ -238,3 +244,9 @@ Evidence:
 - **Boundary:** C1-C38 closed on `feat/deploy-pipelines`
 - **Settled mid-build:** `player.WithLocked` recebe a transação (`fn(tx, p)`) para gravar o job na mesma unidade; `world` ajustado; fallbacks inalcançáveis de tipo/nível removidos da cena
 - **Abandoned:** none; 26 self-mutations (12 api, 14 web) ran before verification - 2 web survivors (status exactly at `endsAt`, stage boundaries) led to stronger C13/C15, now killed
+
+Round 2 (after verification round 1 FAIL):
+
+- **Boundary:** C39 added (`invalid_body` on start); C12 and C13 now assert `name` and `glyph` of every type; loading state of the type statuses asserted; `level_too_low` message made generic ("nível insuficiente"); foundation C28 annotated as superseded in part
+- **Settled mid-build:** none
+- **Abandoned:** none

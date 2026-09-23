@@ -488,3 +488,23 @@ func TestDeployRoutes_UnexpectedError(t *testing.T) {
 		}
 	}
 }
+
+// C39
+func TestStart_InvalidBody(t *testing.T) {
+	env := apptest.New(t)
+	c := env.NewPlayer(1, "DEV_01", "BACKEND")
+	for name, body := range map[string]string{
+		"not json":          "{nope",
+		"level as string":   `{"type":"backend","level":"1"}`,
+		"level as fraction": `{"type":"backend","level":1.5}`,
+		"type as number":    `{"type":7,"level":1}`,
+	} {
+		rec := env.Do(http.MethodPost, "/api/me/deploys", body, c)
+		if rec.Code != 422 || apptest.ErrorCode(t, rec) != "invalid_body" {
+			t.Errorf("%s: %d %s, want 422 invalid_body", name, rec.Code, rec.Body.String())
+		}
+	}
+	if n := env.Count("deploy_jobs"); n != 0 {
+		t.Fatalf("jobs = %d, want 0", n)
+	}
+}

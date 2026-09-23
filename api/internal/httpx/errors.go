@@ -25,7 +25,7 @@ var (
 	ErrInvalidDevName     = &Error{http.StatusUnprocessableEntity, "invalid_dev_name", "o nome deve ter de 3 a 16 caracteres entre A-Z, 0-9 e _"}
 	ErrDevNameTaken       = &Error{http.StatusConflict, "dev_name_taken", "nome já em uso"}
 	ErrInvalidClass       = &Error{http.StatusUnprocessableEntity, "invalid_class", "classe inválida"}
-	ErrLevelTooLow        = &Error{http.StatusUnprocessableEntity, "level_too_low", "nível insuficiente para esta região"}
+	ErrLevelTooLow        = &Error{http.StatusUnprocessableEntity, "level_too_low", "nível insuficiente"}
 	ErrUnknownRegion      = &Error{http.StatusUnprocessableEntity, "unknown_region", "região desconhecida"}
 	ErrInternal           = &Error{http.StatusInternalServerError, "internal", "erro interno"}
 	ErrNotFound           = &Error{http.StatusNotFound, "not_found", "rota não encontrada"}

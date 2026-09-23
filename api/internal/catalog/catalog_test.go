@@ -70,7 +70,9 @@ func TestCatalog_ServesDeploys(t *testing.T) {
 	env := apptest.New(t)
 	b := apptest.Decode[struct {
 		DeployTypes []struct {
-			ID string `json:"id"`
+			ID    string `json:"id"`
+			Name  string `json:"name"`
+			Glyph string `json:"glyph"`
 		} `json:"deployTypes"`
 		DeployLevels []struct {
 			Level, MinLevel, Minutes, XP, Coins, Gems int
@@ -82,6 +84,15 @@ func TestCatalog_ServesDeploys(t *testing.T) {
 	}
 	if strings.Join(ids, ",") != "backend,frontend,mobile,database,microservices" {
 		t.Errorf("deployTypes = %v", ids)
+	}
+	wantTypes := map[string][2]string{
+		"backend": {"BACKEND", "$_"}, "frontend": {"FRONTEND", "</>"}, "mobile": {"MOBILE", "[]"},
+		"database": {"BANCO DE DADOS", "##"}, "microservices": {"MICROSSERVIÇOS", "::"},
+	}
+	for _, d := range b.DeployTypes {
+		if got := [2]string{d.Name, d.Glyph}; got != wantTypes[d.ID] {
+			t.Errorf("type %s name/glyph = %v, want %v", d.ID, got, wantTypes[d.ID])
+		}
 	}
 	want := [][6]int{{1, 1, 15, 80, 40, 0}, {2, 3, 30, 150, 70, 1}, {3, 6, 60, 260, 110, 2}, {4, 10, 180, 420, 180, 4}, {5, 15, 360, 700, 300, 8}}
 	if len(b.DeployLevels) != 5 {
