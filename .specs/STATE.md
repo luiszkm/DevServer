@@ -21,10 +21,10 @@
 
 ## Handoff
 
-**Feature**: server-room
-**Where**: C1–C47 fechados; Verifier round 3 PASS (round 1 FAIL; round 2 PASS com observação da moeda na tela, corrigida no round 3)
+**Feature**: game-art
+**Where**: C1–C33 fechados; Verifier round 2 PASS (round 1 FAIL: renderer fora do git, escala dos fundos sem prova - corrigidos em 17001db e f8c2633)
 **In progress**: nenhum
-**Next step**: usuário confirmar assumptions `Confirmed? n` do plan; push e PR de `feat/office` e `feat/server-room` quando pedir
+**Next step**: push e PR de `feat/office`, `feat/server-room` e `feat/game-art` quando o usuário pedir
 **Blockers**: none
 **Uncommitted**: none
-**Branch**: feat/server-room (sobre feat/office)
+**Branch**: feat/game-art (sobre feat/server-room)

@@ -106,13 +106,13 @@ moeda, gema, coração e XP como na key art.
 
 | ID | Slice | Criteria | Status |
 | --- | --- | --- | --- |
-| ART-01 | S1 | 1, 2, 3, 4 | Pending |
-| ART-02 | S2 | 5, 17 | Pending |
-| ART-03 | S2 | 6, 7 | Pending |
-| ART-04 | S2 | 8, 9 | Pending |
-| ART-05 | S2 | 10, 11 | Pending |
-| ART-06 | S2 | 12, 13 | Pending |
-| ART-07 | S2 | 14, 15, 16 | Pending |
+| ART-01 | S1 | 1, 2, 3, 4 | Verified |
+| ART-02 | S2 | 5, 17 | Verified |
+| ART-03 | S2 | 6, 7 | Verified |
+| ART-04 | S2 | 8, 9 | Verified |
+| ART-05 | S2 | 10, 11 | Verified |
+| ART-06 | S2 | 12, 13 | Verified |
+| ART-07 | S2 | 14, 15, 16 | Verified |
 
 ## Observable
 
