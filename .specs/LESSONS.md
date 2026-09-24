@@ -104,6 +104,24 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: api/internal/player/player.go:164, api/internal/office/office.go:122 (round 1) (api/catalog)
 - last seen: 2026-09-24T01:49:32Z
 
+### L-016 - Every new route that goes through player.WithLocked owes a 404 player_not_found row in Surface and a proof with a session that has no player.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `api/httpx` · harmful: 0
+- features: server-room
+- evidence: api/internal/rack/rack.go:29 (api/httpx)
+- last seen: 2026-09-24T11:47:14Z
+
+### L-017 - When a check says a new bonus source sums with the existing ones, prove one case per existing source, including one with a skin that carries a bonus.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `api/test-policy` · harmful: 0
+- features: server-room
+- evidence: api/internal/player/bonus_test.go:110 (C21) (api/test-policy)
+- last seen: 2026-09-24T11:47:14Z
+
+### L-018 - A branch for a catalog value the embedded data does not use today (a gems price) still needs a proof through apptest.NewWithCatalog, or it should be removed.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `api/catalog` · harmful: 0
+- features: server-room
+- evidence: api/internal/rack/rack.go:86 (api/catalog)
+- last seen: 2026-09-24T11:47:14Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

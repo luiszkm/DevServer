@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 16,
+  "next_id": 19,
   "lessons": [
     {
       "id": "L-001",
@@ -274,6 +274,60 @@
       ],
       "created": "2026-09-24T01:49:32Z",
       "last_seen": "2026-09-24T01:49:32Z"
+    },
+    {
+      "id": "L-016",
+      "key": "ac_gap::every new route that goes through player withlocked owes a 404 player not found row in surface and a proof with a session that has no player",
+      "text": "Every new route that goes through player.WithLocked owes a 404 player_not_found row in Surface and a proof with a session that has no player.",
+      "signal": "ac_gap",
+      "scope": "api/httpx",
+      "status": "candidate",
+      "features": [
+        "server-room"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/rack/rack.go:29 (api/httpx)"
+      ],
+      "created": "2026-09-24T11:47:14Z",
+      "last_seen": "2026-09-24T11:47:14Z"
+    },
+    {
+      "id": "L-017",
+      "key": "ac_gap::when a check says a new bonus source sums with the existing ones prove one case per existing source including one with a skin that carries a bonus",
+      "text": "When a check says a new bonus source sums with the existing ones, prove one case per existing source, including one with a skin that carries a bonus.",
+      "signal": "ac_gap",
+      "scope": "api/test-policy",
+      "status": "candidate",
+      "features": [
+        "server-room"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/player/bonus_test.go:110 (C21) (api/test-policy)"
+      ],
+      "created": "2026-09-24T11:47:14Z",
+      "last_seen": "2026-09-24T11:47:14Z"
+    },
+    {
+      "id": "L-018",
+      "key": "ac_gap::a branch for a catalog value the embedded data does not use today a gems price still needs a proof through apptest newwithcatalog or it should be removed",
+      "text": "A branch for a catalog value the embedded data does not use today (a gems price) still needs a proof through apptest.NewWithCatalog, or it should be removed.",
+      "signal": "ac_gap",
+      "scope": "api/catalog",
+      "status": "candidate",
+      "features": [
+        "server-room"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/rack/rack.go:86 (api/catalog)"
+      ],
+      "created": "2026-09-24T11:47:14Z",
+      "last_seen": "2026-09-24T11:47:14Z"
     }
   ]
 }
