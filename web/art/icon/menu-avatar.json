@@ -15,24 +15,26 @@
     "p": "red.4",
     "k": "hoodie.1",
     "K": "hoodie.3",
-    "c": "code.3"
+    "c": "code.3",
+    "j": "hoodie.1",
+    "n": "hoodie.0"
   },
   "layers": [
     {
       "grid": [
         "................",
         ".....oooooo.....",
-        "...oohHHhhhoo...",
-        "..ohHhhhhhhhho..",
-        "..ohhhshhhshho..",
-        "..ohSsssssssho..",
+        "...oohHHhhjoo...",
+        "..ohHhhhhhhjjo..",
+        "..ohhhshhhshjo..",
+        "..ohSsssssssjo..",
         "..ossossssosso..",
         "..ospssssssspo..",
         "..ossssssssmmo..",
         "...ossssssmmo...",
         "..ookkkcckkkoo..",
-        ".okkkkkcckkkkko.",
-        ".okKkkkkkkkkkko.",
+        ".okkkkkcckkknno.",
+        ".okKkkkkkkknnno.",
         ".oooooooooooooo.",
         "................",
         "................"

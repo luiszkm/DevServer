@@ -13,7 +13,8 @@
     "g": "leaf.3",
     "G": "leaf.2",
     "b": "sky.3",
-    "x": "red.2"
+    "x": "red.2",
+    "L": "leaf.1"
   },
   "layers": [
     {
@@ -26,8 +27,8 @@
         ".ogggqxPPPqpbbo.",
         ".oGggqPxPPqppbo.",
         ".oGGgqPPxPqppgo.",
-        ".opGgqPPPxqpggo.",
-        ".oppgqPPPPqxpxo.",
+        ".opGgqPPPxqpgLo.",
+        ".oppLqPPPPqxpxo.",
         ".opppqPgPPqpxpo.",
         ".opppqPggPqxpxo.",
         ".oqqqqqqqqqqqqo.",
