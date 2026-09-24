@@ -25,10 +25,10 @@ literal, never from `GameArt`.
 
 ### S1 - pipeline, `GameArt` e combate · 9 files · ~114 KB · ~29k read (+ 21 specs, previews)
 
-**C1** - `GameArt` renderiza `<img>` com `src` = `/art/icon/<kind>-<id>.png` para `kind` ∈ `item`, `gear`, `skill`, `deploy`, `rack`, `office`, `region`, `hud` e `/art/sprite/enemy-<id>.png` para `enemy`; `class` contém `pixelated`; `width` = `height` = nativo × `scale`, nativo 16 para ícone, 32 para `enemy` (`vila`), 48 para `enemy` `torre`, 64 para `enemy` `nuvem`; `alt` = o `alt` recebido (ART-02, AC 17; door 1, door 2)
+**C1** - `GameArt` renderiza `<img>` com `src` = `/art/icon/<kind>-<id>.png` para `kind` ∈ `item`, `gear`, `skill`, `deploy`, `rack`, `office`, `region`, `hud` e `/art/sprite/enemy-<id>.png` para `enemy`; `class` contém `pixelated`; `width` = `height` = nativo × `scale`, nativo 16 para ícone, 32 para `enemy` (`vila`), 48 para `enemy` `torre`, 64 para `enemy` `nuvem`; `alt` = o `alt` recebido (ART-02, AC 17; door 1, door 2) ✅
 Proof: `cd web && npx vitest run src/components/GameArt.test.tsx -t "address and size"`
 
-**C2** - WHEN o `<img>` do `GameArt` dispara `error`, a imagem some e o texto do `fallback` (`HP+`) aparece no mesmo lugar (ART-02, AC 5)
+**C2** - WHEN o `<img>` do `GameArt` dispara `error`, a imagem some e o texto do `fallback` (`HP+`) aparece no mesmo lugar (ART-02, AC 5) ✅
 Proof: `cd web && npx vitest run src/components/GameArt.test.tsx -t "fallback"`
 
 **C3** - `make art-check` sai `0`: renderiza `web/art` num diretório temporário com `render.py`, nenhum `ERROR`, e `diff -r` do resultado contra `web/public/art` é vazio (ART-01, AC 4; door 3)
