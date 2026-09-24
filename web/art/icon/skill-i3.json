@@ -1,0 +1,94 @@
+{
+ "name": "skill-i3",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "AUTO-SCALING (infra): three orange bars growing left to right, the last one ending in an up arrow.",
+ "layers": [
+  {
+   "rect": [
+    1,
+    10,
+    3,
+    4
+   ],
+   "color": "lamp.0"
+  },
+  {
+   "rect": [
+    5,
+    7,
+    3,
+    7
+   ],
+   "color": "lamp.1"
+  },
+  {
+   "rect": [
+    9,
+    5,
+    3,
+    9
+   ],
+   "color": "lamp.2"
+  },
+  {
+   "poly": [
+    [
+     10,
+     1
+    ],
+    [
+     13,
+     4
+    ],
+    [
+     7,
+     4
+    ]
+   ],
+   "color": "lamp.2"
+  },
+  {
+   "rect": [
+    1,
+    10,
+    1,
+    1
+   ],
+   "color": "lamp.2"
+  },
+  {
+   "rect": [
+    5,
+    7,
+    1,
+    1
+   ],
+   "color": "lamp.2"
+  },
+  {
+   "rect": [
+    9,
+    5,
+    1,
+    9
+   ],
+   "color": "lamp.3"
+  },
+  {
+   "line": [
+    10,
+    1,
+    8,
+    3
+   ],
+   "color": "lamp.3"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

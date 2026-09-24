@@ -1,0 +1,45 @@
+{
+ "name": "gear-moletom",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MOLETOM CONFORTÁVEL: the hero's dark grey hoodie (hoodie ramp) laid flat, sleeves out, the hood lying around the collar, white drawstrings and the green <> of the key art's </> on the chest.",
+ "legend": {
+  "o": "ink",
+  "h": "hoodie.3",
+  "l": "hoodie.2",
+  "m": "hoodie.1",
+  "d": "hoodie.0",
+  "w": "cloud.2",
+  "g": "code.3",
+  "G": "code.4"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "..oooooooooooo..",
+    ".ohhhmmddmmmmmo.",
+    ".ohhdlwmmwldmmo.",
+    ".ohhdlwllwldmmo.",
+    ".ohldlGllgldlmo.",
+    ".ohldgllllgdlmo.",
+    ".ommdlgllgldmmo.",
+    ".oooolllllloooo.",
+    "....ohlllllo....",
+    "....ohlllllo....",
+    "....ommmmmmo....",
+    "....oooooooo....",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

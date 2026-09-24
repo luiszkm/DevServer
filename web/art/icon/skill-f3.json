@@ -1,0 +1,77 @@
+{
+ "name": "skill-f3",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MOTION (frontend): a glossy blue ball flying up to the right, trailed by two smaller, fainter frames of itself (onion skin), so the icon reads as animation.",
+ "layers": [
+  {
+   "rect": [
+    2,
+    12,
+    2,
+    2
+   ],
+   "color": "net.1"
+  },
+  {
+   "rect": [
+    5,
+    8,
+    3,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    5,
+    8,
+    1,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "ellipse": [
+    11,
+    5,
+    3,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "ellipse": [
+    10,
+    4,
+    2,
+    2
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    9,
+    3,
+    2,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    9,
+    4,
+    1,
+    1
+   ],
+   "color": "white"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

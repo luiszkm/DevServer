@@ -1,0 +1,47 @@
+{
+ "name": "skill-i1",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "SHELL SCRIPT (infra): a terminal window with an orange title bar and a green >_ prompt on the dark screen.",
+ "legend": {
+  "o": "ink",
+  "L": "lamp.2",
+  "l": "lamp.1",
+  "k": "lamp.0",
+  "s": "ui.1",
+  "g": "code.3",
+  "G": "code.4",
+  "r": "red.3",
+  "y": "gold.3",
+  "c": "code.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    ".oooooooooooooo.",
+    ".oLrLyLcLLLLLlo.",
+    ".okkkkkkkkkkkko.",
+    ".osssssssssssso.",
+    ".osGsssssssssso.",
+    ".ossgssssssssso.",
+    ".osssgsssssssso.",
+    ".ossgssssssssso.",
+    ".osgssGGGssssso.",
+    ".osssssssssssso.",
+    ".osssssssssssso.",
+    ".oooooooooooooo.",
+    "................",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

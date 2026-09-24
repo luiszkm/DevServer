@@ -1,0 +1,44 @@
+{
+ "name": "deploy-backend",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "BACKEND: a dark server tower (stone ramp) with three drive bays blinking green and blue LEDs, like the racks in the key art.",
+ "legend": {
+  "o": "ink",
+  "h": "stone.3",
+  "l": "stone.2",
+  "m": "stone.1",
+  "k": "stone.0",
+  "g": "code.3",
+  "b": "net.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "...oooooooooo...",
+    "...ohhhhhhhmo...",
+    "...ohkkkkgbmo...",
+    "...ohllllllmo...",
+    "...ohkkkkbgmo...",
+    "...ohllllllmo...",
+    "...ohkkkkggmo...",
+    "...ohllllllmo...",
+    "...ohlklklkmo...",
+    "...ohllllllmo...",
+    "...ohlklklkmo...",
+    "...ohllllllmo...",
+    "...ommmmmmmmo...",
+    "...oooooooooo...",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

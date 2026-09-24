@@ -1,0 +1,45 @@
+{
+ "name": "gear-cafe",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CAFÉ EXPRESSO: a white ceramic mug of dark coffee with a crema rim and two wisps of steam, handle on the right.",
+ "legend": {
+  "o": "ink",
+  "c": "cloud.2",
+  "h": "cloud.3",
+  "l": "cloud.2",
+  "m": "cloud.1",
+  "d": "cloud.0",
+  "K": "dirt.2",
+  "k": "wood.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "......o...o.....",
+    ".....oco.oco....",
+    "....oco.oco.....",
+    ".....oco.oco....",
+    "...oooooooooo...",
+    "...oKkkkkkkko...",
+    "...ohllllllmooo.",
+    "...ohllllllmomo.",
+    "...ohllllllmomo.",
+    "...ohllllllmomo.",
+    "...ohllllllmooo.",
+    "...ohlllllmmo...",
+    "....ohllmmdo....",
+    ".....oooooo.....",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

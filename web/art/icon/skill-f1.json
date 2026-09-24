@@ -1,0 +1,43 @@
+{
+ "name": "skill-f1",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MARKUP SEMÂNTICO (frontend): a paper page with a folded corner and nested, indented blue markup lines.",
+ "legend": {
+  "o": "ink",
+  "h": "cloud.3",
+  "l": "cloud.2",
+  "m": "cloud.1",
+  "b": "net.2",
+  "B": "net.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "...oooooooo.....",
+    "...ohhhhhomo....",
+    "...ohhhhhommo...",
+    "...ohhhhhoooo...",
+    "...ohhhhhhhlo...",
+    "...ohbbbbhhlo...",
+    "...ohhhhhhhlo...",
+    "...ohhbbbbblo...",
+    "...ohhhhhhhlo...",
+    "...ohhbbbhhlo...",
+    "...ohhhhhhhlo...",
+    "...ohBBBBhhlo...",
+    "...olllllllmo...",
+    "...oooooooooo...",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

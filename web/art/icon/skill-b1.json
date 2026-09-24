@@ -1,0 +1,46 @@
+{
+ "name": "skill-b1",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "API REST (backend): a green power plug with two metal prongs and its cable, the connector between services.",
+ "legend": {
+  "o": "ink",
+  "s": "metal.3",
+  "h": "code.4",
+  "l": "code.3",
+  "m": "code.2",
+  "d": "code.1",
+  "c": "hoodie.3",
+  "C": "hoodie.1",
+  "w": "white"
+ },
+ "layers": [
+  {
+   "grid": [
+    "....ooo..ooo....",
+    "....oso..oso....",
+    "....oso..oso....",
+    "..oooooooooooo..",
+    "..ohwhhhhhhhmo..",
+    "..ohllllllllmo..",
+    "..ohlllllllmmo..",
+    "..ohlllllllmmo..",
+    "...ohllllmmdo...",
+    "....ommmmddo....",
+    ".....oooooo.....",
+    "......ocCo......",
+    "......ocCo......",
+    "......ocCo......",
+    "......ocCo......",
+    "......oooo......"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+{
+ "name": "gear-monitor",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MONITOR ULTRAWIDE: a wide, short screen (net blue with green code) in a dark metal bezel on a small stand, clearly wider than it is tall.",
+ "legend": {
+  "o": "ink",
+  "K": "metal.2",
+  "B": "metal.1",
+  "b": "net.1",
+  "l": "net.2",
+  "L": "net.4",
+  "e": "net.0",
+  "g": "code.3",
+  "s": "metal.3",
+  "t": "metal.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    ".oooooooooooooo.",
+    ".oKKKKKKKKKKKBo.",
+    ".oKLlbbbbbbbbBo.",
+    ".oKlbgggbggbbBo.",
+    ".oKbbbbbbbbbbBo.",
+    ".oKbggbgggggbBo.",
+    ".oKbbbbbbbbbeBo.",
+    ".oBBBBBBBBBBBBo.",
+    ".oooooooooooooo.",
+    "......osto......",
+    "....ooostooo....",
+    "....osssssto....",
+    "....oooooooo....",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

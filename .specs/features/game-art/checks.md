@@ -60,16 +60,16 @@ Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "item ar
 
 ### S2 - loja, skills, deploy e HUD · 12 files · ~151 KB · ~38k read (+ 24 specs, previews)
 
-**C12** - Para cada equipamento de `shop.json` `gear` existem `web/art/icon/gear-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3)
+**C12** - Para cada equipamento de `shop.json` `gear` existem `web/art/icon/gear-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "gear"`
 
-**C13** - Para cada nó de `skills.json` existem `web/art/icon/skill-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3)
+**C13** - Para cada nó de `skills.json` existem `web/art/icon/skill-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "skill"`
 
-**C14** - Para cada tipo de `deploys.json` `types` existem `web/art/icon/deploy-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3)
+**C14** - Para cada tipo de `deploys.json` `types` existem `web/art/icon/deploy-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "deploy"`
 
-**C15** - Existem `icon/hud-coin`, `icon/hud-gem`, `icon/hud-heart`, `icon/hud-xp` (spec e PNG 16x16) (ART-01, AC 2, 3)
+**C15** - Existem `icon/hud-coin`, `icon/hud-gem`, `icon/hud-heart`, `icon/hud-xp` (spec e PNG 16x16) (ART-01, AC 2, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "hud"`
 
 **C16** - Na LOJA, cada cartão de equipamento mostra `/art/icon/gear-<id>.png` `alt=""` `width=32`, e o detalhe do selecionado `width=64`; após `error` o cartão mostra o glifo (`[Mac]`) (ART-04, AC 8, 5)

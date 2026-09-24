@@ -1,0 +1,48 @@
+{
+ "name": "deploy-frontend",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "FRONTEND: a browser window with a blue title bar and a white page laid out as header, sidebar and content lines.",
+ "legend": {
+  "o": "ink",
+  "B": "net.2",
+  "d": "net.0",
+  "r": "red.3",
+  "y": "gold.3",
+  "c": "code.3",
+  "h": "cloud.3",
+  "l": "cloud.2",
+  "b": "net.3",
+  "g": "cloud.1",
+  "t": "metal.2"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    ".oooooooooooooo.",
+    ".oBrByBcBBBBBBo.",
+    ".oddddddddddddo.",
+    ".ohhhhhhhhhhhlo.",
+    ".ohbbbbbbbbbblo.",
+    ".ohhhhhhhhhhhlo.",
+    ".ohgggghtttthlo.",
+    ".ohgggghhhhhhlo.",
+    ".ohgggghttthhlo.",
+    ".ohgggghhhhhhlo.",
+    ".ohgggghtttthlo.",
+    ".ollllllllllllo.",
+    ".oooooooooooooo.",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

@@ -1,0 +1,94 @@
+{
+ "name": "skill-b3",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "FILA DE EVENTOS (backend): three green event blocks lined up, brightening towards the front of the queue, with an arrow showing the direction they are consumed.",
+ "layers": [
+  {
+   "rect": [
+    1,
+    5,
+    2,
+    6
+   ],
+   "color": "code.1"
+  },
+  {
+   "rect": [
+    4,
+    5,
+    2,
+    6
+   ],
+   "color": "code.2"
+  },
+  {
+   "rect": [
+    7,
+    5,
+    2,
+    6
+   ],
+   "color": "code.3"
+  },
+  {
+   "poly": [
+    [
+     10,
+     3
+    ],
+    [
+     14,
+     8
+    ],
+    [
+     10,
+     12
+    ]
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    4,
+    5,
+    1,
+    1
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    7,
+    5,
+    1,
+    1
+   ],
+   "color": "code.4"
+  },
+  {
+   "line": [
+    10,
+    4,
+    13,
+    7
+   ],
+   "color": "code.4"
+  },
+  {
+   "rect": [
+    10,
+    5,
+    1,
+    6
+   ],
+   "color": "code.4"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

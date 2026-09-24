@@ -1,0 +1,44 @@
+{
+ "name": "hud-gem",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "GEMS: the cut blue diamond of the key art HUD (gem ramp): a flat crown, a girdle line and a pointed pavilion.",
+ "legend": {
+  "o": "ink",
+  "w": "white",
+  "h": "gem.4",
+  "L": "gem.3",
+  "l": "gem.2",
+  "m": "gem.1",
+  "d": "gem.0"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "...oooooooooo...",
+    "..owhLLLlllmmo..",
+    ".ohLLLLLllllmmo.",
+    ".oddddddddddddo.",
+    "..ohLLlllllmmo..",
+    "...ohLllllmmo...",
+    "....ohLllmmo....",
+    ".....oLlmmo.....",
+    "......olmo......",
+    ".......oo.......",
+    "................",
+    "................",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

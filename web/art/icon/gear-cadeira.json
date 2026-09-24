@@ -1,0 +1,45 @@
+{
+ "name": "gear-cadeira",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CADEIRA ERGONÔMICA: a blue office chair (net ramp) with a tall rounded backrest, a padded seat, a metal gas lift and a wheeled base.",
+ "legend": {
+  "o": "ink",
+  "h": "net.3",
+  "l": "net.2",
+  "m": "net.1",
+  "d": "net.0",
+  "s": "metal.3",
+  "t": "metal.2",
+  "u": "metal.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    ".....oooooo.....",
+    "....ohlllllo....",
+    "...ohllllllmo...",
+    "...ohlllllmmo...",
+    "...ohlllllmmo...",
+    "...ohllllmmmo...",
+    "....ommmmddo....",
+    ".....ootuoo.....",
+    "..oooooooooooo..",
+    "..ohhhhhhhhhmo..",
+    "..ollllllllmmo..",
+    "...oddddddddo...",
+    "....oootuooo....",
+    "..oooostuuoooo..",
+    ".ossssttttuuuuo.",
+    ".oooooooooooooo."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

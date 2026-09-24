@@ -1,0 +1,43 @@
+{
+ "name": "hud-xp",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "XP: the green pawn of the key art LEVEL card (code ramp): round head over a domed body, lit top-left.",
+ "legend": {
+  "o": "ink",
+  "w": "white",
+  "h": "code.4",
+  "l": "code.3",
+  "m": "code.2",
+  "d": "code.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "......oooo......",
+    ".....ohhllo.....",
+    "....ohwlllmo....",
+    "....ohllllmo....",
+    "....olllmmmo....",
+    ".....olmmdo.....",
+    "....oooooooo....",
+    "...ohhllllmmo...",
+    "..ohwllllllmmo..",
+    "..ohlllllllmmo..",
+    "..ollllllmmmdo..",
+    "..olllllmmmddo..",
+    "..oooooooooooo..",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

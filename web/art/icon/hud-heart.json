@@ -1,0 +1,43 @@
+{
+ "name": "hud-heart",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "HP: the red pixel heart of the key art HUD, lit top-left with a white glint, shaded towards the tip.",
+ "legend": {
+  "o": "ink",
+  "w": "white",
+  "h": "red.4",
+  "l": "red.3",
+  "m": "red.2",
+  "d": "red.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "..oooo....oooo..",
+    ".ohhllo..ollllo.",
+    ".ohwllloollllmo.",
+    ".ohllllllllllmo.",
+    ".olllllllllmmmo.",
+    "..olllllllmmmo..",
+    "...ollllmmmdo...",
+    "....olmmmddo....",
+    ".....ommddo.....",
+    "......oddo......",
+    ".......oo.......",
+    "................",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

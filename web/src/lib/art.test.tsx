@@ -38,9 +38,17 @@ function expectAssets(assets: Asset[]) {
 
 type Combat = { enemies: { region: string }[]; items: { id: string }[] };
 type Regions = { id: string }[];
+type Shop = { gear: { id: string }[] };
+type Skills = { trees: { nodes: { id: string }[] }[] };
+type Deploys = { types: { id: string }[] };
 
 const combat = catalog<Combat>("combat.json");
 const regions = catalog<Regions>("regions.json");
+const shop = catalog<Shop>("shop.json");
+const skills = catalog<Skills>("skills.json");
+const deploys = catalog<Deploys>("deploys.json");
+
+const icons = (names: string[]): Asset[] => names.map((name) => ({ category: "icon", name, size: [16, 16] }));
 
 const ENEMY_SIZE: Record<string, [number, number]> = { torre: [48, 48], nuvem: [64, 64] };
 
@@ -60,5 +68,25 @@ describe("catalog art on disk", () => {
   // C6
   it("battle background for each map area, 320x180", () => {
     expectAssets(regions.map((r) => ({ category: "background", name: `battle-${r.id}`, size: [320, 180] })));
+  });
+
+  // C12
+  it("gear icons per shop.json, 16x16", () => {
+    expectAssets(icons(shop.gear.map((g) => `gear-${g.id}`)));
+  });
+
+  // C13
+  it("skill icons per skills.json tree nodes, 16x16", () => {
+    expectAssets(icons(skills.trees.flatMap((t) => t.nodes).map((n) => `skill-${n.id}`)));
+  });
+
+  // C14
+  it("deploy icons per deploys.json types, 16x16", () => {
+    expectAssets(icons(deploys.types.map((t) => `deploy-${t.id}`)));
+  });
+
+  // C15: fixed names, no catalog entry (door 1)
+  it("hud icons for coin, gem, heart and xp, 16x16", () => {
+    expectAssets(icons(["hud-coin", "hud-gem", "hud-heart", "hud-xp"]));
   });
 });

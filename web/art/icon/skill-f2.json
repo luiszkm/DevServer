@@ -1,0 +1,299 @@
+{
+ "name": "skill-f2",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "GRID MASTER (frontend): a blue 3x3 layout grid in which the top row's first tile spans two columns.",
+ "layers": [
+  {
+   "rect": [
+    1,
+    1,
+    14,
+    14
+   ],
+   "color": "ink"
+  },
+  {
+   "rect": [
+    2,
+    2,
+    12,
+    12
+   ],
+   "color": "net.0"
+  },
+  {
+   "rect": [
+    2,
+    2,
+    3,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    2,
+    2,
+    3,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    2,
+    2,
+    1,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    6,
+    2,
+    3,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    6,
+    2,
+    3,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    6,
+    2,
+    1,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    10,
+    2,
+    4,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    10,
+    2,
+    4,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    10,
+    2,
+    1,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    2,
+    6,
+    3,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    2,
+    6,
+    3,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    2,
+    6,
+    1,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    6,
+    6,
+    3,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    6,
+    6,
+    3,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    6,
+    6,
+    1,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    10,
+    6,
+    4,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    10,
+    6,
+    4,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    10,
+    6,
+    1,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    2,
+    10,
+    3,
+    4
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    2,
+    10,
+    3,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    2,
+    10,
+    1,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    6,
+    10,
+    3,
+    4
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    6,
+    10,
+    3,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    6,
+    10,
+    1,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    10,
+    10,
+    4,
+    4
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    10,
+    10,
+    4,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    10,
+    10,
+    1,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    2,
+    2,
+    7,
+    3
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    2,
+    2,
+    7,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    2,
+    2,
+    1,
+    1
+   ],
+   "color": "white"
+  }
+ ]
+}

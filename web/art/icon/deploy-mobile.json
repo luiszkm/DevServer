@@ -1,0 +1,51 @@
+{
+ "name": "deploy-mobile",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MOBILE: a dark smartphone with a blue screen of app tiles, speaker slot on top and a home button below.",
+ "legend": {
+  "o": "ink",
+  "h": "hoodie.3",
+  "k": "hoodie.2",
+  "m": "hoodie.1",
+  "d": "hoodie.0",
+  "t": "metal.2",
+  "b": "net.1",
+  "L": "net.4",
+  "l": "net.3",
+  "e": "net.0",
+  "g": "code.3",
+  "r": "red.3",
+  "y": "gold.3",
+  "p": "slime.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "....oooooooo....",
+    "...ohkkddkkmo...",
+    "...ohLbbbbbmo...",
+    "...ohbggbrrmo...",
+    "...ohbggbrrmo...",
+    "...ohbbbbbbmo...",
+    "...ohbyybppmo...",
+    "...ohbyybppmo...",
+    "...ohbbbbbbmo...",
+    "...ohbllllbmo...",
+    "...ohbbbbbemo...",
+    "...okkkttkkmo...",
+    "...ommmmmmmmo...",
+    "....oooooooo....",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

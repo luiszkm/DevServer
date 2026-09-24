@@ -1,0 +1,44 @@
+{
+ "name": "deploy-database",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "BANCO DE DADOS: the classic database cylinder, three stacked blue disks with a lit top face.",
+ "legend": {
+  "o": "ink",
+  "T": "net.3",
+  "w": "net.4",
+  "h": "net.3",
+  "l": "net.2",
+  "m": "net.1",
+  "d": "net.0"
+ },
+ "layers": [
+  {
+   "grid": [
+    "....oooooooo....",
+    "..oowTTTTTTToo..",
+    ".oTTTTTTTTTTTTo.",
+    ".ohhddddddddmmo.",
+    ".ohllllllllllmo.",
+    ".ohllllllllllmo.",
+    ".oddllllllllddo.",
+    ".ohhddddddddmmo.",
+    ".ohllllllllllmo.",
+    ".ohllllllllllmo.",
+    ".oddllllllllddo.",
+    ".ohhddddddddmmo.",
+    ".ohlllllllllmmo.",
+    "..oommmmmmmmoo..",
+    "....oooooooo....",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

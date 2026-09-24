@@ -1,0 +1,173 @@
+{
+ "name": "skill-b2",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CAMADA DE CACHE (backend): three green layers stacked into a small pyramid, the fast layer sitting on top of the slow ones.",
+ "layers": [
+  {
+   "rect": [
+    3,
+    1,
+    10,
+    5
+   ],
+   "color": "ink"
+  },
+  {
+   "rect": [
+    4,
+    2,
+    8,
+    1
+   ],
+   "color": "code.4"
+  },
+  {
+   "rect": [
+    4,
+    3,
+    8,
+    1
+   ],
+   "color": "code.2"
+  },
+  {
+   "rect": [
+    4,
+    4,
+    8,
+    1
+   ],
+   "color": "code.1"
+  },
+  {
+   "rect": [
+    11,
+    3,
+    1,
+    2
+   ],
+   "color": "code.0"
+  },
+  {
+   "rect": [
+    4,
+    2,
+    1,
+    1
+   ],
+   "color": "white"
+  },
+  {
+   "rect": [
+    2,
+    5,
+    12,
+    5
+   ],
+   "color": "ink"
+  },
+  {
+   "rect": [
+    3,
+    6,
+    10,
+    1
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    3,
+    7,
+    10,
+    1
+   ],
+   "color": "code.2"
+  },
+  {
+   "rect": [
+    3,
+    8,
+    10,
+    1
+   ],
+   "color": "code.1"
+  },
+  {
+   "rect": [
+    12,
+    7,
+    1,
+    2
+   ],
+   "color": "code.0"
+  },
+  {
+   "rect": [
+    3,
+    6,
+    1,
+    1
+   ],
+   "color": "code.4"
+  },
+  {
+   "rect": [
+    1,
+    9,
+    14,
+    5
+   ],
+   "color": "ink"
+  },
+  {
+   "rect": [
+    2,
+    10,
+    12,
+    1
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    2,
+    11,
+    12,
+    1
+   ],
+   "color": "code.2"
+  },
+  {
+   "rect": [
+    2,
+    12,
+    12,
+    1
+   ],
+   "color": "code.1"
+  },
+  {
+   "rect": [
+    13,
+    11,
+    1,
+    2
+   ],
+   "color": "code.0"
+  },
+  {
+   "rect": [
+    2,
+    10,
+    1,
+    1
+   ],
+   "color": "code.4"
+  }
+ ]
+}

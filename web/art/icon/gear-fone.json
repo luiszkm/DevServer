@@ -1,0 +1,44 @@
+{
+ "name": "gear-fone",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "FONE COM CANCELAMENTO: over-ear headphones, a silver headband over two dark cushioned cups with a blue noise-cancelling light.",
+ "legend": {
+  "o": "ink",
+  "h": "metal.3",
+  "t": "metal.1",
+  "k": "hoodie.3",
+  "K": "hoodie.1",
+  "b": "net.3",
+  "B": "net.2"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "....oooooooo....",
+    "...ohhhhhhhto...",
+    "..ohooooooooto..",
+    ".oho........oto.",
+    ".oho........oto.",
+    ".ohooo....oooto.",
+    ".okbKo....okbKo.",
+    ".okBKo....okBKo.",
+    ".okBKo....okBKo.",
+    ".okKKo....okKKo.",
+    ".oKKKo....oKKKo.",
+    "..ooo......ooo..",
+    "................",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}
