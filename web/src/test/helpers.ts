@@ -89,18 +89,53 @@ export const SKINS: Catalog["skins"] = [
   { id: "golden", name: "DEV DOURADO", rarity: "LENDÁRIO", description: "dourada", filter: "hue-rotate(60deg) saturate(2.2) brightness(1.25)", price: { currency: "gems", amount: 150 }, bonus: { type: "hp", amount: 20 } },
 ];
 
+export const OFFICE: Catalog["office"] = {
+  zones: [
+    { id: "parede", name: "PAREDE", cells: 8 },
+    { id: "piso", name: "PISO", cells: 24 },
+  ],
+  furniture: [
+    { id: "mesa", name: "MESA EM L", glyph: "[==]", color: "#ffc93c", zone: "piso", price: { currency: "coins", amount: 60 }, comfort: 8, bonus: { type: "xp", amount: 3 }, description: "Espaço para dois monitores e o café." },
+    { id: "cadeira_gamer", name: "CADEIRA GAMER", glyph: "[|]", color: "#e05252", zone: "piso", price: { currency: "gems", amount: 40 }, comfort: 10, bonus: { type: "spregen", amount: 1 }, description: "Plantão de madrugada sem dor nas costas." },
+    { id: "setup2", name: "SETUP 2 TELAS", glyph: "][", color: "#45b7ff", zone: "piso", price: { currency: "gems", amount: 90 }, comfort: 14, bonus: { type: "deploy", amount: 5 }, description: "Build de um lado, log do outro." },
+    { id: "rack", name: "RACK CASEIRO", glyph: "::", color: "#6bd425", zone: "piso", price: { currency: "gems", amount: 70 }, comfort: 9, bonus: { type: "deploy", amount: 6 }, description: "Servidor local zumbindo no canto." },
+    { id: "cafeteira", name: "CAFETEIRA", glyph: "{C}", color: "#ffc93c", zone: "piso", price: { currency: "coins", amount: 55 }, comfort: 7, bonus: { type: "spregen", amount: 2 }, description: "Combustível renovável do dev." },
+    { id: "estante", name: "ESTANTE DE LIVROS", glyph: "|||", color: "#b46cf0", zone: "piso", price: { currency: "coins", amount: 45 }, comfort: 6, bonus: { type: "xp", amount: 2 }, description: "Documentação que ninguém lê, mas inspira." },
+    { id: "planta", name: "PLANTA DE CANTO", glyph: "^", color: "#6bd425", zone: "piso", price: { currency: "coins", amount: 25 }, comfort: 5, bonus: null, description: "Oxigênio e um pouco de sanidade." },
+    { id: "tapete", name: "TAPETE PIXELADO", glyph: "##", color: "#8b6cf0", zone: "piso", price: { currency: "coins", amount: 30 }, comfort: 4, bonus: null, description: "Aquece a sala e abafa o teclado." },
+    { id: "neon", name: "LETREIRO NEON", glyph: "~~", color: "#45b7ff", zone: "parede", price: { currency: "gems", amount: 35 }, comfort: 12, bonus: null, description: "IT WORKS ON MY MACHINE em ciano." },
+    { id: "poster", name: "PÔSTER RETRÔ", glyph: "[#]", color: "#ffc93c", zone: "parede", price: { currency: "coins", amount: 20 }, comfort: 4, bonus: null, description: "Key art do DevServer emoldurada." },
+    { id: "kanban", name: "QUADRO KANBAN", glyph: "[+]", color: "#dbeeff", zone: "parede", price: { currency: "coins", amount: 50 }, comfort: 5, bonus: { type: "xp", amount: 2 }, description: "Post-its que viram sprint." },
+    { id: "janela", name: "JANELA COM VISTA", glyph: "[/]", color: "#8fc3e8", zone: "parede", price: { currency: "gems", amount: 60 }, comfort: 15, bonus: null, description: "Luz natural entre dois deploys." },
+  ],
+  levels: [
+    { min: 0, name: "CANTINHO" },
+    { min: 30, name: "HOME OFFICE" },
+    { min: 70, name: "ESTÚDIO" },
+    { min: 120, name: "LAB DEV" },
+    { min: 180, name: "SEDE DEVSERVE" },
+  ],
+  maxDeployCut: 40,
+};
+
+/** An office with the given cells filled: room({ piso: { 0: "mesa" }, parede: { 1: "neon" } }). */
+export function room(filled: { parede?: Record<number, string>; piso?: Record<number, string> } = {}): Player["office"] {
+  const zone = (n: number, cells: Record<number, string> = {}) => Array.from({ length: n }, (_, i) => cells[i] ?? null);
+  return { parede: zone(8, filled.parede), piso: zone(24, filled.piso) };
+}
+
 export const CATALOG: Catalog = {
   version: "v1", regions: REGIONS, deployTypes: DEPLOY_TYPES, deployLevels: DEPLOY_LEVELS, skillTrees: SKILL_TREES,
   enemies: ENEMIES, commands: COMMANDS, items: ITEMS,
   combat: { counter: [7, 14], spRegen: 5, weaknessMultiplier: 1.8, victory: { xp: 90, coins: 40, gems: 1 }, dropChance: 65, potionChance: 30, potion: "sp_potion" },
-  gearSlots: GEAR_SLOTS, gear: GEAR, skins: SKINS,
+  gearSlots: GEAR_SLOTS, gear: GEAR, skins: SKINS, office: OFFICE,
 };
 
 export function player(overrides: Partial<Player> = {}): Player {
   return {
     devName: "DEV_01", class: "BACKEND", level: 1, xp: 0, xpMax: 500, hp: 100, hpMax: 100,
     coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], inventory: [{ item: "sp_potion", quantity: 2 }],
-    gear: [], equipment: { setup: null, bebida: null, vestuario: null, acessorio: null }, skins: ["default"], ...overrides,
+    gear: [], equipment: { setup: null, bebida: null, vestuario: null, acessorio: null }, skins: ["default"], office: room(), ...overrides,
   };
 }
 

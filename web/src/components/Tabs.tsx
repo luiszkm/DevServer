@@ -11,6 +11,7 @@ export const TABS = [
   { label: "SKILLS", href: "/skills" },
   { label: "LOJA", href: "/loja" },
   { label: "AVATAR", href: "/avatar" },
+  { label: "OFFICE", href: "/office" },
 ] as const;
 
 export function Tabs() {

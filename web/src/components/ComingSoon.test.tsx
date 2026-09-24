@@ -7,12 +7,13 @@ import BugFightPage from "@/app/(game)/bug-fight/page";
 import SkillsPage from "@/app/(game)/skills/page";
 import ShopPage from "@/app/(game)/loja/page";
 import AvatarPage from "@/app/(game)/avatar/page";
+import OfficePage from "@/app/(game)/office/page";
 import { CATALOG, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 
 // Foundation C28 listed the scenes still showing EM BREVE; with LOJA and AVATAR shipped that set is empty.
 describe("ComingSoon", () => {
-  // C46
+  // C46 (shop), C41 (office)
   it.each([
     ["/", TitlePage],
     ["/mundo", WorldPage],
@@ -21,6 +22,7 @@ describe("ComingSoon", () => {
     ["/skills", SkillsPage],
     ["/loja", ShopPage],
     ["/avatar", AvatarPage],
+    ["/office", OfficePage],
   ])("no scene shows EM BREVE (%s)", async (_route, Page) => {
     mockFetch({
       "GET /api/me/deploys": json(200, { serverTime: "2026-01-01T12:00:00Z", deploys: [] }),

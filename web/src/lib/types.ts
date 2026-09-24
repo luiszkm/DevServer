@@ -19,6 +19,8 @@ export type Player = {
   equipment: Record<string, string | null>;
   /** Owned skin ids, catalog order, always with "default". */
   skins: string[];
+  /** Every catalog zone, each a list of its positions with the installed furniture id or null. */
+  office: Record<string, (string | null)[]>;
 };
 
 export type Region = {
@@ -104,6 +106,32 @@ export type Skin = {
   bonus: Bonus | null;
 };
 
+/** Furniture bonus: "xp" is % deploy XP, "deploy" is % off deploy time, "spregen" is SP per turn. */
+export type OfficeBonus = { type: "xp" | "deploy" | "spregen"; amount: number };
+
+export type OfficeZone = { id: string; name: string; cells: number };
+
+export type Furniture = {
+  id: string;
+  name: string;
+  glyph: string;
+  color: string;
+  zone: string;
+  price: Price;
+  comfort: number;
+  bonus: OfficeBonus | null;
+  description: string;
+};
+
+export type OfficeLevel = { min: number; name: string };
+
+export type Office = {
+  zones: OfficeZone[];
+  furniture: Furniture[];
+  levels: OfficeLevel[];
+  maxDeployCut: number;
+};
+
 export type CombatRules = {
   counter: [number, number];
   spRegen: number;
@@ -127,6 +155,7 @@ export type Catalog = {
   gearSlots: GearSlot[];
   gear: Gear[];
   skins: Skin[];
+  office: Office;
 };
 
 export type Battle = {
