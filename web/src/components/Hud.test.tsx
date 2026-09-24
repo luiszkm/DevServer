@@ -4,7 +4,7 @@ import { CATALOG, player } from "@/test/helpers";
 import { GameShell } from "./GameShell";
 import { Hud } from "./Hud";
 
-vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ push: () => {} }) }));
 
 describe("Hud", () => {
   // C23

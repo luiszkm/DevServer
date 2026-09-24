@@ -25,58 +25,58 @@ Proof: `make art-check`
 
 ### S2 - hotbar · `Tabs.tsx`, `GameArt.tsx`, `globals.css` · ~12k
 
-**C3** - `GameArt kind="menu" id="loja" scale={2}` renderiza `src="/art/icon/menu-loja.png"`, `width="32"`, `height="32"`, classe `pixelated` (MENU-02, AC 3; door 2)
+**C3** - `GameArt kind="menu" id="loja" scale={2}` renderiza `src="/art/icon/menu-loja.png"`, `width="32"`, `height="32"`, classe `pixelated` (MENU-02, AC 3; door 2) ✅
 Proof: `cd web && npx vitest run src/components/GameArt.test.tsx -t "menu address"`
 
-**C4** - Cada um dos 9 links da nav `Cenas`, na ordem da tabela, contém `.tab-icon > img` com `src="/art/icon/menu-<icon>.png"`, `alt=""`, `width="32"`, classe `pixelated`, mais `.tab-num` `01`–`09` e o rótulo (MENU-02, AC 3; door 1)
+**C4** - Cada um dos 9 links da nav `Cenas`, na ordem da tabela, contém `.tab-icon > img` com `src="/art/icon/menu-<icon>.png"`, `alt=""`, `width="32"`, classe `pixelated`, mais `.tab-num` `01`–`09` e o rótulo (MENU-02, AC 3; door 1) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "slot icons"`
 
-**C5** - IF o `<img>` do slot LOJA dispara `error` THEN o slot não tem mais `<img>` e ainda mostra `07` e `LOJA` (MENU-02, AC 4)
+**C5** - IF o `<img>` do slot LOJA dispara `error` THEN o slot não tem mais `<img>` e ainda mostra `07` e `LOJA` (MENU-02, AC 4) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "slot icon fallback"`
 
-**C6** - A 1280x800, na nav `Cenas`: os 9 links têm o mesmo `y`, larguras iguais (±1px), cada `.tab-icon` mede 44x44 e contém um `<img>` carregado (`naturalWidth` 16); `.page` mede 1200px e a cena 760px (MENU-02, AC 5)
+**C6** - A 1280x800, na nav `Cenas`: os 9 links têm o mesmo `y`, larguras iguais (±1px), cada `.tab-icon` mede 44x44 e contém um `<img>` carregado (`naturalWidth` 16); `.page` mede 1200px e a cena 760px (MENU-02, AC 5) ✅
 Proof: `cd web && npx playwright test e2e/game-menu.spec.ts -g "C6 "`
 
-**C7** - A 1280x800 em `/server`, o `.tab-icon` do slot SERVER tem `border-top-color` `rgb(255, 201, 60)` e os outros 8 não (MENU-02, AC 6)
+**C7** - A 1280x800 em `/server`, o `.tab-icon` do slot SERVER tem `border-top-color` `rgb(255, 201, 60)` e os outros 8 não (MENU-02, AC 6) ✅
 Proof: `cd web && npx playwright test e2e/game-menu.spec.ts -g "C7 "`
 
-**C8** - A 1280x800, depois de um `Tab` a partir do `body`, o slot focado (TÍTULO) tem `outline-style` `solid`, `outline-width` `3px` e `outline-color` `rgb(255, 201, 60)` (MENU-02, AC 7)
+**C8** - A 1280x800, depois de um `Tab` a partir do `body`, o slot focado (TÍTULO) tem `outline-style` `solid`, `outline-width` `3px` e `outline-color` `rgb(255, 201, 60)` (MENU-02, AC 7) ✅
 Proof: `cd web && npx playwright test e2e/game-menu.spec.ts -g "C8 "`
 
 ### S3 - atalhos · `Tabs.tsx` · ~6k
 
-**C9** - Com o foco no `body`, a tecla `N` de `1` a `9` chama `router.push` uma vez com o `href` do slot N (9 casos, table-driven) (MENU-03, AC 8; door 3)
+**C9** - Com o foco no `body`, a tecla `N` de `1` a `9` chama `router.push` uma vez com o `href` do slot N (9 casos, table-driven) (MENU-03, AC 8; door 3) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "shortcut navigates"`
 
-**C10** - `Control+3`, `Meta+3` e `Alt+3` não chamam `router.push` (3 casos) (MENU-03, AC 9)
+**C10** - `Control+3`, `Meta+3` e `Alt+3` não chamam `router.push` (3 casos) (MENU-03, AC 9) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "shortcut ignores modifiers"`
 
-**C11** - Com o foco num `input`, num `textarea`, num `select` e num `div contenteditable`, a tecla `3` não chama `router.push` (4 casos) (MENU-03, AC 10)
+**C11** - Com o foco num `input`, num `textarea`, num `select` e num `div contenteditable`, a tecla `3` não chama `router.push` (4 casos) (MENU-03, AC 10) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "shortcut ignores editable"`
 
-**C12** - As teclas `0` e `a` não chamam `router.push` (2 casos) (MENU-03, AC 11)
+**C12** - As teclas `0` e `a` não chamam `router.push` (2 casos) (MENU-03, AC 11) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "shortcut ignores other keys"`
 
-**C13** - Com o menu aberto, a tecla `4` chama `router.push("/deploy")` e o botão `MENU` fica com `aria-expanded="false"` (MENU-03, AC 12)
+**C13** - Com o menu aberto, a tecla `4` chama `router.push("/deploy")` e o botão `MENU` fica com `aria-expanded="false"` (MENU-03, AC 12) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "shortcut closes menu"`
 
-**C14** - No browser a 1280x800, depois do login: a tecla `4` leva a URL a `/deploy` com `PIPELINES DE DEPLOY` visível, e a tecla `1` volta a `/` com `CLIQUE NAS PLACAS PARA NAVEGAR` visível (MENU-03, AC 8; door 3)
+**C14** - No browser a 1280x800, depois do login: a tecla `4` leva a URL a `/deploy` com `PIPELINES DE DEPLOY` visível, e a tecla `1` volta a `/` com `CLIQUE NAS PLACAS PARA NAVEGAR` visível (MENU-03, AC 8; door 3) ✅
 Proof: `cd web && npx playwright test e2e/game-menu.spec.ts -g "C14 "`
 
 ### S4 - janela de comando · `Tabs.tsx`, `globals.css` · ~6k
 
-**C15** - Em `/loja` o botão `MENU` contém `<img src="/art/icon/menu-loja.png" alt="">` e o texto exato `MENU · LOJA`; em `/login` o botão não tem `<img>` e o texto é `MENU` (MENU-04, AC 13)
+**C15** - Em `/loja` o botão `MENU` contém `<img src="/art/icon/menu-loja.png" alt="">` e o texto exato `MENU · LOJA`; em `/login` o botão não tem `<img>` e o texto é `MENU` (MENU-04, AC 13) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "menu button icon"`
 
-**C16** - A 360x740 e a 390x844, com o menu aberto: os 9 links estão visíveis, cada um com um `<img>` visível, os `y` dos links formam 3 valores e os `x` formam 3 valores, e `scrollWidth <= innerWidth` (2 casos) (MENU-04, AC 14)
+**C16** - A 360x740 e a 390x844, com o menu aberto: os 9 links estão visíveis, cada um com um `<img>` visível, os `y` dos links formam 3 valores e os `x` formam 3 valores, e `scrollWidth <= innerWidth` (2 casos) (MENU-04, AC 14) ✅
 Proof: `cd web && npx playwright test e2e/game-menu.spec.ts -g "C16 "`
 
 ### S5 - regressão · 0 files
 
-**C17** - As provas do responsive (C7–C26 no browser) continuam verdes sem mudar nenhum assert (plan `Impact`)
+**C17** - As provas do responsive (C7–C26 no browser) continuam verdes sem mudar nenhum assert (plan `Impact`) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C[0-9]+ "`
 
-**C18** - As provas de `Tabs.test.tsx` do foundation e do responsive (ordem e rotas, `01`–`09`, `aria-current`, menu C1–C6, C21) continuam verdes sem mudar nenhum assert (plan `Impact`)
+**C18** - As provas de `Tabs.test.tsx` do foundation e do responsive (ordem e rotas, `01`–`09`, `aria-current`, menu C1–C6, C21) continuam verdes sem mudar nenhum assert (plan `Impact`) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "tab order and routes|marks only the current|menu starts closed|menu opens|link closes menu|button closes menu|escape closes menu|other keys keep menu open|menu label"`
 
 ## Coverage

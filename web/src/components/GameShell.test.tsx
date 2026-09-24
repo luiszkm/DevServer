@@ -5,7 +5,7 @@ import { CATALOG, json, mockFetch, player } from "@/test/helpers";
 import { GameShell } from "./GameShell";
 import { WorldScene } from "./WorldScene";
 
-vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ push: () => {} }) }));
 
 describe("GameShell", () => {
   // C1

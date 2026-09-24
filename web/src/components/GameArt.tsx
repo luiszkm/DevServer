@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 /** A `kind` of catalog art; `enemy` is keyed by region, every other kind by the catalog `id` (door 1). */
-export type ArtKind = "enemy" | "item" | "gear" | "skill" | "deploy" | "rack" | "office" | "region" | "hud";
+export type ArtKind = "enemy" | "item" | "gear" | "skill" | "deploy" | "rack" | "office" | "region" | "hud" | "menu";
 
 // Bosses are drawn bigger than the 32x32 enemy grid (plan assumptions: native sizes).
 const ENEMY_SIZE: Record<string, number> = { torre: 48, nuvem: 64 };

@@ -34,6 +34,16 @@ describe("GameArt", () => {
     expect(img.getAttribute("alt")).toBe("");
   });
 
+  // game-menu C3: the scene menu kind (door 2)
+  it("menu address", () => {
+    render(<GameArt kind="menu" id="loja" scale={2} alt="" fallback="" />);
+    const img = document.querySelector("img")!;
+    expect(img.getAttribute("src")).toBe("/art/icon/menu-loja.png");
+    expect(img.getAttribute("width")).toBe("32");
+    expect(img.getAttribute("height")).toBe("32");
+    expect(img.className.split(/\s+/)).toContain("pixelated");
+  });
+
   // C2
   it("fallback replaces the image after an error", () => {
     const { container } = render(<GameArt kind="item" id="hp_potion" scale={2} alt="" fallback="HP+" />);
