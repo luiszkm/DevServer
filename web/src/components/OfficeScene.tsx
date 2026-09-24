@@ -40,9 +40,11 @@ export function OfficeScene() {
 
   function tap(zone: string, position: number) {
     const current = player.office[zone]?.[position];
-    const installed = current ? byId(current) : undefined;
-    if (installed) {
-      return run(`/api/me/office/${zone}/${position}/remove`, undefined, `GUARDADO · ${refundText(installed.price)}`);
+    if (current) {
+      // Furniture that left the catalog is removed with no refund (AC 35).
+      const installed = byId(current);
+      const done = installed ? `GUARDADO · ${refundText(installed.price)}` : "GUARDADO";
+      return run(`/api/me/office/${zone}/${position}/remove`, undefined, done);
     }
     if (!sel) return;
     if (sel.zone !== zone) return setMessage(sel.zone === "parede" ? "ESSE MÓVEL VAI NA PAREDE" : "ESSE MÓVEL VAI NO PISO");
@@ -122,14 +124,14 @@ export function OfficeScene() {
                       <button
                         key={i}
                         type="button"
-                        className={`office-cell ${z.id}${f ? " filled" : ""}`}
+                        className={`office-cell ${z.id}${id ? " filled" : ""}`}
                         data-cell={`${z.id}-${i}`}
                         aria-label={`${z.name} ${i}`}
                         disabled={pending}
                         onClick={() => tap(z.id, i)}
                       >
                         <span className="pixel office-cell-glyph" style={f ? { color: f.color } : undefined}>
-                          {f ? f.glyph : "+"}
+                          {f ? f.glyph : id ? "?" : "+"}
                         </span>
                         <span className="term office-cell-name">{f ? f.name : ""}</span>
                       </button>

@@ -41,15 +41,6 @@ func (h *Handlers) cellOf(r *http.Request) (cell, error) {
 	return cell{z.ID, pos}, nil
 }
 
-// occupant is the furniture in c, or nil. p.Office follows the embedded catalog's zones, which an
-// injected catalog could outgrow.
-func occupant(p *player.Player, c cell) *string {
-	if cells := p.Office[c.zone]; c.position < len(cells) {
-		return cells[c.position]
-	}
-	return nil
-}
-
 // mutate runs fn under the player lock and answers {"player": {...}}.
 func (h *Handlers) mutate(w http.ResponseWriter, r *http.Request, fn func(ctx context.Context, tx pgx.Tx, p *player.Player) error) error {
 	ctx := r.Context()
@@ -91,7 +82,7 @@ func (h *Handlers) Install(w http.ResponseWriter, r *http.Request) error {
 		return httpx.ErrWrongZoneFloor
 	}
 	return h.mutate(w, r, func(ctx context.Context, tx pgx.Tx, p *player.Player) error {
-		if occupant(p, c) != nil {
+		if p.Office[c.zone][c.position] != nil {
 			return httpx.ErrCellOccupied
 		}
 		if err := player.Pay(p, f.Price); err != nil {
@@ -104,14 +95,15 @@ func (h *Handlers) Install(w http.ResponseWriter, r *http.Request) error {
 }
 
 // Remove empties a cell and refunds half the furniture's price, rounded down, in its currency.
-// An empty cell answers 200 without change.
+// An empty cell answers 200 without change; furniture that left the catalog is removed with no
+// refund (AC 33).
 func (h *Handlers) Remove(w http.ResponseWriter, r *http.Request) error {
 	c, err := h.cellOf(r)
 	if err != nil {
 		return err
 	}
 	return h.mutate(w, r, func(ctx context.Context, tx pgx.Tx, p *player.Player) error {
-		id := occupant(p, c)
+		id := p.Office[c.zone][c.position]
 		if id == nil {
 			return nil
 		}

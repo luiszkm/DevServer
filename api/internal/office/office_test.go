@@ -388,6 +388,7 @@ func TestInstall_ValidationOrder(t *testing.T) {
 	f := newFixture(t)
 	f.place("piso", 0, "mesa")
 	f.balance(1000, 0)
+	f.status(f.env.Do(http.MethodPost, "/api/me/office/x/0", "{", f.c), 422, "invalid_body")
 	f.status(f.env.Do(http.MethodPost, "/api/me/office/x/0", map[string]string{"furniture": "x"}, f.c), 422, "unknown_cell")
 	f.status(f.install("piso", 0, "x"), 422, "unknown_furniture")
 	f.status(f.install("piso", 0, "neon"), 422, "wrong_zone")
@@ -607,4 +608,32 @@ func TestMigration_OfficeExistingPlayers(t *testing.T) {
 	if g, w := room(got.Office), want(); g != w {
 		t.Errorf("office = %s, want %s", g, w)
 	}
+}
+
+// C43
+func TestUnknownFurniture_OccupiesAndRemoves(t *testing.T) {
+	f := newFixture(t)
+	f.place("piso", 0, "sofa")
+	f.balance(20, 1000)
+	f.status(f.install("piso", 0, "planta"), 409, "cell_occupied")
+	got := f.ok(f.remove("piso", 0))
+	if got.Coins != 1000 || got.Gems != 20 {
+		t.Errorf("coins %d gems %d, want 1000 and 20 (no refund)", got.Coins, got.Gems)
+	}
+	f.wantRoom(got.Office)
+	f.wantRoom(f.me().Office)
+}
+
+// C44
+func TestMe_SkipsCellsOutsideCatalog(t *testing.T) {
+	f := newFixture(t)
+	f.place("sotao", 0, "mesa")
+	f.place("parede", 8, "neon")
+	f.place("piso", 24, "mesa")
+	f.place("piso", 0, "mesa")
+	got := f.me()
+	if len(got.Office) != 2 || len(got.Office["parede"]) != 8 || len(got.Office["piso"]) != 24 {
+		t.Fatalf("office = %s, want only parede 8 and piso 24", room(got.Office))
+	}
+	f.wantRoom(got.Office, "piso/0=mesa")
 }

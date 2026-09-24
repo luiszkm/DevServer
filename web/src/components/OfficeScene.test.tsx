@@ -284,4 +284,16 @@ describe("OfficeScene", () => {
     await act(async () => release(json(200, { player: player({ coins: 40, office: room({ piso: { 0: "mesa" } }) }) })));
     for (const c of all) expect(c).toBeEnabled();
   });
+
+  // C45
+  it("unknown furniture", async () => {
+    const m = mockFetch({ "POST /api/me/office/piso/0/remove": json(200, { player: player({ office: room({ piso: { 1: "mesa" } }) }) }) });
+    renderOffice(player({ office: room({ piso: { 0: "sofa", 1: "mesa" } }) }));
+    expect(cell("piso", 0).querySelector(".office-cell-glyph")).toHaveTextContent(/^\?$/);
+    expect(screen.getByText("1 móveis instalados")).toBeInTheDocument();
+    expect(stat("CONFORTO")).toBe("8");
+    await userEvent.click(cell("piso", 0));
+    expect(m.calls("POST /api/me/office/piso/0/remove")).toBe(1);
+    expect(status()).toHaveTextContent(/^GUARDADO$/);
+  });
 });
