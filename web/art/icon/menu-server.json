@@ -20,7 +20,6 @@
       "grid": [
         "................",
         "...oooooooooo...",
-        "...ommmmmmmso...",
         "...omddddddso...",
         "...omdgdbSSso...",
         "...omSSSSSSso...",
@@ -33,7 +32,8 @@
         "...omdydbSSso...",
         "...omSSSSSSso...",
         "...oooooooooo...",
-        "...oo......oo..."
+        "...oo......oo...",
+        "................"
       ],
       "at": [
         0,

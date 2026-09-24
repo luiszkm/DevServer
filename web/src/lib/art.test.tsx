@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { existsSync, readFileSync } from "node:fs";
+import { inflateSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
@@ -21,6 +22,27 @@ function catalog<T>(file: string): T {
 function pngSize(path: string): [number, number] {
   const b = readFileSync(path);
   return [b.readUInt32BE(16), b.readUInt32BE(20)];
+}
+
+const MENU_ICONS = ["titulo", "mundo", "server", "deploy", "bug-fight", "skills", "loja", "avatar", "office"];
+
+/** RGBA pixels of a PNG as the renderer writes it (8-bit RGBA, filter 0 on every row). */
+function pngPixels(path: string) {
+  const b = readFileSync(path);
+  const width = b.readUInt32BE(16);
+  const height = b.readUInt32BE(20);
+  expect([b[24], b[25]]).toEqual([8, 6]);
+  const idat: Buffer[] = [];
+  for (let i = 8; i < b.length; ) {
+    const len = b.readUInt32BE(i);
+    if (b.toString("latin1", i + 4, i + 8) === "IDAT") idat.push(b.subarray(i + 8, i + 8 + len));
+    i += 12 + len;
+  }
+  const raw = inflateSync(Buffer.concat(idat));
+  const stride = 1 + width * 4;
+  for (let y = 0; y < height; y++) expect(raw[y * stride]).toBe(0);
+  const px = (x: number, y: number) => Array.from(raw.subarray(y * stride + 1 + x * 4, y * stride + 5 + x * 4));
+  return { width, height, px };
 }
 
 type Asset = { category: "icon" | "sprite" | "background"; name: string; size: [number, number] };
@@ -111,7 +133,40 @@ describe("catalog art on disk", () => {
 
   // game-menu C1: one icon per scene, ids fixed by the plan (door 1)
   it("menu icons per scene, 16x16", () => {
-    expectAssets(icons(["titulo", "mundo", "server", "deploy", "bug-fight", "skills", "loja", "avatar", "office"].map((id) => `menu-${id}`)));
+    expectAssets(icons(MENU_ICONS.map((id) => `menu-${id}`)));
+  });
+
+  // game-menu C19-C21 (added after verification round 1): the style guide's mechanical icon rules
+  describe.each(MENU_ICONS)("menu-%s", (id) => {
+    const { width, height, px } = pngPixels(`${ROOT}web/public/art/icon/menu-${id}.png`);
+    const opaque = (x: number, y: number) => x >= 0 && y >= 0 && x < width && y < height && px(x, y)[3] === 255;
+    const points: [number, number][] = [];
+    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) if (opaque(x, y)) points.push([x, y]);
+    const isInk = (x: number, y: number) => px(x, y).slice(0, 3).join() === "6,6,18";
+
+    it("menu icon margin and fill", () => {
+      expect(points.filter(([x, y]) => x === 0 || y === 0 || x === width - 1 || y === height - 1)).toEqual([]);
+      const xs = points.map(([x]) => x);
+      const ys = points.map(([, y]) => y);
+      const side = Math.max(Math.max(...xs) - Math.min(...xs) + 1, Math.max(...ys) - Math.min(...ys) + 1);
+      expect(side).toBeGreaterThanOrEqual(12);
+      expect(side).toBeLessThanOrEqual(14);
+    });
+
+    it("menu icon outline in ink", () => {
+      const edge = points.filter(([x, y]) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => !opaque(x + dx, y + dy)));
+      expect(edge.filter(([x, y]) => !isInk(x, y))).toEqual([]);
+    });
+
+    it("menu icon light from the top-left", () => {
+      const lum = (x: number, y: number) => {
+        const [r, g, b] = px(x, y);
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const mean = (ps: [number, number][]) => ps.reduce((a, [x, y]) => a + lum(x, y), 0) / ps.length;
+      const lit = points.filter(([x, y]) => !isInk(x, y));
+      expect(mean(lit.filter(([x, y]) => x + y < 15))).toBeGreaterThan(mean(lit.filter(([x, y]) => x + y > 15)));
+    });
   });
 
   // C26: fixed names, no catalog entry (door 1)

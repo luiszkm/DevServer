@@ -13,7 +13,8 @@
     "r": "red.2",
     "y": "gold.2",
     "l": "gold.4",
-    "M": "gold.1"
+    "M": "gold.1",
+    "g": "gold.0"
   },
   "layers": [
     {
@@ -27,10 +28,10 @@
         "....oDddddmo....",
         "...oDddddddmo...",
         "..oDdddddddmmo..",
-        "..oDddooooddmo..",
-        ".oDddoylyyodmmo.",
-        ".oDddoyyyModmmo.",
-        ".oDdddoooodmmmo.",
+        "..oDddggggddmo..",
+        ".oDddgylyygdmmo.",
+        ".oDddgyyyMgdmmo.",
+        ".oDdddggggdmmmo.",
         ".oDdddddddmmmmo.",
         "..oooooooooooo..",
         "................"

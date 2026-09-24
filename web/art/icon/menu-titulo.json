@@ -15,27 +15,28 @@
     "d": "wood.2",
     "D": "wood.1",
     "y": "lamp.2",
-    "Y": "lamp.3"
+    "Y": "lamp.3",
+    "k": "wood.0"
   },
   "layers": [
     {
       "grid": [
         "................",
+        ".......oo.......",
         "......olro......",
         ".....olrrRo.....",
         "....olrrrrRo....",
         "...olrrrrrrRo...",
         "..olrrrrrrrrRo..",
-        ".olrrrrrrrrrrRo.",
-        "oRRRRRRRRRRRRRRo",
-        "..oWwwwwwwwwwdo.",
-        "..oWoooowwwwwdo.",
-        "..oWoYyowoooodo.",
-        "..oWoyyowoDDodo.",
-        "..oWoooowoDDodo.",
-        "..oWwwwwwoDyodo.",
-        "..oWwwwwwoDDodo.",
-        "..ooooooooooooo."
+        ".oRRRRRRRRRRRRo.",
+        "..oWwwwwwwwwdo..",
+        "..oWkkkkwwwwdo..",
+        "..oWkYykwkkkdo..",
+        "..oWkyykwkDkdo..",
+        "..oWkkkkwkDkdo..",
+        "..oWwwwwwkDkdo..",
+        "..oooooooooooo..",
+        "................"
       ],
       "at": [
         0,

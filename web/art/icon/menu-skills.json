@@ -15,26 +15,23 @@
   "layers": [
     {
       "grid": [
-        "................",
-        ".......o........",
-        "......owo.......",
-        "......olo.......",
-        ".....olblo......",
-        "oooooolbbooooooo",
-        "ollllbbbbbbmmmo.",
-        ".olbbbbbbbbbmo..",
-        "..obbbbbbbbbo...",
-        "...obbbbbbbo....",
-        "...obbmmmbbo....",
-        "..obbmooombbo...",
-        "..obmo...ombmo..",
-        ".obmo.....ommo..",
-        ".ooo.......ooo..",
-        "................"
+        "......o......",
+        ".....owo.....",
+        ".....olo.....",
+        "....olbmo....",
+        "ooooolbmooooo",
+        "olllbbbbbmmmo",
+        ".olbbbbbbbmo.",
+        "..obbbbbbbo..",
+        "..obbbbbbmo..",
+        "..obbbmbbmo..",
+        ".obbmooombmo.",
+        ".obmo...ommo.",
+        ".ooo.....ooo."
       ],
       "at": [
-        0,
-        0
+        1,
+        1
       ]
     }
   ]

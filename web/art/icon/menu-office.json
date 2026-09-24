@@ -8,6 +8,7 @@
   "legend": {
     "o": "ink",
     "f": "stone.3",
+    "F": "stone.1",
     "g": "code.0",
     "G": "code.3",
     "m": "metal.2",
@@ -21,20 +22,20 @@
       "grid": [
         "................",
         "..oooooooooooo..",
-        "..offffffffffo..",
-        "..ofggggggggfo..",
-        "..ofgGggggggfo..",
-        "..ofggGgGGggfo..",
-        "..ofgGggggggfo..",
-        "..ofggggggggfo..",
-        "..offffffffffo..",
+        "..offfffffffFo..",
+        "..ofggggggggFo..",
+        "..ofgGggggggFo..",
+        "..ofggGgGGggFo..",
+        "..ofgGggggggFo..",
+        "..ofFFFFFFFFFo..",
         "..oooooooooooo..",
-        "......omMo......",
+        "......oMmo......",
         ".oooooooooooooo.",
         ".oWWWWWWWWWWWwo.",
         ".oddddddddddddo.",
         ".oooooooooooooo.",
-        ".oo..........oo."
+        ".oo..........oo.",
+        "................"
       ],
       "at": [
         0,
