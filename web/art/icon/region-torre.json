@@ -1,0 +1,45 @@
+{
+ "name": "region-torre",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "TORRE DE DEPLOY: a tall narrow stone tower with a pointed dark roof, a green </> flag on top and lit windows up its floors.",
+ "legend": {
+  "o": "ink",
+  "S": "stone.3",
+  "s": "stone.2",
+  "R": "roof.3",
+  "r": "roof.1",
+  "y": "lamp.2",
+  "g": "code.3",
+  "m": "metal.2"
+ },
+ "layers": [
+  {
+   "grid": [
+    ".......oooo.....",
+    ".......oggo.....",
+    ".......mooo.....",
+    "......oRro......",
+    ".....oRRrro.....",
+    "....oRRRrrro....",
+    "....oooooooo....",
+    ".....oSSSso.....",
+    ".....oSyyso.....",
+    ".....oSSSso.....",
+    ".....oSyyso.....",
+    ".....oSSSso.....",
+    "....oSSSSsso....",
+    "....oSSoossso...",
+    "...oSSSoosssso..",
+    "...oooooooooooo."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

@@ -1,0 +1,45 @@
+{
+ "name": "rack-gpu",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "GPU EDGE: a wide graphics card, dark shroud with two metal fans and a green light bar, metal bracket on the left and gold PCIe contacts below.",
+ "legend": {
+  "o": "ink",
+  "S": "metal.3",
+  "K": "stone.3",
+  "k": "stone.2",
+  "f": "metal.2",
+  "h": "metal.1",
+  "g": "code.4",
+  "y": "gold.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "oooooooooooooooo",
+    "oSKKKKKKKggggKKo",
+    "oSKKoooKKKoooKKo",
+    "oSKofffoKofffoKo",
+    "oSKofhfoKofhfoKo",
+    "oSKofffoKofffoKo",
+    "oSkkoookkkoookko",
+    "oSkkkkkkkkkkkkko",
+    "oSoyyyyyyyoyyyoo",
+    "oSoooooooooooo..",
+    "ooo.............",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

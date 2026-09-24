@@ -1,0 +1,45 @@
+{
+ "name": "office-rack",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "RACK CASEIRO: a small home server cabinet, dark metal case with three stacked units showing green and blue LEDs and a vent, like the racks by the key art's server hut.",
+ "legend": {
+  "o": "ink",
+  "F": "metal.2",
+  "f": "metal.1",
+  "u": "stone.2",
+  "U": "stone.3",
+  "g": "code.4",
+  "n": "net.3",
+  "v": "ink.2"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "...oooooooooo...",
+    "...oFFFFFFFFfo..",
+    "...oFooooooofo..",
+    "...oFoUUUUUofo..",
+    "...oFougnuuofo..",
+    "...oFooooooofo..",
+    "...oFoUUUUUofo..",
+    "...oFouggnuofo..",
+    "...oFooooooofo..",
+    "...oFovvvvvofo..",
+    "...oFovuvuvofo..",
+    "...oFooooooofo..",
+    "...offfffffffo..",
+    "...oooooooooooo.",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

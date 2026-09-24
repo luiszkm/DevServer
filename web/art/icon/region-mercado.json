@@ -1,0 +1,46 @@
+{
+ "name": "region-mercado",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MERCADO DE PACOTES: a market stall with a red and white striped awning on wooden posts and a counter of package crates.",
+ "legend": {
+  "o": "ink",
+  "R": "red.3",
+  "r": "red.1",
+  "W": "cloud.3",
+  "w": "cloud.1",
+  "P": "wood.3",
+  "c": "dirt.3",
+  "C": "dirt.1",
+  "x": "dirt.2"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "..oooooooooooo..",
+    ".oRRWWRRWWRRWro.",
+    "oRRWWRRWWRRWWrro",
+    "orrwwrrwwrrwwrro",
+    "oRoWoRoWoRoWoRo.",
+    ".o.o.o.o.o.o.o..",
+    "..oPo......oPo..",
+    "..oPo......oPo..",
+    "..oPooooooooPo..",
+    "..oPocccocccPo..",
+    "..oPocxcocxcPo..",
+    "oooooooooooooooo",
+    "oPPPPPPPPPPPPPPo",
+    "oxxxxxxxxxxxxxxo",
+    "oooooooooooooooo"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

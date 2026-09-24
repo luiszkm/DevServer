@@ -1,0 +1,44 @@
+{
+ "name": "office-neon",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "LETREIRO NEON: a dark sign board hanging from two wires, a glowing cyan neon tube drawing a wave of cursive writing with a white-hot core.",
+ "legend": {
+  "o": "ink",
+  "K": "roof.1",
+  "k": "roof.0",
+  "g": "gem.3",
+  "G": "gem.2",
+  "w": "white",
+  "m": "metal.2"
+ },
+ "layers": [
+  {
+   "grid": [
+    "....m......m....",
+    "....m......m....",
+    "oooooooooooooooo",
+    "oKKKKKKKKKKKKKKo",
+    "oKKGGKKKKKKGGKKo",
+    "oKGwwGKKKKGwwGKo",
+    "oGwGGwGKKGwGGwGo",
+    "oGwGKGwGGwGKGwGo",
+    "oKGKKKGwwGKKKGKo",
+    "oKKKKKKGGKKKKKKo",
+    "oKgggggggggggggo",
+    "okkkkkkkkkkkkkko",
+    "oooooooooooooooo",
+    "................",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

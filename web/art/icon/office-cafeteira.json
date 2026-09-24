@@ -1,0 +1,46 @@
+{
+ "name": "office-cafeteira",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CAFETEIRA: a drip coffee machine, dark body with a water tank on top, a glass pot of coffee on the warm plate and a red power light.",
+ "legend": {
+  "o": "ink",
+  "K": "hoodie.3",
+  "k": "hoodie.1",
+  "w": "net.4",
+  "W": "net.2",
+  "c": "wood.2",
+  "C": "wood.3",
+  "r": "red.3",
+  "p": "cloud.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "..oooooooooo....",
+    "..oKKKKKKKKko...",
+    "..oKwwwwwwWko...",
+    "..oKwWWWWWWko...",
+    "..oKKKKKKKKko...",
+    "..oKoooooooko...",
+    "..oKo.....oko...",
+    "..oKoooooooko...",
+    "..oKopppppoko...",
+    "..oKopCccpoko...",
+    "..oKopcccpoko...",
+    "..oKoooooooko...",
+    "..oKKKKKrKKko...",
+    "..okkkkkkkkko...",
+    "..ooooooooooo..."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

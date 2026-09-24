@@ -1,0 +1,44 @@
+{
+ "name": "rack-cache",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CACHE REDIS: an isometric red block made of stacked layers, like the Redis logo; light top face, lit left face, shaded right face, layer seams on both sides.",
+ "legend": {
+  "o": "ink",
+  "T": "red.4",
+  "L": "red.2",
+  "R": "red.1",
+  "l": "red.0",
+  "r": "red.0",
+  "w": "white"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "......oooo......",
+    "....ooTTTToo....",
+    "..ooTwTTTTTToo..",
+    ".oTTTTTTTTTTTTo.",
+    ".oLLTTTTTTTTRRo.",
+    ".oLLLLTTTTRRRRo.",
+    ".oLLLLLLRRRRRRo.",
+    ".ollLLLLRRRRrro.",
+    ".oLLllLLRRrrRRo.",
+    ".oLLLLllrrRRRRo.",
+    ".oLLLLLLRRRRRRo.",
+    "..ooLLLLRRRRoo..",
+    "....ooLLRRoo....",
+    "......oooo......",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

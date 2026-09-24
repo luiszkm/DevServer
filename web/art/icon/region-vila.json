@@ -1,0 +1,45 @@
+{
+ "name": "region-vila",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "VILA LOCALHOST: a village house with a dark roof, stone walls, a lit window and a wooden door; the house silhouette still reads when the marker is greyed out.",
+ "legend": {
+  "o": "ink",
+  "R": "roof.3",
+  "r": "roof.1",
+  "S": "stone.3",
+  "s": "stone.2",
+  "y": "lamp.2",
+  "d": "wood.3",
+  "c": "code.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    ".......oo.......",
+    "......oRro......",
+    ".....oRRrro.....",
+    "....oRRRrrro....",
+    "...oRRRRrrrro...",
+    "..oRRRRRrrrrro..",
+    ".ooooooooooooo..",
+    "..oSSSSSSSSsso..",
+    "..oSyySSSddsso..",
+    "..oSyySSSddsso..",
+    "..oSSSSSSddsso..",
+    "..oSSSSSSddsso..",
+    "..ossssssddsso..",
+    "..ooooooooooooo.",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

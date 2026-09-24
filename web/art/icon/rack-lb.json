@@ -1,0 +1,45 @@
+{
+ "name": "rack-lb",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "LOAD BALANCER: a small node on the left sending traffic out as three gold arrows (up, straight, down), the split that names the component.",
+ "legend": {
+  "o": "ink",
+  "y": "gold.3",
+  "Y": "gold.1",
+  "n": "net.3",
+  "N": "net.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "............y...",
+    "......yyyyyyyy..",
+    "......yYYYYYYY..",
+    "......yY....y...",
+    "......yY........",
+    ".nnn..yY....y...",
+    ".nnnyyyyyyyyyy..",
+    ".NNNYYYYYYYYYY..",
+    ".NNN..yY....y...",
+    "......yY........",
+    "......yY....y...",
+    "......yyyyyyyy..",
+    "......YYYYYYYY..",
+    "............y...",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

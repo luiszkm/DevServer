@@ -1,0 +1,46 @@
+{
+ "name": "office-setup2",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "SETUP 2 TELAS: two separate monitors side by side on one stand bar, build output (green) on the left, logs (blue) on the right; two screens, not the single wide gear-monitor.",
+ "legend": {
+  "o": "ink",
+  "B": "metal.1",
+  "b": "net.1",
+  "g": "code.3",
+  "l": "net.3",
+  "L": "net.4",
+  "s": "metal.3",
+  "t": "metal.1",
+  "K": "ink.2"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "oooooooooooooooo",
+    "oBBBBBBooBBBBBBo",
+    "oBKKKKBooBbbbbBo",
+    "oBKgggBooBbllbBo",
+    "oBKKKKBooBbbbbBo",
+    "oBKggKBooBblLbBo",
+    "oBKKKKBooBbbbbBo",
+    "oBKgggBooBbllbBo",
+    "oBBBBBBooBBBBBBo",
+    "oooooooooooooooo",
+    "....ostooosto...",
+    "..oooooooooooo..",
+    "..ossssssssstto.",
+    "..oooooooooooo.."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

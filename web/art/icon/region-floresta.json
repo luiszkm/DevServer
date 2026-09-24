@@ -1,0 +1,44 @@
+{
+ "name": "region-floresta",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "FLORESTA DE LOGS: a big round tree like the key art's oak, layered leaf greens lit from the top-left on a thick brown trunk.",
+ "legend": {
+  "o": "ink",
+  "l": "leaf.3",
+  "m": "leaf.2",
+  "d": "leaf.1",
+  "D": "leaf.0",
+  "T": "wood.4",
+  "t": "wood.2"
+ },
+ "layers": [
+  {
+   "grid": [
+    ".....oooooo.....",
+    "...oolllmmmoo...",
+    "..ollllmmmmddo..",
+    ".olllmmmmmmmddo.",
+    ".ollmmmmmmmmddo.",
+    "ollmmmmmmmmdddDo",
+    "olmmmmmmmmmdddDo",
+    "odmmmmmmmmddddDo",
+    ".oddmmmmddddDDo.",
+    ".oDddddddddDDDo.",
+    "..ooDDDDTtDDoo..",
+    "....ooooTtoo....",
+    "......oTTto.....",
+    "......oTTto.....",
+    ".....oTTTtto....",
+    ".....ooooooo...."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

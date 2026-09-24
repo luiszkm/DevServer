@@ -1,0 +1,46 @@
+{
+ "name": "office-cadeira_gamer",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CADEIRA GAMER: a tall racing chair, black shell with red side bolsters and a red centre stripe, harness slots in the headrest, wide shoulder wings; red and taller than the blue gear-cadeira.",
+ "legend": {
+  "o": "ink",
+  "R": "red.3",
+  "r": "red.1",
+  "K": "hoodie.3",
+  "k": "hoodie.1",
+  "M": "metal.2",
+  "s": "metal.3",
+  "t": "metal.2",
+  "u": "metal.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "....oooooooo....",
+    "...oRKKKKKKro...",
+    "...oRKoKKoKro...",
+    "...oRKKKKKKro...",
+    "..oRRKKRRKKrro..",
+    "..oRRKKRRKKrro..",
+    "..oRRKKRRKKrro..",
+    "...oRKKRRKKro...",
+    "...oRkkkkkkro...",
+    ".oooooooooooooo.",
+    ".oMRRRRRRRRRRMo.",
+    ".oMrrrrrrrrrrMo.",
+    ".oooooootuooooo.",
+    "..oooostuuoooo..",
+    ".ossssttttuuuuo.",
+    ".oooooooooooooo."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

@@ -1,0 +1,46 @@
+{
+ "name": "rack-ram",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "RAM 32GB: a memory stick lying flat, dark heat spreader over black chips, gold contacts along the bottom with the key notch; wide and short so it cannot be taken for the SSD.",
+ "legend": {
+  "o": "ink",
+  "H": "red.3",
+  "h": "red.2",
+  "d": "red.1",
+  "K": "hoodie.3",
+  "k": "ink.1",
+  "y": "gold.3",
+  "Y": "gold.1",
+  "g": "code.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "oooooooooooooooo",
+    "oHHHHHHHHHHHHHho",
+    "ohKKhKKhhKKhKKdo",
+    "ohkkhkkhhkkhkkdo",
+    "ohhhhhhhhhhhhhdo",
+    "oyYyYyYooyYyYyYo",
+    "ooooooo..ooooooo",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

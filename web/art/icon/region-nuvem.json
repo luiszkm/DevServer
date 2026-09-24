@@ -1,0 +1,140 @@
+{
+ "name": "region-nuvem",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "PICOS DA NUVEM: a snowy mountain peak rising out of a big puffy white cloud; the peak over a wide round cloud is what separates it from the other markers.",
+ "layers": [
+  {
+   "poly": [
+    [
+     8,
+     1
+    ],
+    [
+     14,
+     12
+    ],
+    [
+     2,
+     12
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "poly": [
+    [
+     8,
+     1
+    ],
+    [
+     14,
+     12
+    ],
+    [
+     8,
+     12
+    ]
+   ],
+   "color": "stone.2"
+  },
+  {
+   "poly": [
+    [
+     8,
+     1
+    ],
+    [
+     11,
+     6
+    ],
+    [
+     9,
+     5
+    ],
+    [
+     8,
+     6
+    ],
+    [
+     7,
+     5
+    ],
+    [
+     5,
+     6
+    ]
+   ],
+   "color": "white"
+  },
+  {
+   "line": [
+    8,
+    2,
+    10,
+    5
+   ],
+   "color": "cloud.1"
+  },
+  {
+   "ellipse": [
+    8,
+    12,
+    7,
+    2
+   ],
+   "color": "cloud.1"
+  },
+  {
+   "ellipse": [
+    4,
+    10,
+    3,
+    3
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "ellipse": [
+    11,
+    10,
+    3,
+    3
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "ellipse": [
+    8,
+    11,
+    4,
+    2
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "rect": [
+    2,
+    13,
+    12,
+    1
+   ],
+   "color": "cloud.1"
+  },
+  {
+   "rect": [
+    3,
+    8,
+    2,
+    1
+   ],
+   "color": "white"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+{
+ "name": "office-poster",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "PÔSTER RETRÔ: the DevServer key art framed in gold: blue sky with a cloud, a dark server with a green </> light and a green meadow.",
+ "legend": {
+  "o": "ink",
+  "F": "gold.3",
+  "f": "gold.1",
+  "s": "sky.3",
+  "S": "sky.2",
+  "c": "cloud.3",
+  "k": "stone.1",
+  "g": "code.3",
+  "l": "leaf.3",
+  "L": "leaf.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "..oooooooooooo..",
+    "..oFFFFFFFFFFo..",
+    "..oFssssssssfo..",
+    "..oFsccsssssfo..",
+    "..oFsssssssSfo..",
+    "..oFSSSkkkSSfo..",
+    "..oFSSSkgkSSfo..",
+    "..oFSSSkkkSSfo..",
+    "..oFSSSkgkSSfo..",
+    "..oFlllkkklLfo..",
+    "..oFllllllLLfo..",
+    "..oFLLLLLLLLfo..",
+    "..oFffffffffffo.",
+    "..ooooooooooooo.",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

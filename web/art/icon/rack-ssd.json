@@ -1,0 +1,46 @@
+{
+ "name": "rack-ssd",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "SSD NVME: a flat 2.5-inch drive in a metal case with a blue label and a green activity LED, lit from the top-left.",
+ "legend": {
+  "o": "ink",
+  "S": "metal.3",
+  "m": "metal.2",
+  "d": "metal.1",
+  "x": "metal.0",
+  "b": "net.1",
+  "w": "net.4",
+  "g": "code.4",
+  "y": "gold.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    ".oooooooooooooo.",
+    ".oSSSSSSSSSSSmo.",
+    ".oSxmmmmmmmmxdo.",
+    ".oSbbbbbbbmmmdo.",
+    ".oSbwwwbbbmgmdo.",
+    ".oSbbbbbbbmmmdo.",
+    ".oSbwwbwwbmmmdo.",
+    ".oSbbbbbbbmmmdo.",
+    ".oSxmmmmmmmmxdo.",
+    ".omddddddddddyo.",
+    ".oooooooooooooo.",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

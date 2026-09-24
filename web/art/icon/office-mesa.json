@@ -1,0 +1,47 @@
+{
+ "name": "office-mesa",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MESA EM L: an L-shaped wooden desk seen from the front and above, return arm on the left, a keyboard on the main top, one leg and a drawer pedestal with gold handles.",
+ "legend": {
+  "o": "ink",
+  "T": "dirt.3",
+  "t": "wood.4",
+  "d": "wood.3",
+  "D": "wood.2",
+  "L": "wood.2",
+  "P": "wood.3",
+  "h": "gold.3",
+  "K": "metal.3",
+  "k": "metal.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    ".ooooooo........",
+    ".oTTTTTo........",
+    ".oTttttoooooooo.",
+    ".oTttttTTTTTTTo.",
+    ".oTttttttKKKKto.",
+    ".oTttttttkkkkto.",
+    ".oddddddddddddo.",
+    ".oDDDDDDDDDDDDo.",
+    ".oLLoooooooPPPo.",
+    ".oLLo.....oPhPo.",
+    ".oLLo.....oPPPo.",
+    ".oLLo.....oPhPo.",
+    ".oooo.....ooooo."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

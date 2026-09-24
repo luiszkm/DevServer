@@ -1,0 +1,46 @@
+{
+ "name": "rack-cpu",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CPU 8-CORE: a square processor seen from above, dark package with a metal heat spreader and gold pins on all four sides; the ink outline lets it read on the blue slot tile.",
+ "legend": {
+  "o": "ink",
+  "y": "gold.3",
+  "Y": "gold.1",
+  "k": "hoodie.3",
+  "j": "hoodie.1",
+  "L": "metal.3",
+  "m": "metal.2",
+  "n": "metal.1",
+  "g": "gold.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "....o.o..o.o....",
+    "...oyoyooyoyo...",
+    "..oooooooooooo..",
+    ".ookkkkkkkkkjoo.",
+    "oyokLLLLLLLmjoYo",
+    ".ookLmmmmmmnjoo.",
+    "oyokLmmmmmmnjoYo",
+    ".ookLmmmmmmnjoo.",
+    ".ookLmmmmmmnjoo.",
+    "oyokLmmmmmmnjoYo",
+    ".ookLmmmmmmnjoo.",
+    "oyokgnnnnnnnjoYo",
+    ".oojjjjjjjjjjoo.",
+    "..oooooooooooo..",
+    "...oYoYooYoYo...",
+    "....o.o..o.o...."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

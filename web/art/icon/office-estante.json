@@ -1,0 +1,47 @@
+{
+ "name": "office-estante",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "ESTANTE DE LIVROS: a wooden bookshelf with three shelves of books in the key art's colours (red, blue, green, gold, purple) of mixed heights.",
+ "legend": {
+  "o": "ink",
+  "W": "wood.4",
+  "w": "wood.2",
+  "D": "wood.1",
+  "r": "red.3",
+  "b": "net.2",
+  "g": "code.3",
+  "y": "gold.2",
+  "p": "slime.3",
+  "c": "cloud.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "..oooooooooooo..",
+    "..oWWWWWWWWWwo..",
+    "..oWobooryogwo..",
+    "..oWobrogyogwo..",
+    "..oWobrogyogwo..",
+    "..oWWWWWWWWWwo..",
+    "..oWopoyyobbwo..",
+    "..oWopogyobbwo..",
+    "..oWopogyobbwo..",
+    "..oWWWWWWWWWwo..",
+    "..oWorrogobpwo..",
+    "..oWorrogobpwo..",
+    "..oWorrogobpwo..",
+    "..owwwwwwwwwwo..",
+    "..oDoooooooooDo.",
+    "..ooo......ooo.."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

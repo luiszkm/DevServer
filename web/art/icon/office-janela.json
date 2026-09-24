@@ -1,0 +1,46 @@
+{
+ "name": "office-janela",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "JANELA COM VISTA: a wooden window with a cross mullion, four panes of daylight blue sky with a cloud and the far city, and a sill below.",
+ "legend": {
+  "o": "ink",
+  "W": "wood.4",
+  "w": "wood.2",
+  "s": "sky.3",
+  "S": "sky.4",
+  "c": "cloud.3",
+  "C": "cloud.1",
+  "k": "sky.1",
+  "g": "white"
+ },
+ "layers": [
+  {
+   "grid": [
+    "..oooooooooooo..",
+    "..oWWWWWWWWWWo..",
+    "..oWSgSSWSSSwo..",
+    "..oWSSccWSSSwo..",
+    "..oWscCCWsssWo..",
+    "..oWssssWsssWo..",
+    "..oWWWWWWWWWwo..",
+    "..oWssssWsssWo..",
+    "..oWskssWkssWo..",
+    "..oWkkksWkkkwo..",
+    "..oWkkkkWkkkwo..",
+    "..owwwwwwwwwwo..",
+    ".oWWWWWWWWWWWWo.",
+    ".owwwwwwwwwwwwo.",
+    ".oooooooooooooo.",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

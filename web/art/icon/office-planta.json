@@ -1,0 +1,45 @@
+{
+ "name": "office-planta",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "PLANTA DE CANTO: a leafy corner plant with big leaves in the key art's leaf greens, in a terracotta pot.",
+ "legend": {
+  "o": "ink",
+  "l": "leaf.3",
+  "m": "leaf.2",
+  "d": "leaf.1",
+  "D": "leaf.0",
+  "P": "dirt.3",
+  "p": "dirt.2",
+  "q": "dirt.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "......oo........",
+    ".....olmo..oo...",
+    "..oo.olmdoolmo..",
+    ".olmooolmdolmdo.",
+    ".olmmdolmdlmdo..",
+    "..olmmdlmmmdo...",
+    "..oolmmlmmdoooo.",
+    ".olllmmmmmdlmmdo",
+    "..odDDmmmdDdddo.",
+    "...oooDDDDoooo..",
+    "....oPPPPPPpo...",
+    "....oooooooooo..",
+    ".....oPPPPpqo...",
+    ".....oPPppqqo...",
+    "......oppqqo....",
+    "......oooooo...."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

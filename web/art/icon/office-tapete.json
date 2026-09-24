@@ -1,0 +1,43 @@
+{
+ "name": "office-tapete",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "TAPETE PIXELADO: a violet rug lying on the floor in slight perspective, a pixel checker pattern with a blue border and cream tassels at both ends.",
+ "legend": {
+  "o": "ink",
+  "a": "slime.3",
+  "A": "slime.4",
+  "b": "slime.1",
+  "n": "net.3",
+  "t": "cloud.2"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "..oooooooooooo..",
+    "..otototototoo..",
+    "..oooooooooooo..",
+    ".onAaAaAaAaAno..",
+    ".onaAaAaAaAano..",
+    ".onAaAaAaAaAnbo.",
+    "onaAaAaAaAaAnbo.",
+    "onnnnnnnnnnnnbo.",
+    "ooooooooooooooo.",
+    "otototototototo.",
+    "ooooooooooooooo.",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

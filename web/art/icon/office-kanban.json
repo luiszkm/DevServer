@@ -1,0 +1,47 @@
+{
+ "name": "office-kanban",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "QUADRO KANBAN: a white board in a metal frame split into three columns, coloured post-its (gold, red, green, blue) moving from left to right.",
+ "legend": {
+  "o": "ink",
+  "M": "metal.3",
+  "m": "metal.1",
+  "w": "cloud.3",
+  "W": "cloud.1",
+  "d": "metal.2",
+  "y": "gold.3",
+  "r": "red.3",
+  "g": "code.3",
+  "b": "net.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "oooooooooooooooo",
+    "oMMMMMMMMMMMMMMo",
+    "oMwwwwdwwwwdwwmo",
+    "oMwyywdwrrwdwgmo",
+    "oMwyywdwrrwdwgmo",
+    "oMwwwwdwwwwdwwmo",
+    "oMwbbwdwyywdwwmo",
+    "oMwbbwdwyywdggmo",
+    "oMwwwwdwwwwdggmo",
+    "oMWWWWdWWWWdWWmo",
+    "ommmmmmmmmmmmmmo",
+    "oooooooooooooooo",
+    "..o..........o..",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

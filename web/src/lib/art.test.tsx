@@ -41,12 +41,16 @@ type Regions = { id: string }[];
 type Shop = { gear: { id: string }[] };
 type Skills = { trees: { nodes: { id: string }[] }[] };
 type Deploys = { types: { id: string }[] };
+type Rack = { components: { id: string }[] };
+type Office = { furniture: { id: string }[] };
 
 const combat = catalog<Combat>("combat.json");
 const regions = catalog<Regions>("regions.json");
 const shop = catalog<Shop>("shop.json");
 const skills = catalog<Skills>("skills.json");
 const deploys = catalog<Deploys>("deploys.json");
+const rackCatalog = catalog<Rack>("rack.json");
+const officeCatalog = catalog<Office>("office.json");
 
 const icons = (names: string[]): Asset[] => names.map((name) => ({ category: "icon", name, size: [16, 16] }));
 
@@ -88,5 +92,25 @@ describe("catalog art on disk", () => {
   // C15: fixed names, no catalog entry (door 1)
   it("hud icons for coin, gem, heart and xp, 16x16", () => {
     expectAssets(icons(["hud-coin", "hud-gem", "hud-heart", "hud-xp"]));
+  });
+
+  // C23
+  it("component icons per rack.json, 16x16", () => {
+    expectAssets(icons(rackCatalog.components.map((k) => `rack-${k.id}`)));
+  });
+
+  // C24
+  it("furniture icons per office.json, 16x16", () => {
+    expectAssets(icons(officeCatalog.furniture.map((f) => `office-${f.id}`)));
+  });
+
+  // C25
+  it("map marker icons per regions.json, 16x16", () => {
+    expectAssets(icons(regions.map((r) => `region-${r.id}`)));
+  });
+
+  // C26: fixed names, no catalog entry (door 1)
+  it("scene background for the map, the room and the machine hall, 320x180", () => {
+    expectAssets(["world", "office", "server"].map((name) => ({ category: "background", name, size: [320, 180] })));
   });
 });

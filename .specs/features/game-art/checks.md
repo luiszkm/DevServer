@@ -95,16 +95,16 @@ Proof: `cd web && npx playwright test e2e/shell.spec.ts -g "hud art loads"`
 
 ### S3 - servidor, escritório e mapa · 8 files · ~128 KB · ~32k read (+ 27 specs, previews)
 
-**C23** - Para cada componente de `rack.json` existem `web/art/icon/rack-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3)
+**C23** - Para cada componente de `rack.json` existem `web/art/icon/rack-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "rack"`
 
-**C24** - Para cada móvel de `office.json` existem `web/art/icon/office-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3)
+**C24** - Para cada móvel de `office.json` existem `web/art/icon/office-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "office"`
 
-**C25** - Para cada região de `regions.json` existem `web/art/icon/region-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3)
+**C25** - Para cada região de `regions.json` existem `web/art/icon/region-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "region"`
 
-**C26** - Existem `background/world`, `background/office`, `background/server` (spec e PNG 320x180) (ART-01, AC 2, 3)
+**C26** - Existem `background/world`, `background/office`, `background/server` (spec e PNG 320x180) (ART-01, AC 2, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "scene background"`
 
 **C27** - Em SERVER: slot com `gpu` mostra `/art/icon/rack-gpu.png` `alt=""` `width=32` sobre `background: #45b7ff`; slot vazio mostra `-` sem `<img>`; slot com id fora do catálogo mostra `?` sem `<img>`; cada cartão da loja mostra `/art/icon/rack-<id>.png` `alt=""`; após `error` o slot mostra o glifo (`#`) (ART-06, AC 12, 5)

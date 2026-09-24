@@ -1,0 +1,43 @@
+{
+ "name": "region-caverna",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CAVERNA DOS BUGS: a rocky mound with a dark cave mouth and two red bug eyes glowing inside.",
+ "legend": {
+  "o": "ink",
+  "S": "stone.3",
+  "s": "stone.2",
+  "d": "stone.1",
+  "k": "ink.1",
+  "e": "red.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "......oooo......",
+    "....ooSSSsoo....",
+    "...oSSSSSsssoo..",
+    "..oSSSSSsssssso.",
+    "..oSSSooooossso.",
+    ".oSSSokkkkkosso.",
+    ".oSSokkkkkkkoso.",
+    ".oSSokekkekkoso.",
+    "oSSSokkkkkkkosso",
+    "oSSsokkkkkkkosdo",
+    "osssokkkkkkkosdo",
+    "osddokkkkkkkoddo",
+    "oooooooooooooooo",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}
