@@ -145,47 +145,47 @@ Proof: `cd web && npx vitest run src/components/ComingSoon.test.tsx -t "no scene
 
 ## Progress
 
-- [ ] C1
-- [ ] C2
-- [ ] C3
-- [ ] C4
-- [ ] C5
-- [ ] C6
-- [ ] C7
-- [ ] C8
-- [ ] C9
-- [ ] C10
-- [ ] C11
-- [ ] C12
-- [ ] C13
-- [ ] C14
-- [ ] C15
-- [ ] C16
-- [ ] C17
-- [ ] C18
-- [ ] C19
-- [ ] C20
-- [ ] C21
-- [ ] C22
-- [ ] C23
-- [ ] C24
-- [ ] C25
-- [ ] C26
-- [ ] C27
-- [ ] C28
-- [ ] C29
-- [ ] C30
-- [ ] C31
-- [ ] C32
-- [ ] C33
-- [ ] C34
-- [ ] C35
-- [ ] C36
-- [ ] C37
-- [ ] C38
-- [ ] C39
-- [ ] C40
-- [ ] C41
+- [x] C1
+- [x] C2
+- [x] C3
+- [x] C4
+- [x] C5
+- [x] C6
+- [x] C7
+- [x] C8
+- [x] C9
+- [x] C10
+- [x] C11
+- [x] C12
+- [x] C13
+- [x] C14
+- [x] C15
+- [x] C16
+- [x] C17
+- [x] C18
+- [x] C19
+- [x] C20
+- [x] C21
+- [x] C22
+- [x] C23
+- [x] C24
+- [x] C25
+- [x] C26
+- [x] C27
+- [x] C28
+- [x] C29
+- [x] C30
+- [x] C31
+- [x] C32
+- [x] C33
+- [x] C34
+- [x] C35
+- [x] C36
+- [x] C37
+- [x] C38
+- [x] C39
+- [x] C40
+- [x] C41
 
 ## Coverage
 
@@ -257,7 +257,12 @@ Evidence:
 
 - foundation C26 / shop C46 (7 abas): passa a 8 com `OFFICE` → `/office`; C27 substitui a prova da ordem das abas
 - shop C46 (`ComingSoon` sobre 7 cenas): C41 passa a cobrir 8
+- shop C47 (`TestMigration_ExistingPlayers`): o teste migrava só até 00005 e servia o router atual, que agora lê `player_office`; passa a aplicar todas as migrações depois de afirmar as tabelas vazias em 00005, como o binário faz no boot - a afirmação não muda
+- shop `pay` virou `player.Pay` para o `office` reusar a mesma regra de saldo; shop C7 e C25 continuam provando o comportamento
 
 ## Handoff
 
 - Leitura: api ~76 KB + web ~49 KB ≈ 125 KB / 4 ≈ 31k, mais ~40k de código novo - abaixo do budget de 150k: um builder, sem handoff
+- **Boundary:** one builder, C1–C41 closed, `2a73027..HEAD` (api `8dbb534`, web `74ab996`); every proof and the api, web and e2e suites green at HEAD
+- **Settled mid-build:** nothing by the user; consequences recorded under `Impact on earlier checks` (shop C47 test migrates to latest, `pay` moved to `player.Pay`)
+- **Abandoned:** none
