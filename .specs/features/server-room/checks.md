@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/server-room/plan.md`
 
-44 checks in 4 slices · 9 one-way doors · 0 open
+46 checks in 5 slices · 9 one-way doors · 0 open
 
 ## Checks
 
@@ -152,6 +152,14 @@ Proof: `cd web && npx vitest run src/components/ComingSoon.test.tsx -t "no scene
 **C44** - No navegador, o hotspot `SALA DE SERVIDORES` da tela-título e a aba `SERVER` levam a `/server` (RACK-04, AC 22, AC 23)
 Proof: `cd web && npx playwright test e2e/server.spec.ts -g "entries"`
 
+### S5 - Lacunas do round 1 · ~2 files · ~15 KB · ~4k (added after verification round 1)
+
+**C45** - Com uma sessão sem dev, `POST /api/me/rack` com `{"component":"cpu"}` e `POST /api/me/rack/0/remove` respondem `404 player_not_found` e nenhuma linha `player_rack` é criada (RACK-02; plan Surface addendum; L-016)
+Proof: `cd api && go test ./internal/rack -run '^TestRackRoutes_NoPlayer$'`
+
+**C46** - Num catálogo de teste com `gpu` a 150 gems: com 150 gems e 0 coins a compra responde `200` com gems 0, coins 0 e `gpu` no slot 0; com 149 gems responde `409 not_enough_gems` sem mudar nada; remover o slot 0 devolve +150 gems e coins ficam iguais (RACK-02, AC 11; plan Assumptions round 1; L-018)
+Proof: `cd api && go test ./internal/rack -run '^TestRack_GemsPricedComponent$'`
+
 ## Progress
 
 - [x] C1
@@ -198,13 +206,15 @@ Proof: `cd web && npx playwright test e2e/server.spec.ts -g "entries"`
 - [x] C42
 - [x] C43
 - [x] C44
+- [ ] C45
+- [ ] C46
 
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
 | --- | --- | --- |
-| `POST /api/me/rack` statuses (7) | 200 C4 · 401 C16 · 409 `rack_full` C7 · 409 `not_enough_coins` C6 · 422 `invalid_body` C9 · 422 `unknown_component` C8 · 500 C17 | - |
-| `POST /api/me/rack/{slot}/remove` statuses (4) | 200 C12, C13 · 401 C16 · 422 `unknown_slot` C14 · 500 C17 | - |
+| `POST /api/me/rack` statuses (9) | 200 C4 · 401 C16 · 404 `player_not_found` C45 · 409 `rack_full` C7 · 409 `not_enough_coins` C6 · 409 `not_enough_gems` C46 · 422 `invalid_body` C9 · 422 `unknown_component` C8 · 500 C17 | - |
+| `POST /api/me/rack/{slot}/remove` statuses (5) | 200 C12, C13 · 401 C16 · 404 `player_not_found` C45 · 422 `unknown_slot` C14 · 500 C17 | - |
 | `POST /api/me/deploys` statuses (8) | 201 C24, deploy-pipelines C1 · 401 deploy-pipelines C9 · 409 `deploy_running` deploy-pipelines C2 · 422 `invalid_body` deploy-pipelines C39 · 422 `unknown_deploy_type` deploy-pipelines C4 · 422 `unknown_deploy_level` deploy-pipelines C5 · 422 `level_too_low` deploy-pipelines C3 · 500 C17, deploy-pipelines C38 | - |
 | `GET /api/me` statuses (4) | 200 C2 · 401 foundation C9 · 404 `player_not_found` foundation C38 · 500 C17 | - |
 | `GET /api/catalog` new fields (1) | `rack` C1 | - |
@@ -213,12 +223,13 @@ Proof: `cd web && npx playwright test e2e/server.spec.ts -g "entries"`
 | stats catalog (3) | `power` C1, C21 · `ram` C1, C21 · `uptime` C1, C21 | - |
 | slot bounds (5) | -1 C14 · 0 C14 · 5 C14 · 6 C14 · não inteiro C14 | - |
 | first free slot (3) | depois de ocupados C5 · buraco antes de ocupado C5 · último C5 | - |
-| balance boundary (2) | coins abaixo C6 · coins igual C6 | - |
+| balance boundary (4) | coins abaixo C6 · coins igual C6 · gems abaixo C46 · gems igual C46 | - |
+| refund currency (2) | coins C12 · gems C46 | - |
 | validation order (3) | `invalid_body` antes de `unknown_component` C10 · `unknown_component` antes de `rack_full` C10 · `rack_full` antes de `not_enough_coins` C10 | - |
 | bonus types (3) | `dmg` C21, C23 · `sp` C21, C22 · `coins` C21, C24 | - |
 | stat cap (3) | POWER 100 C21, C31 · RAM 100 C21, C31 · UPTIME 99 C21, C31 | - |
 | floor per step (3) | POWER step 10 com resto (38 → 1) C21 · RAM step 5 C21 · UPTIME step 1 C21 | - |
-| bonus exclusions and sum (2) | rack fora de `hp`/`xp`/`deploy`/`spregen` C21 · rack somado a outras fontes C21, C41 | - |
+| bonus exclusions and sum (4) | rack fora de `hp`/`xp`/`deploy`/`spregen` C21 · rack somado a skills C21 · rack somado a equipamento C21, C41 · rack somado a skin C21 | - |
 | multi-effect component (1) | `ssd` C21, C24, C32, C33 | - |
 | coins rounding (2) | para baixo C24 · para cima C24 | - |
 | deploy snapshot (1) | coins congeladas C25 | - |
@@ -278,3 +289,9 @@ Evidence:
 - Leitura: api ~79 KB + web ~61 KB ≈ 140 KB / 4 ≈ 35k, mais ~45k de código novo - abaixo do budget de 150k: um builder, sem handoff
 - **Boundary:** one builder, C1–C44 closed, `a0a9412..HEAD` (specs `a7532b0`, api `1c0b1d5`, web `61d7f69`); every proof and the api, web and e2e suites green at HEAD; `make ci-build` green
 - **Settled mid-build:** C21 dizia `cpu` + `gpu` `dmg` 8; a fórmula aprovada (AC 15) dá `floor(65 / 10)` = 6 - erro aritmético do check, corrigido para 6 com o aval do usuário (2026-09-24)
+
+Round 2 (after verification round 1 FAIL):
+
+- **Boundary:** C45 (404 nas duas rotas do rack) e C46 (componente em gems, compra e reembolso) adicionados; C21 ganha o caso rack + skin com bônus (a afirmação do check não muda)
+- **Settled mid-build:** nada pelo usuário; o ramo de reembolso em gems fica e ganha prova (AD-003 permite mudar a moeda só no catálogo), `Confirmed? n` em plan Assumptions
+- **Abandoned:** remover o ramo de gems - quebraria o reembolso de um componente rebalanceado para gems sem nenhum teste falhar

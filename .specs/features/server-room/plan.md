@@ -46,6 +46,7 @@ máximo do encontro, UPTIME as coins de cada deploy novo. Remover um componente 
 | Ordem das validações | compra: `invalid_body` → `unknown_component` → `rack_full` → `not_enough_coins`; remover: `unknown_slot` | catálogo antes do lock, como office; rack cheio antes do saldo como no protótipo | n |
 | Remover slot vazio | api `200` sem mudança; a tela nem chama a api e mostra `> slot 0<n> vazio. compre um componente ao lado.` | regra do office e do `unequip`; mensagem do protótipo | n |
 | Componente gravado que saiu do catálogo | slot conta como ocupado, soma 0 em todo stat, remover esvazia sem reembolso; slot ≥ `slots` ignorado na leitura; a tela mostra `?` e o clique remove | L-015; mesma regra do office AC 33-35 | n |
+| Componente com preço em gems (catálogo rebalanceado, AD-003) | compra desconta gems via `player.Pay`; remover devolve o preço inteiro em gems | o catálogo pode mudar a moeda sem deploy do código; a regra de reembolso segue a moeda do preço como o office (added after verification round 1) | n |
 | Rota e aba | 3ª aba `SERVER` em `/server`, entre MUNDO e DEPLOY; as abas seguintes são renumeradas | posição e rótulo do protótipo (`order`); rota segue o rótulo como `/office` | n |
 | Preço no cartão | `80C`, como `priceShort` do office; opacidade reduzida sem saldo | protótipo mostra só `80`; o jogo já tem a forma curta | n |
 | Bônus na tela | cada barra mostra abaixo `DANO +N%`, `SP MÁX +N`, `COINS DE DEPLOY +N%` | stats agora têm efeito e o protótipo não tem onde mostrá-lo | n |
@@ -177,6 +178,8 @@ componente validados contra o catálogo, sem FK. No columns and no types here.
 | `POST /api/me/deploys` (changed) | `type`, `level` | `deploy` · `player` · `serverTime`; coins da coleta com bônus | `201`, `401`, `409 deploy_running`, `422 invalid_body`, `422 unknown_deploy_type`, `422 unknown_deploy_level`, `422 level_too_low`, `500` - inalterados |
 | `GET /api/catalog` (changed) | - | + `rack` | `200` |
 | `GET /api/me` (changed; same `player` in every response) | - | + `rack` | `200`, `401`, `404 player_not_found`, `500` |
+
+Added after verification round 1: `POST /api/me/rack` and `POST /api/me/rack/{slot}/remove` also answer `404 player_not_found` when the session has no dev, through `player.WithLocked`, as every other player route does.
 
 ## Landing
 
