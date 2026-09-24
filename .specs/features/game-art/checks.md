@@ -127,7 +127,7 @@ Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "marker s
 
 ### S4 - fix round 1 · 2 files · added after verification round 1 (plan Assumptions "fundo ×4", AC 17)
 
-**C33** - No browser real, `.world-map`, `.server`, `.office-room` e `.battle` (encontro em `vila`) têm `getComputedStyle` com `background-size` = `1280px 720px` e `image-rendering` = `pixelated` (ART-02, AC 17; added after verification round 1)
+**C33** - No browser real, `.world-map`, `.server`, `.office-room` e `.battle` (encontro em `vila`) têm `getComputedStyle` com `background-size` = `1280px 720px` e `image-rendering` = `pixelated` (ART-02, AC 17; added after verification round 1) ✅
 Proof: `cd web && npx playwright test -g "scene art scale"`
 
 ## Coverage
