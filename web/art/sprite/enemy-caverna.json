@@ -1,0 +1,210 @@
+{
+ "name": "enemy-caverna",
+ "category": "sprite",
+ "size": [
+  32,
+  32
+ ],
+ "_design": "EXCEÇÃO SELVAGEM: a wild red cave beetle with '!!' warning marks on its shell and curly-brace antennae; nothing caught it (weakness: missing catch).",
+ "layers": [
+  {
+   "ellipse": [
+    14,
+    19,
+    10,
+    7
+   ],
+   "color": "red.1"
+  },
+  {
+   "ellipse": [
+    13,
+    18,
+    9,
+    6
+   ],
+   "color": "red.2"
+  },
+  {
+   "ellipse": [
+    11,
+    16,
+    6,
+    3
+   ],
+   "color": "red.3"
+  },
+  {
+   "rect": [
+    8,
+    14,
+    2,
+    1
+   ],
+   "color": "red.4"
+  },
+  {
+   "rect": [
+    7,
+    15,
+    1,
+    1
+   ],
+   "color": "white"
+  },
+  {
+   "ellipse": [
+    25,
+    19,
+    4,
+    4
+   ],
+   "color": "red.0"
+  },
+  {
+   "rect": [
+    23,
+    16,
+    3,
+    1
+   ],
+   "color": "red.1"
+  },
+  {
+   "rect": [
+    22,
+    17,
+    1,
+    2
+   ],
+   "color": "red.1"
+  },
+  {
+   "line": [
+    4,
+    19,
+    23,
+    19
+   ],
+   "color": "red.0"
+  },
+  {
+   "grid": [
+    "y..y",
+    "y..y",
+    "y..y",
+    "....",
+    "y..y"
+   ],
+   "legend": {
+    "y": "lamp.2"
+   },
+   "at": [
+    12,
+    13
+   ]
+  },
+  {
+   "grid": [
+    "...oo.oo",
+    "..o..o..",
+    "..o..o..",
+    ".o..o...",
+    "..o..o..",
+    "..o..o..",
+    "...o..o."
+   ],
+   "legend": {
+    "o": "red.3"
+   },
+   "at": [
+    22,
+    7
+   ]
+  },
+  {
+   "rect": [
+    26,
+    18,
+    2,
+    2
+   ],
+   "color": "lamp.3"
+  },
+  {
+   "rect": [
+    27,
+    18,
+    1,
+    1
+   ],
+   "color": "white"
+  },
+  {
+   "line": [
+    25,
+    16,
+    28,
+    17
+   ],
+   "color": "ink"
+  },
+  {
+   "rect": [
+    6,
+    26,
+    2,
+    3
+   ],
+   "color": "red.0"
+  },
+  {
+   "rect": [
+    13,
+    26,
+    2,
+    3
+   ],
+   "color": "red.0"
+  },
+  {
+   "rect": [
+    20,
+    26,
+    2,
+    3
+   ],
+   "color": "red.0"
+  },
+  {
+   "rect": [
+    5,
+    28,
+    1,
+    1
+   ],
+   "color": "red.0"
+  },
+  {
+   "rect": [
+    12,
+    28,
+    1,
+    1
+   ],
+   "color": "red.0"
+  },
+  {
+   "rect": [
+    22,
+    28,
+    1,
+    1
+   ],
+   "color": "red.0"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

@@ -1,0 +1,147 @@
+{
+ "name": "item-memory_crystal",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CRISTAL DE MEMÓRIA: a tall faceted blue crystal like the key art's gem pillar, legendary drop of MEMORY LEAK ANCESTRAL.",
+ "layers": [
+  {
+   "poly": [
+    [
+     8,
+     0
+    ],
+    [
+     12,
+     4
+    ],
+    [
+     12,
+     11
+    ],
+    [
+     8,
+     15
+    ],
+    [
+     4,
+     11
+    ],
+    [
+     4,
+     4
+    ]
+   ],
+   "color": "gem.2"
+  },
+  {
+   "poly": [
+    [
+     8,
+     0
+    ],
+    [
+     4,
+     4
+    ],
+    [
+     4,
+     11
+    ],
+    [
+     8,
+     15
+    ],
+    [
+     7,
+     8
+    ]
+   ],
+   "color": "gem.3"
+  },
+  {
+   "poly": [
+    [
+     8,
+     0
+    ],
+    [
+     12,
+     4
+    ],
+    [
+     12,
+     11
+    ],
+    [
+     8,
+     15
+    ],
+    [
+     9,
+     8
+    ]
+   ],
+   "color": "gem.1"
+  },
+  {
+   "line": [
+    8,
+    1,
+    8,
+    14
+   ],
+   "color": "gem.2"
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    9
+   ],
+   "color": "gem.4"
+  },
+  {
+   "rect": [
+    6,
+    3,
+    1,
+    1
+   ],
+   "color": "white"
+  },
+  {
+   "rect": [
+    13,
+    9,
+    2,
+    4
+   ],
+   "color": "gem.2"
+  },
+  {
+   "rect": [
+    14,
+    9,
+    1,
+    4
+   ],
+   "color": "gem.1"
+  },
+  {
+   "rect": [
+    13,
+    8,
+    1,
+    1
+   ],
+   "color": "gem.3"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

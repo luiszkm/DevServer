@@ -1,0 +1,31 @@
+{
+  "name": "enemy-vila",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "NULL SLIME: the key art's purple slime with a (0x0) face - hollow zero eyes and an x mouth; a drip of nothing leaks from its side (weakness: null-check).",
+  "layers": [
+    {"ellipse": [15, 20, 12, 9], "color": "slime.1"},
+    {"ellipse": [15, 19, 11, 8], "color": "slime.2"},
+    {"ellipse": [13, 17, 8, 5], "color": "slime.3"},
+    {"ellipse": [9, 14, 2, 1], "color": "slime.4"},
+    {"rect": [8, 13, 1, 1], "color": "white"},
+    {"ellipse": [15, 8, 2, 3], "color": "slime.2"},
+    {"rect": [14, 6, 1, 2], "color": "slime.4"},
+    {"rect": [0, 28, 32, 4], "color": null},
+    {"rect": [5, 27, 21, 1], "color": "slime.0"},
+    {"rect": [25, 22, 2, 5], "color": "slime.1"},
+    {"rect": [25, 27, 2, 1], "color": "slime.0"},
+    {"grid": [
+      ".oo....oo.",
+      "owwo..owwo",
+      "owwo..owwo",
+      "owwo..owwo",
+      ".oo....oo.",
+      "..........",
+      "...o..o...",
+      "....oo....",
+      "...o..o..."
+    ], "legend": {"o": "ink", "w": "white"}, "at": [10, 15]},
+    {"outline": "ink"}
+  ]
+}

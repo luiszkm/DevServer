@@ -1,4 +1,4 @@
-.PHONY: db-up test-api test-web e2e ci-build check-deps
+.PHONY: db-up test-api test-web e2e ci-build check-deps art-check
 
 export DATABASE_URL ?= postgres://devserver:devserver@localhost:5433/devserver?sslmode=disable
 export TEST_DATABASE_URL ?= postgres://devserver:devserver@localhost:5433/devserver_test?sslmode=disable
@@ -26,3 +26,8 @@ check-deps:
 		&& grep -q 'golang.org/x/oauth2 ' go.mod \
 		&& ! grep -q 'gorm.io/gorm' go.mod \
 		&& echo "deps ok"
+
+art-check:
+	@tmp=$$(mktemp -d) && trap 'rm -rf "$$tmp"' EXIT && \
+		python3 .claude/skills/pixel-assets/scripts/render.py web/art --out "$$tmp" && \
+		diff -r "$$tmp" web/public/art && echo "art ok"

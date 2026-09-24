@@ -1,0 +1,17 @@
+{
+ "name": "item-sp_potion",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "POÇÃO DE CACHE: the same flask filled with blue SP liquid (net ramp), so the two potions read as a pair.",
+ "layers": [
+  {
+   "use": "item-hp_potion.json",
+   "recolor": {
+    "red": "net"
+   }
+  }
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "name": "item-log_essence",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "ESSÊNCIA DE LOG: a small green wisp flame (code ramp) with a white-hot core, the essence of a LOG WISP.",
+ "legend": {
+  "o": "ink",
+  "w": "code.4",
+  "h": "white",
+  "l": "code.3",
+  "m": "code.2",
+  "d": "code.1",
+  "c": "code.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    ".......o........",
+    "......olo.......",
+    "......olmo......",
+    ".....olmmo......",
+    ".....olmmmo.....",
+    "....olhmmmo.....",
+    "....olhmmmmo.o..",
+    "...olhlmmmmdoco.",
+    "...ollwwmmmdoco.",
+    "..olllwwwmmddo..",
+    "..ollwwwwmmddo..",
+    "..ollmwwmmmddo..",
+    "...olmmmmmddo...",
+    "....oodddddo....",
+    "......oooo......"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

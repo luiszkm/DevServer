@@ -1,0 +1,425 @@
+{
+ "name": "battle-floresta",
+ "category": "background",
+ "size": [
+  320,
+  180
+ ],
+ "_design": "FLORESTA DE LOGS: a deep dusk forest of dark canopies and trunks, hanging leaves at the top corners, fallen logs at the edges and green log-fireflies in the air.",
+ "layers": [
+  {
+   "bands": [
+    0,
+    0,
+    320,
+    120
+   ],
+   "colors": [
+    "sky.0",
+    "sky.1"
+   ],
+   "dither": 3
+  },
+  {
+   "ridge": [
+    0,
+    30,
+    320,
+    80
+   ],
+   "mode": "round",
+   "heights": [
+    40,
+    75
+   ],
+   "radii": [
+    10,
+    18
+   ],
+   "color": "leaf.0",
+   "seed": 11
+  },
+  {
+   "rect": [
+    0,
+    100,
+    320,
+    30
+   ],
+   "color": "leaf.0"
+  },
+  {
+   "rect": [
+    18,
+    78,
+    6,
+    52
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    64,
+    78,
+    5,
+    52
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    112,
+    78,
+    4,
+    52
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    206,
+    78,
+    5,
+    52
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    252,
+    78,
+    6,
+    52
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    298,
+    78,
+    5,
+    52
+   ],
+   "color": "wood.1"
+  },
+  {
+   "ridge": [
+    0,
+    70,
+    320,
+    50
+   ],
+   "mode": "round",
+   "heights": [
+    20,
+    45
+   ],
+   "radii": [
+    8,
+    14
+   ],
+   "color": "leaf.1",
+   "seed": 13
+  },
+  {
+   "rect": [
+    6,
+    90,
+    9,
+    40
+   ],
+   "color": "wood.2"
+  },
+  {
+   "rect": [
+    44,
+    90,
+    7,
+    40
+   ],
+   "color": "wood.2"
+  },
+  {
+   "rect": [
+    270,
+    90,
+    8,
+    40
+   ],
+   "color": "wood.2"
+  },
+  {
+   "rect": [
+    306,
+    90,
+    9,
+    40
+   ],
+   "color": "wood.2"
+  },
+  {
+   "poly": [
+    [
+     0,
+     0
+    ],
+    [
+     70,
+     0
+    ],
+    [
+     55,
+     14
+    ],
+    [
+     30,
+     22
+    ],
+    [
+     0,
+     26
+    ]
+   ],
+   "color": "leaf.1"
+  },
+  {
+   "poly": [
+    [
+     250,
+     0
+    ],
+    [
+     320,
+     0
+    ],
+    [
+     320,
+     28
+    ],
+    [
+     292,
+     20
+    ],
+    [
+     266,
+     12
+    ]
+   ],
+   "color": "leaf.1"
+  },
+  {
+   "ellipse": [
+    20,
+    8,
+    26,
+    12
+   ],
+   "color": "leaf.2"
+  },
+  {
+   "ellipse": [
+    300,
+    6,
+    24,
+    11
+   ],
+   "color": "leaf.2"
+  },
+  {
+   "scatter": [
+    0,
+    0,
+    70,
+    24
+   ],
+   "colors": [
+    "leaf.3"
+   ],
+   "density": 0.05,
+   "seed": 21,
+   "on": "leaf.2"
+  },
+  {
+   "scatter": [
+    250,
+    0,
+    70,
+    22
+   ],
+   "colors": [
+    "leaf.3"
+   ],
+   "density": 0.05,
+   "seed": 22,
+   "on": "leaf.2"
+  },
+  {
+   "rect": [
+    0,
+    128,
+    320,
+    30
+   ],
+   "color": "grass.1"
+  },
+  {
+   "rect": [
+    0,
+    128,
+    320,
+    2
+   ],
+   "color": "grass.2"
+  },
+  {
+   "scatter": [
+    0,
+    131,
+    320,
+    26
+   ],
+   "colors": [
+    "grass.0",
+    "grass.2"
+   ],
+   "density": 0.07,
+   "seed": 3
+  },
+  {
+   "rect": [
+    18,
+    136,
+    46,
+    9
+   ],
+   "color": "wood.3"
+  },
+  {
+   "rect": [
+    18,
+    136,
+    46,
+    2
+   ],
+   "color": "wood.4"
+  },
+  {
+   "rect": [
+    18,
+    143,
+    46,
+    2
+   ],
+   "color": "wood.1"
+  },
+  {
+   "ellipse": [
+    18,
+    140,
+    3,
+    4
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "ellipse": [
+    18,
+    140,
+    1,
+    2
+   ],
+   "color": "dirt.1"
+  },
+  {
+   "rect": [
+    250,
+    140,
+    52,
+    8
+   ],
+   "color": "wood.3"
+  },
+  {
+   "rect": [
+    250,
+    140,
+    52,
+    2
+   ],
+   "color": "wood.4"
+  },
+  {
+   "rect": [
+    250,
+    146,
+    52,
+    2
+   ],
+   "color": "wood.1"
+  },
+  {
+   "ellipse": [
+    302,
+    144,
+    3,
+    4
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "ellipse": [
+    302,
+    144,
+    1,
+    2
+   ],
+   "color": "dirt.1"
+  },
+  {
+   "scatter": [
+    0,
+    40,
+    320,
+    90
+   ],
+   "colors": [
+    "code.4",
+    "code.3"
+   ],
+   "density": 0.004,
+   "seed": 8
+  },
+  {
+   "rect": [
+    0,
+    158,
+    320,
+    22
+   ],
+   "color": "soil.2"
+  },
+  {
+   "rect": [
+    0,
+    158,
+    320,
+    2
+   ],
+   "color": "grass.0"
+  },
+  {
+   "scatter": [
+    0,
+    161,
+    320,
+    19
+   ],
+   "colors": [
+    "soil.0",
+    "soil.3"
+   ],
+   "density": 0.1,
+   "seed": 6
+  }
+ ]
+}

@@ -1,0 +1,95 @@
+{
+ "name": "item-race_core",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "NÚCLEO DE CONCORRÊNCIA: a glowing gold core cut by two blue '//' threads racing across it.",
+ "layers": [
+  {
+   "ellipse": [
+    8,
+    8,
+    6,
+    6
+   ],
+   "color": "gold.1"
+  },
+  {
+   "ellipse": [
+    7,
+    7,
+    5,
+    5
+   ],
+   "color": "gold.2"
+  },
+  {
+   "ellipse": [
+    6,
+    6,
+    3,
+    3
+   ],
+   "color": "gold.3"
+  },
+  {
+   "rect": [
+    4,
+    4,
+    2,
+    1
+   ],
+   "color": "gold.4"
+  },
+  {
+   "rect": [
+    4,
+    5,
+    1,
+    1
+   ],
+   "color": "white"
+  },
+  {
+   "line": [
+    4,
+    12,
+    8,
+    4
+   ],
+   "color": "net.3"
+  },
+  {
+   "line": [
+    8,
+    12,
+    12,
+    4
+   ],
+   "color": "net.3"
+  },
+  {
+   "line": [
+    5,
+    12,
+    9,
+    4
+   ],
+   "color": "net.2"
+  },
+  {
+   "line": [
+    9,
+    12,
+    13,
+    4
+   ],
+   "color": "net.2"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

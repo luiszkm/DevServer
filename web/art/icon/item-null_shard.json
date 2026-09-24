@@ -1,0 +1,70 @@
+{
+ "name": "item-null_shard",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "FRAGMENTO NULL: a jagged purple shard of NULL SLIME (slime ramp), lit from the top-left.",
+ "legend": {
+  "o": "ink",
+  "w": "white",
+  "h": "slime.4",
+  "l": "slime.3",
+  "m": "slime.2",
+  "d": "slime.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "..........oo....",
+    ".........olwo...",
+    "........olhmo...",
+    ".......olhmmdo..",
+    "......olhmmmdo..",
+    "......olmmmddo..",
+    ".....olmmmmddo..",
+    "....olhmmmddo...",
+    "....olmmmmddo...",
+    "...olmmmmddo....",
+    "...olmmmddo.....",
+    "..odlmmmddo.....",
+    "..oddmmddo......",
+    "...ooddoo.......",
+    ".....oo........."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  },
+  {
+   "rect": [
+    7,
+    8,
+    1,
+    1
+   ],
+   "color": "slime.0"
+  },
+  {
+   "rect": [
+    8,
+    7,
+    1,
+    1
+   ],
+   "color": "slime.0"
+  },
+  {
+   "rect": [
+    9,
+    6,
+    1,
+    1
+   ],
+   "color": "slime.0"
+  }
+ ]
+}

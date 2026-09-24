@@ -1,0 +1,29 @@
+{
+  "name": "enemy-floresta",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "LOG WISP: a green flame spirit of the Log Forest with log lines scrolling in its body, sleepy (~.~) eyes, and a tail that curls back into itself (weakness: circular reference).",
+  "layers": [
+    {"poly": [[9, 14], [13, 5], [16, 1], [17, 6], [21, 3], [22, 10], [23, 16], [9, 16]], "color": "code.2"},
+    {"ellipse": [16, 16, 8, 7], "color": "code.2"},
+    {"ellipse": [14, 14, 5, 5], "color": "code.3"},
+    {"poly": [[12, 12], [15, 4], [16, 10]], "color": "code.3"},
+    {"rect": [11, 11, 1, 2], "color": "code.4"},
+    {"rect": [12, 10, 1, 1], "color": "white"},
+    {"poly": [[10, 20], [22, 20], [19, 25], [13, 25]], "color": "code.1"},
+    {"ellipse": [18, 25, 5, 4], "color": "code.1"},
+    {"ellipse": [18, 25, 3, 2], "color": null},
+    {"rect": [19, 21, 2, 2], "color": "code.1"},
+    {"rect": [10, 20, 1, 1], "color": "code.1"},
+    {"grid": [
+      "ooo....ooo",
+      "o........o",
+      "..........",
+      "....oo...."
+    ], "legend": {"o": "ink"}, "at": [11, 13]},
+    {"rect": [12, 19, 3, 1], "color": "code.4"},
+    {"rect": [16, 19, 4, 1], "color": "code.4"},
+    {"rect": [13, 21, 5, 1], "color": "code.3"},
+    {"outline": "ink"}
+  ]
+}

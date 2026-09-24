@@ -1,0 +1,47 @@
+{
+ "name": "item-hp_potion",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "POÇÃO DE MEMÓRIA: round glass flask of red HP liquid (HP = red, like the key art heart), cork stopper, glossy top-left highlight.",
+ "legend": {
+  "o": "ink",
+  "c": "wood.4",
+  "k": "wood.2",
+  "g": "metal.3",
+  "G": "metal.2",
+  "h": "red.4",
+  "l": "red.3",
+  "m": "red.2",
+  "d": "red.1",
+  "w": "white"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "......oooo......",
+    ".....occkko.....",
+    ".....oggGGo.....",
+    "......ogGo......",
+    "....ooogGooo....",
+    "...ohlllmmmmo...",
+    "..olwhllmmmmdo..",
+    ".olwhlllmmmmddo.",
+    ".olhlllmmmmmddo.",
+    ".ollllmmmmmmddo.",
+    ".olllmmmmmmdddo.",
+    ".ommmmmmmmddddo.",
+    "..ommmmmmddddo..",
+    "...oddddddddo...",
+    "....oooooooo...."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

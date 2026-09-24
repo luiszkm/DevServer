@@ -1,0 +1,353 @@
+{
+ "name": "battle-nuvem",
+ "category": "background",
+ "size": [
+  320,
+  180
+ ],
+ "_design": "PICOS DA NUVEM: high above a sea of clouds at noon, snow-capped peaks breaking through, tiny floating server racks auto-scaling in the distance; a bright cloud floor to stand on.",
+ "layers": [
+  {
+   "bands": [
+    0,
+    0,
+    320,
+    130
+   ],
+   "colors": [
+    "sky.3",
+    "sky.4",
+    "cloud.1"
+   ],
+   "dither": 3
+  },
+  {
+   "ellipse": [
+    270,
+    28,
+    12,
+    12
+   ],
+   "color": "lamp.3"
+  },
+  {
+   "ellipse": [
+    270,
+    28,
+    9,
+    9
+   ],
+   "color": "white"
+  },
+  {
+   "poly": [
+    [
+     20,
+     120
+    ],
+    [
+     70,
+     40
+    ],
+    [
+     120,
+     120
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "poly": [
+    [
+     70,
+     40
+    ],
+    [
+     95,
+     80
+    ],
+    [
+     120,
+     120
+    ],
+    [
+     70,
+     120
+    ]
+   ],
+   "color": "stone.2"
+  },
+  {
+   "poly": [
+    [
+     70,
+     40
+    ],
+    [
+     60,
+     56
+    ],
+    [
+     68,
+     52
+    ],
+    [
+     74,
+     58
+    ],
+    [
+     82,
+     52
+    ]
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "poly": [
+    [
+     190,
+     120
+    ],
+    [
+     240,
+     58
+    ],
+    [
+     300,
+     120
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "poly": [
+    [
+     240,
+     58
+    ],
+    [
+     270,
+     90
+    ],
+    [
+     300,
+     120
+    ],
+    [
+     240,
+     120
+    ]
+   ],
+   "color": "stone.2"
+  },
+  {
+   "poly": [
+    [
+     240,
+     58
+    ],
+    [
+     231,
+     70
+    ],
+    [
+     238,
+     67
+    ],
+    [
+     244,
+     72
+    ],
+    [
+     251,
+     66
+    ]
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "ridge": [
+    0,
+    96,
+    320,
+    34
+   ],
+   "mode": "round",
+   "heights": [
+    10,
+    26
+   ],
+   "radii": [
+    8,
+    16
+   ],
+   "color": "cloud.2",
+   "seed": 51
+  },
+  {
+   "ridge": [
+    0,
+    110,
+    320,
+    24
+   ],
+   "mode": "round",
+   "heights": [
+    6,
+    16
+   ],
+   "radii": [
+    6,
+    12
+   ],
+   "color": "cloud.3",
+   "seed": 53
+  },
+  {
+   "rect": [
+    40,
+    86,
+    10,
+    12
+   ],
+   "color": "roof.1"
+  },
+  {
+   "rect": [
+    42,
+    88,
+    6,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    42,
+    91,
+    6,
+    1
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    42,
+    94,
+    6,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    276,
+    90,
+    8,
+    10
+   ],
+   "color": "roof.1"
+  },
+  {
+   "rect": [
+    278,
+    92,
+    4,
+    1
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    278,
+    95,
+    4,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    0,
+    128,
+    320,
+    52
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "rect": [
+    0,
+    128,
+    320,
+    2
+   ],
+   "color": "white"
+  },
+  {
+   "ridge": [
+    0,
+    150,
+    320,
+    30
+   ],
+   "mode": "round",
+   "heights": [
+    8,
+    20
+   ],
+   "radii": [
+    8,
+    16
+   ],
+   "color": "cloud.2",
+   "seed": 59
+  },
+  {
+   "ridge": [
+    0,
+    164,
+    320,
+    16
+   ],
+   "mode": "round",
+   "heights": [
+    4,
+    10
+   ],
+   "radii": [
+    6,
+    12
+   ],
+   "color": "cloud.1",
+   "seed": 61
+  },
+  {
+   "scatter": [
+    0,
+    131,
+    320,
+    49
+   ],
+   "colors": [
+    "cloud.2"
+   ],
+   "density": 0.03,
+   "seed": 55,
+   "on": "cloud.3"
+  },
+  {
+   "scatter": [
+    0,
+    0,
+    320,
+    90
+   ],
+   "colors": [
+    "white"
+   ],
+   "density": 0.002,
+   "seed": 57
+  }
+ ]
+}

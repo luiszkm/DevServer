@@ -1,0 +1,490 @@
+{
+ "name": "battle-vila",
+ "category": "background",
+ "size": [
+  320,
+  180
+ ],
+ "_design": "VILA LOCALHOST: the key art's meadow under a blue sky and city skyline, village houses on the left and the server hut with its </> flag on the right; calm dirt clearing in the middle.",
+ "layers": [
+  {
+   "bands": [
+    0,
+    0,
+    320,
+    130
+   ],
+   "colors": [
+    "sky.2",
+    "sky.3",
+    "sky.4"
+   ],
+   "dither": 3
+  },
+  {
+   "ellipse": [
+    60,
+    30,
+    18,
+    6
+   ],
+   "color": "cloud.2"
+  },
+  {
+   "ellipse": [
+    74,
+    25,
+    10,
+    6
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "rect": [
+    42,
+    34,
+    38,
+    3
+   ],
+   "color": "cloud.1"
+  },
+  {
+   "ellipse": [
+    250,
+    22,
+    14,
+    5
+   ],
+   "color": "cloud.2"
+  },
+  {
+   "ellipse": [
+    258,
+    19,
+    7,
+    4
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "rect": [
+    236,
+    25,
+    28,
+    2
+   ],
+   "color": "cloud.1"
+  },
+  {
+   "ridge": [
+    0,
+    60,
+    320,
+    60
+   ],
+   "mode": "blocks",
+   "heights": [
+    18,
+    55
+   ],
+   "widths": [
+    8,
+    18
+   ],
+   "color": "sky.1",
+   "seed": 7,
+   "lights": {
+    "color": "net.3",
+    "density": 0.12
+   }
+  },
+  {
+   "ridge": [
+    0,
+    80,
+    320,
+    40
+   ],
+   "mode": "blocks",
+   "heights": [
+    10,
+    34
+   ],
+   "widths": [
+    10,
+    22
+   ],
+   "color": "sky.0",
+   "seed": 3
+  },
+  {
+   "ridge": [
+    0,
+    92,
+    320,
+    40
+   ],
+   "mode": "round",
+   "heights": [
+    14,
+    32
+   ],
+   "radii": [
+    6,
+    12
+   ],
+   "color": "leaf.0",
+   "seed": 5
+  },
+  {
+   "ridge": [
+    0,
+    104,
+    320,
+    30
+   ],
+   "mode": "round",
+   "heights": [
+    8,
+    20
+   ],
+   "radii": [
+    5,
+    9
+   ],
+   "color": "leaf.1",
+   "seed": 9
+  },
+  {
+   "rect": [
+    22,
+    114,
+    22,
+    14
+   ],
+   "color": "stone.3"
+  },
+  {
+   "rect": [
+    40,
+    114,
+    4,
+    14
+   ],
+   "color": "stone.2"
+  },
+  {
+   "poly": [
+    [
+     19,
+     114
+    ],
+    [
+     33,
+     104
+    ],
+    [
+     47,
+     114
+    ]
+   ],
+   "color": "roof.2"
+  },
+  {
+   "line": [
+    19,
+    114,
+    33,
+    104
+   ],
+   "color": "roof.3"
+  },
+  {
+   "rect": [
+    31,
+    120,
+    5,
+    8
+   ],
+   "color": "wood.2"
+  },
+  {
+   "rect": [
+    25,
+    118,
+    4,
+    4
+   ],
+   "color": "lamp.2"
+  },
+  {
+   "rect": [
+    52,
+    118,
+    18,
+    10
+   ],
+   "color": "stone.3"
+  },
+  {
+   "rect": [
+    66,
+    118,
+    4,
+    10
+   ],
+   "color": "stone.2"
+  },
+  {
+   "poly": [
+    [
+     49,
+     118
+    ],
+    [
+     61,
+     108
+    ],
+    [
+     73,
+     118
+    ]
+   ],
+   "color": "roof.2"
+  },
+  {
+   "line": [
+    49,
+    118,
+    61,
+    108
+   ],
+   "color": "roof.3"
+  },
+  {
+   "rect": [
+    59,
+    120,
+    5,
+    8
+   ],
+   "color": "wood.2"
+  },
+  {
+   "rect": [
+    55,
+    122,
+    4,
+    4
+   ],
+   "color": "stone.1"
+  },
+  {
+   "rect": [
+    262,
+    106,
+    36,
+    24
+   ],
+   "color": "stone.2"
+  },
+  {
+   "rect": [
+    290,
+    106,
+    8,
+    24
+   ],
+   "color": "stone.1"
+  },
+  {
+   "poly": [
+    [
+     257,
+     106
+    ],
+    [
+     280,
+     92
+    ],
+    [
+     303,
+     106
+    ]
+   ],
+   "color": "roof.1"
+  },
+  {
+   "line": [
+    257,
+    106,
+    280,
+    92
+   ],
+   "color": "roof.3"
+  },
+  {
+   "rect": [
+    276,
+    116,
+    7,
+    14
+   ],
+   "color": "wood.2"
+  },
+  {
+   "rect": [
+    266,
+    111,
+    6,
+    5
+   ],
+   "color": "lamp.2"
+  },
+  {
+   "rect": [
+    285,
+    111,
+    4,
+    2
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    285,
+    114,
+    4,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "line": [
+    292,
+    92,
+    292,
+    80
+   ],
+   "color": "stone.1"
+  },
+  {
+   "rect": [
+    293,
+    80,
+    9,
+    6
+   ],
+   "color": "ink.1"
+  },
+  {
+   "rect": [
+    295,
+    82,
+    5,
+    2
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    0,
+    128,
+    320,
+    30
+   ],
+   "color": "grass.2"
+  },
+  {
+   "rect": [
+    0,
+    128,
+    320,
+    2
+   ],
+   "color": "grass.3"
+  },
+  {
+   "scatter": [
+    0,
+    131,
+    320,
+    26
+   ],
+   "colors": [
+    "grass.1",
+    "grass.3"
+   ],
+   "density": 0.06,
+   "seed": 2
+  },
+  {
+   "poly": [
+    [
+     120,
+     158
+    ],
+    [
+     200,
+     158
+    ],
+    [
+     215,
+     138
+    ],
+    [
+     105,
+     138
+    ]
+   ],
+   "color": "dirt.2"
+  },
+  {
+   "scatter": [
+    108,
+    139,
+    104,
+    18
+   ],
+   "colors": [
+    "dirt.1",
+    "dirt.3"
+   ],
+   "density": 0.08,
+   "seed": 4,
+   "on": "dirt.2"
+  },
+  {
+   "rect": [
+    0,
+    158,
+    320,
+    22
+   ],
+   "color": "soil.2"
+  },
+  {
+   "rect": [
+    0,
+    158,
+    320,
+    2
+   ],
+   "color": "grass.0"
+  },
+  {
+   "scatter": [
+    0,
+    161,
+    320,
+    19
+   ],
+   "colors": [
+    "soil.0",
+    "soil.3"
+   ],
+   "density": 0.1,
+   "seed": 6
+  }
+ ]
+}

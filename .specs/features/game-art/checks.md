@@ -31,16 +31,16 @@ Proof: `cd web && npx vitest run src/components/GameArt.test.tsx -t "address and
 **C2** - WHEN o `<img>` do `GameArt` dispara `error`, a imagem some e o texto do `fallback` (`HP+`) aparece no mesmo lugar (ART-02, AC 5) ✅
 Proof: `cd web && npx vitest run src/components/GameArt.test.tsx -t "fallback"`
 
-**C3** - `make art-check` sai `0`: renderiza `web/art` num diretório temporário com `render.py`, nenhum `ERROR`, e `diff -r` do resultado contra `web/public/art` é vazio (ART-01, AC 4; door 3)
+**C3** - `make art-check` sai `0`: renderiza `web/art` num diretório temporário com `render.py`, nenhum `ERROR`, e `diff -r` do resultado contra `web/public/art` é vazio (ART-01, AC 4; door 3) ✅
 Proof: `make art-check`
 
-**C4** - Para cada inimigo de `combat.json` existem `web/art/sprite/enemy-<region>.json` e `web/public/art/sprite/enemy-<region>.png`; o PNG mede 32x32, exceto `torre` 48x48 e `nuvem` 64x64 (ART-01, AC 1, 3)
+**C4** - Para cada inimigo de `combat.json` existem `web/art/sprite/enemy-<region>.json` e `web/public/art/sprite/enemy-<region>.png`; o PNG mede 32x32, exceto `torre` 48x48 e `nuvem` 64x64 (ART-01, AC 1, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "enemy"`
 
-**C5** - Para cada item de `combat.json` existem `web/art/icon/item-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3)
+**C5** - Para cada item de `combat.json` existem `web/art/icon/item-<id>.json` e o PNG 16x16 (ART-01, AC 1, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "item"`
 
-**C6** - Para cada região de `regions.json` existem `web/art/background/battle-<id>.json` e o PNG 320x180 (ART-01, AC 2, 3)
+**C6** - Para cada região de `regions.json` existem `web/art/background/battle-<id>.json` e o PNG 320x180 (ART-01, AC 2, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "battle background"`
 
 **C7** - No Bug Fight, `.battle-sprite` mostra `<img>` `src="/art/sprite/enemy-<region>.png"` `alt=<enemy.name>`: em `vila` `alt="NULL SLIME"` `width=128` (32×4), em `torre` `width=144` (48×3), em `nuvem` `width=128` (64×2); após `error` mostra o glifo `(0x0)` (ART-03, AC 6, 5)

@@ -1,0 +1,122 @@
+{
+ "name": "item-wild_trace",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "STACK TRACE SELVAGEM: a torn paper scroll of red stack-trace lines, indented like a real trace.",
+ "layers": [
+  {
+   "rect": [
+    3,
+    2,
+    10,
+    12
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "rect": [
+    11,
+    2,
+    2,
+    12
+   ],
+   "color": "cloud.2"
+  },
+  {
+   "rect": [
+    2,
+    1,
+    12,
+    2
+   ],
+   "color": "cloud.1"
+  },
+  {
+   "rect": [
+    2,
+    1,
+    12,
+    1
+   ],
+   "color": "cloud.2"
+  },
+  {
+   "rect": [
+    2,
+    13,
+    12,
+    2
+   ],
+   "color": "cloud.1"
+  },
+  {
+   "rect": [
+    4,
+    4,
+    7,
+    1
+   ],
+   "color": "red.2"
+  },
+  {
+   "rect": [
+    5,
+    6,
+    6,
+    1
+   ],
+   "color": "red.3"
+  },
+  {
+   "rect": [
+    5,
+    8,
+    5,
+    1
+   ],
+   "color": "red.3"
+  },
+  {
+   "rect": [
+    5,
+    10,
+    6,
+    1
+   ],
+   "color": "red.3"
+  },
+  {
+   "rect": [
+    4,
+    12,
+    4,
+    1
+   ],
+   "color": "red.2"
+  },
+  {
+   "rect": [
+    12,
+    9,
+    1,
+    2
+   ],
+   "color": null
+  },
+  {
+   "rect": [
+    11,
+    10,
+    1,
+    1
+   ],
+   "color": null
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

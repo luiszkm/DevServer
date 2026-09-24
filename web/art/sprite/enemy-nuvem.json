@@ -1,0 +1,449 @@
+{
+ "name": "enemy-nuvem",
+ "category": "sprite",
+ "size": [
+  64,
+  64
+ ],
+ "_design": "MEMORY LEAK ANCESTRAL, endgame boss of the Cloud Peaks: an ancient storm cloud crowned with ^^^^ gold spikes, glowing eyes and fangs, leaking memory blocks and droplets from its underside (weakness: garbage collector).",
+ "layers": [
+  {
+   "ellipse": [
+    32,
+    30,
+    24,
+    15
+   ],
+   "color": "roof.2"
+  },
+  {
+   "ellipse": [
+    16,
+    32,
+    12,
+    10
+   ],
+   "color": "roof.2"
+  },
+  {
+   "ellipse": [
+    48,
+    32,
+    12,
+    10
+   ],
+   "color": "roof.2"
+  },
+  {
+   "ellipse": [
+    22,
+    22,
+    12,
+    10
+   ],
+   "color": "roof.3"
+  },
+  {
+   "ellipse": [
+    40,
+    21,
+    13,
+    11
+   ],
+   "color": "roof.3"
+  },
+  {
+   "ellipse": [
+    30,
+    26,
+    18,
+    12
+   ],
+   "color": "roof.3"
+  },
+  {
+   "ellipse": [
+    20,
+    18,
+    8,
+    6
+   ],
+   "color": "metal.2"
+  },
+  {
+   "ellipse": [
+    36,
+    16,
+    9,
+    6
+   ],
+   "color": "metal.2"
+  },
+  {
+   "rect": [
+    16,
+    14,
+    3,
+    1
+   ],
+   "color": "metal.3"
+  },
+  {
+   "rect": [
+    15,
+    15,
+    1,
+    1
+   ],
+   "color": "white"
+  },
+  {
+   "poly": [
+    [
+     18,
+     13
+    ],
+    [
+     20,
+     3
+    ],
+    [
+     24,
+     11
+    ]
+   ],
+   "color": "gold.2"
+  },
+  {
+   "poly": [
+    [
+     26,
+     10
+    ],
+    [
+     29,
+     0
+    ],
+    [
+     32,
+     9
+    ]
+   ],
+   "color": "gold.2"
+  },
+  {
+   "poly": [
+    [
+     33,
+     9
+    ],
+    [
+     37,
+     0
+    ],
+    [
+     40,
+     10
+    ]
+   ],
+   "color": "gold.1"
+  },
+  {
+   "poly": [
+    [
+     42,
+     11
+    ],
+    [
+     46,
+     3
+    ],
+    [
+     47,
+     13
+    ]
+   ],
+   "color": "gold.1"
+  },
+  {
+   "line": [
+    20,
+    5,
+    20,
+    9
+   ],
+   "color": "gold.4"
+  },
+  {
+   "line": [
+    29,
+    2,
+    29,
+    7
+   ],
+   "color": "gold.4"
+  },
+  {
+   "rect": [
+    18,
+    11,
+    30,
+    3
+   ],
+   "color": "gold.1"
+  },
+  {
+   "rect": [
+    18,
+    11,
+    30,
+    1
+   ],
+   "color": "gold.3"
+  },
+  {
+   "rect": [
+    25,
+    12,
+    3,
+    2
+   ],
+   "color": "gem.2"
+  },
+  {
+   "rect": [
+    39,
+    12,
+    3,
+    2
+   ],
+   "color": "gem.2"
+  },
+  {
+   "ellipse": [
+    24,
+    26,
+    5,
+    4
+   ],
+   "color": "ink"
+  },
+  {
+   "ellipse": [
+    41,
+    26,
+    5,
+    4
+   ],
+   "color": "ink"
+  },
+  {
+   "ellipse": [
+    24,
+    26,
+    3,
+    2
+   ],
+   "color": "gem.3"
+  },
+  {
+   "ellipse": [
+    41,
+    26,
+    3,
+    2
+   ],
+   "color": "gem.3"
+  },
+  {
+   "rect": [
+    22,
+    25,
+    2,
+    1
+   ],
+   "color": "gem.4"
+  },
+  {
+   "rect": [
+    39,
+    25,
+    2,
+    1
+   ],
+   "color": "gem.4"
+  },
+  {
+   "line": [
+    19,
+    20,
+    28,
+    23
+   ],
+   "color": "roof.1"
+  },
+  {
+   "line": [
+    46,
+    20,
+    37,
+    23
+   ],
+   "color": "roof.1"
+  },
+  {
+   "rect": [
+    25,
+    34,
+    16,
+    5
+   ],
+   "color": "ink"
+  },
+  {
+   "grid": [
+    "w.w.w.w.w.w.w.w.",
+    "................",
+    "................",
+    "................",
+    ".w.w.w.w.w.w.w.w"
+   ],
+   "legend": {
+    "w": "white"
+   },
+   "at": [
+    25,
+    34
+   ]
+  },
+  {
+   "ellipse": [
+    32,
+    43,
+    20,
+    3
+   ],
+   "color": "roof.0"
+  },
+  {
+   "rect": [
+    14,
+    44,
+    4,
+    5
+   ],
+   "color": "roof.0"
+  },
+  {
+   "rect": [
+    28,
+    45,
+    3,
+    7
+   ],
+   "color": "roof.0"
+  },
+  {
+   "rect": [
+    45,
+    44,
+    4,
+    4
+   ],
+   "color": "roof.0"
+  },
+  {
+   "rect": [
+    15,
+    49,
+    2,
+    2
+   ],
+   "color": "gem.2"
+  },
+  {
+   "rect": [
+    29,
+    52,
+    2,
+    3
+   ],
+   "color": "gem.2"
+  },
+  {
+   "rect": [
+    46,
+    48,
+    2,
+    2
+   ],
+   "color": "gem.2"
+  },
+  {
+   "rect": [
+    14,
+    54,
+    4,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    14,
+    54,
+    4,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    34,
+    57,
+    3,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    34,
+    57,
+    3,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    45,
+    53,
+    3,
+    3
+   ],
+   "color": "gem.3"
+  },
+  {
+   "rect": [
+    23,
+    50,
+    2,
+    2
+   ],
+   "color": "gem.3"
+  },
+  {
+   "rect": [
+    29,
+    57,
+    1,
+    1
+   ],
+   "color": "gem.4"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}
