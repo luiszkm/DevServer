@@ -22,10 +22,10 @@
 
 ## Handoff
 
-**Feature**: responsive
-**Where**: C1–C26 fechados; Verifier round 3 PASS (round 1 FAIL: mutante F1, estados de erro e cenas populadas; round 2 FAIL: LOJA populada - corrigidos em 96793fd, fc4dc84, 963c07e)
+**Feature**: game-menu
+**Where**: C1–C18 fechados; falta o Verifier
 **In progress**: nenhum
-**Next step**: push e PR de `feat/office`, `feat/server-room`, `feat/game-art` e `feat/responsive` quando o usuário pedir
+**Next step**: Verifier independente sobre `80fd17e..HEAD`; depois push e PR de `feat/office`, `feat/server-room`, `feat/game-art`, `feat/responsive` e `feat/game-menu` quando o usuário pedir
 **Blockers**: none
 **Uncommitted**: none
-**Branch**: feat/responsive (sobre feat/game-art)
+**Branch**: feat/game-menu (sobre feat/responsive)
