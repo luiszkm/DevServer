@@ -126,6 +126,7 @@ deploy em andamento.
 36. WHILE há deploy em andamento e não pronto a web SHALL exibir no cartão `ACELERAR (-15min) · <n> disponíveis`, que chama `POST /api/me/deploys/{type}/boost`; com 0 aceleradores, `SEM ACELERADORES · veja a Loja` desabilitado
 37. WHEN o acelerador responde `200` THEN a web SHALL atualizar o tempo restante do deploy com o `endsAt` recebido e repassar o `player` ao HUD
 38. The web SHALL exibir no cartão do dev no Bug Fight o sprite do herói com o `filter` da skin vestida
+39. IF o acelerador responde erro THEN a web SHALL exibir a `error.message` da api; sem corpo, `erro ao acelerar`; falha de rede, `SERVIDOR FORA DO AR` - a convenção que `/deploy` já usa em iniciar e coletar
 
 ## Traceability
 
@@ -137,7 +138,7 @@ deploy em andamento.
 | SHOP-04 | S4 | 18, 19, 20, 21 | Pending |
 | SHOP-05 | S5 | 22, 23, 24, 25, 26, 27, 28 | Pending |
 | SHOP-06 | S6 | 29, 30, 31, 32, 33, 34, 35 | Pending |
-| SHOP-07 | S7 | 36, 37, 38 | Pending |
+| SHOP-07 | S7 | 36, 37, 38, 39 | Pending |
 
 ## Observable
 
@@ -156,6 +157,7 @@ deploy em andamento.
 | screen `/avatar` | density and ordering | AC 30, AC 32 |
 | screen `/avatar` | destructive action confirms | n/a - `DESCARTAR 1` tira uma unidade por clique, como no protótipo, sem diálogo |
 | screen `/deploy` | acelerador sem estoque | AC 36 |
+| screen `/deploy` | erro do acelerador | AC 39 (added after verification round 1) |
 | API shop, gear, skins, items, boost | response shape | AC 4, AC 20 - `{"player": {...}}` (AD-004); boost também `deploy` e `serverTime` (AD-010) |
 | API shop, gear, skins, items, boost | error shape and codes | AC 7, 8, 9, 10, 14, 19, 21 - formato AD-005 |
 | API shop, gear, skins, items, boost | who may call it | existing - `auth.RequireSession`, `401 unauthenticated` |

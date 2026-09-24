@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/shop-inventory-avatar/plan.md`
 
-47 checks in 7 slices · 10 one-way doors · 0 open
+49 checks in 7 slices · 10 one-way doors · 0 open
 
 ## Checks
 
@@ -109,7 +109,7 @@ Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "cards sho
 **C30** - O detalhe exibe nome, raridade, `RARO · CONFIGURAÇÃO` para `macbook`, `bônus: +8% de dano` e `custo: 120 GEMS` ou `já possui`, com o botão: poção `COMPRAR`; `monitor` não possuído `COMPRAR E EQUIPAR`; `moletom` possuído `EQUIPAR`; `macbook` equipado `EQUIPADO` desabilitado e `REMOVER EQUIPAMENTO`; skin `golden` `COMPRAR E EQUIPAR`; `shadow` `EQUIPAR`; `neon` `EQUIPADA` desabilitado (SHOP-05, AC 24)
 Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "detail button per state"`
 
-**C31** - Com 14 gems a POÇÃO DE CACHE mostra `GEMS INSUFICIENTES` desabilitado; com 15, `COMPRAR` habilitado; com 49 coins o `cafe` mostra `COINS INSUFICIENTES` desabilitado; com 50, `COMPRAR E EQUIPAR` (SHOP-05, AC 25)
+**C31** - Com 14 gems a POÇÃO DE CACHE mostra `GEMS INSUFICIENTES` desabilitado; com 15, `COMPRAR` habilitado; com 49 coins o `cafe` mostra `COINS INSUFICIENTES` desabilitado; com 50, `COMPRAR E EQUIPAR`; com 119 gems o `macbook` e com 59 gems a skin `neon` mostram `GEMS INSUFICIENTES` desabilitado, e com 120 e 60 `COMPRAR E EQUIPAR` (SHOP-05, AC 25)
 Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "insufficient balance"`
 
 **C32** - Cada botão chama sua rota e mostra o aviso, repassando o `player` recebido: `COMPRAR` -> `POST /api/me/shop/items/sp_potion` `+1 POÇÃO DE CACHE`; `COMPRAR E EQUIPAR` equipamento -> `shop/gear/monitor` `ITEM COMPRADO E EQUIPADO`; skin -> `shop/skins/golden` `SKIN COMPRADA E EQUIPADA`; `EQUIPAR` -> `gear/moletom/equip` `ITEM EQUIPADO`; skin -> `skins/shadow/equip` `SKIN EQUIPADA`; `REMOVER EQUIPAMENTO` -> `gear/macbook/unequip` `ITEM REMOVIDO` (SHOP-05, AC 26)
@@ -118,12 +118,12 @@ Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "actions c
 **C33** - Resposta `409` com `error.message` `gems insuficientes` exibe essa mensagem; `500` sem corpo e falha de rede exibem `falha na conexão. tente de novo.`; a loja continua na tela (SHOP-05, AC 27)
 Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "action errors"`
 
-**C34** - Com uma compra pendente, os botões do painel ficam desabilitados (SHOP-05, AC 28)
+**C34** - Com uma ação pendente, os botões do painel ficam desabilitados: `COMPRAR` da poção, o botão de compra e `REMOVER EQUIPAMENTO` do equipamento e o botão de compra ou `EQUIPAR` da skin (SHOP-05, AC 28)
 Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "pending disables panel"`
 
 ### S6 - Tela AVATAR com mochila · ~4 files · ~40 KB · ~10k
 
-**C35** - Com skills `f2`, `f3`, `macbook`, `cafe` e `moletom` equipados, skin `shadow` e `hpMax` 125, `/avatar` exibe a prévia com o `filter` de `shadow`, `devName`, `DEV SOMBRIO`, `HP máx 125`, `dano +18%` e `SP +30`; sem `EM BREVE` (SHOP-06, AC 29)
+**C35** - Com skills `f2`, `f3`, `macbook`, `cafe` e `moletom` equipados, skin `shadow` e `hpMax` 125, `/avatar` exibe a prévia com o `filter` de `shadow`, `devName`, `DEV SOMBRIO`, `HP máx 125`, `dano +18%` e `SP +30`; com `monitor` e `fone` possuídos e não equipados os totais não mudam; sem `EM BREVE` (SHOP-06, AC 29)
 Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "preview and totals"`
 
 **C36** - Os slots aparecem à esquerda CONFIGURAÇÃO, VESTUÁRIO e à direita ACESSÓRIO, BEBIDA; `macbook` equipado exibe `[Mac]` e `MACBOOK PRO`; slot vazio exibe `[ ]` e o nome do slot (SHOP-06, AC 30)
@@ -141,7 +141,7 @@ Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "bag det
 **C40** - Sem equipamentos, a aba EQUIP exibe `MOCHILA VAZIA` e `nada nesta aba ainda — derrote bugs e compre na Loja.` (SHOP-06, AC 34)
 Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "empty bag"`
 
-**C41** - No AVATAR, `409` exibe a `error.message`; sem corpo e rede exibem `falha na conexão. tente de novo.`; com ação pendente os botões do detalhe ficam desabilitados (SHOP-06, AC 35)
+**C41** - No AVATAR, `409` exibe a `error.message`; sem corpo e rede exibem `falha na conexão. tente de novo.`; com ação pendente os botões do detalhe ficam desabilitados: `EQUIPAR`, `REMOVER`, `VESTIR` e `DESCARTAR 1` (SHOP-06, AC 35)
 Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "avatar errors and pending"`
 
 ### S7 - Acelerador no deploy e skin no combate · ~4 files · ~40 KB · ~10k
@@ -154,6 +154,12 @@ Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx -t "boost u
 
 **C44** - Com skin `neon`, o cartão `dev em combate` exibe o sprite `hero.png` com o `filter` de `neon`; com `default`, `filter` `none` (SHOP-07, AC 38; door 9)
 Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "hero sprite wears skin"`
+
+**C48** - Acelerar com resposta `409` e `error.message` `você não tem este item` exibe essa mensagem; `500` sem corpo exibe `erro ao acelerar`; falha de rede exibe `SERVIDOR FORA DO AR`; o cartão continua com o tempo anterior (SHOP-07, AC 39)
+Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx -t "boost errors"`
+
+**C49** - Com `boost_deploy` 1 no inventário, o Bug Fight lista só POÇÃO DE CACHE e POÇÃO DE MEMÓRIA; nenhum botão de item para o ACELERADOR DE DEPLOY (plan Impact: `boost_deploy` sem `restore`)
+Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "potions exclude the booster"`
 
 ### Round trip · ~3 files · ~15 KB · ~4k
 
@@ -216,6 +222,8 @@ Proof: `cd api && go test ./internal/shop -run '^TestMigration_ExistingPlayers$'
 - [x] C45
 - [x] C46
 - [x] C47
+- [ ] C48
+- [ ] C49
 
 ## Coverage
 
@@ -254,6 +262,8 @@ Proof: `cd api && go test ./internal/shop -run '^TestMigration_ExistingPlayers$'
 | paper doll slots (4) | `setup` C36 · `vestuario` C36 · `acessorio` C36 · `bebida` C36 | - |
 | skin strip states (2) | bloqueada C37 · possuída C37 | - |
 | boost button states (3) | com acelerador C42 · sem acelerador C42 · pronto C42 | - |
+| boost outcomes on screen (4) | 200 C43 · erro com mensagem C48 · sem corpo C48 · rede C48 | - |
+| Bug Fight item buttons (3) | `sp_potion` C49 · `hp_potion` C49 · `boost_deploy` ausente C49 | - |
 | Landing doors (10) | 1 C26 · 2 C26 · 3 C26, C47 · 4 C1 · 5 C15 · 6 C16, C17, C18 · 7 C2 · 8 C21 · 9 C44 · 10 C27 | - |
 | entities (3) | `PlayerGear` C26 · `PlayerEquipment` C26 · `PlayerSkin` C26 | - |
 | stored data (1) | jogadores existentes C47 | - |
@@ -280,7 +290,7 @@ Evidence:
 ## Swept
 
 - validation: C9, C10, C14, C20
-- failure modes: C24, C33, C41
+- failure modes: C24, C33, C41, C48
 - idempotency: C8, C11, C12 (repetir não muda nada)
 - authorization: C23
 - concurrency: C25
@@ -302,3 +312,9 @@ Evidence:
 - Boundary: one builder, all 47 checks, `d783bb1..HEAD` (api `2b32f50`, web `21400d2` and `e046c82`, round trip and handoff in the last commit); every proof and the api, web and e2e suites green at HEAD
 - Settled mid-build: nothing by the user; the builder recorded two consequences of the approved plan under `Impact on earlier checks` - bug-fight C37's item count moves from 8 to 9 with `boost_deploy`, and `ComingSoon` is removed once no scene uses it
 - Abandoned: none
+
+Round 2 (after verification round 1 FAIL):
+
+- **Boundary:** C48 (boost errors on `/deploy`, new AC 39) and C49 (Bug Fight excludes the booster) added; C31, C34, C35 and C41 proofs extended to every member their claims name (gear in gems and skins for AC 25, every panel button for AC 28/35, owned-but-unequipped gear excluded from the AVATAR totals)
+- **Settled mid-build:** the user chose round 2; AC 39 follows the error convention `/deploy` already uses for start and claim, not the shop's AC 27
+- **Abandoned:** none
