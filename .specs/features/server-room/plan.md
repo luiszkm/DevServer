@@ -115,6 +115,14 @@ máximo do encontro, UPTIME as coins de cada deploy novo. Remover um componente 
 
 **Independent test:** novo dev (100 coins) → SERVER → compra RAM 32GB → HUD 40 coins, RAM 45, `SP MÁX +6` → reload mantém → Bug Fight na VILA mostra SP máximo 56 → remove → 100 coins.
 
+### S5: Componente pago em gems na tela (P2) - added after verification round 2
+
+**Acceptance Criteria**
+
+36. WHERE um componente do catálogo custa gems the web SHALL exibir no cartão o preço `<n>G`, reduzir a opacidade pelo saldo de gems, exibir `> gems insuficientes para <NOME>.` e o aviso `GEMS INSUFICIENTES` sem chamar a api quando gems < preço, e exibir `> <NOME> removido. <preço> gems devolvidos.` ao remover
+
+**Independent test:** catálogo de teste com GPU EDGE a 150 gems → cartão `150G` → com 149 gems o clique avisa `GEMS INSUFICIENTES` → remover uma GPU instalada diz `150 gems devolvidos.`
+
 ## Traceability
 
 | ID | Slice | Criteria | Status |
@@ -123,6 +131,7 @@ máximo do encontro, UPTIME as coins de cada deploy novo. Remover um componente 
 | RACK-02 | S2 | 4-14 | Pending |
 | RACK-03 | S3 | 15-21 | Pending |
 | RACK-04 | S4 | 22-35 | Pending |
+| RACK-05 | S5 | 36 | Pending |
 
 ## Observable
 
@@ -137,6 +146,7 @@ máximo do encontro, UPTIME as coins de cada deploy novo. Remover um componente 
 | screen `/server` | componente fora do catálogo | AC 26, AC 31 |
 | screen `/` (título) | entrada da cena | AC 23 |
 | screen `/avatar` | totais de bônus | AC 35 |
+| screen `/server` | moeda do componente | AC 36 (added after verification round 2) |
 | API buy, remove | response shape | AC 4, AC 11 - `{"player": {...}}` (AD-004) |
 | API buy, remove | error shape and codes | AC 6-9, AC 13 - formato AD-005 |
 | API buy, remove | who may call it | existing - `auth.RequireSession`, `401 unauthenticated` |

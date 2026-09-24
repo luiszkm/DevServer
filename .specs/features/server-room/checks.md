@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/server-room/plan.md`
 
-46 checks in 5 slices · 9 one-way doors · 0 open
+47 checks in 6 slices · 9 one-way doors · 0 open
 
 ## Checks
 
@@ -160,6 +160,11 @@ Proof: `cd api && go test ./internal/rack -run '^TestRackRoutes_NoPlayer$'`
 **C46** - Num catálogo de teste com `gpu` a 150 gems: com 150 gems e 0 coins a compra responde `200` com gems 0, coins 0 e `gpu` no slot 0; com 149 gems responde `409 not_enough_gems` sem mudar nada; remover o slot 0 devolve +150 gems e coins ficam iguais (RACK-02, AC 11; plan Assumptions round 1; L-018)
 Proof: `cd api && go test ./internal/rack -run '^TestRack_GemsPricedComponent$'`
 
+### S6 - Componente em gems na tela · ~2 files · ~15 KB · ~4k (added after verification round 2)
+
+**C47** - Num catálogo de teste com `gpu` a 150 gems: o cartão `GPU EDGE` exibe `150G`; com 149 gems e 1000 coins tem opacidade `0.45` e o clique exibe `> gems insuficientes para GPU EDGE.` e o aviso `GEMS INSUFICIENTES` sem chamar `fetch`; com 150 gems e 0 coins não é reduzido e chama a compra; remover o slot com `gpu` exibe `> GPU EDGE removido. 150 gems devolvidos.` (RACK-05, AC 36)
+Proof: `cd web && npx vitest run src/components/ServerScene.test.tsx -t "gems priced component"`
+
 ## Progress
 
 - [x] C1
@@ -208,6 +213,7 @@ Proof: `cd api && go test ./internal/rack -run '^TestRack_GemsPricedComponent$'`
 - [x] C44
 - [x] C45
 - [x] C46
+- [ ] C47
 
 ## Coverage
 
@@ -240,6 +246,7 @@ Proof: `cd api && go test ./internal/rack -run '^TestRack_GemsPricedComponent$'`
 | screen bonus lines (3) | `DANO +N%` C31 · `SP MÁX +N` C31 · `COINS DE DEPLOY +N%` C31 | - |
 | screen slot states (3) | vazio C32 · ocupado C32 · fora do catálogo C32 | - |
 | screen card affordability (2) | com saldo C33 · sem saldo C33 | - |
+| screen currency (2) | coins C33, C35, C37 · gems C47 | - |
 | screen terminal messages (8) | inicial C30 · rack cheio C34 · coins insuficientes C35 · instalado C36 · removido C37 · componente removido C37 · slot vazio C38 · erro C39 | - |
 | action outcomes on screen (8) | comprar: 200 C36 · erro com mensagem C39 · sem corpo C39 · rede C39; remover: 200 C37 · erro com mensagem C39 · sem corpo C39 · rede C39 | - |
 | avatar totals (2) | `dano +N%` C41 · `SP +N` C41 | - |
@@ -295,3 +302,9 @@ Round 2 (after verification round 1 FAIL):
 - **Boundary:** C45 (404 nas duas rotas do rack) e C46 (componente em gems, compra e reembolso) adicionados; C21 ganha o caso rack + skin com bônus (a afirmação do check não muda)
 - **Settled mid-build:** nada pelo usuário; o ramo de reembolso em gems fica e ganha prova (AD-003 permite mudar a moeda só no catálogo), `Confirmed? n` em plan Assumptions
 - **Abandoned:** remover o ramo de gems - quebraria o reembolso de um componente rebalanceado para gems sem nenhum teste falhar
+
+Round 3 (after verification round 2 PASS; the Verifier observed the screen names coins for a gems price):
+
+- **Boundary:** AC 36 / C47 adicionados (S5 do plano, S6 aqui); `ServerScene` passa a falar a moeda do preço
+- **Settled mid-build:** usuário pediu para corrigir os bugs apontados (2026-09-24)
+- **Abandoned:** none
