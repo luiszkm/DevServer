@@ -201,10 +201,10 @@ Proof: `cd web && npx vitest run src/components/OfficeScene.test.tsx -t "unknown
 - [x] C39
 - [x] C40
 - [x] C41
-- [ ] C42
-- [ ] C43
-- [ ] C44
-- [ ] C45
+- [x] C42
+- [x] C43
+- [x] C44
+- [x] C45
 
 ## Coverage
 
