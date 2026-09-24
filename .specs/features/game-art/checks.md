@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/game-art/plan.md`
 
-32 checks in 3 slices · 3 one-way doors · 0 open
+33 checks in 4 slices · 3 one-way doors · 0 open
 
 Asset tables used by the checks (from `api/catalog/*.json`, door 1):
 
@@ -125,6 +125,11 @@ Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "region a
 **C32** - Com jogador nível 5 em `floresta`: marcadores de `torre` (8) e `nuvem` (12) têm `filter: grayscale(1) brightness(.6)`; `vila` (1), `mercado` (2) e `caverna` (5) não têm filtro; `floresta` tem a classe `here` e nenhum filtro (ART-07, AC 15) ✅
 Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "marker state"`
 
+### S4 - fix round 1 · 2 files · added after verification round 1 (plan Assumptions "fundo ×4", AC 17)
+
+**C33** - No browser real, `.world-map`, `.server`, `.office-room` e `.battle` (encontro em `vila`) têm `getComputedStyle` com `background-size` = `1280px 720px` e `image-rendering` = `pixelated` (ART-02, AC 17; added after verification round 1)
+Proof: `cd web && npx playwright test -g "scene art scale"`
+
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
@@ -139,6 +144,7 @@ Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "marker s
 | scene backgrounds (9) | `battle-vila` C8 · `battle-floresta` C8 · `battle-mercado` C8 · `battle-caverna` C8 · `battle-torre` C8 · `battle-nuvem` C8 · `world` C31 · `office` C30 · `server` C28 | - |
 | map marker state (3) | here C32 · open C32 · locked C32 | - |
 | text markers kept (4) | `?` C27, C29 · `+` C29 · `-` C27 · `[ ]` C17 | - |
+| scene background scale in the browser (4) | `.world-map` C33 · `.server` C33 · `.office-room` C33 · `.battle` C33 | - |
 | HUD fixed icons (4) | `hud-xp` C20 · `hud-heart` C20 · `hud-coin` C20, C22 · `hud-gem` C20 | - |
 | Landing doors (3) | door 1 address C1, C4-C6, C12-C15, C22-C26 · door 2 `GameArt` C1, C2 · door 3 versioned PNG C3 | - |
 
