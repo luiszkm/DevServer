@@ -109,6 +109,11 @@ describe("catalog art on disk", () => {
     expectAssets(icons(regions.map((r) => `region-${r.id}`)));
   });
 
+  // game-menu C1: one icon per scene, ids fixed by the plan (door 1)
+  it("menu icons per scene, 16x16", () => {
+    expectAssets(icons(["titulo", "mundo", "server", "deploy", "bug-fight", "skills", "loja", "avatar", "office"].map((id) => `menu-${id}`)));
+  });
+
   // C26: fixed names, no catalog entry (door 1)
   it("scene background for the map, the room and the machine hall, 320x180", () => {
     expectAssets(["world", "office", "server"].map((name) => ({ category: "background", name, size: [320, 180] })));

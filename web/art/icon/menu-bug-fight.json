@@ -1,0 +1,41 @@
+{
+  "name": "menu-bug-fight",
+  "category": "icon",
+  "size": [
+    16,
+    16
+  ],
+  "legend": {
+    "o": "ink",
+    "w": "white",
+    "l": "red.4",
+    "r": "red.3",
+    "R": "red.2"
+  },
+  "layers": [
+    {
+      "grid": [
+        "....o......o....",
+        ".....o....o.....",
+        "......oooo......",
+        ".....owoowo.....",
+        "..o.oooooooo.o..",
+        "...olrroorRRo...",
+        "oo.orrroorRRo.oo",
+        "..olooroorRRRo..",
+        "..orooroorooRo..",
+        "ooorrrroorooRooo",
+        "..orrrrooRRRRo..",
+        "ooorrooooRRRRooo",
+        "...orrrooRRRo...",
+        "....oooooooo....",
+        "................",
+        "................"
+      ],
+      "at": [
+        0,
+        0
+      ]
+    }
+  ]
+}

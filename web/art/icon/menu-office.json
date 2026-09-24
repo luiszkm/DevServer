@@ -1,0 +1,45 @@
+{
+  "name": "menu-office",
+  "category": "icon",
+  "size": [
+    16,
+    16
+  ],
+  "legend": {
+    "o": "ink",
+    "f": "stone.3",
+    "g": "code.0",
+    "G": "code.3",
+    "m": "metal.2",
+    "M": "metal.3",
+    "W": "wood.4",
+    "w": "wood.3",
+    "d": "wood.1"
+  },
+  "layers": [
+    {
+      "grid": [
+        "................",
+        "..oooooooooooo..",
+        "..offffffffffo..",
+        "..ofggggggggfo..",
+        "..ofgGggggggfo..",
+        "..ofggGgGGggfo..",
+        "..ofgGggggggfo..",
+        "..ofggggggggfo..",
+        "..offffffffffo..",
+        "..oooooooooooo..",
+        "......omMo......",
+        ".oooooooooooooo.",
+        ".oWWWWWWWWWWWwo.",
+        ".oddddddddddddo.",
+        ".oooooooooooooo.",
+        ".oo..........oo."
+      ],
+      "at": [
+        0,
+        0
+      ]
+    }
+  ]
+}

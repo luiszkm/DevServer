@@ -1,0 +1,44 @@
+{
+  "name": "menu-mundo",
+  "category": "icon",
+  "size": [
+    16,
+    16
+  ],
+  "legend": {
+    "o": "ink",
+    "p": "cloud.3",
+    "P": "cloud.2",
+    "q": "dirt.3",
+    "g": "leaf.3",
+    "G": "leaf.2",
+    "b": "sky.3",
+    "x": "red.2"
+  },
+  "layers": [
+    {
+      "grid": [
+        "................",
+        "................",
+        ".oooooooooooooo.",
+        ".opppqPPPPqbbbo.",
+        ".oggpqPPPPqbbbo.",
+        ".ogggqxPPPqpbbo.",
+        ".oGggqPxPPqppbo.",
+        ".oGGgqPPxPqppgo.",
+        ".opGgqPPPxqpggo.",
+        ".oppgqPPPPqxpxo.",
+        ".opppqPgPPqpxpo.",
+        ".opppqPggPqxpxo.",
+        ".opppqPPPPqpppo.",
+        ".oooooooooooooo.",
+        "................",
+        "................"
+      ],
+      "at": [
+        0,
+        0
+      ]
+    }
+  ]
+}

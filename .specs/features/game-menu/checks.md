@@ -17,10 +17,10 @@ browser proofs in `web/e2e/game-menu.spec.ts` (title prefix = check id).
 
 ### S1 - ícones · 9 specs + 9 PNGs + 1 test · ~15k
 
-**C1** - Para cada `icon` da tabela existem `web/art/icon/menu-<icon>.json` e `web/public/art/icon/menu-<icon>.png` com 16x16 (9 casos, table-driven) (MENU-01, AC 1; door 1)
+**C1** - Para cada `icon` da tabela existem `web/art/icon/menu-<icon>.json` e `web/public/art/icon/menu-<icon>.png` com 16x16 (9 casos, table-driven) (MENU-01, AC 1; door 1) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu icons"`
 
-**C2** - `make art-check` sai `0` com os 9 specs novos incluídos (MENU-01, AC 2)
+**C2** - `make art-check` sai `0` com os 9 specs novos incluídos (MENU-01, AC 2) ✅
 Proof: `make art-check`
 
 ### S2 - hotbar · `Tabs.tsx`, `GameArt.tsx`, `globals.css` · ~12k

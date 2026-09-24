@@ -1,0 +1,44 @@
+{
+  "name": "menu-server",
+  "category": "icon",
+  "size": [
+    16,
+    16
+  ],
+  "legend": {
+    "o": "ink",
+    "m": "metal.2",
+    "s": "stone.3",
+    "S": "stone.2",
+    "d": "stone.1",
+    "g": "code.3",
+    "b": "net.3",
+    "y": "lamp.2"
+  },
+  "layers": [
+    {
+      "grid": [
+        "................",
+        "...oooooooooo...",
+        "...ommmmmmmso...",
+        "...omddddddso...",
+        "...omdgdbSSso...",
+        "...omSSSSSSso...",
+        "...ommmmmmmso...",
+        "...omddddddso...",
+        "...omdgdgSSso...",
+        "...omSSSSSSso...",
+        "...ommmmmmmso...",
+        "...omddddddso...",
+        "...omdydbSSso...",
+        "...omSSSSSSso...",
+        "...oooooooooo...",
+        "...oo......oo..."
+      ],
+      "at": [
+        0,
+        0
+      ]
+    }
+  ]
+}

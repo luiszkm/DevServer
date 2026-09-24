@@ -1,0 +1,44 @@
+{
+  "name": "menu-loja",
+  "category": "icon",
+  "size": [
+    16,
+    16
+  ],
+  "legend": {
+    "o": "ink",
+    "D": "dirt.3",
+    "d": "dirt.2",
+    "m": "dirt.1",
+    "r": "red.2",
+    "y": "gold.2",
+    "l": "gold.4",
+    "M": "gold.1"
+  },
+  "layers": [
+    {
+      "grid": [
+        "................",
+        "......oooo......",
+        ".....oDddmo.....",
+        "......oddo......",
+        ".....orrrro.....",
+        ".....oddddo.....",
+        "....oDddddmo....",
+        "...oDddddddmo...",
+        "..oDdddddddmmo..",
+        "..oDddooooddmo..",
+        ".oDddoylyyodmmo.",
+        ".oDddoyyyModmmo.",
+        ".oDdddoooodmmmo.",
+        ".oDdddddddmmmmo.",
+        "..oooooooooooo..",
+        "................"
+      ],
+      "at": [
+        0,
+        0
+      ]
+    }
+  ]
+}

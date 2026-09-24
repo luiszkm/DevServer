@@ -1,0 +1,46 @@
+{
+  "name": "menu-avatar",
+  "category": "icon",
+  "size": [
+    16,
+    16
+  ],
+  "legend": {
+    "o": "ink",
+    "h": "hoodie.2",
+    "H": "hoodie.3",
+    "s": "skin.2",
+    "S": "skin.3",
+    "m": "skin.1",
+    "p": "red.4",
+    "k": "hoodie.1",
+    "K": "hoodie.3",
+    "c": "code.3"
+  },
+  "layers": [
+    {
+      "grid": [
+        "................",
+        ".....oooooo.....",
+        "...oohHHhhhoo...",
+        "..ohHhhhhhhhho..",
+        "..ohhhshhhshho..",
+        "..ohSsssssssho..",
+        "..ossossssosso..",
+        "..ospssssssspo..",
+        "..ossssssssmmo..",
+        "...ossssssmmo...",
+        "..ookkkcckkkoo..",
+        ".okkkkkcckkkkko.",
+        ".okKkkkkkkkkkko.",
+        ".oooooooooooooo.",
+        "................",
+        "................"
+      ],
+      "at": [
+        0,
+        0
+      ]
+    }
+  ]
+}

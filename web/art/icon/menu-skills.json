@@ -1,0 +1,41 @@
+{
+  "name": "menu-skills",
+  "category": "icon",
+  "size": [
+    16,
+    16
+  ],
+  "legend": {
+    "o": "ink",
+    "w": "gold.4",
+    "l": "gold.3",
+    "b": "gold.2",
+    "m": "gold.1"
+  },
+  "layers": [
+    {
+      "grid": [
+        "................",
+        ".......o........",
+        "......owo.......",
+        "......olo.......",
+        ".....olblo......",
+        "oooooolbbooooooo",
+        "ollllbbbbbbmmmo.",
+        ".olbbbbbbbbbmo..",
+        "..obbbbbbbbbo...",
+        "...obbbbbbbo....",
+        "...obbmmmbbo....",
+        "..obbmooombbo...",
+        "..obmo...ombmo..",
+        ".obmo.....ommo..",
+        ".ooo.......ooo..",
+        "................"
+      ],
+      "at": [
+        0,
+        0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "menu-titulo",
+  "category": "icon",
+  "size": [
+    16,
+    16
+  ],
+  "legend": {
+    "o": "ink",
+    "l": "red.3",
+    "r": "red.2",
+    "R": "red.1",
+    "W": "wood.4",
+    "w": "wood.3",
+    "d": "wood.2",
+    "D": "wood.1",
+    "y": "lamp.2",
+    "Y": "lamp.3"
+  },
+  "layers": [
+    {
+      "grid": [
+        "................",
+        "......olro......",
+        ".....olrrRo.....",
+        "....olrrrrRo....",
+        "...olrrrrrrRo...",
+        "..olrrrrrrrrRo..",
+        ".olrrrrrrrrrrRo.",
+        "oRRRRRRRRRRRRRRo",
+        "..oWwwwwwwwwwdo.",
+        "..oWoooowwwwwdo.",
+        "..oWoYyowoooodo.",
+        "..oWoyyowoDDodo.",
+        "..oWoooowoDDodo.",
+        "..oWwwwwwoDyodo.",
+        "..oWwwwwwoDDodo.",
+        "..ooooooooooooo."
+      ],
+      "at": [
+        0,
+        0
+      ]
+    }
+  ]
+}
