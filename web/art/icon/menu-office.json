@@ -15,18 +15,20 @@
     "M": "metal.3",
     "W": "wood.4",
     "w": "wood.3",
-    "d": "wood.1"
+    "d": "wood.1",
+    "E": "stone.2",
+    "S": "code.4"
   },
   "layers": [
     {
       "grid": [
         "................",
         "..oooooooooooo..",
-        "..offfffffffFo..",
-        "..ofggggggggFo..",
-        "..ofgGggggggFo..",
-        "..ofggGgGGggFo..",
-        "..ofgGggggggFo..",
+        "..offfffffffEo..",
+        "..ofSgggggggEo..",
+        "..ofgGggggggEo..",
+        "..ofggGgGGggEo..",
+        "..ofgGggggggEo..",
         "..ofFFFFFFFFFo..",
         "..oooooooooooo..",
         "......oMmo......",

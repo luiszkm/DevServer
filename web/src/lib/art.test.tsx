@@ -169,6 +169,62 @@ describe("catalog art on disk", () => {
     });
   });
 
+  // game-menu C25-C27 (added after verification round 2): specular, tones per material, no inner-detail ink
+  const hex = (px: (x: number, y: number) => number[], x: number, y: number) =>
+    "#" + px(x, y).slice(0, 3).map((c) => c.toString(16).padStart(2, "0")).join("");
+
+  it("menu office specular on the screen", () => {
+    const { px } = pngPixels(`${ROOT}web/public/art/icon/menu-office.png`);
+    const screen: string[] = [];
+    for (let y = 3; y <= 6; y++) for (let x = 4; x <= 11; x++) screen.push(hex(px, x, y));
+    expect(hex(px, 4, 3)).toBe("#b6f070");
+    expect(screen.filter((c) => c === "#b6f070")).toHaveLength(1);
+    expect(screen.filter((c) => !["#b6f070", "#1f5a08", "#6bd425"].includes(c))).toEqual([]);
+  });
+
+  it("menu material tones: office bezel and mundo paper", () => {
+    const office = pngPixels(`${ROOT}web/public/art/icon/menu-office.png`);
+    const bezel = new Set<string>();
+    for (let x = 3; x <= 12; x++) [2, 7].forEach((y) => bezel.add(hex(office.px, x, y)));
+    for (let y = 3; y <= 6; y++) [3, 12].forEach((x) => bezel.add(hex(office.px, x, y)));
+    expect([...bezel].sort()).toEqual(["#121e2a", "#2a3642", "#46586a"]);
+
+    const mundo = pngPixels(`${ROOT}web/public/art/icon/menu-mundo.png`);
+    const paper = new Set<string>();
+    const scenery = ["#060612", "#78c828", "#588818", "#1296d2", "#c62a42"];
+    for (let y = 0; y < mundo.height; y++)
+      for (let x = 0; x < mundo.width; x++) {
+        if (mundo.px(x, y)[3] !== 255) continue;
+        const c = hex(mundo.px, x, y);
+        if (!scenery.includes(c)) paper.add(c);
+      }
+    expect([...paper].sort()).toEqual(["#deb060", "#f6ead2", "#fbf6ea"]);
+  });
+
+  it.each<[string, [number, number][]]>([
+    ["avatar", [[5, 6], [10, 6]]],
+    ["deploy", [[5, 9], [10, 9], [5, 10], [10, 10], [5, 11], [10, 11]]],
+    ["office", [[7, 8], [8, 8], [7, 10], [8, 10]]],
+    ["titulo", []],
+    ["mundo", []],
+    ["server", []],
+    ["bug-fight", []],
+    ["skills", []],
+    ["loja", []],
+  ])("menu inner ink %s", (id, expected) => {
+    const { width, height, px } = pngPixels(`${ROOT}web/public/art/icon/menu-${id}.png`);
+    const opaque = (x: number, y: number) => x >= 0 && y >= 0 && x < width && y < height && px(x, y)[3] === 255;
+    const inner: [number, number][] = [];
+    for (let y = 0; y < height; y++)
+      for (let x = 0; x < width; x++) {
+        if (!opaque(x, y) || hex(px, x, y) !== "#060612") continue;
+        let enclosed = true;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (!opaque(x + dx, y + dy)) enclosed = false;
+        if (enclosed) inner.push([x, y]);
+      }
+    expect(inner).toEqual(expected);
+  });
+
   // C26: fixed names, no catalog entry (door 1)
   it("scene background for the map, the room and the machine hall, 320x180", () => {
     expectAssets(["world", "office", "server"].map((name) => ({ category: "background", name, size: [320, 180] })));
