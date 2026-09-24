@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 31,
+  "next_id": 32,
   "lessons": [
     {
       "id": "L-001",
@@ -544,6 +544,24 @@
       ],
       "created": "2026-09-24T20:08:51Z",
       "last_seen": "2026-09-24T20:08:51Z"
+    },
+    {
+      "id": "L-031",
+      "key": "spec_precision_gap::when an art style rule applies to every icon in a set measure it on every icon not only on the surfaces a gap report named",
+      "text": "When an art style rule applies to every icon in a set, measure it on every icon, not only on the surfaces a gap report named.",
+      "signal": "spec_precision_gap",
+      "scope": "art",
+      "status": "candidate",
+      "features": [
+        "game-menu"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "web/art/icon/menu-server.json legend m; .specs/features/game-menu/checks.md C26 (art)"
+      ],
+      "created": "2026-09-24T20:22:33Z",
+      "last_seen": "2026-09-24T20:22:33Z"
     }
   ]
 }

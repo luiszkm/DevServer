@@ -194,6 +194,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: web/art/icon/menu-office.json:26-29 (web/art icon)
 - last seen: 2026-09-24T20:08:51Z
 
+### L-031 - When an art style rule applies to every icon in a set, measure it on every icon, not only on the surfaces a gap report named.
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `art` · harmful: 0
+- features: game-menu
+- evidence: web/art/icon/menu-server.json legend m; .specs/features/game-menu/checks.md C26 (art)
+- last seen: 2026-09-24T20:22:33Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
