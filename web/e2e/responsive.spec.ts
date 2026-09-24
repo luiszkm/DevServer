@@ -262,3 +262,131 @@ test.describe("desktop", () => {
     });
   }
 });
+
+// responsive C22-C24 (added after verification round 1): error and populated states at phone width
+test.describe("phone S states", () => {
+  test.use({ viewport: PHONE_S });
+
+  const fail = (page: Page, path: string, status: number, body: object) =>
+    page.route(`**${path}`, (r) =>
+      r.request().method() === "POST" ? r.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) }) : r.continue(),
+    );
+
+  async function fitsWith(page: Page, el: ReturnType<Page["locator"]>) {
+    await expect(el).toBeVisible();
+    const b = (await el.boundingBox())!;
+    expect(b.x).toBeGreaterThanOrEqual(0);
+    expect(b.x + b.width).toBeLessThanOrEqual(PHONE_S.width);
+    const { scrollWidth, innerWidth } = await horizontalScroll(page);
+    expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
+  }
+
+  const onboardingErrors: [string, number, object, string][] = [
+    ["name taken", 409, { error: { code: "dev_name_taken", message: "nome em uso" } }, "NOME JÁ EM USO"],
+    ["error", 500, { error: { code: "internal", message: "erro de teste" } }, "erro de teste"],
+  ];
+  for (const [name, status, body, text] of onboardingErrors) {
+    test(`C22 onboarding ${name}`, async ({ page }) => {
+      const id = Date.now() * 1000 + Math.floor(Math.random() * 1000);
+      const res = await page.request.post(`${FAKE}/fake/next-user`, { data: { id, login: `e2e_${String(id).slice(-10)}` } });
+      expect(res.status()).toBe(204);
+      await fail(page, "/api/players", status, body);
+      await page.goto("/");
+      await page.getByRole("link", { name: "ENTRAR COM GITHUB" }).click();
+      await page.getByRole("button", { name: "BACKEND" }).click();
+      await page.getByRole("button", { name: "CRIAR DEV" }).click();
+      await fitsWith(page, page.locator(".field-error", { hasText: text }));
+    });
+  }
+
+  test("C23 mundo alert", async ({ page }) => {
+    await newDev(page);
+    await fail(page, "/api/me/travel", 500, { error: { code: "internal", message: "erro de teste" } });
+    await openScene(page, SCENES[1]);
+    await page.getByRole("button", { name: "VIAJAR ATÉ AQUI" }).nth(1).click();
+    await fitsWith(page, page.locator(scene(SCENES[1])).getByRole("alert"));
+  });
+
+  test("C23 deploy alert", async ({ page }) => {
+    await newDev(page);
+    await fail(page, "/api/me/deploys", 500, { error: { code: "internal", message: "erro de teste" } });
+    await openScene(page, SCENES[3]);
+    await page.getByRole("region", { name: "painel de deploy" }).getByRole("button", { name: "INICIAR DEPLOY" }).click();
+    await fitsWith(page, page.locator(scene(SCENES[3])).getByRole("alert"));
+  });
+
+  test("C23 server alert", async ({ page }) => {
+    await newDev(page);
+    await openScene(page, SCENES[2]);
+    await page.locator('[data-card="gpu"]').click();
+    await fitsWith(page, page.locator(scene(SCENES[2])).getByRole("alert"));
+  });
+
+  const populated: { route: string; fill: (page: Page) => Promise<void> }[] = [
+    {
+      route: "/deploy",
+      fill: async (page) => {
+        await page.getByRole("button", { name: "BANCO DE DADOS" }).click();
+        await page.getByRole("region", { name: "painel de deploy" }).getByRole("button", { name: "INICIAR DEPLOY" }).click();
+        await expect(page.getByRole("button", { name: "BANCO DE DADOS" })).toContainText(/restante/);
+      },
+    },
+    {
+      route: "/bug-fight",
+      fill: async (page) => {
+        await page.locator('[data-command="fix"]').click();
+        await expect(page.getByRole("log")).toContainText("FIX:");
+      },
+    },
+    {
+      route: "/skills",
+      fill: async (page) => {
+        await page.locator('[data-skill="f1"]').click();
+        await expect(page.locator('[data-skill="f1"]')).toHaveAttribute("data-state", "ATIVA");
+      },
+    },
+    {
+      route: "/avatar",
+      fill: async (page) => {
+        await page.goto("/loja");
+        await page.locator('[data-card="cafe"]').click();
+        await page.getByRole("region", { name: "detalhe" }).getByRole("button", { name: "COMPRAR E EQUIPAR" }).click();
+        await expect(page.getByRole("status")).toHaveText("ITEM COMPRADO E EQUIPADO");
+        await page.goto("/avatar");
+        await expect(page.locator('[data-slot="bebida"]')).toContainText("CAFÉ EXPRESSO");
+      },
+    },
+    {
+      route: "/office",
+      fill: async (page) => {
+        await page.locator('[data-card="planta"]').click();
+        await page.locator('[data-cell="piso-5"]').click();
+        await expect(page.getByRole("status")).toHaveText("PLANTA DE CANTO INSTALADO");
+      },
+    },
+    {
+      route: "/server",
+      fill: async (page) => {
+        await page.locator('[data-card="ram"]').click();
+        await expect(page.getByRole("status")).toContainText("RAM 32GB instalado no slot 01");
+      },
+    },
+  ];
+  for (const p of populated) {
+    test(`C24 360 ${p.route}`, async ({ page }) => {
+      const s = SCENES.find((x) => x.route === p.route)!;
+      await newDev(page);
+      await openScene(page, s);
+      await p.fill(page);
+      const { scrollWidth, innerWidth } = await horizontalScroll(page);
+      expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
+      const boxes = await controls(page, [scene(s), "footer.hud"]);
+      expect(boxes.length).toBeGreaterThan(0);
+      expect(outside(boxes, PHONE_S.width)).toEqual([]);
+      const small = boxes.filter((b) => b.width < 24 || b.height < 24).map((b) => `${b.name} ${b.width}x${b.height}`);
+      expect(small).toEqual([]);
+      const clip = await page.locator(scene(s)).evaluate((el) => ({ scrollHeight: el.scrollHeight, clientHeight: el.clientHeight }));
+      expect(clip.scrollHeight).toBeLessThanOrEqual(clip.clientHeight);
+    });
+  }
+});

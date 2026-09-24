@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/responsive/plan.md`
 
-20 checks in 3 slices · 3 one-way doors · 0 open
+24 checks in 4 slices · 3 one-way doors · 0 open
 
 Tables used by the checks:
 
@@ -83,6 +83,20 @@ Proof: `grep -q '| AD-015 |.*max-width: 1199px.*| active |' .specs/STATE.md && g
 **C20** - As regras de responsividade estão num único bloco `@media (max-width: 1199px)` em `globals.css` e em nenhum outro arquivo de `web/src` (door 1) ✅
 Proof: `cd web && test "$(grep -rc '@media' src | awk -F: '{s+=$2} END {print s}')" = 1 && grep -q '@media (max-width: 1199px)' src/app/globals.css`
 
+### S4 - fix round 1 · 3 files · added after verification round 1 (surviving mutant F1; plan `Observable` error rows; AC 7-10 "vale para o cheio")
+
+**C21** - WHILE o menu está aberto, apertar `Tab` e `a` com o foco num link da nav deixa `aria-expanded="true"` e a nav `data-open="true"` (só `Escape` fecha pelo teclado) (RESP-01, AC 5; added after verification round 1) ✅
+Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "other keys keep menu open"`
+
+**C22** - A 360x740, no onboarding, com `POST /api/players` respondendo 409 `dev_name_taken` (`NOME JÁ EM USO`) e respondendo 500 (mensagem `erro de teste`) via `page.route`, a mensagem de erro fica visível com a caixa dentro de `[0, innerWidth]` e `scrollWidth <= innerWidth` (2 casos) (RESP-03, AC 14; plan `Observable` onboarding error; added after verification round 1) ✅
+Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C22 "`
+
+**C23** - A 360x740, o `role="alert"` de MUNDO (`POST /api/me/travel` 500 via `page.route`), DEPLOY (`POST /api/me/deploys` 500 via `page.route`) e SERVER (tocar `GPU EDGE`, 150c, com 100 coins) fica visível com a caixa dentro de `[0, innerWidth]` e `scrollWidth <= innerWidth` (3 casos) (RESP-02, AC 7; plan `Observable` error state; added after verification round 1) ✅
+Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C23 "`
+
+**C24** - A 360x740, com a cena populada - DEPLOY com `BANCO DE DADOS` rodando, BUG FIGHT depois de um `FIX`, SKILLS com `f1` ativa, AVATAR com `CAFÉ EXPRESSO` equipado, OFFICE com `PLANTA DE CANTO` em `piso-5`, SERVER com `RAM 32GB` no slot 01 - vale o que C8-C11 exigem da cena vazia: `scrollWidth <= innerWidth`, todo `button`/`a`/`input` visível da cena e do HUD dentro de `[0, innerWidth]` e com pelo menos 24x24, e a seção com `scrollHeight <= clientHeight` (6 casos) (RESP-02, AC 7, 8, 9, 10; added after verification round 1) ✅
+Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C24 "`
+
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
@@ -99,6 +113,10 @@ Proof: `cd web && test "$(grep -rc '@media' src | awk -F: '{s+=$2} END {print s}
 | desktop scenes unchanged (9) | TÍTULO C16 · MUNDO C16 · SERVER C16 · DEPLOY C16 · BUG FIGHT C16 · SKILLS C16 · LOJA C16 · AVATAR C16 · OFFICE C16 | - |
 | scene backgrounds at 360 (4) | `.world-map` C17 · `.server` C17 · `.office-room` C17 · `.battle` C17 | - |
 | scene backgrounds at 1280 (4) | `.world-map` C18 · `.server` C18 · `.office-room` C18 · `.battle` C18 | - |
+| menu keys (3) | `Escape` closes C5 · `Tab` keeps open C21 · printable key keeps open C21 | - |
+| onboarding errors at 360 (2) | `NOME JÁ EM USO` C22 · `field-error` message C22 | - |
+| scene alerts at 360 (3) | MUNDO C23 · DEPLOY C23 · SERVER C23 | - |
+| populated scenes at 360 (6) | DEPLOY C24 · BUG FIGHT C24 · SKILLS C24 · AVATAR C24 · OFFICE C24 · SERVER C24 | - |
 | Landing doors (3) | door 1 media block C8, C16, C20 · door 2 AD-015 C19 · door 3 disclosure C1, C7 | - |
 
 - Claims about what the browser lays out (C7-C18): each proof runs in the real browser with `globals.css` loaded, because jsdom never evaluates media queries
@@ -115,13 +133,13 @@ Proof: `cd web && test "$(grep -rc '@media' src | awk -F: '{s+=$2} END {print s}
 ## Swept
 
 - validation: n/a - no input is added; the onboarding field keeps its own validation
-- failure modes: C15 (servidor fora do ar and carregando fit the phone)
+- failure modes: C15 (servidor fora do ar and carregando fit the phone), C22 (onboarding errors), C23 (scene alerts)
 - idempotency: n/a - opening and closing the menu holds no server state
 - authorization: existing - login and onboarding do not mount the frame, so no menu before a session (`GameShell`)
 - concurrency: n/a - client-only UI state in one component
 - data lifecycle: n/a - nothing stored; the menu state is not persisted
 - dependency failure: C15 (`/api/me` 500 and `/api/me` unanswered)
-- state transitions: C2, C3, C4, C5 (menu closed <-> open)
+- state transitions: C2, C3, C4, C5 (menu closed <-> open), C21 (no other key leaves open)
 - observability: n/a - layout only; nothing to log
 
 ## Handoff

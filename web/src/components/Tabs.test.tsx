@@ -89,6 +89,19 @@ describe("Tabs menu", () => {
     expect(menu()).toHaveFocus();
   });
 
+  // responsive C21 (added after verification round 1): only Escape closes from the keyboard
+  it("other keys keep menu open", async () => {
+    render(<Tabs />);
+    await userEvent.click(menu());
+    within(scenes()).getByRole("link", { name: /SKILLS/ }).focus();
+    await userEvent.keyboard("{Tab}");
+    expect(menu()).toHaveAttribute("aria-expanded", "true");
+    expect(scenes()).toHaveAttribute("data-open", "true");
+    await userEvent.keyboard("a");
+    expect(menu()).toHaveAttribute("aria-expanded", "true");
+    expect(scenes()).toHaveAttribute("data-open", "true");
+  });
+
   const labels: [string, string][] = [
     ["/", "MENU · TÍTULO"],
     ["/mundo", "MENU · MUNDO"],
