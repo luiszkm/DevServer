@@ -130,10 +130,10 @@ um equipamento que só existe na forja, que já sai equipado.
 
 | ID | Slice | Criteria | Status |
 | --- | --- | --- | --- |
-| FORGE-01 | S1 | 1-4 | Pending |
-| FORGE-02 | S2 | 5-15, 26 | Pending |
-| FORGE-03 | S3 | 16-24 | Pending |
-| FORGE-04 | S4 | 25 | Pending |
+| FORGE-01 | S1 | 1-4 | Verified |
+| FORGE-02 | S2 | 5-15, 26 | Verified |
+| FORGE-03 | S3 | 16-24 | Verified |
+| FORGE-04 | S4 | 25 | Verified |
 
 ## Observable
 

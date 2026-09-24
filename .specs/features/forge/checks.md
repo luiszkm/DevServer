@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/forge/plan.md`
 
-31 checks in 4 slices · 4 one-way doors · 0 open
+33 checks in 4 slices (+ round 2) · 4 one-way doors · 0 open
 
 ## Checks
 
