@@ -48,6 +48,7 @@ os mesmos slots numa janela 3x3.
 | Atalho com menu aberto | navega e fecha o menu, como o toque num link | mesmo resultado que responsive C3 | n |
 | Botão MENU | ganha o ícone da cena atual antes de `MENU · <rótulo>`; texto inalterado | responsive C6 prova o texto exato | n |
 | Branch | `feat/game-menu` a partir de `feat/responsive` | o menu mobile só existe nessa branch | n |
+| "Slot quadrado" do preview | a moldura do ícone (`.tab-icon` 44x44) é o quadrado; o slot (link) é retangular (~126x86 no desktop) | decisão do usuário depois da verificação round 1 (barra baixa não empurra a cena) | y |
 
 **Open questions:** none - all resolved or logged above.
 

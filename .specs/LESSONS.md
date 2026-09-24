@@ -164,6 +164,30 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: verification.md C22 - web/e2e/responsive.spec.ts:278 (web/layout)
 - last seen: 2026-09-24T18:32:04Z
 
+### L-026 - When a plan marks an art style guide binding, give each machine-checkable style rule it names (outline, light direction) a check, because the renderer only warns and art-check exits 0 on warnings.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `art` · harmful: 0
+- features: game-menu
+- evidence: verification.md Binding sources row 1; web/public/art/icon/menu-office.png (art)
+- last seen: 2026-09-24T19:47:06Z
+
+### L-027 - Every guard a Landing door's literal shape names needs its own asserted case, including ones like defaultPrevented that the checks table did not list.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `web` · harmful: 0
+- features: game-menu
+- evidence: web/src/components/Tabs.tsx:33 (web)
+- last seen: 2026-09-24T19:47:06Z
+
+### L-028 - When the chosen design places parts inside a component (number in a corner, label below), assert their positions from bounding boxes, not only their text.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `web` · harmful: 0
+- features: game-menu
+- evidence: verification.md Binding sources row 2 (number in corner, label below) (web)
+- last seen: 2026-09-24T19:47:06Z
+
+### L-029 - When a claim covers every row of a table, make the proof table-driven over all rows, not a single example row.
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `web` · harmful: 0
+- features: game-menu
+- evidence: web/src/components/Tabs.test.tsx:225 (web)
+- last seen: 2026-09-24T19:47:06Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

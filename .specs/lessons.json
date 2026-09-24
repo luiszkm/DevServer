@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 26,
+  "next_id": 30,
   "lessons": [
     {
       "id": "L-001",
@@ -454,6 +454,78 @@
       ],
       "created": "2026-09-24T18:32:04Z",
       "last_seen": "2026-09-24T18:32:04Z"
+    },
+    {
+      "id": "L-026",
+      "key": "ac_gap::when a plan marks an art style guide binding give each machine checkable style rule it names outline light direction a check because the renderer only warns and art check exits 0 on warnings",
+      "text": "When a plan marks an art style guide binding, give each machine-checkable style rule it names (outline, light direction) a check, because the renderer only warns and art-check exits 0 on warnings.",
+      "signal": "ac_gap",
+      "scope": "art",
+      "status": "candidate",
+      "features": [
+        "game-menu"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "verification.md Binding sources row 1; web/public/art/icon/menu-office.png (art)"
+      ],
+      "created": "2026-09-24T19:47:06Z",
+      "last_seen": "2026-09-24T19:47:06Z"
+    },
+    {
+      "id": "L-027",
+      "key": "ac_gap::every guard a landing door s literal shape names needs its own asserted case including ones like defaultprevented that the checks table did not list",
+      "text": "Every guard a Landing door's literal shape names needs its own asserted case, including ones like defaultPrevented that the checks table did not list.",
+      "signal": "ac_gap",
+      "scope": "web",
+      "status": "candidate",
+      "features": [
+        "game-menu"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "web/src/components/Tabs.tsx:33 (web)"
+      ],
+      "created": "2026-09-24T19:47:06Z",
+      "last_seen": "2026-09-24T19:47:06Z"
+    },
+    {
+      "id": "L-028",
+      "key": "ac_gap::when the chosen design places parts inside a component number in a corner label below assert their positions from bounding boxes not only their text",
+      "text": "When the chosen design places parts inside a component (number in a corner, label below), assert their positions from bounding boxes, not only their text.",
+      "signal": "ac_gap",
+      "scope": "web",
+      "status": "candidate",
+      "features": [
+        "game-menu"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "verification.md Binding sources row 2 (number in corner, label below) (web)"
+      ],
+      "created": "2026-09-24T19:47:06Z",
+      "last_seen": "2026-09-24T19:47:06Z"
+    },
+    {
+      "id": "L-029",
+      "key": "spec_precision_gap::when a claim covers every row of a table make the proof table driven over all rows not a single example row",
+      "text": "When a claim covers every row of a table, make the proof table-driven over all rows, not a single example row.",
+      "signal": "spec_precision_gap",
+      "scope": "web",
+      "status": "candidate",
+      "features": [
+        "game-menu"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "web/src/components/Tabs.test.tsx:225 (web)"
+      ],
+      "created": "2026-09-24T19:47:06Z",
+      "last_seen": "2026-09-24T19:47:06Z"
     }
   ]
 }
