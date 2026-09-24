@@ -17,13 +17,14 @@
 | AD-011 | Todo sorteio do jogo vem de `app.Deps.Rand` (injetado), nunca de `rand` global | testes fixam o resultado e provam as regras; o cliente nunca sorteia | active | 2026-09-23 |
 | AD-012 | Bônus de combate e de HP têm uma regra só, `player.Bonus(cat, p, type)`: skills + equipamentos equipados + skin vestida; toda fonte nova entra nela | evita que a próxima fonte (office) seja esquecida em algum chamador | active | 2026-09-23 |
 | AD-013 | `player.Bonus` também soma os móveis do escritório nos tipos `xp`, `deploy` e `spregen`; `deploy` é limitado por `office.maxDeployCut` (40); o deploy congela duração e XP com bônus no início | estende AD-012 sem segunda regra; congelar no início segue o snapshot de recompensa de `deploy_jobs` (decisão do usuário) | active | 2026-09-23 |
+| AD-014 | `player.Bonus` também soma os stats do rack (POWER → `dmg`, RAM → `sp`, UPTIME → `coins`): stat = `min(max, base + Σ efeitos)`, bônus = `floor((stat − base) / step)`, tudo no catálogo `rack`; tipo novo `coins` = % sobre as coins do deploy, congelado no início como a XP | estende AD-013 sem segunda regra; decisão do usuário (stats viram bônus) | active | 2026-09-24 |
 
 ## Handoff
 
-**Feature**: office
-**Where**: C1–C45 fechados; Verifier round 2 PASS (round 1 FAIL: ordem de validação, prova própria de `player.Pay`, móvel fora do catálogo)
+**Feature**: server-room
+**Where**: plan aprovado; checks C1–C44 escritos; build não iniciado
 **In progress**: nenhum
-**Next step**: usuário confirmar AC 33–35 (móvel fora do catálogo, `Confirmed? n`); push e PR de `feat/office` quando pedir
+**Next step**: build S1–S4 (api `internal/rack`, migração 00007, `player.Bonus`, deploy coins; web `ServerScene`, aba, hotspots, `totalBonus`)
 **Blockers**: none
 **Uncommitted**: none
-**Branch**: feat/office (sobre main)
+**Branch**: feat/server-room (sobre feat/office)
