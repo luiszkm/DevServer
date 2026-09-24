@@ -122,6 +122,18 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: api/internal/rack/rack.go:86 (api/catalog)
 - last seen: 2026-09-24T11:47:14Z
 
+### L-019 - Run a proof in a clean checkout of the commit when it calls a tool outside version control; a tool that only exists in an untracked directory makes the proof green only on the author's machine
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `tooling` · harmful: 0
+- features: game-art
+- evidence: verification.md C3 / Makefile:32 - make art-check exits 2 in a clean worktree of 3d6b472 (tooling)
+- last seen: 2026-09-24T14:53:18Z
+
+### L-020 - Give CSS-only rendering decisions a browser-level check on the computed style, because jsdom never loads the stylesheet
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `web-css` · harmful: 0
+- features: game-art
+- evidence: verification.md Coverage - scene background scale x4 + pixelated, web/src/app/globals.css:104,163,285,307 (web-css)
+- last seen: 2026-09-24T14:53:18Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 19,
+  "next_id": 21,
   "lessons": [
     {
       "id": "L-001",
@@ -328,6 +328,42 @@
       ],
       "created": "2026-09-24T11:47:14Z",
       "last_seen": "2026-09-24T11:47:14Z"
+    },
+    {
+      "id": "L-019",
+      "key": "ac_gap::run a proof in a clean checkout of the commit when it calls a tool outside version control a tool that only exists in an untracked directory makes the proof green only on the author s machine",
+      "text": "Run a proof in a clean checkout of the commit when it calls a tool outside version control; a tool that only exists in an untracked directory makes the proof green only on the author's machine",
+      "signal": "ac_gap",
+      "scope": "tooling",
+      "status": "candidate",
+      "features": [
+        "game-art"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "verification.md C3 / Makefile:32 - make art-check exits 2 in a clean worktree of 3d6b472 (tooling)"
+      ],
+      "created": "2026-09-24T14:53:18Z",
+      "last_seen": "2026-09-24T14:53:18Z"
+    },
+    {
+      "id": "L-020",
+      "key": "ac_gap::give css only rendering decisions a browser level check on the computed style because jsdom never loads the stylesheet",
+      "text": "Give CSS-only rendering decisions a browser-level check on the computed style, because jsdom never loads the stylesheet",
+      "signal": "ac_gap",
+      "scope": "web-css",
+      "status": "candidate",
+      "features": [
+        "game-art"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "verification.md Coverage - scene background scale x4 + pixelated, web/src/app/globals.css:104,163,285,307 (web-css)"
+      ],
+      "created": "2026-09-24T14:53:18Z",
+      "last_seen": "2026-09-24T14:53:18Z"
     }
   ]
 }
