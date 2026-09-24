@@ -14,6 +14,7 @@ import {
   quantity,
 } from "@/lib/gear";
 import type { Gear, Item, Player, Price, Skin } from "@/lib/types";
+import { GameArt } from "./GameArt";
 import { useGame } from "./GameContext";
 import { HeroSprite } from "./HeroSprite";
 
@@ -66,7 +67,9 @@ export function ShopScene() {
                 aria-pressed={picked("item", it.id)}
                 onClick={() => setSel({ kind: "item", id: it.id })}
               >
-                <span className="pixel shop-glyph">{it.glyph}</span>
+                <span className="pixel shop-glyph">
+                  <GameArt kind="item" id={it.id} scale={2} alt="" fallback={it.glyph} />
+                </span>
                 <span className="shop-card-text">
                   <span className="pixel shop-card-name">{it.name}</span>
                   <span className="term">{`possui: ${quantity(player, it.id)}`}</span>
@@ -137,7 +140,9 @@ export function ShopScene() {
       const afford = canPay(player, it.price);
       return (
         <>
-          <span className="pixel shop-detail-glyph">{it.glyph}</span>
+          <span className="pixel shop-detail-glyph">
+            <GameArt kind="item" id={it.id} scale={4} alt="" fallback={it.glyph} />
+          </span>
           <span className="pixel shop-rarity">{it.rarity}</span>
           <span className="pixel shop-detail-name">{it.name}</span>
           <span className="term shop-desc">{it.description}</span>

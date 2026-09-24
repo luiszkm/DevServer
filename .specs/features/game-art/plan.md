@@ -141,7 +141,7 @@ tabela ou campo novo na api.
 1. spec `web/art/<category>/<kind>-<key>.json` -> `.claude/skills/pixel-assets/scripts/render.py` (exists) - valida contra `palette.json`, grava `web/public/art/<category>/<kind>-<key>.png` (door 1, door 3)
 2. `GET /api/catalog` (exists) -> `GameContext` (exists) - entrega `id`/`region`, `name` e `glyph` como hoje
 3. cena (`BattleScene`, `ShopScene`, `AvatarScene`, `SkillsScene`, `DeployScene`, `ServerScene`, `OfficeScene`, `WorldScene`, `Hud` - all exist) -> `GameArt` (door 2) - monta `/art/<category>/<kind>-<key>.png` com escala inteira; no `onError` mostra o `glyph`
-4. out: `<img class="pixelated">` servido estático pelo Next a partir de `web/public/art`; fundos via CSS `background-image` nas classes da cena
+4. out: `<img class="pixelated">` servido estático pelo Next a partir de `web/public/art`; fundos via `background-image` inline na `<section>` da cena quando o caminho depende de dado (`battle-<region>`), com posição, tamanho ×4 (1280x720) e `pixelated` na classe CSS da cena em `globals.css`
 
 ## Relations
 

@@ -43,19 +43,19 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "item"`
 **C6** - Para cada região de `regions.json` existem `web/art/background/battle-<id>.json` e o PNG 320x180 (ART-01, AC 2, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "battle background"`
 
-**C7** - No Bug Fight, `.battle-sprite` mostra `<img>` `src="/art/sprite/enemy-<region>.png"` `alt=<enemy.name>`: em `vila` `alt="NULL SLIME"` `width=128` (32×4), em `torre` `width=144` (48×3), em `nuvem` `width=128` (64×2); após `error` mostra o glifo `(0x0)` (ART-03, AC 6, 5)
+**C7** - No Bug Fight, `.battle-sprite` mostra `<img>` `src="/art/sprite/enemy-<region>.png"` `alt=<enemy.name>`: em `vila` `alt="NULL SLIME"` `width=128` (32×4), em `torre` `width=144` (48×3), em `nuvem` `width=128` (64×2); após `error` mostra o glifo `(0x0)` (ART-03, AC 6, 5) ✅
 Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "enemy sprite"`
 
-**C8** - A seção `.battle` tem `background-image: url(/art/background/battle-<region>.png)` da região do encontro, table-driven sobre as 6 regiões (ART-03, AC 6)
+**C8** - A seção `.battle` tem `background-image: url(/art/background/battle-<region>.png)` da região do encontro, table-driven sobre as 6 regiões (ART-03, AC 6) ✅
 Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "battle background"`
 
-**C9** - Cada botão de consumível do Bug Fight mostra `<img>` `src="/art/icon/item-<id>.png"` `alt=""` `width=32`, e o texto do glifo não aparece; após `error` mostra o glifo (`HP+`) (ART-03, AC 7, 5)
+**C9** - Cada botão de consumível do Bug Fight mostra `<img>` `src="/art/icon/item-<id>.png"` `alt=""` `width=32`, e o texto do glifo não aparece; após `error` mostra o glifo (`HP+`) (ART-03, AC 7, 5) ✅
 Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "potion art"`
 
-**C10** - Na LOJA, cada cartão de item mostra `/art/icon/item-<id>.png` `alt=""` `width=32`, e o detalhe do item selecionado `width=64`; após `error` o cartão mostra o glifo (ART-04, AC 8, 5)
+**C10** - Na LOJA, cada cartão de item mostra `/art/icon/item-<id>.png` `alt=""` `width=32`, e o detalhe do item selecionado `width=64`; após `error` o cartão mostra o glifo (ART-04, AC 8, 5) ✅
 Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "item art"`
 
-**C11** - No AVATAR, a célula de item da grade mostra `/art/icon/item-<id>.png` `alt=<item.name>` `width=32` e o detalhe do item `alt=""` `width=32`; após `error` a célula mostra o glifo (ART-04, AC 9, 5)
+**C11** - No AVATAR, a célula de item da grade mostra `/art/icon/item-<id>.png` `alt=<item.name>` `width=32` e o detalhe do item `alt=""` `width=32`; após `error` a célula mostra o glifo (ART-04, AC 9, 5) ✅
 Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "item art"`
 
 ### S2 - loja, skills, deploy e HUD · 12 files · ~151 KB · ~38k read (+ 24 specs, previews)

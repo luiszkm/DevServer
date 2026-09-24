@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import AvatarPage from "@/app/(game)/avatar/page";
@@ -228,5 +228,35 @@ describe("AvatarScene", () => {
     await userEvent.click(tab("SKINS"));
     await userEvent.click(cell("default"));
     expect(detailButton("VESTIR")).toBeDisabled();
+  });
+
+  // game-art C11
+  it("item art", async () => {
+    renderAvatar(geared());
+    const cases: [string, string, string, string][] = [
+      ["POÇÕES", "sp_potion", "POÇÃO DE CACHE", "++"],
+      ["POÇÕES", "hp_potion", "POÇÃO DE MEMÓRIA", "HP+"],
+      ["POÇÕES", "boost_deploy", "ACELERADOR DE DEPLOY", ">>"],
+      ["LOOT", "null_shard", "FRAGMENTO NULL", "0x0"],
+    ];
+    for (const [bag, id, name, glyph] of cases) {
+      await userEvent.click(tab(bag));
+      const img = cell(id).querySelector("img")!;
+      expect(img.getAttribute("src")).toBe(`/art/icon/item-${id}.png`);
+      expect(img.getAttribute("alt")).toBe(name);
+      expect(img.getAttribute("width")).toBe("32");
+      expect(img).toHaveClass("pixelated");
+      expect(cell(id).textContent).not.toContain(glyph);
+
+      await userEvent.click(cell(id));
+      const head = detail().querySelector(".avatar-detail-head img")!;
+      expect(head.getAttribute("src")).toBe(`/art/icon/item-${id}.png`);
+      expect(head.getAttribute("alt")).toBe("");
+      expect(head.getAttribute("width")).toBe("32");
+    }
+    await userEvent.click(tab("POÇÕES"));
+    fireEvent.error(cell("sp_potion").querySelector("img")!);
+    expect(cell("sp_potion").querySelector("img")).toBeNull();
+    expect(cell("sp_potion")).toHaveTextContent("++");
   });
 });

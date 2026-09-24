@@ -1,9 +1,9 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import BugFightPage from "@/app/(game)/bug-fight/page";
 import type { Battle, BattleEvent, Catalog, Player } from "@/lib/types";
-import { CATALOG, ENEMIES, COMMANDS, json, mockFetch, player } from "@/test/helpers";
+import { CATALOG, ENEMIES, COMMANDS, REGIONS, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 import { BattleScene } from "./BattleScene";
 
@@ -26,6 +26,17 @@ const turn = (b: Battle | null, events: BattleEvent[], p: Player = player()) => 
 const command = (id: string) => document.querySelector(`[data-command="${id}"]`) as HTMLButtonElement;
 const potion = (id: string) => document.querySelector(`[data-item="${id}"]`) as HTMLButtonElement;
 const logText = () => screen.getByRole("log").textContent;
+
+// Every region's enemy (api/catalog/combat.json), for the art checks that walk all six.
+const ALL_ENEMIES: Catalog["enemies"] = [
+  ...ENEMIES,
+  { region: "mercado", name: "PACOTE MALICIOSO", level: 7, hp: 85, sp: 60, weakness: "versão não travada", drop: "corrupt_dep", glyph: "[!pkg]" },
+  { region: "caverna", name: "EXCEÇÃO SELVAGEM", level: 10, hp: 110, sp: 70, weakness: "catch ausente", drop: "wild_trace", glyph: "{!!}" },
+  { region: "torre", name: "RACE CONDITION", level: 15, hp: 160, sp: 85, weakness: "mutex ausente", drop: "race_core", glyph: "//=//" },
+  { region: "nuvem", name: "MEMORY LEAK ANCESTRAL", level: 22, hp: 220, sp: 100, weakness: "garbage collector", drop: "memory_crystal", glyph: "^^^^" },
+];
+const EVERY_ENEMY: Catalog = { ...CATALOG, enemies: ALL_ENEMIES };
+const sprite = () => document.querySelector(".battle-sprite") as HTMLElement;
 
 describe("BattleScene", () => {
   // C41
@@ -274,5 +285,68 @@ describe("BattleScene", () => {
     expect(items[1]).toHaveTextContent("POÇÃO DE MEMÓRIA");
     expect(document.querySelector('[data-item="boost_deploy"]')).toBeNull();
     expect(screen.queryByRole("button", { name: /ACELERADOR DE DEPLOY/ })).not.toBeInTheDocument();
+  });
+
+  // game-art C7
+  it.each([
+    ["vila", "NULL SLIME", 128],
+    ["torre", "RACE CONDITION", 144],
+    ["nuvem", "MEMORY LEAK ANCESTRAL", 128],
+  ])("enemy sprite (%s)", async (region, name, size) => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ region })) });
+    renderScene({ catalog: EVERY_ENEMY });
+    await screen.findByLabelText("inimigo");
+    const img = within(sprite()).getByRole("img");
+    expect(img.getAttribute("src")).toBe(`/art/sprite/enemy-${region}.png`);
+    expect(img.getAttribute("alt")).toBe(name);
+    expect(img.getAttribute("width")).toBe(String(size));
+    expect(img.getAttribute("height")).toBe(String(size));
+    expect(img).toHaveClass("pixelated");
+  });
+
+  it("enemy sprite falls back to the glyph", async () => {
+    mockFetch({
+      "POST /api/me/battle": startWith(),
+      "POST /api/me/battle/commands": turn(battle({ enemyHp: 50 }), [{ type: "damage", command: "fix", amount: 10 }]),
+    });
+    renderScene({ catalog: EVERY_ENEMY });
+    await screen.findByLabelText("inimigo");
+    fireEvent.error(sprite().querySelector("img")!);
+    expect(sprite().querySelector("img")).toBeNull();
+    expect(sprite()).toHaveTextContent("(0x0)");
+    // the glyph stays through the next turn's render
+    await userEvent.click(command("fix"));
+    await screen.findByText(/HP 50\/60/);
+    expect(sprite().querySelector("img")).toBeNull();
+    expect(sprite()).toHaveTextContent("(0x0)");
+  });
+
+  // game-art C8
+  it.each(REGIONS.map((r) => r.id))("battle background (%s)", async (region) => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ region })) });
+    renderScene({ catalog: EVERY_ENEMY });
+    await screen.findByLabelText("inimigo");
+    const scene = document.querySelector("section.battle") as HTMLElement;
+    expect(scene.style.backgroundImage.replace(/"/g, "")).toBe(`url(/art/background/battle-${region}.png)`);
+  });
+
+  // game-art C9
+  it("potion art", async () => {
+    const p = player({ inventory: [{ item: "sp_potion", quantity: 2 }] });
+    mockFetch({ "POST /api/me/battle": startWith(battle(), p) });
+    renderScene({ p });
+    await screen.findByLabelText("dev em combate");
+    for (const [id, glyph] of [["sp_potion", "++"], ["hp_potion", "HP+"]]) {
+      const img = potion(id).querySelector("img")!;
+      expect(img.getAttribute("src")).toBe(`/art/icon/item-${id}.png`);
+      expect(img.getAttribute("alt")).toBe("");
+      expect(img.getAttribute("width")).toBe("32");
+      expect(img).toHaveClass("pixelated");
+      expect(potion(id).textContent).not.toContain(glyph);
+    }
+    fireEvent.error(potion("hp_potion").querySelector("img")!);
+    expect(potion("hp_potion").querySelector("img")).toBeNull();
+    expect(potion("hp_potion")).toHaveTextContent("HP+");
+    expect(potion("sp_potion").querySelector("img")).not.toBeNull();
   });
 });

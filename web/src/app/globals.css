@@ -160,7 +160,7 @@ button { font-family: inherit; }
 .hud-skills { display: flex; gap: 5px; }
 .hud-skills-empty { font-size: 16px; }
 
-.battle { display: flex; flex-direction: column; gap: 14px; padding: 18px; background: #101f14; }
+.battle { display: flex; flex-direction: column; gap: 14px; padding: 18px; background: #101f14 center / 1280px 720px no-repeat; image-rendering: pixelated; }
 .battle-center { align-items: center; justify-content: center; }
 .battle-head { padding: 11px 16px; font-size: 11px; color: var(--green); }
 .battle-body { flex: 1; display: flex; gap: 18px; min-height: 0; }
@@ -195,7 +195,7 @@ button { font-family: inherit; }
 .shop-card:hover { filter: brightness(1.25); }
 .shop-card[aria-pressed="true"] { border-color: var(--green); }
 .shop-card .term { font-size: 16px; }
-.shop-glyph { min-width: 32px; height: 32px; padding: 0 3px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); background: var(--panel-3); font-size: 9px; }
+.shop-glyph { min-width: 36px; height: 36px; padding: 0 3px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); background: var(--panel-3); font-size: 9px; }
 .shop-card-text { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .shop-card-name { font-size: 8px; line-height: 1.4; }
 .shop-bonus { color: var(--green); }
@@ -204,7 +204,7 @@ button { font-family: inherit; }
 .shop-skin-sprite { width: 56px; height: 72px; border: 2px solid var(--edge); background: #0a1622; }
 .shop-side { width: 340px; display: flex; flex-direction: column; gap: 14px; }
 .shop-detail { flex: 1; display: flex; flex-direction: column; gap: 12px; }
-.shop-detail-glyph { align-self: center; min-width: 64px; height: 64px; padding: 0 6px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--edge); background: var(--panel-3); font-size: 12px; }
+.shop-detail-glyph { align-self: center; min-width: 70px; height: 70px; padding: 0 6px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--edge); background: var(--panel-3); font-size: 12px; }
 .shop-detail-sprite { align-self: center; width: 80px; height: 104px; border: 3px solid var(--edge); background: #0a1622; }
 .shop-rarity { align-self: flex-start; font-size: 9px; padding: 6px 8px; border: 2px solid var(--edge); background: var(--panel-3); color: var(--yellow); }
 .shop-detail-name { font-size: 12px; line-height: 1.6; }
@@ -228,7 +228,7 @@ button { font-family: inherit; }
 .avatar-detail { display: flex; flex-direction: column; gap: 9px; background: var(--panel-2); padding: 12px 13px; }
 .avatar-detail .term { font-size: 18px; line-height: 1.25; }
 .avatar-detail-head { display: flex; align-items: center; gap: 10px; }
-.avatar-detail-glyph { min-width: 34px; height: 34px; padding: 0 3px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); background: var(--panel-3); font-size: 9px; }
+.avatar-detail-glyph { min-width: 36px; height: 36px; padding: 0 3px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); background: var(--panel-3); font-size: 9px; }
 .avatar-detail-name { flex: 1; font-size: 9px; }
 .avatar-doll { display: grid; grid-template-columns: 118px 1fr 118px; gap: 12px; background: #0f1c28; padding: 14px; min-height: 0; }
 .avatar-col { display: flex; flex-direction: column; gap: 10px; min-height: 0; }

@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { post } from "@/lib/api";
 import { CONNECTION_FAILED, bonusLong, isEquipped, quantity, skinFilter, totalBonus } from "@/lib/gear";
 import type { Player } from "@/lib/types";
+import { GameArt } from "./GameArt";
 import { useGame } from "./GameContext";
 import { HeroSprite } from "./HeroSprite";
 
 type Bag = "equip" | "pocao" | "loot" | "skin";
-type Entry = { kind: "gear" | "item" | "skin"; id: string; glyph: string; tag: string; active: boolean; filter?: string };
+type Entry = { kind: "gear" | "item" | "skin"; id: string; name: string; glyph: string; tag: string; active: boolean; filter?: string };
 
 const BAGS: { id: Bag; label: string; hint: string }[] = [
   { id: "equip", label: "EQUIP", hint: "clique para equipar" },
@@ -53,19 +54,19 @@ export function AvatarScene() {
           .filter((g) => player.gear.includes(g.id))
           .map((g) => {
             const on = isEquipped(player, g.id, g.slot);
-            return { kind: "gear", id: g.id, glyph: g.glyph, tag: on ? "EQUIP" : (SLOT_TAG[g.slot] ?? g.slot), active: on };
+            return { kind: "gear", id: g.id, name: g.name, glyph: g.glyph, tag: on ? "EQUIP" : (SLOT_TAG[g.slot] ?? g.slot), active: on };
           })
       : bag === "skin"
         ? catalog.skins
             .filter((s) => player.skins.includes(s.id))
             .map((s) => {
               const on = player.skin === s.id;
-              return { kind: "skin", id: s.id, glyph: "", tag: on ? "EM USO" : s.name.replace("DEV ", "").slice(0, 7).toLowerCase(), active: on, filter: s.filter };
+              return { kind: "skin", id: s.id, name: s.name, glyph: "", tag: on ? "EM USO" : s.name.replace("DEV ", "").slice(0, 7).toLowerCase(), active: on, filter: s.filter };
             })
         : catalog.items
             // Shop items are the potions tab; everything else is loot from the Bug Fight.
             .filter((i) => (bag === "pocao") === !!i.price && quantity(player, i.id) > 0)
-            .map((i) => ({ kind: "item", id: i.id, glyph: i.glyph, tag: `x${quantity(player, i.id)}`, active: false }));
+            .map((i) => ({ kind: "item", id: i.id, name: i.name, glyph: i.glyph, tag: `x${quantity(player, i.id)}`, active: false }));
   const current = entries.find((e) => e.id === picked) ?? entries[0];
   const skin = catalog.skins.find((s) => s.id === player.skin);
   const hint = BAGS.find((b) => b.id === bag)!.hint;
@@ -88,7 +89,13 @@ export function AvatarScene() {
               aria-pressed={current?.id === e.id}
               onClick={() => setPicked(e.id)}
             >
-              {e.kind === "skin" ? <HeroSprite filter={e.filter ?? "none"} className="avatar-cell-sprite" /> : <span className="pixel">{e.glyph}</span>}
+              {e.kind === "skin" ? (
+                <HeroSprite filter={e.filter ?? "none"} className="avatar-cell-sprite" />
+              ) : e.kind === "item" ? (
+                <GameArt kind="item" id={e.id} scale={2} alt={e.name} fallback={e.glyph} />
+              ) : (
+                <span className="pixel">{e.glyph}</span>
+              )}
               <span className="term avatar-cell-tag">{e.tag}</span>
             </button>
           ))}
@@ -192,7 +199,7 @@ export function AvatarScene() {
       const slot = catalog.gearSlots.find((s) => s.id === g.slot)?.name ?? g.slot;
       return (
         <>
-          <DetailHead glyph={g.glyph} name={g.name} rarity={g.rarity} />
+          <DetailHead icon={g.glyph} name={g.name} rarity={g.rarity} />
           <span className="term">{`${g.description} · ${slot} · ${bonusLong(g.bonus)}`}</span>
           {current.active ? (
             <button type="button" className="btn btn-dark" disabled={pending} onClick={() => run(`/api/me/gear/${g.id}/unequip`, "ITEM REMOVIDO")}>
@@ -210,7 +217,7 @@ export function AvatarScene() {
       const s = catalog.skins.find((x) => x.id === current.id)!;
       return (
         <>
-          <DetailHead glyph="SKN" name={s.name} rarity={s.rarity} />
+          <DetailHead icon="SKN" name={s.name} rarity={s.rarity} />
           <span className="term">{s.description}</span>
           <button
             type="button"
@@ -226,7 +233,7 @@ export function AvatarScene() {
     const it = catalog.items.find((x) => x.id === current.id)!;
     return (
       <>
-        <DetailHead glyph={it.glyph} name={it.name} rarity={it.rarity} />
+        <DetailHead icon={<GameArt kind="item" id={it.id} scale={2} alt="" fallback={it.glyph} />} name={it.name} rarity={it.rarity} />
         <span className="term">{it.description}</span>
         <span className="term">{`quantidade: ${quantity(player, it.id)}`}</span>
         <button type="button" className="btn btn-dark" disabled={pending} onClick={() => run(`/api/me/items/${it.id}/discard`, `-1 ${it.name}`)}>
@@ -237,10 +244,10 @@ export function AvatarScene() {
   }
 }
 
-function DetailHead({ glyph, name, rarity }: { glyph: string; name: string; rarity: string }) {
+function DetailHead({ icon, name, rarity }: { icon: ReactNode; name: string; rarity: string }) {
   return (
     <div className="avatar-detail-head">
-      <span className="pixel avatar-detail-glyph">{glyph}</span>
+      <span className="pixel avatar-detail-glyph">{icon}</span>
       <span className="pixel avatar-detail-name">{name}</span>
       <span className="term">{rarity}</span>
     </div>

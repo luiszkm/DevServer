@@ -1,9 +1,9 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import ShopPage from "@/app/(game)/loja/page";
 import type { Player } from "@/lib/types";
-import { CATALOG, json, mockFetch, player } from "@/test/helpers";
+import { CATALOG, ITEMS, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 
 function renderShop(p: Player = player(), setPlayer = vi.fn()) {
@@ -218,5 +218,27 @@ describe("ShopScene", () => {
     expect(detailButton("COMPRAR E EQUIPAR")).toBeDisabled();
     await userEvent.click(card("shadow"));
     expect(detailButton("EQUIPAR")).toBeDisabled();
+  });
+
+  // game-art C10
+  it("item art", async () => {
+    renderShop();
+    for (const it of ITEMS.filter((i) => i.price)) {
+      const img = card(it.id).querySelector("img")!;
+      expect(img.getAttribute("src")).toBe(`/art/icon/item-${it.id}.png`);
+      expect(img.getAttribute("alt")).toBe("");
+      expect(img.getAttribute("width")).toBe("32");
+      expect(img).toHaveClass("pixelated");
+      expect(card(it.id).textContent).not.toContain(it.glyph);
+
+      await userEvent.click(card(it.id));
+      const big = detail().querySelector("img")!;
+      expect(big.getAttribute("src")).toBe(`/art/icon/item-${it.id}.png`);
+      expect(big.getAttribute("alt")).toBe("");
+      expect(big.getAttribute("width")).toBe("64");
+    }
+    fireEvent.error(card("hp_potion").querySelector("img")!);
+    expect(card("hp_potion").querySelector("img")).toBeNull();
+    expect(card("hp_potion").querySelector(".shop-glyph")).toHaveTextContent("HP+");
   });
 });

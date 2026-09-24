@@ -5,8 +5,12 @@ import { post } from "@/lib/api";
 import { eventText } from "@/lib/battleLog";
 import { skinFilter } from "@/lib/gear";
 import type { Battle, BattleEvent, Player } from "@/lib/types";
+import { GameArt, nativeSize } from "./GameArt";
 import { useGame } from "./GameContext";
 import { HeroSprite } from "./HeroSprite";
+
+// Whole-number zoom per native enemy size, so every enemy fits the 180x150 sprite box.
+const ENEMY_SCALE: Record<number, number> = { 32: 4, 48: 3, 64: 2 };
 
 type TurnResponse = { battle: Battle | null; player: Player; events: BattleEvent[] };
 
@@ -40,6 +44,7 @@ export function BattleScene() {
   }, [catalog, setPlayer]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch of the encounter
     start();
   }, [start]);
 
@@ -84,14 +89,18 @@ export function BattleScene() {
   const qty = (id: string) => player.inventory.find((i) => i.item === id)?.quantity ?? 0;
 
   return (
-    <section className="scene battle" aria-label="BUG FIGHT">
+    <section
+      className="scene battle"
+      aria-label="BUG FIGHT"
+      style={battle ? { backgroundImage: `url(/art/background/battle-${battle.region}.png)` } : undefined}
+    >
       <div className="panel battle-head">
         <span className="pixel">{battle ? `ENCONTRO · ${regionName(battle.region)}` : "ENCONTRO ENCERRADO"}</span>
       </div>
       <div className="battle-body">
         <div className="battle-enemy">
           {battle ? (
-            <EnemyCard battle={battle} />
+            enemyCard(battle)
           ) : (
             <div className="panel battle-ended">
               <span className="pixel">ENCONTRO ENCERRADO</span>
@@ -136,7 +145,7 @@ export function BattleScene() {
                 disabled={pending || !active || qty(i.id) === 0}
                 onClick={() => act("/api/me/battle/items", { item: i.id })}
               >
-                <span className="pixel">{i.glyph}</span>
+                <GameArt kind="item" id={i.id} scale={2} alt="" fallback={i.glyph} />
                 <span className="term">{`${i.name} x${qty(i.id)}`}</span>
               </button>
             ))}
@@ -152,7 +161,9 @@ export function BattleScene() {
     </section>
   );
 
-  function EnemyCard({ battle }: { battle: Battle }) {
+  // A plain render function, not a nested component: a component declared here would remount on
+  // every render and bring a failed enemy image back.
+  function enemyCard(battle: Battle) {
     const enemy = enemyOf(battle);
     const pct = (battle.enemyHp / battle.enemyHpMax) * 100;
     return (
@@ -165,7 +176,9 @@ export function BattleScene() {
           <div style={{ width: `${pct}%`, background: "var(--purple)" }} />
         </div>
         <span className="term">{`HP ${battle.enemyHp}/${battle.enemyHpMax} · fraqueza: ${enemy.weakness}`}</span>
-        <div className="battle-sprite pixel">{enemy.glyph}</div>
+        <div className="battle-sprite pixel">
+          <GameArt kind="enemy" id={battle.region} scale={ENEMY_SCALE[nativeSize("enemy", battle.region)]} alt={enemy.name} fallback={enemy.glyph} />
+        </div>
         {battle.status === "won" && <span className="pixel battle-won">RESOLVIDO</span>}
       </div>
     );
