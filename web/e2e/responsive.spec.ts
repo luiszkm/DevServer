@@ -412,7 +412,7 @@ test.describe("phone S states", () => {
 
   // C25 (added after verification round 2): LOJA with the equipped item selected shows REMOVER EQUIPAMENTO
   test("C25 360 /loja", async ({ page }) => {
-    const s = SCENES[6];
+    const s = SCENES.find((x) => x.route === "/loja")!;
     await newDev(page);
     await openScene(page, s);
     await page.locator('[data-card="cafe"]').click();
