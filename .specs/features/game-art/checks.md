@@ -87,7 +87,7 @@ Proof: `cd web && npx vitest run src/components/Hud.test.tsx -t "skill art"`
 **C20** - O HUD mostra `/art/icon/hud-xp.png` no cartão do `XP`, `hud-heart` no do `HP`, `hud-coin` no de `COINS`, `hud-gem` no de `GEMS`, cada um `alt=""` `width=32` (ART-07, AC 16) ✅
 Proof: `cd web && npx vitest run src/components/Hud.test.tsx -t "currency art"`
 
-**C21** - Em DEPLOY, cada botão de tipo mostra `/art/icon/deploy-<id>.png` `alt=""` `width=32` antes do nome; o nome acessível do botão é exatamente `t.name` (`BACKEND`) e o texto não contém o glifo; após `error` mostra o glifo (`$_`) (ART-05, AC 11, 5)
+**C21** - Em DEPLOY, cada botão de tipo mostra `/art/icon/deploy-<id>.png` `alt=""` `width=32` antes do nome; o nome acessível do botão é exatamente `t.name` (`BACKEND`) e o texto não contém o glifo; após `error` mostra o glifo (`$_`) (ART-05, AC 11, 5) ✅
 Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx -t "deploy art"`
 
 **C22** - No browser real, depois do login, o `<img src="/art/icon/hud-coin.png">` do HUD carrega com `naturalWidth` = 16 (ART-07, AC 16; door 1, servido de `web/public`)

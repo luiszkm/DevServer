@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api, post } from "@/lib/api";
 import { formatMinutes, formatRemaining } from "@/lib/time";
 import type { DeployJob, DeployLevel, Player } from "@/lib/types";
+import { GameArt } from "./GameArt";
 import { useGame } from "./GameContext";
 
 const STAGES = ["LINT", "BUILD", "TEST", "SHIP"];
@@ -136,7 +137,10 @@ export function DeployScene() {
               onClick={() => setSelType(t.id)}
             >
               <span className="pixel deploy-type-name">
-                <span className="deploy-glyph">{t.glyph}</span> {t.name}
+                <span className="deploy-glyph">
+                  <GameArt kind="deploy" id={t.id} scale={2} alt="" fallback={t.glyph} />
+                </span>
+                {t.name}
               </span>
               <span className="term deploy-status">{jobs ? status : ""}</span>
             </button>

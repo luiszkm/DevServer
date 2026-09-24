@@ -1,4 +1,4 @@
-import { act, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import DeployPage from "@/app/(game)/deploy/page";
@@ -50,7 +50,8 @@ describe("DeployScene", () => {
     expect(names).toEqual(["backend", "frontend", "mobile", "database", "microservices"]);
     expect(typeButton("BACKEND")).toHaveTextContent("ocioso");
     for (const t of CATALOG.deployTypes) {
-      expect(screen.getByRole("button", { name: t.name })).toHaveTextContent(`${t.glyph} ${t.name}`);
+      expect(screen.getByRole("button", { name: t.name })).toHaveTextContent(t.name);
+      expect(screen.getByRole("button", { name: t.name }).textContent).not.toContain(t.glyph);
     }
     expect(typeButton("FRONTEND")).toHaveTextContent("14:00 restante");
     expect(typeButton("MOBILE")).toHaveTextContent("pronto p/ coletar");
@@ -357,5 +358,31 @@ describe("DeployScene", () => {
     expect(await within(panel()).findByText(text)).toBeInTheDocument();
     expect(panel().querySelector(".deploy-remaining")).toHaveTextContent("29:00");
     expect(typeButton("BACKEND")).toHaveTextContent("29:00 restante");
+  });
+
+  // game-art C21
+  it("deploy art", async () => {
+    mockFetch({ "GET /api/me/deploys": list([]) });
+    renderScene();
+    await screen.findAllByText("ocioso");
+    for (const t of CATALOG.deployTypes) {
+      const button = screen.getByRole("button", { name: t.name });
+      expect(button).toHaveAccessibleName(t.name);
+      const img = button.querySelector("img")!;
+      expect(img.getAttribute("src")).toBe(`/art/icon/deploy-${t.id}.png`);
+      expect(img.getAttribute("alt")).toBe("");
+      expect(img.getAttribute("width")).toBe("32");
+      expect(img).toHaveClass("pixelated");
+      const name = button.querySelector(".deploy-type-name")!;
+      expect(name.textContent).toBe(t.name);
+      expect(button.textContent).not.toContain(t.glyph);
+      // the icon comes before the name
+      expect(name.firstElementChild!.contains(img)).toBe(true);
+    }
+    const backend = typeButton("BACKEND");
+    fireEvent.error(backend.querySelector("img")!);
+    expect(backend.querySelector("img")).toBeNull();
+    expect(backend.querySelector(".deploy-type-name")).toHaveTextContent("$_");
+    expect(backend).toHaveAccessibleName("BACKEND");
   });
 });
