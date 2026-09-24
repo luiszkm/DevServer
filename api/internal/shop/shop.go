@@ -38,23 +38,6 @@ func (h *Handlers) mutate(w http.ResponseWriter, r *http.Request, fn mutation) e
 	return nil
 }
 
-// pay takes price from the balance of its currency; a balance equal to the price pays.
-func pay(p *player.Player, price catalog.Price) error {
-	switch price.Currency {
-	case "gems":
-		if p.Gems < price.Amount {
-			return httpx.ErrNotEnoughGems
-		}
-		p.Gems -= price.Amount
-	case "coins":
-		if p.Coins < price.Amount {
-			return httpx.ErrNotEnoughCoins
-		}
-		p.Coins -= price.Amount
-	}
-	return nil
-}
-
 func hpOf(b *catalog.Bonus) int {
 	if b != nil && b.Type == "hp" {
 		return b.Amount
@@ -111,7 +94,7 @@ func (h *Handlers) BuyItem(w http.ResponseWriter, r *http.Request) error {
 		return httpx.ErrNotForSale
 	}
 	return h.mutate(w, r, func(ctx context.Context, tx pgx.Tx, p *player.Player) error {
-		if err := pay(p, *it.Price); err != nil {
+		if err := player.Pay(p, *it.Price); err != nil {
 			return err
 		}
 		return player.AddItem(ctx, tx, p, it.ID, 1)
@@ -127,7 +110,7 @@ func (h *Handlers) BuyGear(w http.ResponseWriter, r *http.Request) error {
 		if p.Owns(g.ID) {
 			return httpx.ErrAlreadyOwned
 		}
-		if err := pay(p, g.Price); err != nil {
+		if err := player.Pay(p, g.Price); err != nil {
 			return err
 		}
 		if _, err := tx.Exec(ctx, `INSERT INTO player_gear (player_id, gear_id) VALUES ($1, $2)`, p.ID, g.ID); err != nil {
@@ -146,7 +129,7 @@ func (h *Handlers) BuySkin(w http.ResponseWriter, r *http.Request) error {
 		if p.OwnsSkin(s.ID) {
 			return httpx.ErrAlreadyOwned
 		}
-		if err := pay(p, s.Price); err != nil {
+		if err := player.Pay(p, s.Price); err != nil {
 			return err
 		}
 		if _, err := tx.Exec(ctx, `INSERT INTO player_skins (player_id, skin_id) VALUES ($1, $2)`, p.ID, s.ID); err != nil {

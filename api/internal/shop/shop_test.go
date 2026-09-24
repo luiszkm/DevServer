@@ -760,6 +760,10 @@ func TestMigration_ExistingPlayers(t *testing.T) {
 			t.Errorf("%s: %d rows (%v), want an empty table", table, n, err)
 		}
 	}
+	// The api always runs every migration at startup; later ones must keep this player valid too.
+	if err := db.Migrate(ctx, u.String()); err != nil {
+		t.Fatal(err)
+	}
 
 	cat, err := catalog.Load()
 	if err != nil {

@@ -130,6 +130,39 @@ type Skin struct {
 	Bonus *Bonus `json:"bonus"`
 }
 
+// OfficeZone is an area of the room with Cells positions, numbered from 0.
+type OfficeZone struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Cells int    `json:"cells"`
+}
+
+type Furniture struct {
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Glyph   string `json:"glyph"`
+	Color   string `json:"color"`
+	Zone    string `json:"zone"`
+	Price   Price  `json:"price"`
+	Comfort int    `json:"comfort"`
+	// Bonus is nil for furniture that only adds comfort; its type is "xp", "deploy" or "spregen".
+	Bonus       *Bonus `json:"bonus"`
+	Description string `json:"description"`
+}
+
+type OfficeLevel struct {
+	Min  int    `json:"min"`
+	Name string `json:"name"`
+}
+
+type Office struct {
+	Zones     []OfficeZone  `json:"zones"`
+	Furniture []Furniture   `json:"furniture"`
+	Levels    []OfficeLevel `json:"levels"`
+	// MaxDeployCut caps the summed "deploy" bonus, in percent.
+	MaxDeployCut int `json:"maxDeployCut"`
+}
+
 type ItemQuantity struct {
 	Item     string `json:"item"`
 	Quantity int    `json:"quantity"`
@@ -163,6 +196,7 @@ type Catalog struct {
 	GearSlots    []GearSlot
 	Gear         []Gear
 	Skins        []Skin
+	Office       Office
 	body         []byte
 }
 
@@ -245,6 +279,14 @@ func Load() (*Catalog, error) {
 	}
 	c.GearSlots, c.Gear, c.Skins = shop.Slots, shop.Gear, shop.Skins
 
+	raw, err = data.Files.ReadFile("office.json")
+	if err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(raw, &c.Office); err != nil {
+		return nil, fmt.Errorf("office.json: %w", err)
+	}
+
 	c.body, err = json.Marshal(struct {
 		Version      string        `json:"version"`
 		Regions      []Region      `json:"regions"`
@@ -258,8 +300,9 @@ func Load() (*Catalog, error) {
 		GearSlots    []GearSlot    `json:"gearSlots"`
 		Gear         []Gear        `json:"gear"`
 		Skins        []Skin        `json:"skins"`
+		Office       Office        `json:"office"`
 	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees, c.Enemies, c.Commands, c.Items, c.Combat,
-		c.GearSlots, c.Gear, c.Skins})
+		c.GearSlots, c.Gear, c.Skins, c.Office})
 	if err != nil {
 		return nil, err
 	}
@@ -395,6 +438,24 @@ func (c *Catalog) SkinPosition(id string) int {
 		}
 	}
 	return len(c.Skins)
+}
+
+func (c *Catalog) Zone(id string) (OfficeZone, bool) {
+	for _, z := range c.Office.Zones {
+		if z.ID == id {
+			return z, true
+		}
+	}
+	return OfficeZone{}, false
+}
+
+func (c *Catalog) FurnitureItem(id string) (Furniture, bool) {
+	for _, f := range c.Office.Furniture {
+		if f.ID == id {
+			return f, true
+		}
+	}
+	return Furniture{}, false
 }
 
 // SkillBonus sums the bonus of one type ("hp", "sp", "dmg") over the given skill ids.

@@ -1,0 +1,28 @@
+{
+  "zones": [
+    { "id": "parede", "name": "PAREDE", "cells": 8 },
+    { "id": "piso", "name": "PISO", "cells": 24 }
+  ],
+  "furniture": [
+    { "id": "mesa", "name": "MESA EM L", "glyph": "[==]", "color": "#ffc93c", "zone": "piso", "price": { "currency": "coins", "amount": 60 }, "comfort": 8, "bonus": { "type": "xp", "amount": 3 }, "description": "Espaço para dois monitores e o café." },
+    { "id": "cadeira_gamer", "name": "CADEIRA GAMER", "glyph": "[|]", "color": "#e05252", "zone": "piso", "price": { "currency": "gems", "amount": 40 }, "comfort": 10, "bonus": { "type": "spregen", "amount": 1 }, "description": "Plantão de madrugada sem dor nas costas." },
+    { "id": "setup2", "name": "SETUP 2 TELAS", "glyph": "][", "color": "#45b7ff", "zone": "piso", "price": { "currency": "gems", "amount": 90 }, "comfort": 14, "bonus": { "type": "deploy", "amount": 5 }, "description": "Build de um lado, log do outro." },
+    { "id": "rack", "name": "RACK CASEIRO", "glyph": "::", "color": "#6bd425", "zone": "piso", "price": { "currency": "gems", "amount": 70 }, "comfort": 9, "bonus": { "type": "deploy", "amount": 6 }, "description": "Servidor local zumbindo no canto." },
+    { "id": "cafeteira", "name": "CAFETEIRA", "glyph": "{C}", "color": "#ffc93c", "zone": "piso", "price": { "currency": "coins", "amount": 55 }, "comfort": 7, "bonus": { "type": "spregen", "amount": 2 }, "description": "Combustível renovável do dev." },
+    { "id": "estante", "name": "ESTANTE DE LIVROS", "glyph": "|||", "color": "#b46cf0", "zone": "piso", "price": { "currency": "coins", "amount": 45 }, "comfort": 6, "bonus": { "type": "xp", "amount": 2 }, "description": "Documentação que ninguém lê, mas inspira." },
+    { "id": "planta", "name": "PLANTA DE CANTO", "glyph": "^", "color": "#6bd425", "zone": "piso", "price": { "currency": "coins", "amount": 25 }, "comfort": 5, "bonus": null, "description": "Oxigênio e um pouco de sanidade." },
+    { "id": "tapete", "name": "TAPETE PIXELADO", "glyph": "##", "color": "#8b6cf0", "zone": "piso", "price": { "currency": "coins", "amount": 30 }, "comfort": 4, "bonus": null, "description": "Aquece a sala e abafa o teclado." },
+    { "id": "neon", "name": "LETREIRO NEON", "glyph": "~~", "color": "#45b7ff", "zone": "parede", "price": { "currency": "gems", "amount": 35 }, "comfort": 12, "bonus": null, "description": "IT WORKS ON MY MACHINE em ciano." },
+    { "id": "poster", "name": "PÔSTER RETRÔ", "glyph": "[#]", "color": "#ffc93c", "zone": "parede", "price": { "currency": "coins", "amount": 20 }, "comfort": 4, "bonus": null, "description": "Key art do DevServer emoldurada." },
+    { "id": "kanban", "name": "QUADRO KANBAN", "glyph": "[+]", "color": "#dbeeff", "zone": "parede", "price": { "currency": "coins", "amount": 50 }, "comfort": 5, "bonus": { "type": "xp", "amount": 2 }, "description": "Post-its que viram sprint." },
+    { "id": "janela", "name": "JANELA COM VISTA", "glyph": "[/]", "color": "#8fc3e8", "zone": "parede", "price": { "currency": "gems", "amount": 60 }, "comfort": 15, "bonus": null, "description": "Luz natural entre dois deploys." }
+  ],
+  "levels": [
+    { "min": 0, "name": "CANTINHO" },
+    { "min": 30, "name": "HOME OFFICE" },
+    { "min": 70, "name": "ESTÚDIO" },
+    { "min": 120, "name": "LAB DEV" },
+    { "min": 180, "name": "SEDE DEVSERVE" }
+  ],
+  "maxDeployCut": 40
+}

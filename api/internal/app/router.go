@@ -14,6 +14,7 @@ import (
 	"devserver/api/internal/catalog"
 	"devserver/api/internal/deploy"
 	"devserver/api/internal/httpx"
+	"devserver/api/internal/office"
 	"devserver/api/internal/player"
 	"devserver/api/internal/shop"
 	"devserver/api/internal/skills"
@@ -54,6 +55,7 @@ func NewRouter(d Deps) *chi.Mux {
 	battleH := &battle.Handlers{Pool: d.Pool, Catalog: d.Catalog, Rand: rnd}
 	deployH := &deploy.Handlers{Pool: d.Pool, Catalog: d.Catalog, Logger: d.Logger, Now: now}
 	shopH := &shop.Handlers{Pool: d.Pool, Catalog: d.Catalog}
+	officeH := &office.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 
 	r.Get("/api/auth/github/login", h(authH.Login))
 	r.Get("/api/auth/github/callback", h(authH.Callback))
@@ -82,6 +84,8 @@ func NewRouter(d Deps) *chi.Mux {
 		pr.Post("/api/me/skins/{id}/equip", h(shopH.EquipSkin))
 		pr.Post("/api/me/items/{id}/discard", h(shopH.Discard))
 		pr.Post("/api/me/deploys/{type}/boost", h(deployH.Boost))
+		pr.Post("/api/me/office/{zone}/{position}", h(officeH.Install))
+		pr.Post("/api/me/office/{zone}/{position}/remove", h(officeH.Remove))
 	})
 	return r
 }

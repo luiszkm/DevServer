@@ -407,3 +407,91 @@ func TestCatalog_ServesShop(t *testing.T) {
 		t.Error("null_shard missing")
 	}
 }
+
+// C1 (office)
+func TestCatalog_ServesOffice(t *testing.T) {
+	env := apptest.New(t)
+	rec := env.Do(http.MethodGet, "/api/catalog", nil)
+	var b struct {
+		Office struct {
+			Zones []struct {
+				ID, Name string
+				Cells    int
+			} `json:"zones"`
+			Furniture []map[string]json.RawMessage `json:"furniture"`
+			Levels    []struct {
+				Min  int
+				Name string
+			} `json:"levels"`
+			MaxDeployCut int `json:"maxDeployCut"`
+		} `json:"office"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &b); err != nil {
+		t.Fatal(err)
+	}
+	o := b.Office
+
+	zones := []string{"parede|PAREDE|8", "piso|PISO|24"}
+	if len(o.Zones) != len(zones) {
+		t.Fatalf("zones = %d, want 2", len(o.Zones))
+	}
+	for i, z := range o.Zones {
+		if got := fmt.Sprintf("%s|%s|%d", z.ID, z.Name, z.Cells); got != zones[i] {
+			t.Errorf("zone %d = %s, want %s", i, got, zones[i])
+		}
+	}
+
+	levels := []string{"0|CANTINHO", "30|HOME OFFICE", "70|ESTÚDIO", "120|LAB DEV", "180|SEDE DEVSERVE"}
+	if len(o.Levels) != len(levels) {
+		t.Fatalf("levels = %d, want 5", len(o.Levels))
+	}
+	for i, l := range o.Levels {
+		if got := fmt.Sprintf("%d|%s", l.Min, l.Name); got != levels[i] {
+			t.Errorf("level %d = %s, want %s", i, got, levels[i])
+		}
+	}
+
+	if o.MaxDeployCut != 40 {
+		t.Errorf("maxDeployCut = %d, want 40", o.MaxDeployCut)
+	}
+
+	// id, name, glyph, color, zone, price, comfort, bonus, description - every field by value.
+	furniture := [][9]string{
+		{"mesa", "MESA EM L", "[==]", "#ffc93c", "piso", `{"currency":"coins","amount":60}`, "8", `{"type":"xp","amount":3}`, "Espaço para dois monitores e o café."},
+		{"cadeira_gamer", "CADEIRA GAMER", "[|]", "#e05252", "piso", `{"currency":"gems","amount":40}`, "10", `{"type":"spregen","amount":1}`, "Plantão de madrugada sem dor nas costas."},
+		{"setup2", "SETUP 2 TELAS", "][", "#45b7ff", "piso", `{"currency":"gems","amount":90}`, "14", `{"type":"deploy","amount":5}`, "Build de um lado, log do outro."},
+		{"rack", "RACK CASEIRO", "::", "#6bd425", "piso", `{"currency":"gems","amount":70}`, "9", `{"type":"deploy","amount":6}`, "Servidor local zumbindo no canto."},
+		{"cafeteira", "CAFETEIRA", "{C}", "#ffc93c", "piso", `{"currency":"coins","amount":55}`, "7", `{"type":"spregen","amount":2}`, "Combustível renovável do dev."},
+		{"estante", "ESTANTE DE LIVROS", "|||", "#b46cf0", "piso", `{"currency":"coins","amount":45}`, "6", `{"type":"xp","amount":2}`, "Documentação que ninguém lê, mas inspira."},
+		{"planta", "PLANTA DE CANTO", "^", "#6bd425", "piso", `{"currency":"coins","amount":25}`, "5", `null`, "Oxigênio e um pouco de sanidade."},
+		{"tapete", "TAPETE PIXELADO", "##", "#8b6cf0", "piso", `{"currency":"coins","amount":30}`, "4", `null`, "Aquece a sala e abafa o teclado."},
+		{"neon", "LETREIRO NEON", "~~", "#45b7ff", "parede", `{"currency":"gems","amount":35}`, "12", `null`, "IT WORKS ON MY MACHINE em ciano."},
+		{"poster", "PÔSTER RETRÔ", "[#]", "#ffc93c", "parede", `{"currency":"coins","amount":20}`, "4", `null`, "Key art do DevServer emoldurada."},
+		{"kanban", "QUADRO KANBAN", "[+]", "#dbeeff", "parede", `{"currency":"coins","amount":50}`, "5", `{"type":"xp","amount":2}`, "Post-its que viram sprint."},
+		{"janela", "JANELA COM VISTA", "[/]", "#8fc3e8", "parede", `{"currency":"gems","amount":60}`, "15", `null`, "Luz natural entre dois deploys."},
+	}
+	keys := []string{"id", "name", "glyph", "color", "zone", "price", "comfort", "bonus", "description"}
+	if len(o.Furniture) != len(furniture) {
+		t.Fatalf("furniture = %d, want 12", len(o.Furniture))
+	}
+	for i, f := range o.Furniture {
+		if len(f) != len(keys) {
+			t.Errorf("furniture %d has %d fields, want %d", i, len(f), len(keys))
+		}
+		for k, key := range keys {
+			raw, ok := f[key]
+			if !ok {
+				t.Errorf("furniture %d lacks %s", i, key)
+				continue
+			}
+			got := string(raw)
+			var s string
+			if strings.HasPrefix(got, `"`) && json.Unmarshal(raw, &s) == nil {
+				got = s
+			}
+			if got != furniture[i][k] {
+				t.Errorf("furniture %d %s = %s, want %s", i, key, got, furniture[i][k])
+			}
+		}
+	}
+}

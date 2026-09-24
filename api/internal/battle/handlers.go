@@ -129,7 +129,8 @@ func (h *Handlers) turn(w http.ResponseWriter, r *http.Request, check func(*play
 			return err
 		}
 		enemy, _ := h.Catalog.Enemy(st.Region)
-		rules := Rules{Combat: h.Catalog.Combat, Enemy: enemy, DamageBonus: player.Bonus(h.Catalog, p, "dmg")}
+		rules := Rules{Combat: h.Catalog.Combat, Enemy: enemy, DamageBonus: player.Bonus(h.Catalog, p, "dmg"),
+			SPRegenBonus: player.Bonus(h.Catalog, p, "spregen")}
 		if out, err = play(tx, p, st, rules); err != nil {
 			return err
 		}

@@ -41,6 +41,9 @@ type Player struct {
 	Equipment map[string]*string `json:"equipment"`
 	// Skins is the owned skin ids in catalog order, always with DefaultSkin.
 	Skins []string `json:"skins"`
+	// Office has every catalog zone as a key, each a list of its positions with the installed
+	// furniture id or null.
+	Office map[string][]*string `json:"office"`
 }
 
 // DefaultSkin is owned by every player without a stored row (door 3).
@@ -52,6 +55,14 @@ func emptyEquipment() map[string]*string {
 		eq[s.ID] = nil
 	}
 	return eq
+}
+
+func emptyOffice() map[string][]*string {
+	o := map[string][]*string{}
+	for _, z := range catalog.Default().Office.Zones {
+		o[z.ID] = make([]*string, z.Cells)
+	}
+	return o
 }
 
 // Classes are the cosmetic classes offered at onboarding.
@@ -74,6 +85,7 @@ func newPlayer(githubUserID int64, devName, class string) *Player {
 		Coins: 100, Gems: 20, SkillPoints: 1, Region: "vila", Skin: "default", Skills: []string{},
 		Inventory: []catalog.ItemQuantity{},
 		Gear:      []string{}, Equipment: emptyEquipment(), Skins: []string{DefaultSkin},
+		Office: emptyOffice(),
 	}
 }
 
@@ -132,7 +144,30 @@ func Get(ctx context.Context, q querier, githubUserID int64) (*Player, error) {
 	if err := loadInventory(ctx, q, p); err != nil {
 		return nil, err
 	}
-	return p, LoadGear(ctx, q, p)
+	if err := LoadGear(ctx, q, p); err != nil {
+		return nil, err
+	}
+	return p, LoadOffice(ctx, q, p)
+}
+
+// LoadOffice reads the installed furniture into p.Office. A row outside the catalog's zones is
+// skipped, so shrinking a zone never breaks a player.
+func LoadOffice(ctx context.Context, q querier, p *Player) error {
+	rows, err := q.Query(ctx, `SELECT zone, position, furniture_id FROM player_office WHERE player_id = $1`, p.ID)
+	if err != nil {
+		return err
+	}
+	p.Office = emptyOffice()
+	var zone, id string
+	var pos int
+	_, err = pgx.ForEachRow(rows, []any{&zone, &pos, &id}, func() error {
+		if cells, ok := p.Office[zone]; ok && pos < len(cells) {
+			f := id
+			cells[pos] = &f
+		}
+		return nil
+	})
+	return err
 }
 
 // LoadGear reads the owned gear, the equipped slots and the owned skins into p.
@@ -268,6 +303,9 @@ func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn 
 	if err := LoadGear(ctx, tx, p); err != nil {
 		return nil, err
 	}
+	if err := LoadOffice(ctx, tx, p); err != nil {
+		return nil, err
+	}
 	if err := fn(tx, p); err != nil {
 		return nil, err
 	}
@@ -297,14 +335,33 @@ func GainXP(p *Player, xp int) int {
 	return levels
 }
 
+// Pay takes price from the balance of its currency; a balance equal to the price pays.
+func Pay(p *Player, price catalog.Price) error {
+	switch price.Currency {
+	case "gems":
+		if p.Gems < price.Amount {
+			return httpx.ErrNotEnoughGems
+		}
+		p.Gems -= price.Amount
+	case "coins":
+		if p.Coins < price.Amount {
+			return httpx.ErrNotEnoughCoins
+		}
+		p.Coins -= price.Amount
+	}
+	return nil
+}
+
 // Owns reports whether p owns a piece of gear.
 func (p *Player) Owns(gear string) bool { return slices.Contains(p.Gear, gear) }
 
 // OwnsSkin reports whether p owns a skin; DefaultSkin is always owned.
 func (p *Player) OwnsSkin(skin string) bool { return slices.Contains(p.Skins, skin) }
 
-// Bonus is the one bonus rule (AD-012): the bonus of one type ("hp", "sp", "dmg") summed over
-// the unlocked skills, the equipped gear and the worn skin. Owned but unequipped gear adds nothing.
+// Bonus is the one bonus rule (AD-012, AD-013): the bonus of one type ("hp", "sp", "dmg", "xp",
+// "deploy", "spregen") summed over the unlocked skills, the equipped gear, the worn skin and the
+// installed furniture. Owned but unequipped gear adds nothing; "deploy" is capped at the
+// catalog's MaxDeployCut.
 func Bonus(cat *catalog.Catalog, p *Player, bonusType string) int {
 	sum := cat.SkillBonus(p.Skills, bonusType)
 	for _, id := range p.Equipment {
@@ -317,6 +374,19 @@ func Bonus(cat *catalog.Catalog, p *Player, bonusType string) int {
 	}
 	if s, ok := cat.Skin(p.Skin); ok && s.Bonus != nil && s.Bonus.Type == bonusType {
 		sum += s.Bonus.Amount
+	}
+	for _, cells := range p.Office {
+		for _, id := range cells {
+			if id == nil {
+				continue
+			}
+			if f, ok := cat.FurnitureItem(*id); ok && f.Bonus != nil && f.Bonus.Type == bonusType {
+				sum += f.Bonus.Amount
+			}
+		}
+	}
+	if bonusType == "deploy" {
+		sum = min(sum, cat.Office.MaxDeployCut)
 	}
 	return sum
 }

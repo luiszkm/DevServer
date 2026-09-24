@@ -54,6 +54,8 @@ type Rules struct {
 	Enemy  catalog.Enemy
 	// DamageBonus is the percent added to every hit (skills door 2).
 	DamageBonus int
+	// SPRegenBonus is the SP added to each turn's regeneration (office).
+	SPRegenBonus int
 }
 
 func round(x float64) int { return int(math.Round(x)) }
@@ -160,6 +162,6 @@ func EndTurn(st *State, p *player.Player, shield bool, r Rules, rnd Rand) Outcom
 		out.Events = append(out.Events, Event{Type: "defeat"})
 		return out
 	}
-	st.SP = clamp(st.SP+c.SPRegen, st.SPMax)
+	st.SP = clamp(st.SP+c.SPRegen+r.SPRegenBonus, st.SPMax)
 	return out
 }

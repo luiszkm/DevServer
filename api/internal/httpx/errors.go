@@ -56,6 +56,11 @@ var (
 	ErrUnknownSkin        = &Error{http.StatusUnprocessableEntity, "unknown_skin", "skin desconhecida"}
 	ErrNotOwned           = &Error{http.StatusConflict, "not_owned", "você não possui este item. compre na Loja"}
 	ErrDeployReady        = &Error{http.StatusConflict, "deploy_ready", "o deploy já terminou. colete a recompensa"}
+	ErrUnknownCell        = &Error{http.StatusUnprocessableEntity, "unknown_cell", "espaço do escritório desconhecido"}
+	ErrUnknownFurniture   = &Error{http.StatusUnprocessableEntity, "unknown_furniture", "móvel desconhecido"}
+	ErrWrongZoneWall      = &Error{http.StatusUnprocessableEntity, "wrong_zone", "esse móvel vai na parede"}
+	ErrWrongZoneFloor     = &Error{http.StatusUnprocessableEntity, "wrong_zone", "esse móvel vai no piso"}
+	ErrCellOccupied       = &Error{http.StatusConflict, "cell_occupied", "o espaço já tem um móvel"}
 )
 
 type envelope struct {
