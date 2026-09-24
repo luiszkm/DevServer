@@ -274,7 +274,7 @@ button { font-family: inherit; }
 .office-filter[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: var(--edge); }
 .office-detail { display: flex; flex-direction: column; gap: 9px; background: var(--panel-2); padding: 12px 13px; }
 .office-detail-head { display: flex; align-items: center; gap: 10px; }
-.office-detail-glyph { width: 34px; height: 34px; flex: none; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); background: var(--panel-3); font-size: 9px; }
+.office-detail-glyph { width: 36px; height: 36px; flex: none; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); background: var(--panel-3); font-size: 9px; }
 .office-detail-name { flex: 1; font-size: 9px; }
 .office-detail-cost { font-size: 17px; color: var(--yellow); }
 .office-detail-desc { font-size: 18px; line-height: 1.25; }
@@ -283,7 +283,7 @@ button { font-family: inherit; }
 .office-room-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 11px 14px; border: 3px solid var(--edge); background: var(--panel); }
 .office-level { font-size: 11px; }
 .office-count { font-size: 19px; color: var(--green); }
-.office-room { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 9px; padding: 14px; border: 3px solid var(--edge); box-shadow: inset 0 0 0 2px #22384c; background: radial-gradient(circle at 50% 30%, #1a3247 0%, #0a1622 70%); }
+.office-room { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 9px; padding: 14px; border: 3px solid var(--edge); box-shadow: inset 0 0 0 2px #22384c; background: #0a1622 center / 1280px 720px no-repeat; image-rendering: pixelated; }
 .office-zone { display: flex; flex-direction: column; gap: 9px; }
 .office-zone-name { font-size: 9px; color: var(--dim); }
 .office-cells { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }

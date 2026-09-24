@@ -5,6 +5,7 @@ import { post } from "@/lib/api";
 import { CONNECTION_FAILED, canPay, insufficient, priceLong, priceShort } from "@/lib/gear";
 import { furnitureBonus, officeLevel, officeStats, refundText } from "@/lib/office";
 import type { Furniture, Player } from "@/lib/types";
+import { GameArt } from "./GameArt";
 import { useGame } from "./GameContext";
 
 type Filter = "all" | string;
@@ -76,8 +77,8 @@ export function OfficeScene() {
                 aria-pressed={selId === f.id}
                 onClick={() => setSelId(f.id)}
               >
-                <span className="pixel office-glyph" style={{ color: f.color }}>
-                  {f.glyph}
+                <span className="pixel office-glyph">
+                  <GameArt kind="office" id={f.id} scale={2} alt="" fallback={f.glyph} />
                 </span>
                 <span className={`term office-tag ${f.price.currency}`}>{priceShort(f.price).toUpperCase()}</span>
               </button>
@@ -95,8 +96,8 @@ export function OfficeScene() {
           {sel && (
             <>
               <div className="office-detail-head">
-                <span className="pixel office-detail-glyph" style={{ color: sel.color }}>
-                  {sel.glyph}
+                <span className="pixel office-detail-glyph">
+                  <GameArt kind="office" id={sel.id} scale={2} alt="" fallback={sel.glyph} />
                 </span>
                 <span className="pixel office-detail-name">{sel.name}</span>
                 <span className="term office-detail-cost">{priceLong(sel.price)}</span>
@@ -113,7 +114,7 @@ export function OfficeScene() {
             <span className="pixel office-level">{level.name}</span>
             <span className="term office-count">{`${stats.count} móveis instalados`}</span>
           </div>
-          <div className="office-room" role="region" aria-label="sala">
+          <div className="office-room" role="region" aria-label="sala" style={{ backgroundImage: "url(/art/background/office.png)" }}>
             {zones.map((z) => (
               <div key={z.id} className="office-zone" role="group" aria-label={z.name}>
                 <span className="pixel office-zone-name">{z.name}</span>
@@ -130,8 +131,8 @@ export function OfficeScene() {
                         disabled={pending}
                         onClick={() => tap(z.id, i)}
                       >
-                        <span className="pixel office-cell-glyph" style={f ? { color: f.color } : undefined}>
-                          {f ? f.glyph : id ? "?" : "+"}
+                        <span className="pixel office-cell-glyph">
+                          {f ? <GameArt kind="office" id={f.id} scale={2} alt="" fallback={f.glyph} /> : id ? "?" : "+"}
                         </span>
                         <span className="term office-cell-name">{f ? f.name : ""}</span>
                       </button>

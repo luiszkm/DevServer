@@ -1,9 +1,9 @@
-import { act, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import OfficePage from "@/app/(game)/office/page";
 import type { Player } from "@/lib/types";
-import { CATALOG, json, mockFetch, player, room } from "@/test/helpers";
+import { CATALOG, OFFICE, json, mockFetch, player, room } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 
 function renderOffice(p: Player = player(), setPlayer = vi.fn()) {
@@ -38,13 +38,13 @@ describe("OfficeScene", () => {
     expect(cardIds()).toEqual([
       "mesa", "cadeira_gamer", "setup2", "rack", "cafeteira", "estante", "planta", "tapete", "neon", "poster", "kanban", "janela",
     ]);
-    const want: [string, string, string][] = [
-      ["mesa", "[==]", "60C"], ["cadeira_gamer", "[|]", "40G"], ["setup2", "][", "90G"], ["rack", "::", "70G"],
-      ["cafeteira", "{C}", "55C"], ["estante", "|||", "45C"], ["planta", "^", "25C"], ["tapete", "##", "30C"],
-      ["neon", "~~", "35G"], ["poster", "[#]", "20C"], ["kanban", "[+]", "50C"], ["janela", "[/]", "60G"],
+    const want: [string, string][] = [
+      ["mesa", "60C"], ["cadeira_gamer", "40G"], ["setup2", "90G"], ["rack", "70G"],
+      ["cafeteira", "55C"], ["estante", "45C"], ["planta", "25C"], ["tapete", "30C"],
+      ["neon", "35G"], ["poster", "20C"], ["kanban", "50C"], ["janela", "60G"],
     ];
-    for (const [id, glyph, tag] of want) {
-      expect(card(id).querySelector(".office-glyph")).toHaveTextContent(glyph);
+    for (const [id, tag] of want) {
+      expect(card(id).querySelector(".office-glyph img")?.getAttribute("src")).toBe(`/art/icon/office-${id}.png`);
       expect(card(id).querySelector(".office-tag")).toHaveTextContent(tag);
     }
     expect(filter("TODOS")).toHaveAttribute("aria-pressed", "true");
@@ -76,7 +76,7 @@ describe("OfficeScene", () => {
     const name = () => detail().querySelector(".office-detail-name")?.textContent;
     expect(name()).toBe("MESA EM L");
     expect(cost()).toBe("60 COINS");
-    expect(detail().querySelector(".office-detail-glyph")).toHaveTextContent("[==]");
+    expect(detail().querySelector(".office-detail-glyph img")?.getAttribute("src")).toBe("/art/icon/office-mesa.png");
     expect(desc()).toBe("Espaço para dois monitores e o café. · PISO · conforto +8 · +3% XP");
     await userEvent.click(card("setup2"));
     expect(name()).toBe("SETUP 2 TELAS");
@@ -105,9 +105,9 @@ describe("OfficeScene", () => {
 
   it("room grid with furniture", () => {
     renderOffice(player({ office: room({ parede: { 1: "neon" }, piso: { 0: "mesa" } }) }));
-    expect(cell("parede", 1)).toHaveTextContent("~~");
+    expect(cell("parede", 1).querySelector("img")?.getAttribute("src")).toBe("/art/icon/office-neon.png");
     expect(cell("parede", 1)).toHaveTextContent("LETREIRO NEON");
-    expect(cell("piso", 0)).toHaveTextContent("[==]");
+    expect(cell("piso", 0).querySelector("img")?.getAttribute("src")).toBe("/art/icon/office-mesa.png");
     expect(cell("piso", 0)).toHaveTextContent("MESA EM L");
     const empty = [...cells("parede"), ...cells("piso")].filter((c) => c !== cell("parede", 1) && c !== cell("piso", 0));
     expect(empty).toHaveLength(30);
@@ -295,5 +295,48 @@ describe("OfficeScene", () => {
     await userEvent.click(cell("piso", 0));
     expect(m.calls("POST /api/me/office/piso/0/remove")).toBe(1);
     expect(status()).toHaveTextContent(/^GUARDADO$/);
+  });
+
+  // game-art C29
+  it("furniture art", async () => {
+    renderOffice(player({ office: room({ piso: { 0: "mesa", 1: "sofa" } }) }));
+    for (const f of OFFICE.furniture) {
+      const box = card(f.id).querySelector(".office-glyph") as HTMLElement;
+      const img = box.querySelector("img")!;
+      expect(img.getAttribute("src")).toBe(`/art/icon/office-${f.id}.png`);
+      expect(img.getAttribute("alt")).toBe("");
+      expect(img.getAttribute("width")).toBe("32");
+      expect(img).toHaveClass("pixelated");
+      expect(box.textContent).not.toContain(f.glyph);
+      // the art carries the colour now; the catalog colour no longer paints the glyph box
+      expect(box.style.color).toBe("");
+
+      await userEvent.click(card(f.id));
+      const head = detail().querySelector(".office-detail-glyph img")!;
+      expect(head.getAttribute("src")).toBe(`/art/icon/office-${f.id}.png`);
+      expect(head.getAttribute("alt")).toBe("");
+      expect(head.getAttribute("width")).toBe("32");
+    }
+
+    const mesa = cell("piso", 0).querySelector(".office-cell-glyph img")!;
+    expect(mesa.getAttribute("src")).toBe("/art/icon/office-mesa.png");
+    expect(mesa.getAttribute("alt")).toBe("");
+    expect(mesa.getAttribute("width")).toBe("32");
+    expect(cell("piso", 2).querySelector("img")).toBeNull();
+    expect(cell("piso", 2).querySelector(".office-cell-glyph")?.textContent).toBe("+");
+    expect(cell("piso", 1).querySelector("img")).toBeNull();
+    expect(cell("piso", 1).querySelector(".office-cell-glyph")?.textContent).toBe("?");
+
+    fireEvent.error(card("mesa").querySelector("img")!);
+    expect(card("mesa").querySelector("img")).toBeNull();
+    expect(card("mesa").querySelector(".office-glyph")).toHaveTextContent("[==]");
+  });
+
+  // game-art C30
+  it("office background", () => {
+    renderOffice();
+    const room = screen.getByRole("region", { name: "sala" });
+    expect(room).toHaveClass("office-room");
+    expect(room.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/office.png)");
   });
 });

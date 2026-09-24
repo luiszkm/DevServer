@@ -113,10 +113,10 @@ Proof: `cd web && npx vitest run src/components/ServerScene.test.tsx -t "rack ar
 **C28** - A seção `.server` tem `background-image: url(/art/background/server.png)` (ART-06, AC 12) ✅
 Proof: `cd web && npx vitest run src/components/ServerScene.test.tsx -t "server background"`
 
-**C29** - Em OFFICE: cada cartão da loja mostra `/art/icon/office-<id>.png` `alt=""` `width=32`; o detalhe do selecionado idem; célula com `mesa` mostra `office-mesa.png` `alt=""`; célula vazia mostra `+` sem `<img>`; célula com id fora do catálogo mostra `?` sem `<img>`; após `error` o cartão mostra o glifo (`[==]`) (ART-06, AC 13, 5)
+**C29** - Em OFFICE: cada cartão da loja mostra `/art/icon/office-<id>.png` `alt=""` `width=32`; o detalhe do selecionado idem; célula com `mesa` mostra `office-mesa.png` `alt=""`; célula vazia mostra `+` sem `<img>`; célula com id fora do catálogo mostra `?` sem `<img>`; após `error` o cartão mostra o glifo (`[==]`) (ART-06, AC 13, 5) ✅
 Proof: `cd web && npx vitest run src/components/OfficeScene.test.tsx -t "furniture art"`
 
-**C30** - `.office-room` tem `background-image: url(/art/background/office.png)` (ART-06, AC 13)
+**C30** - `.office-room` tem `background-image: url(/art/background/office.png)` (ART-06, AC 13) ✅
 Proof: `cd web && npx vitest run src/components/OfficeScene.test.tsx -t "office background"`
 
 **C31** - No MUNDO, cada um dos 6 nós mostra `/art/icon/region-<id>.png` `alt=""` `width=32` e nenhum `.node-diamond`; `.world-map` tem `background-image: url(/art/background/world.png)`; após `error` o nó mostra o texto do `tag` da região (`HUB`) (ART-07, AC 14, 5)
