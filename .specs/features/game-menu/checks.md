@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/game-menu/plan.md`
 
-27 checks in 7 slices · 3 one-way doors · 0 open
+30 checks in 8 slices · 3 one-way doors · 0 open
 
 Tables used by the checks (`TABS` order, door 1):
 
@@ -99,7 +99,7 @@ Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "menu button ic
 **C24** - A 1280x800 e a 390x844 (menu aberto), em cada um dos 9 slots, a caixa do `.tab-num` fica acima e à esquerda da do `.tab-icon` (`num.x + num.width <= icon.x` e `num.y < icon.y`) e dentro do slot, e o rótulo fica abaixo do ícone (`label.y >= icon.y + icon.height`); no slot ativo o `box-shadow` do `.tab-icon` contém o brilho `rgb(255, 224, 138)` e nos outros 8 não (2 casos) (MENU-02, AC 5, 6; plan Sources "número no canto, rótulo embaixo, ativo com brilho"; added after verification round 1) ✅
 Proof: `cd web && npx playwright test e2e/game-menu.spec.ts -g "C24 "`
 
-Ink off the outline, tones per material and the specular pixel are mechanised in S7 (C25-C27); nothing about the icon style is left to preview judgement beyond silhouette readability.
+Ink off the outline is mechanised by C27 for all 9 icons; tones per material and the specular pixel are mechanised for all 9 icons by C28-C30 (S8), with C25/C26 as the first, narrower cases. Silhouette readability is the only style rule left to preview judgement.
 
 ### S7 - fix round 2 · 2 specs + 2 PNGs + 1 test · added after verification round 2 (no specular on the `office` screen; 2 tones on the `mundo` paper and `office` bezel; ink exemption imprecise)
 
@@ -111,6 +111,19 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu material tones"`
 
 **C27** - Os pixels `ink.0` sem nenhum vizinho transparente (8-conexo, fora da tela conta como transparente) são exatamente: `avatar` (5,6) (10,6) - olhos; `deploy` (5,9) (5,10) (5,11) (10,9) (10,10) (10,11) - junção aleta/corpo; `office` (7,8) (8,8) (7,10) (8,10) - junção monitor/suporte e suporte/mesa; nenhum nos outros 6 ícones (style guide: detalhe interno nunca em ink, exceto olhos e fronteira entre partes) (MENU-01, AC 1; added after verification round 2) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu inner ink"`
+
+### S8 - fix round 3 · 4 specs + 4 PNGs + 1 test · added after verification round 3 (tone rule measured only where a gap was named; `server` metal in 1 tone; "material" undefined - ruled by the user)
+
+Surface table (legend chars of each spec, plan `Assumptions` "Material"): `avatar` rosto `s m S p` · cabelo `h H j` · moletom `k K n` · small: zíper `c` | `bug-fight` casco `l r R s` · small: cabeça `k`, olhos `w` | `deploy` corpo `w m M` · aletas `r R l` · small: vidro `b B`, chama `y Y f` | `loja` saco `D d m` · moeda `g y l M` · small: cordão `r` | `mundo` papel `p P q` · terra `g G L` · small: água `b`, trilha `x` | `office` tela `g G S` · moldura `f E F` · mesa `W w d` · small: suporte `M m` | `server` estrutura `M m n` · gavetas `S d z` · small: LEDs `g b y` | `skills` estrela `b m l w` | `titulo` telhado `r R l` · paredes `W w d k` · small: porta `D`, janela `y Y`. Glossy: `loja` moeda top `gold.4`, `office` tela top `code.4`, `deploy` vidro top `net.4`.
+
+**C28** - Em cada um dos 9 specs `web/art/icon/menu-<icon>.json`, cada superfície da tabela com 12px ou mais usa pelo menos 3 cores distintas da paleta (18 superfícies) (MENU-01, AC 1; binding style source "3-4 tones per material"; added after verification round 3) ✅
+Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu surface tones"`
+
+**C29** - Em cada um dos 9 specs, todo caractere do grid que não é `o` nem `.` pertence a exatamente uma superfície ou parte pequena da tabela, e cada parte pequena soma menos de 12px (nenhum pixel escapa da regra) (MENU-01, AC 1; added after verification round 3) ✅
+Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu surface table covers"`
+
+**C30** - Cada superfície brilhante da tabela (`loja` moeda, `office` tela, `deploy` vidro) tem exatamente um pixel no tom mais alto da sua rampa (`gold.4`, `code.4`, `net.4`) (MENU-01, AC 1; binding style source "one white or top-tone specular pixel"; added after verification round 3) ✅
+Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu glossy specular"`
 
 ## Coverage
 
@@ -126,7 +139,8 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu inner ink"`
 | shortcut side effects (2) | navega C9, C14 · fecha menu C13 | - |
 | MENU button by route (2) | cena de `TABS` C15 · fora de `TABS` C15 | - |
 | phone widths with open menu (2) | 360 C16 · 390 C16 | - |
-| icon style rules, mechanised (7) | margin C19 · fill ~80% C19 · ink outline C20 · top-left light C21 · specular on glossy screen C25 · tones per material C26 · no inner-detail ink C27 | - |
+| icon style rules, mechanised (7) | margin C19 · fill ~80% C19 · ink outline C20 · top-left light C21 · specular on every glossy surface C25, C30 · tones on every surface ≥12px C26, C28, C29 · no inner-detail ink C27 | - |
+| surfaces ≥12px (18) | avatar rosto C28 · avatar cabelo C28 · avatar moletom C28 · bug-fight casco C28 · deploy corpo C28 · deploy aletas C28 · loja saco C28 · loja moeda C28 · mundo papel C28 · mundo terra C28 · office tela C28 · office moldura C28 · office mesa C28 · server estrutura C28 · server gavetas C28 · skills estrela C28 · titulo telhado C28 · titulo paredes C28 | - |
 | shortcut guards: already handled (1) | `defaultPrevented` C22 | - |
 | MENU icon per scene (9) | `/` C23 · `/mundo` C23 · `/server` C23 · `/deploy` C23 · `/bug-fight` C23 · `/skills` C23 · `/loja` C23 · `/avatar` C23 · `/office` C23 | - |
 | slot arrangement (4) | number top-left C24 · icon in square frame C6 · label below C24 · active glow C24 | - |

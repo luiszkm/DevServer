@@ -191,7 +191,7 @@ describe("catalog art on disk", () => {
 
     const mundo = pngPixels(`${ROOT}web/public/art/icon/menu-mundo.png`);
     const paper = new Set<string>();
-    const scenery = ["#060612", "#78c828", "#588818", "#1296d2", "#c62a42"];
+    const scenery = ["#060612", "#78c828", "#588818", "#286828", "#1296d2", "#c62a42"];
     for (let y = 0; y < mundo.height; y++)
       for (let x = 0; x < mundo.width; x++) {
         if (mundo.px(x, y)[3] !== 255) continue;
@@ -224,6 +224,60 @@ describe("catalog art on disk", () => {
       }
     expect(inner).toEqual(expected);
   });
+
+  // game-menu C28-C30 (added after verification round 3): the tone and specular rules on every icon,
+  // surfaces by legend char as the plan's "Material" assumption defines them
+  type Surfaces = { surfaces: Record<string, string>; small: Record<string, string>; glossy?: Record<string, string> };
+  const SURFACES: Record<string, Surfaces> = {
+    avatar: { surfaces: { rosto: "smSp", cabelo: "hHj", moletom: "kKn" }, small: { ziper: "c" } },
+    "bug-fight": { surfaces: { casco: "lrRs" }, small: { cabeca: "k", olhos: "w" } },
+    deploy: { surfaces: { corpo: "wmM", aletas: "rRl" }, small: { vidro: "bB", chama: "yYf" }, glossy: { vidro: "net.4" } },
+    loja: { surfaces: { saco: "Ddm", moeda: "gylM" }, small: { cordao: "r" }, glossy: { moeda: "gold.4" } },
+    mundo: { surfaces: { papel: "pPq", terra: "gGL" }, small: { agua: "b", trilha: "x" } },
+    office: { surfaces: { tela: "gGS", moldura: "fEF", mesa: "Wwd" }, small: { suporte: "Mm" }, glossy: { tela: "code.4" } },
+    server: { surfaces: { estrutura: "Mmn", gavetas: "Sdz" }, small: { leds: "gby" } },
+    skills: { surfaces: { estrela: "bmlw" }, small: {} },
+    titulo: { surfaces: { telhado: "rRl", paredes: "Wwdk" }, small: { porta: "D", janela: "yY" } },
+  };
+  function spec(id: string) {
+    const s = JSON.parse(readFileSync(`${ROOT}web/art/icon/menu-${id}.json`, "utf8")) as {
+      legend: Record<string, string>;
+      layers: { grid?: string[] }[];
+    };
+    expect(s.layers).toHaveLength(1);
+    const counts: Record<string, number> = {};
+    for (const row of s.layers[0].grid!) for (const ch of row) if (ch !== "." && ch !== " ") counts[ch] = (counts[ch] ?? 0) + 1;
+    return { legend: s.legend, counts };
+  }
+  const size = (chars: string, counts: Record<string, number>) => [...chars].reduce((a, c) => a + (counts[c] ?? 0), 0);
+
+  it.each(Object.entries(SURFACES).flatMap(([id, t]) => Object.entries(t.surfaces).map(([name, chars]) => [id, name, chars])))(
+    "menu surface tones %s %s",
+    (id, _, chars) => {
+      const { legend, counts } = spec(id);
+      expect(size(chars, counts)).toBeGreaterThanOrEqual(12);
+      const tones = new Set([...chars].filter((c) => counts[c]).map((c) => legend[c]));
+      expect(tones.size).toBeGreaterThanOrEqual(3);
+    },
+  );
+
+  it.each(Object.keys(SURFACES))("menu surface table covers %s", (id) => {
+    const { counts } = spec(id);
+    const t = SURFACES[id];
+    const owners = [...Object.values(t.surfaces), ...Object.values(t.small)].join("");
+    for (const ch of Object.keys(counts).filter((c) => c !== "o")) expect([...owners].filter((c) => c === ch), `${id} '${ch}'`).toHaveLength(1);
+    for (const [name, chars] of Object.entries(t.small)) expect(size(chars, counts), `${id} ${name}`).toBeLessThan(12);
+  });
+
+  it.each(Object.entries(SURFACES).flatMap(([id, t]) => Object.entries(t.glossy ?? {}).map(([name, top]) => [id, name, top])))(
+    "menu glossy specular %s %s",
+    (id, name, top) => {
+      const { legend, counts } = spec(id);
+      const t = SURFACES[id];
+      const chars = t.surfaces[name] ?? t.small[name];
+      expect([...chars].filter((c) => legend[c] === top).reduce((a, c) => a + (counts[c] ?? 0), 0)).toBe(1);
+    },
+  );
 
   // C26: fixed names, no catalog entry (door 1)
   it("scene background for the map, the room and the machine hall, 320x180", () => {
