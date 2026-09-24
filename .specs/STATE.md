@@ -23,9 +23,9 @@
 ## Handoff
 
 **Feature**: responsive
-**Where**: C1–C26 fechados; Verifier round 1 FAIL (corrigido 96793fd, fc4dc84), round 2 FAIL (LOJA populada sem prova, corrigido com C25/C26); falta Verifier round 3 (último antes de escalar)
+**Where**: C1–C26 fechados; Verifier round 3 PASS (round 1 FAIL: mutante F1, estados de erro e cenas populadas; round 2 FAIL: LOJA populada - corrigidos em 96793fd, fc4dc84, 963c07e)
 **In progress**: nenhum
-**Next step**: Verifier round 3 (scoped) sobre `5cdbe61..HEAD`; depois push e PR de `feat/office`, `feat/server-room`, `feat/game-art` e `feat/responsive` quando o usuário pedir
+**Next step**: push e PR de `feat/office`, `feat/server-room`, `feat/game-art` e `feat/responsive` quando o usuário pedir
 **Blockers**: none
 **Uncommitted**: none
 **Branch**: feat/responsive (sobre feat/game-art)

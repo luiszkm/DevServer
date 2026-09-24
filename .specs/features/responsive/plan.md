@@ -94,10 +94,10 @@ botão tocável. No desktop (1200px ou mais) nada muda.
 
 | ID | Slice | Criteria | Status |
 | --- | --- | --- | --- |
-| RESP-01 | S1 | 1, 2, 3, 4, 5, 6 | Implementing |
-| RESP-02 | S2 | 7, 8, 9, 10 | Implementing |
-| RESP-03 | S2 | 11, 12, 13, 14 | Implementing |
-| RESP-04 | S3 | 15, 16 | Implementing |
+| RESP-01 | S1 | 1, 2, 3, 4, 5, 6 | Verified |
+| RESP-02 | S2 | 7, 8, 9, 10 | Verified |
+| RESP-03 | S2 | 11, 12, 13, 14 | Verified |
+| RESP-04 | S3 | 15, 16 | Verified |
 
 ## Observable
 
