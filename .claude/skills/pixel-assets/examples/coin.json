@@ -1,0 +1,27 @@
+{
+  "name": "coin",
+  "category": "icon",
+  "size": [16, 16],
+  "legend": {"o": "ink", "d": "gold.0", "m": "gold.1", "b": "gold.2", "l": "gold.3", "w": "gold.4"},
+  "layers": [
+    {"grid": [
+      "....oooo",
+      "..oollll",
+      ".olllbbb",
+      ".olbbbbb",
+      "olbbmmmm",
+      "olbmbbbb",
+      "olbmbbdd",
+      "olbmbbdd",
+      "olbmbbdd",
+      "olbmbbbb",
+      "olbbmmmm",
+      ".odbbbbb",
+      ".oddbbbb",
+      "..oodddd",
+      "....oooo"
+    ], "mirror": "odd", "at": [0, 0]},
+    {"rect": [3, 3, 1, 2], "color": "gold.4"},
+    {"rect": [4, 2, 2, 1], "color": "gold.4"}
+  ]
+}

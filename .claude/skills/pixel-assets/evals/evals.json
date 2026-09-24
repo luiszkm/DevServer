@@ -1,0 +1,54 @@
+{
+  "skill_name": "pixel-assets",
+  "evals": [
+    {
+      "id": 1,
+      "name": "log-wisp-sprite",
+      "prompt": "cria o sprite do LOG WISP (inimigo da floresta, ta em api/catalog/combat.json) no estilo da keyart pra gente trocar o glyph na BattleScene depois",
+      "expected_output": "One 32x32 transparent sprite PNG of a wisp-like log/ghost enemy, ink-outlined, palette-locked, plus its spec",
+      "files": [],
+      "assertions": [
+        "A final PNG asset was produced",
+        "Every asset uses a standard size for its category",
+        "Every opaque pixel uses a color from the key-art palette",
+        "No semi-transparent pixels",
+        "A reproducible source (spec or script) was saved next to the PNG",
+        "Asset sits on a transparent background",
+        "Outline is at least 90% ink (#060612), like the key art"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "shop-icon-set",
+      "prompt": "preciso dos ícones dos itens da loja (api/catalog/shop.json): café expresso, fone com cancelamento e moletom confortável. tem que parecer tudo do mesmo jogo da keyart",
+      "expected_output": "Three 16x16 (or 24x24) icons with consistent outline, light direction and fill ratio",
+      "files": [],
+      "assertions": [
+        "A final PNG asset was produced",
+        "Every asset uses a standard size for its category",
+        "Every opaque pixel uses a color from the key-art palette",
+        "No semi-transparent pixels",
+        "A reproducible source (spec or script) was saved next to the PNG",
+        "Asset sits on a transparent background",
+        "Outline is at least 90% ink (#060612), like the key art",
+        "Three icons were produced, all the same size"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "server-room-background",
+      "prompt": "gera o fundo da ServerScene: uma sala de servidores escura com racks e LEDs piscando, mesma pegada da keyart",
+      "expected_output": "One opaque 320x180 background PNG with racks, LEDs, dark stone/metal palette, calm middle band",
+      "files": [],
+      "assertions": [
+        "A final PNG asset was produced",
+        "Every asset uses a standard size for its category",
+        "Every opaque pixel uses a color from the key-art palette",
+        "No semi-transparent pixels",
+        "A reproducible source (spec or script) was saved next to the PNG",
+        "Background is fully opaque",
+        "Bright green/blue LED pixels are present (>= 20)"
+      ]
+    }
+  ]
+}

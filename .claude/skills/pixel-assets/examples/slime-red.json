@@ -1,0 +1,8 @@
+{
+  "name": "slime-red",
+  "category": "sprite",
+  "size": [32, 32],
+  "layers": [
+    {"use": "slime.json", "recolor": {"slime": "red"}, "flip": "h"}
+  ]
+}
