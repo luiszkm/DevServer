@@ -120,6 +120,8 @@ async function expectArrangement(page: Page, activeLabel: string) {
     expect(s.num.y, s.text).toBeLessThan(s.icon.y);
     expect(s.num.x, s.text).toBeGreaterThanOrEqual(s.slot.x);
     expect(s.num.y, s.text).toBeGreaterThanOrEqual(s.slot.y);
+    expect(s.num.x + s.num.w, s.text).toBeLessThanOrEqual(s.slot.x + s.slot.w);
+    expect(s.num.y + s.num.h, s.text).toBeLessThanOrEqual(s.slot.y + s.slot.h);
     expect(s.label.y, s.text).toBeGreaterThanOrEqual(s.icon.y + s.icon.h);
     if (s.text.includes(activeLabel)) expect(s.shadow, s.text).toContain("rgb(255, 224, 138)");
     else expect(s.shadow, s.text).not.toContain("rgb(255, 224, 138)");

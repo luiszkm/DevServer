@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/game-menu/plan.md`
 
-24 checks in 6 slices · 3 one-way doors · 0 open
+27 checks in 7 slices · 3 one-way doors · 0 open
 
 Tables used by the checks (`TABS` order, door 1):
 
@@ -99,7 +99,18 @@ Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "menu button ic
 **C24** - A 1280x800 e a 390x844 (menu aberto), em cada um dos 9 slots, a caixa do `.tab-num` fica acima e à esquerda da do `.tab-icon` (`num.x + num.width <= icon.x` e `num.y < icon.y`) e dentro do slot, e o rótulo fica abaixo do ícone (`label.y >= icon.y + icon.height`); no slot ativo o `box-shadow` do `.tab-icon` contém o brilho `rgb(255, 224, 138)` e nos outros 8 não (2 casos) (MENU-02, AC 5, 6; plan Sources "número no canto, rótulo embaixo, ativo com brilho"; added after verification round 1) ✅
 Proof: `cd web && npx playwright test e2e/game-menu.spec.ts -g "C24 "`
 
-Not mechanised, judged against the preview by the Verifier (enumerated, per icon): ink between two separate parts of one object stays ink as an object boundary - `deploy` fin/body seams, `office` monitor bottom over the stand, `bug-fight` head over the shell, `avatar` eyes (style guide sprite rule: eyes in ink); no other icon uses `ink.0` off the outline. "3-4 tones per material" and one specular pixel on glossy things (`deploy` window, `office` screen) are judged the same way.
+Ink off the outline, tones per material and the specular pixel are mechanised in S7 (C25-C27); nothing about the icon style is left to preview judgement beyond silhouette readability.
+
+### S7 - fix round 2 · 2 specs + 2 PNGs + 1 test · added after verification round 2 (no specular on the `office` screen; 2 tones on the `mundo` paper and `office` bezel; ink exemption imprecise)
+
+**C25** - `menu-office` tem exatamente um pixel `code.4` `#b6f070`, em (4,3), canto superior esquerdo da tela; os outros pixels da tela (x 4-11, y 3-6) são `code.0` `#1f5a08` ou `code.3` `#6bd425` (style guide: tela brilhante ganha um pixel especular) (MENU-01, AC 1; added after verification round 2) ✅
+Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu office specular"`
+
+**C26** - A moldura do monitor de `menu-office` (linha 2 x 3-12, colunas x 3 e x 12 y 3-6, linha 7 x 3-12) usa exatamente os 3 tons `stone.3` `#46586a`, `stone.2` `#2a3642`, `stone.1` `#121e2a`; o papel de `menu-mundo` (dentro do contorno, sem terra, água e trilha) usa exatamente `cloud.3` `#fbf6ea`, `cloud.2` `#f6ead2` e `dirt.3` `#deb060` (style guide: 3-4 tons por material) (MENU-01, AC 1; added after verification round 2) ✅
+Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu material tones"`
+
+**C27** - Os pixels `ink.0` sem nenhum vizinho transparente (8-conexo, fora da tela conta como transparente) são exatamente: `avatar` (5,6) (10,6) - olhos; `deploy` (5,9) (5,10) (5,11) (10,9) (10,10) (10,11) - junção aleta/corpo; `office` (7,8) (8,8) (7,10) (8,10) - junção monitor/suporte e suporte/mesa; nenhum nos outros 6 ícones (style guide: detalhe interno nunca em ink, exceto olhos e fronteira entre partes) (MENU-01, AC 1; added after verification round 2) ✅
+Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu inner ink"`
 
 ## Coverage
 
@@ -115,7 +126,7 @@ Not mechanised, judged against the preview by the Verifier (enumerated, per icon
 | shortcut side effects (2) | navega C9, C14 · fecha menu C13 | - |
 | MENU button by route (2) | cena de `TABS` C15 · fora de `TABS` C15 | - |
 | phone widths with open menu (2) | 360 C16 · 390 C16 | - |
-| icon style rules, mechanised (4) | margin C19 · fill ~80% C19 · ink outline C20 · top-left light C21 | - |
+| icon style rules, mechanised (7) | margin C19 · fill ~80% C19 · ink outline C20 · top-left light C21 · specular on glossy screen C25 · tones per material C26 · no inner-detail ink C27 | - |
 | shortcut guards: already handled (1) | `defaultPrevented` C22 | - |
 | MENU icon per scene (9) | `/` C23 · `/mundo` C23 · `/server` C23 · `/deploy` C23 · `/bug-fight` C23 · `/skills` C23 · `/loja` C23 · `/avatar` C23 · `/office` C23 | - |
 | slot arrangement (4) | number top-left C24 · icon in square frame C6 · label below C24 · active glow C24 | - |
