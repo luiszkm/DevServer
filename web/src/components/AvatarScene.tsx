@@ -91,10 +91,8 @@ export function AvatarScene() {
             >
               {e.kind === "skin" ? (
                 <HeroSprite filter={e.filter ?? "none"} className="avatar-cell-sprite" />
-              ) : e.kind === "item" ? (
-                <GameArt kind="item" id={e.id} scale={2} alt={e.name} fallback={e.glyph} />
               ) : (
-                <span className="pixel">{e.glyph}</span>
+                <GameArt kind={e.kind} id={e.id} scale={2} alt={e.name} fallback={e.glyph} />
               )}
               <span className="term avatar-cell-tag">{e.tag}</span>
             </button>
@@ -179,7 +177,9 @@ export function AvatarScene() {
     const name = catalog.gearSlots.find((s) => s.id === slot)?.name ?? slot;
     return (
       <button key={slot} type="button" className="avatar-slot" data-slot={slot} data-filled={!!g} onClick={() => openBag("equip", g?.id ?? null)}>
-        <span className="pixel avatar-slot-glyph">{g ? g.glyph : "[ ]"}</span>
+        <span className="pixel avatar-slot-glyph">
+          {g ? <GameArt kind="gear" id={g.id} scale={2} alt="" fallback={g.glyph} /> : "[ ]"}
+        </span>
         <span className="term avatar-slot-label">{g ? g.name : name}</span>
       </button>
     );
@@ -199,7 +199,7 @@ export function AvatarScene() {
       const slot = catalog.gearSlots.find((s) => s.id === g.slot)?.name ?? g.slot;
       return (
         <>
-          <DetailHead icon={g.glyph} name={g.name} rarity={g.rarity} />
+          <DetailHead icon={<GameArt kind="gear" id={g.id} scale={2} alt="" fallback={g.glyph} />} name={g.name} rarity={g.rarity} />
           <span className="term">{`${g.description} · ${slot} · ${bonusLong(g.bonus)}`}</span>
           {current.active ? (
             <button type="button" className="btn btn-dark" disabled={pending} onClick={() => run(`/api/me/gear/${g.id}/unequip`, "ITEM REMOVIDO")}>

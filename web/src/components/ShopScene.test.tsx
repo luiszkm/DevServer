@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import ShopPage from "@/app/(game)/loja/page";
 import type { Player } from "@/lib/types";
-import { CATALOG, ITEMS, json, mockFetch, player } from "@/test/helpers";
+import { CATALOG, GEAR, ITEMS, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 
 function renderShop(p: Player = player(), setPlayer = vi.fn()) {
@@ -240,5 +240,27 @@ describe("ShopScene", () => {
     fireEvent.error(card("hp_potion").querySelector("img")!);
     expect(card("hp_potion").querySelector("img")).toBeNull();
     expect(card("hp_potion").querySelector(".shop-glyph")).toHaveTextContent("HP+");
+  });
+
+  // game-art C16
+  it("gear art", async () => {
+    renderShop();
+    for (const g of GEAR) {
+      const img = card(g.id).querySelector("img")!;
+      expect(img.getAttribute("src")).toBe(`/art/icon/gear-${g.id}.png`);
+      expect(img.getAttribute("alt")).toBe("");
+      expect(img.getAttribute("width")).toBe("32");
+      expect(img).toHaveClass("pixelated");
+      expect(card(g.id).textContent).not.toContain(g.glyph);
+
+      await userEvent.click(card(g.id));
+      const big = detail().querySelector("img")!;
+      expect(big.getAttribute("src")).toBe(`/art/icon/gear-${g.id}.png`);
+      expect(big.getAttribute("alt")).toBe("");
+      expect(big.getAttribute("width")).toBe("64");
+    }
+    fireEvent.error(card("macbook").querySelector("img")!);
+    expect(card("macbook").querySelector("img")).toBeNull();
+    expect(card("macbook").querySelector(".shop-glyph")).toHaveTextContent("[Mac]");
   });
 });

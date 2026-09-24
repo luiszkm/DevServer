@@ -89,7 +89,7 @@ describe("AvatarScene", () => {
     expect(side("slots à esquerda")).toEqual(["setup", "vestuario"]);
     expect(side("slots à direita")).toEqual(["acessorio", "bebida"]);
     const slot = (id: string) => document.querySelector(`[data-slot="${id}"]`) as HTMLButtonElement;
-    expect(slot("setup").querySelector(".avatar-slot-glyph")).toHaveTextContent("[Mac]");
+    expect(slot("setup").querySelector(".avatar-slot-glyph img")?.getAttribute("src")).toBe("/art/icon/gear-macbook.png");
     expect(slot("setup").querySelector(".avatar-slot-label")).toHaveTextContent("MACBOOK PRO");
     for (const [id, name] of [["vestuario", "VESTUÁRIO"], ["acessorio", "ACESSÓRIO"], ["bebida", "BEBIDA"]]) {
       expect(slot(id).querySelector(".avatar-slot-glyph")?.textContent).toBe("[ ]");
@@ -258,5 +258,45 @@ describe("AvatarScene", () => {
     fireEvent.error(cell("sp_potion").querySelector("img")!);
     expect(cell("sp_potion").querySelector("img")).toBeNull();
     expect(cell("sp_potion")).toHaveTextContent("++");
+  });
+
+  // game-art C17
+  it("gear art", async () => {
+    renderAvatar(geared());
+    const slot = (id: string) => document.querySelector(`[data-slot="${id}"]`) as HTMLButtonElement;
+    await userEvent.click(tab("EQUIP"));
+    for (const [id, name, glyph] of [["macbook", "MACBOOK PRO", "[Mac]"], ["cafe", "CAFÉ EXPRESSO", "{C}"], ["moletom", "MOLETOM CONFORTÁVEL", "[[]]"]]) {
+      const img = cell(id).querySelector("img")!;
+      expect(img.getAttribute("src")).toBe(`/art/icon/gear-${id}.png`);
+      expect(img.getAttribute("alt")).toBe(name);
+      expect(img.getAttribute("width")).toBe("32");
+      expect(img).toHaveClass("pixelated");
+      expect(cell(id).textContent).not.toContain(glyph);
+
+      await userEvent.click(cell(id));
+      const head = detail().querySelector(".avatar-detail-head img")!;
+      expect(head.getAttribute("src")).toBe(`/art/icon/gear-${id}.png`);
+      expect(head.getAttribute("alt")).toBe("");
+      expect(head.getAttribute("width")).toBe("32");
+    }
+
+    const setup = slot("setup").querySelector("img")!;
+    expect(setup.getAttribute("src")).toBe("/art/icon/gear-macbook.png");
+    expect(setup.getAttribute("alt")).toBe("");
+    expect(setup.getAttribute("width")).toBe("32");
+    expect(slot("acessorio").querySelector("img")).toBeNull();
+    expect(slot("acessorio").querySelector(".avatar-slot-glyph")?.textContent).toBe("[ ]");
+
+    await userEvent.click(tab("SKINS"));
+    const skin = cell("shadow").querySelector("img")!;
+    expect(skin.getAttribute("src")).toBe("/hero.png");
+    expect(cell("shadow").querySelector('img[src^="/art/"]')).toBeNull();
+    await userEvent.click(cell("shadow"));
+    expect(detail().querySelector(".avatar-detail-glyph")?.textContent).toBe("SKN");
+    expect(detail().querySelector(".avatar-detail-glyph img")).toBeNull();
+
+    fireEvent.error(setup);
+    expect(slot("setup").querySelector("img")).toBeNull();
+    expect(slot("setup").querySelector(".avatar-slot-glyph")).toHaveTextContent("[Mac]");
   });
 });

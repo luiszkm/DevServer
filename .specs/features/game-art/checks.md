@@ -72,10 +72,10 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "deploy"`
 **C15** - Existem `icon/hud-coin`, `icon/hud-gem`, `icon/hud-heart`, `icon/hud-xp` (spec e PNG 16x16) (ART-01, AC 2, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "hud"`
 
-**C16** - Na LOJA, cada cartão de equipamento mostra `/art/icon/gear-<id>.png` `alt=""` `width=32`, e o detalhe do selecionado `width=64`; após `error` o cartão mostra o glifo (`[Mac]`) (ART-04, AC 8, 5)
+**C16** - Na LOJA, cada cartão de equipamento mostra `/art/icon/gear-<id>.png` `alt=""` `width=32`, e o detalhe do selecionado `width=64`; após `error` o cartão mostra o glifo (`[Mac]`) (ART-04, AC 8, 5) ✅
 Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "gear art"`
 
-**C17** - No AVATAR: célula de equipamento da grade `alt=<gear.name>` `width=32`; slot `setup` com `macbook` mostra `/art/icon/gear-macbook.png` `alt=""`; slot vazio mostra `[ ]` e nenhum `<img>`; detalhe do equipamento `alt=""`; célula de skin continua `HeroSprite` e o detalhe da skin continua `SKN`; após `error` o slot mostra `[Mac]` (ART-04, AC 9, 5)
+**C17** - No AVATAR: célula de equipamento da grade `alt=<gear.name>` `width=32`; slot `setup` com `macbook` mostra `/art/icon/gear-macbook.png` `alt=""`; slot vazio mostra `[ ]` e nenhum `<img>`; detalhe do equipamento `alt=""`; célula de skin continua `HeroSprite` e o detalhe da skin continua `SKN`; após `error` o slot mostra `[Mac]` (ART-04, AC 9, 5) ✅
 Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "gear art"`
 
 **C18** - Em SKILLS, os 9 botões de nó mostram `/art/icon/skill-<id>.png` `alt=""` `width=32`; cada chip de ativa no rodapé mostra o mesmo ícone `alt=""`; após `error` o nó mostra o glifo (ART-05, AC 10, 5)

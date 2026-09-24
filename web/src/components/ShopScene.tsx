@@ -91,7 +91,9 @@ export function ShopScene() {
                 aria-pressed={picked("gear", g.id)}
                 onClick={() => setSel({ kind: "gear", id: g.id })}
               >
-                <span className="pixel shop-glyph">{g.glyph}</span>
+                <span className="pixel shop-glyph">
+                  <GameArt kind="gear" id={g.id} scale={2} alt="" fallback={g.glyph} />
+                </span>
                 <span className="shop-card-text">
                   <span className="pixel shop-card-name">{g.name}</span>
                   <span className="term shop-bonus">{bonusShort(g.bonus)}</span>
@@ -166,7 +168,9 @@ export function ShopScene() {
         : () => run(`/api/me/shop/gear/${g.id}`, "ITEM COMPRADO E EQUIPADO");
       return (
         <>
-          <span className="pixel shop-detail-glyph">{g.glyph}</span>
+          <span className="pixel shop-detail-glyph">
+            <GameArt kind="gear" id={g.id} scale={4} alt="" fallback={g.glyph} />
+          </span>
           <span className="pixel shop-rarity">{`${g.rarity} · ${slotName(g.slot)}`}</span>
           <span className="pixel shop-detail-name">{g.name}</span>
           <span className="term shop-desc">{g.description}</span>
