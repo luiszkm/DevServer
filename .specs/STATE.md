@@ -23,9 +23,9 @@
 ## Handoff
 
 **Feature**: game-menu
-**Where**: C1–C24 fechados; Verifier round 1 FAIL (estilo dos ícones, guarda defaultPrevented, AC 13 em 1/9, posições do slot) - corrigido; falta Verifier round 2
+**Where**: C1–C27 fechados; Verifier round 1 FAIL e round 2 FAIL (arte: especular, tons, lista de ink) - corrigidos; falta Verifier round 3 (último antes de escalar)
 **In progress**: nenhum
-**Next step**: Verifier round 2 (scoped) sobre `80fd17e..HEAD`; depois push e PR de `feat/office`, `feat/server-room`, `feat/game-art`, `feat/responsive` e `feat/game-menu` quando o usuário pedir
+**Next step**: Verifier round 3 (scoped) sobre `80fd17e..HEAD`; depois push e PR de `feat/office`, `feat/server-room`, `feat/game-art`, `feat/responsive` e `feat/game-menu` quando o usuário pedir
 **Blockers**: none
 **Uncommitted**: none
 **Branch**: feat/game-menu (sobre feat/responsive)
