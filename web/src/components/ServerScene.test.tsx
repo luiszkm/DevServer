@@ -2,8 +2,8 @@ import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import ServerPage from "@/app/(game)/server/page";
-import type { Player } from "@/lib/types";
-import { CATALOG, json, mockFetch, player, rack } from "@/test/helpers";
+import type { Catalog, Player } from "@/lib/types";
+import { CATALOG, RACK, json, mockFetch, player, rack } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 
 function renderServer(p: Player = player(), setPlayer = vi.fn()) {
@@ -214,5 +214,43 @@ describe("ServerScene", () => {
     for (const b of all) expect(b).toBeDisabled();
     await act(async () => release(json(200, { player: player({ coins: 40, rack: rack({ 0: "ram" }) }) })));
     for (const b of all) expect(b).toBeEnabled();
+  });
+
+  // C47
+  it("gems priced component", async () => {
+    const catalog: Catalog = {
+      ...CATALOG,
+      rack: { ...RACK, components: RACK.components.map((k) => (k.id === "gpu" ? { ...k, price: { currency: "gems", amount: 150 } } : k)) },
+    };
+    const show = (p: Player) =>
+      render(
+        <GameContext.Provider value={{ player: p, catalog, setPlayer: vi.fn() }}>
+          <ServerPage />
+        </GameContext.Provider>,
+      );
+
+    const m = mockFetch({
+      "POST /api/me/rack": json(200, { player: player({ gems: 0, coins: 0, rack: rack({ 0: "gpu" }) }) }),
+      "POST /api/me/rack/0/remove": json(200, { player: player({ gems: 150, coins: 0 }) }),
+    });
+    let view = show(player({ gems: 149, coins: 1000 }));
+    expect(card("gpu").querySelector(".server-card-price")).toHaveTextContent(/^150G$/);
+    expect(card("gpu").style.opacity).toBe("0.45");
+    await userEvent.click(card("gpu"));
+    expect(terminal()).toHaveTextContent(/^> gems insuficientes para GPU EDGE\.$/);
+    expect(screen.getByRole("alert")).toHaveTextContent(/^GEMS INSUFICIENTES$/);
+    expect(m.fn).not.toHaveBeenCalled();
+    view.unmount();
+
+    view = show(player({ gems: 150, coins: 0 }));
+    expect(card("gpu").style.opacity).toBe("1");
+    await userEvent.click(card("gpu"));
+    expect(m.calls("POST /api/me/rack")).toBe(1);
+    view.unmount();
+
+    show(player({ gems: 0, coins: 0, rack: rack({ 0: "gpu" }) }));
+    await userEvent.click(slot(0));
+    expect(m.calls("POST /api/me/rack/0/remove")).toBe(1);
+    expect(terminal()).toHaveTextContent(/^> GPU EDGE removido\. 150 gems devolvidos\.$/);
   });
 });

@@ -4,10 +4,13 @@ import { useState } from "react";
 import { post } from "@/lib/api";
 import { CONNECTION_FAILED, canPay, insufficient, priceShort } from "@/lib/gear";
 import { effectsText, rackStats, slotLabel, statBonus, statValue } from "@/lib/rack";
-import type { Player, RackComponent } from "@/lib/types";
+import type { Player, Price, RackComponent } from "@/lib/types";
 import { useGame } from "./GameContext";
 
 const HELLO = "> selecione um componente para instalar no rack.";
+
+/** The currency word the terminal uses: "coins" or "gems". */
+const unit = (p: Price) => (p.currency === "gems" ? "gems" : "coins");
 
 export function ServerScene() {
   const { player, catalog, setPlayer } = useGame();
@@ -41,7 +44,7 @@ export function ServerScene() {
 
   function buy(k: RackComponent) {
     if (!rack.includes(null)) return say("> rack cheio. remova um componente antes.");
-    if (!canPay(player, k.price)) return say(`> coins insuficientes para ${k.name}.`, insufficient(k.price));
+    if (!canPay(player, k.price)) return say(`> ${unit(k.price)} insuficientes para ${k.name}.`, insufficient(k.price));
     return run("/api/me/rack", { component: k.id }, (p) => {
       // The server picks the slot (first free); read it back from the new rack.
       const i = p.rack.findIndex((id, j) => id !== null && rack[j] === null);
@@ -54,7 +57,7 @@ export function ServerScene() {
     if (!id) return say(`> slot ${slotLabel(i)} vazio. compre um componente ao lado.`);
     // A component that left the catalog is removed with no refund (AC 20).
     const k = byId(id);
-    const done = k ? `> ${k.name} removido. ${k.price.amount} coins devolvidos.` : "> componente removido.";
+    const done = k ? `> ${k.name} removido. ${k.price.amount} ${unit(k.price)} devolvidos.` : "> componente removido.";
     return run(`/api/me/rack/${i}/remove`, undefined, () => done);
   }
 

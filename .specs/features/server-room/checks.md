@@ -213,7 +213,7 @@ Proof: `cd web && npx vitest run src/components/ServerScene.test.tsx -t "gems pr
 - [x] C44
 - [x] C45
 - [x] C46
-- [ ] C47
+- [x] C47
 
 ## Coverage
 
