@@ -20,6 +20,6 @@ test("buy and wear", async ({ page }) => {
   await page.reload();
   const bebida = page.locator('[data-slot="bebida"]');
   await expect(bebida).toContainText("CAFÉ EXPRESSO");
-  await expect(bebida).toContainText("{C}");
+  await expect(bebida.locator('img[src="/art/icon/gear-cafe.png"]')).toHaveCount(1);
   await expect(coins).toHaveText("50");
 });

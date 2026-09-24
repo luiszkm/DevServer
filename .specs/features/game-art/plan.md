@@ -167,5 +167,5 @@ None - nothing consumed outside (`/art/*.png` é estático do próprio front; `G
 | --- | --- |
 | domain | new term: `GameArt` - imagem de uma entrada do catálogo por `kind` + `id`, lives in `web/src/components` |
 | domain | existing term: `glyph` era o que a tela mostrava; agora é só o fallback da imagem e o prefixo dos rótulos de comando - `BattleScene`, `ShopScene`, `AvatarScene`, `SkillsScene`, `DeployScene`, `ServerScene`, `OfficeScene`, `Hud` leem `glyph` hoje |
-| tests | asserções de glifo como texto mudam para `img` com `src`/`alt`: `AvatarScene.test.tsx:92`, `DeployScene.test.tsx:53`, `Hud.test.tsx:42`, `OfficeScene.test.tsx:47,79`, `ServerScene.test.tsx:83,99`, `SkillsScene.test.tsx:33`, `GameShell.test.tsx:124`; nenhum spec em `web/e2e` busca glifo |
+| tests | asserções de glifo como texto mudam para `img` com `src`/`alt`: `AvatarScene.test.tsx:92`, `DeployScene.test.tsx:53`, `Hud.test.tsx:42`, `OfficeScene.test.tsx:47,79`, `ServerScene.test.tsx:83,99`, `SkillsScene.test.tsx:33`, `GameShell.test.tsx:124`; em `web/e2e`, `shop.spec.ts` (slot `bebida` com `{C}`) e `skills.spec.ts` (chip do HUD com `</>`) buscam glifo |
 | stored data | nothing to migrate |

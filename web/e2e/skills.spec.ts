@@ -14,7 +14,7 @@ test("unlock persists", async ({ page }) => {
     await expect(page.getByText("PONTOS: 0")).toBeVisible();
     const hud = page.getByRole("contentinfo", { name: "HUD" });
     await expect(hud).toContainText("HP 110/110");
-    await expect(hud.getByLabel("habilidades ativas")).toHaveText("</>");
+    await expect(hud.getByLabel("habilidades ativas").getByRole("img", { name: "MARKUP SEMÂNTICO" })).toHaveAttribute("src", "/art/icon/skill-f1.png");
   };
   await check();
   await page.reload();

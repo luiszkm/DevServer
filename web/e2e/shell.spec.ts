@@ -16,3 +16,11 @@ test("tab click keeps document and HUD", async ({ page }) => {
   expect(await page.evaluate(() => (window as unknown as { __marker?: number }).__marker)).toBe(42);
   await expect(page.getByRole("contentinfo", { name: "HUD" })).toContainText("LEVEL 1");
 });
+
+// game-art C22: the HUD coin is served from web/public/art by the real Next static server
+test("hud art loads", async ({ page }) => {
+  await newDev(page);
+  const coin = page.getByRole("contentinfo", { name: "HUD" }).locator('img[src="/art/icon/hud-coin.png"]');
+  await expect(coin).toHaveCount(1);
+  await expect.poll(() => coin.evaluate((img: HTMLImageElement) => (img.complete ? img.naturalWidth : 0))).toBe(16);
+});
