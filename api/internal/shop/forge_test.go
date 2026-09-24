@@ -388,3 +388,18 @@ func TestForge_ErrorCodes(t *testing.T) {
 		}
 	}
 }
+
+// C33 (forge, added after verification round 1)
+func TestForge_UnknownOutputGear(t *testing.T) {
+	env := apptest.NewWithCatalog(t, func(c *catalog.Catalog) {
+		for i := range c.Recipes {
+			if c.Recipes[i].ID == "forja_teclado" {
+				c.Recipes[i].Output.ID = "nada"
+			}
+		}
+	})
+	f := fixtureOn(t, env)
+	f.balance(0, 150)
+	f.give("race_core", 2, "memory_crystal", 1, "wild_trace", 3)
+	f.unchanged("/api/me/forge/forja_teclado", 422, "unknown_gear")
+}

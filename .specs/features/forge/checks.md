@@ -109,11 +109,19 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "gear icons per shop.js
 Proof: `python3 .claude/skills/pixel-assets/scripts/render.py --check web/public/art/icon/gear-caneca_log.png web/public/art/icon/gear-hoodie_trace.png web/public/art/icon/gear-teclado_race.png --category icon`
 Proof: `make art-check`
 
+### Round 2 - after verification round 1
+
+**C32** - `JÁ POSSUI` vence as outras condições, um caso por combinação: gear possuído sem nenhum material e 0 coins mostra `JÁ POSSUI` no cartão e o botão `JÁ POSSUI` desabilitado; gear possuído com os materiais e 149 coins mostra `JÁ POSSUI` no cartão e no botão (FORGE-03, AC 17, 19; L-035)
+Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "forge owned priority"`
+
+**C33** - Com catálogo de teste em que `forja_teclado` produz o gear `nada`, os materiais e 150 coins, `POST /api/me/forge/forja_teclado` responde `422 unknown_gear` e nada muda (FORGE-02, AC 26; L-036)
+Proof: `cd api && go test ./internal/shop -run '^TestForge_UnknownOutputGear$'`
+
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
 | --- | --- | --- |
-| `POST /api/me/forge/{recipe}` statuses (9) | 200 C5, C6 · 401 C15 · 404 `player_not_found` C14 · 409 `already_owned` C10 · 409 `not_enough_materials` C11 · 409 `not_enough_coins` C8, C12 · 409 `not_enough_gems` C12 · 422 `unknown_recipe` C9 · 500 C17 | - |
+| `POST /api/me/forge/{recipe}` statuses (10) | 200 C5, C6 · 401 C15 · 404 `player_not_found` C14 · 409 `already_owned` C10 · 409 `not_enough_materials` C11 · 409 `not_enough_coins` C8, C12 · 409 `not_enough_gems` C12 · 422 `unknown_recipe` C9 · 422 `unknown_gear` C33 · 500 C17 | - |
 | `POST /api/me/shop/gear/{id}` changed statuses (1) | 422 `not_for_sale` C4 | - |
 | `GET /api/catalog` new or changed fields (2) | `recipes` C1 · `gear[].price` opcional C2 | - |
 | recipes (6) | C1, C6, table-driven over all 6 | - |
@@ -130,7 +138,8 @@ Proof: `make art-check`
 | new error codes (2) | `unknown_recipe` C18 · `not_enough_materials` C18 | - |
 | screen card status (3) | `JÁ POSSUI` C20 · `PRONTO` C20 · `FALTAM MATERIAIS` C20 | - |
 | screen detail lines (4) | material `tem/precisa` C21 · `custo:` presente e ausente C21 · `bônus:` presente e ausente C21 · raridade/nome/descrição C21 | - |
-| screen button labels (6) | `FORJAR` C22 · `FORJAR E EQUIPAR` C22 · `JÁ POSSUI` C22 · `FALTAM MATERIAIS` C22 · `COINS INSUFICIENTES` C22 · `GEMS INSUFICIENTES` C22 | - |
+| screen button labels (6) | `FORJAR` C22 · `FORJAR E EQUIPAR` C22 · `JÁ POSSUI` C22, C32 · `FALTAM MATERIAIS` C22 · `COINS INSUFICIENTES` C22 · `GEMS INSUFICIENTES` C22 | - |
+| screen label priority (4) | card: possuído sem materiais C32 · card: possuído sem saldo C32 · botão: possuído sem materiais C32 · botão: possuído sem saldo C32; materiais antes de saldo C22 (`FALTAM MATERIAIS` com 0 coins) | - |
 | action outcomes on screen (5) | item 200 C23 · gear 200 C23 · erro com mensagem C24 · sem corpo C24 · rede C24 | - |
 | craft-only gear in EQUIPAMENTOS (2) | não possuído C26 · possuído C26 | - |
 | phone widths (2) | 390 C27 · 360 C27 | - |
@@ -212,3 +221,11 @@ Evidence:
 - [x] C29
 - [x] C30
 - [x] C31
+- [x] C32
+- [x] C33
+
+Round 2 (after verification round 1 FAIL):
+
+- **Boundary:** C32 (`JÁ POSSUI` vence materiais e saldo, cartão e botão) e C33 (`422 unknown_gear` com catálogo injetado) adicionados; AC 26 e a nota de Surface no plano, marcados `added after verification round 1`; nenhum check ou linha aprovada reescrita
+- **Settled mid-build:** nada pelo usuário; o ramo `unknown_gear` fica e ganha prova (L-036), porque remover deixaria a forja equipar um gear vazio se o catálogo for rebalanceado sem o gear
+- **Abandoned:** nada

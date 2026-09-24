@@ -349,6 +349,19 @@ describe("ShopScene forge", () => {
     else expect(buttons[0]).toBeDisabled();
   });
 
+  // forge C32 (added after verification round 1): JÁ POSSUI wins over missing materials and balance
+  it.each([
+    ["owned, no materials, no balance", player({ coins: 0, gear: ["teclado_race"], inventory: [] })],
+    ["owned, materials, 149 coins", player({ coins: 149, gear: ["teclado_race"], inventory: TECLADO_MATS })],
+  ])("forge owned priority (%s)", async (_name, p) => {
+    renderShop(p);
+    expect(recipe("forja_teclado").querySelector(".shop-status")).toHaveTextContent(/^JÁ POSSUI$/);
+    await userEvent.click(recipe("forja_teclado"));
+    const buttons = within(detail()).getAllByRole("button");
+    expect(buttons.map((b) => b.textContent)).toEqual(["JÁ POSSUI"]);
+    expect(buttons[0]).toBeDisabled();
+  });
+
   // forge C22 (gems price)
   it("forge button (gems price)", async () => {
     const gemsCatalog = {

@@ -102,6 +102,7 @@ um equipamento que só existe na forja, que já sai equipado.
 13. IF o saldo da moeda do custo é menor que o custo THEN a api SHALL responder `409 not_enough_coins` (ou `409 not_enough_gems` para custo em gems) sem alterar materiais nem inventário
 14. IF a sessão não tem dev THEN a api SHALL responder `404 player_not_found`
 15. WHEN duas forjas do mesmo jogador chegam ao mesmo tempo com materiais para uma só THEN a api SHALL forjar uma e responder `409 not_enough_materials` na outra, consumindo os materiais uma vez
+26. IF a saída gear de uma receita não existe no catálogo injetado THEN a api SHALL responder `422 unknown_gear` sem alterar nada (added after verification round 1)
 
 ### S3: Seção FORJA na LOJA (P1)
 
@@ -130,7 +131,7 @@ um equipamento que só existe na forja, que já sai equipado.
 | ID | Slice | Criteria | Status |
 | --- | --- | --- | --- |
 | FORGE-01 | S1 | 1-4 | Pending |
-| FORGE-02 | S2 | 5-15 | Pending |
+| FORGE-02 | S2 | 5-15, 26 | Pending |
 | FORGE-03 | S3 | 16-24 | Pending |
 | FORGE-04 | S4 | 25 | Pending |
 
@@ -180,6 +181,8 @@ None - no stored-data shape change. Materiais e saída usam `player_items`; gear
 | `POST /api/me/forge/{recipe}` | `recipe` | `player` | `200`, `401 unauthenticated`, `404 player_not_found`, `409 already_owned`, `409 not_enough_materials`, `409 not_enough_coins`, `409 not_enough_gems`, `422 unknown_recipe`, `500` |
 | `POST /api/me/shop/gear/{id}` (changed) | `id` | `player` | + `422 not_for_sale`; `200`, `401`, `404 player_not_found`, `409 already_owned`, `409 not_enough_gems`, `409 not_enough_coins`, `422 unknown_gear`, `500` inalterados |
 | `GET /api/catalog` (changed) | - | + `recipes`; `gear[].price` opcional | `200`, `304` |
+
+Added after verification round 1: `POST /api/me/forge/{recipe}` also answers `422 unknown_gear` when a recipe's gear output is missing from the injected catalog (unreachable with the embedded data, whose recipes reference only catalog gear).
 
 ## Landing
 
