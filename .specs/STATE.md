@@ -20,9 +20,9 @@
 ## Handoff
 
 **Feature**: shop-inventory-avatar
-**Where**: round 2 fixes closed; falta Verifier round 2. C1–C49 fechados; round 2 em `7e3635d` (C31, C34, C35, C41 estendidos, C48, C49 novos, só testes); os 7 mutantes sobreviventes do round 1 (W1, W2, W3, W16, W17, W18, W19) agora morrem; `go test ./...`, `vitest`, `tsc`, `eslint`, `playwright` verdes
+**Where**: C1–C49 fechados; Verifier round 2 PASS. MVP do AD-008 completo (foundation, deploy-pipelines, skills, bug-fight, shop-inventory-avatar)
 **In progress**: nenhum
-**Next step**: round 2 fixes closed; falta Verifier round 2 - Verifier fresco sobre `d783bb1..HEAD` com todos os 49 checks (profile standard)
+**Next step**: push e PRs das branches empilhadas, quando o usuário pedir
 **Blockers**: none
 **Uncommitted**: none
 **Branch**: feat/shop-inventory-avatar (empilhada sobre feat/bug-fight)
