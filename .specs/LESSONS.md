@@ -152,6 +152,18 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: verification.md F3 - C13 web/e2e/responsive.spec.ts:113 survived the media block removal (web-css)
 - last seen: 2026-09-24T18:17:11Z
 
+### L-024 - Enumerate filled-state layout cases from every screen whose controls change with player data, not from the examples a gap report named.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `web/layout` · harmful: 0
+- features: responsive
+- evidence: verification.md Coverage populated scenes - LOJA web/src/components/ShopScene.tsx:179 (web/layout)
+- last seen: 2026-09-24T18:32:04Z
+
+### L-025 - When the spec says an element stays inside a named container, assert its box against that container, not only against the viewport.
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `web/layout` · harmful: 0
+- features: responsive
+- evidence: verification.md C22 - web/e2e/responsive.spec.ts:278 (web/layout)
+- last seen: 2026-09-24T18:32:04Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

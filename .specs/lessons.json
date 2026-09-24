@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 24,
+  "next_id": 26,
   "lessons": [
     {
       "id": "L-001",
@@ -418,6 +418,42 @@
       ],
       "created": "2026-09-24T18:17:11Z",
       "last_seen": "2026-09-24T18:17:11Z"
+    },
+    {
+      "id": "L-024",
+      "key": "ac_gap::enumerate filled state layout cases from every screen whose controls change with player data not from the examples a gap report named",
+      "text": "Enumerate filled-state layout cases from every screen whose controls change with player data, not from the examples a gap report named.",
+      "signal": "ac_gap",
+      "scope": "web/layout",
+      "status": "candidate",
+      "features": [
+        "responsive"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "verification.md Coverage populated scenes - LOJA web/src/components/ShopScene.tsx:179 (web/layout)"
+      ],
+      "created": "2026-09-24T18:32:04Z",
+      "last_seen": "2026-09-24T18:32:04Z"
+    },
+    {
+      "id": "L-025",
+      "key": "spec_precision_gap::when the spec says an element stays inside a named container assert its box against that container not only against the viewport",
+      "text": "When the spec says an element stays inside a named container, assert its box against that container, not only against the viewport.",
+      "signal": "spec_precision_gap",
+      "scope": "web/layout",
+      "status": "candidate",
+      "features": [
+        "responsive"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "verification.md C22 - web/e2e/responsive.spec.ts:278 (web/layout)"
+      ],
+      "created": "2026-09-24T18:32:04Z",
+      "last_seen": "2026-09-24T18:32:04Z"
     }
   ]
 }

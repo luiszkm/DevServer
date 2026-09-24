@@ -2,13 +2,15 @@
 
 **Verdict**: FAIL
 **Profile**: standard
-**Diff range**: 5cdbe61..a3b5e9f
-**Round**: 1 - full
+**Diff range**: 5cdbe61..d6aa8f0
+**Round**: 2 - scoped
 **Verifier**: independent sub-agent (author != verifier)
+
+Round 2 is scoped by the fix diff `a3b5e9f..d6aa8f0` and by every round 1 verdict that was not PASS. The fix diff has two parts. `96793fd` adds tests for C21-C24 in `web/src/components/Tabs.test.tsx` and `web/e2e/responsive.spec.ts`. `fc4dc84` removes `.login-panel, .onboarding { width: 100% }` from the media block in `web/src/app/globals.css`. It also touches the specs, `.specs/STATE.md` and the lessons files. It changes no product component. Every proof from C1 to C24 was re-run in full at `d6aa8f0`. Each section below says whether it was verified at `d6aa8f0` or carried from `a3b5e9f`.
 
 ## Binding sources
 
-The plan marks no source as binding. Its sources are the conversation of 2026-09-24, `web/src/app/globals.css`, `.specs/STATE.md` AD-007 and game-art C33, none of them a design artifact. Step 1 is a `ui` step and does not run under `standard`, so this section records only that nothing is marked binding.
+Carried from a3b5e9f. The plan marks no source as binding, and the fix did not touch the interface. Step 1 is a `ui` step and does not run under `standard`.
 
 | Source | Opened | Contradiction | Uncovered |
 | --- | --- | --- | --- |
@@ -16,85 +18,115 @@ The plan marks no source as binding. Its sources are the conversation of 2026-09
 
 ## Checks
 
-All proofs ran at `a3b5e9f`. Before the e2e gate run, `web/` was rebuilt from the real tree (`API_URL=http://localhost:8180 npx next build`, then `next start --port 3100`). Unit: `npx vitest run src/components/Tabs.test.tsx -t "menu starts closed|menu opens|link closes menu|button closes menu|escape closes menu|menu label"` gave 15 passed, and each name was listed individually. E2e: `npx playwright test e2e/responsive.spec.ts e2e/art.spec.ts --reporter=list` gave 68 passed (64 responsive + 4 art), with each test title listed.
+Verified at d6aa8f0. Before the run, the `:3100` server's CSS was checked against HEAD. It has one `@media (max-width:1199px)`, and `.login-panel,.onboarding` has only its base `width:460px`, so the `fc4dc84` override is gone.
+
+- Unit: `npx vitest run src/components/Tabs.test.tsx -t "menu starts closed|menu opens|link closes menu|button closes menu|escape closes menu|other keys keep menu open|menu label" --reporter=verbose` gave 16 passed and 2 skipped. The 2 skipped are the pre-existing non-menu tests. Each name was listed individually, including `other keys keep menu open` and the 10 `menu label <route>` cases.
+- E2e: `npx playwright test e2e/responsive.spec.ts e2e/art.spec.ts --reporter=list` gave 79 passed (75 responsive + 4 art), with each title listed. That includes `C22 onboarding name taken`, `C22 onboarding error`, `C23 mundo alert`, `C23 deploy alert`, `C23 server alert` and the six `C24 360 <route>` tests.
+- The C19 and C20 grep proofs exited 0.
 
 | Check | Claim | Proof run | Evidence | Result |
 | --- | --- | --- | --- | --- |
-| C1 | MENU button type=button, aria-expanded=false, aria-controls=cenas-nav; nav id=cenas-nav data-open=false | vitest `-t "menu starts closed"` pass | `web/src/components/Tabs.test.tsx:50-54` - `toHaveAttribute("type","button")`, `("aria-expanded","false")`, `("aria-controls","cenas-nav")`, nav `("id","cenas-nav")`, `("data-open","false")`; name `/^MENU/` at :45 | PASS |
-| C2 | click closed MENU -> expanded=true, data-open=true | vitest `-t "menu opens"` pass | `web/src/components/Tabs.test.tsx:60-61` - `toHaveAttribute("aria-expanded","true")`, `("data-open","true")` | PASS |
-| C3 | click link while open -> closed | vitest `-t "link closes menu"` pass | `web/src/components/Tabs.test.tsx:70-71` - `("aria-expanded","false")`, `("data-open","false")` | PASS |
-| C4 | click open MENU -> closed | vitest `-t "button closes menu"` pass | `web/src/components/Tabs.test.tsx:78-79` - `("aria-expanded","false")`, `("data-open","false")` | PASS |
-| C5 | Escape with focus on a nav link -> closed, focus on MENU | vitest `-t "escape closes menu"` pass | `web/src/components/Tabs.test.tsx:87-89` - `("aria-expanded","false")`, `("data-open","false")`, `expect(menu()).toHaveFocus()` | PASS |
-| C6 | label `MENU · <label>` for the 9 TABS routes, `MENU` for `/login` | vitest `-t "menu label"` 10 cases pass | `web/src/components/Tabs.test.tsx:107` - `toHaveTextContent(new RegExp(`^${label}$`))` over the table at :91-102 (10 rows) | PASS |
-| C7 | 390x844: links hidden, `MENU · TÍTULO` collapsed; open shows 9 in TABS order; DEPLOY navigates, closes, label `MENU · DEPLOY`, aria-current | playwright `C7 menu on phone` pass | `web/e2e/responsive.spec.ts:64` `toBeHidden()` ×9 · `:65-66` `toHaveText("MENU · TÍTULO")`, `aria-expanded` false · `:70,72` `toBeVisible()`, `names toEqual(SCENES labels)` · `:75` `toHaveURL(/\/deploy$/)` · `:78-81` hidden, `MENU · DEPLOY`, false, `aria-current` `page` | PASS |
-| C8 | 360 and 390, 9 scenes, scrollWidth <= innerWidth (18) | playwright `C8 360 *` ×9, `C8 390 *` ×9 pass | `web/e2e/responsive.spec.ts:89` and `:134` - `expect(scrollWidth).toBeLessThanOrEqual(innerWidth)` | PASS |
-| C9 | 360, 9 scenes, controls in scene + HUD within [0, innerWidth] | playwright `C9 360 *` ×9 pass | `web/e2e/responsive.spec.ts:141-142` - `boxes.length > 0`, `outside(boxes, 360) toEqual([])` (`:45` `x < 0 \|\| x+width > width+0.5`) | PASS |
-| C10 | 360, 9 scenes + open menu, controls >= 24x24 except `.title-art a` | playwright `C10 360 *` ×9 + `C10 360 menu open` pass | `web/e2e/responsive.spec.ts:149-150` - `small toEqual([])` with `width < 24 \|\| height < 24`, exclude at :148 · `:158-160` 9 nav links, `small toEqual([])` | PASS |
-| C11 | 390, 9 scenes, scene scrollHeight <= clientHeight and last button in viewport after scroll | playwright `C11 390 *` ×9 pass | `web/e2e/responsive.spec.ts:97` `scrollHeight <= clientHeight` · `:101-102` `box.y >= 0`, `box.y + box.height <= 844` | PASS |
-| C12 | 360, 6 `.hud-card` visible within width, SAIR visible | playwright `C12 hud` pass | `web/e2e/responsive.spec.ts:166` `toHaveCount(6)` · `:170-171` `x >= 0`, `x + width <= 360` · `:173` SAIR `toBeVisible()` | PASS |
-| C13 | 390, key art width = frame inner width ±1, ratio 0.8 ±0.01, 6 hotspots inside image | playwright `C13 title` pass | `web/e2e/responsive.spec.ts:113-114` `abs(art.width - frameWidth) <= 1`, `abs(h/w - 0.8) <= 0.01` · `:116-121` 6 spots, each edge inside art ±0.5 | PASS |
-| C14 | 360, 6 `.node-marker` inside `.world-map`, no `.node-chip` visible | playwright `C14 world` pass | `web/e2e/responsive.spec.ts:181-187` count 6, four edge bounds · `:189` each `.node-chip` `toBeHidden()` (chips exist in the DOM: `web/src/components/WorldScene.tsx:60`, so not vacuous) | PASS |
-| C15 | 360, login / onboarding / server down (500) / loading (no answer): no h-scroll, controls within width | playwright `C15 login`, `C15 onboarding`, `C15 server down`, `C15 loading` pass | `web/e2e/responsive.spec.ts:194-197` (`fitsPhone`) - `scrollWidth <= innerWidth`, `boxes.length > 0`, `outside(...) toEqual([])`; states reached at :202, :212, :217-219, :224-226 | PASS |
-| C16 | 1280, 9 scenes: `.page` 1200 wide, scene 760 high, 9 links visible on one y, MENU hidden | playwright `C16 1280 *` ×9 pass | `web/e2e/responsive.spec.ts:251` `toBe(1200)` · `:252` `toBe(760)` · `:254,257,260` count 9, visible, `ys.size toBe(1)` · `:261` MENU `toBeHidden()` | PASS |
-| C17 | 360, 4 backgrounds 1280px 720px + pixelated | playwright `C17 backgrounds` pass | `web/e2e/responsive.spec.ts:239` - `toEqual({ backgroundSize: "1280px 720px", imageRendering: "pixelated" })` for 4 selectors (:232) | PASS |
-| C18 | 1280x720, game-art C33 still green | playwright `e2e/art.spec.ts` `scene art scale *` ×4 pass | `web/e2e/art.spec.ts:22` - `toEqual({ backgroundSize: "1280px 720px", imageRendering: "pixelated" })` (unchanged by this diff) | PASS |
-| C19 | STATE: AD-015 with the literal door 2 text, active; AD-007 superseded by AD-015 | grep proof exit 0 | `.specs/STATE.md:21` AD-015 row, text read and matches door 2 word for word, status `active` · `.specs/STATE.md:13` status `superseded by AD-015` | PASS |
-| C20 | one `@media (max-width: 1199px)` block in `globals.css`, none elsewhere in `web/src` | grep proof exit 0 | `web/src/app/globals.css:344` - `@media (max-width: 1199px) {`; `grep -rn '@media' src` returns only this line | PASS |
+| C1 | MENU button type=button, aria-expanded=false, aria-controls=cenas-nav; nav id=cenas-nav data-open=false | vitest `menu starts closed` pass | `web/src/components/Tabs.test.tsx:50-54` - `toHaveAttribute("type","button")`, `("aria-expanded","false")`, `("aria-controls","cenas-nav")`, nav `("id","cenas-nav")`, `("data-open","false")` | PASS |
+| C2 | click closed MENU -> expanded=true, data-open=true | vitest `menu opens` pass | `web/src/components/Tabs.test.tsx:60-61` - `("aria-expanded","true")`, `("data-open","true")` | PASS |
+| C3 | click link while open -> closed | vitest `link closes menu` pass | `web/src/components/Tabs.test.tsx:70-71` - `("aria-expanded","false")`, `("data-open","false")` | PASS |
+| C4 | click open MENU -> closed | vitest `button closes menu` pass | `web/src/components/Tabs.test.tsx:78-79` - `("aria-expanded","false")`, `("data-open","false")` | PASS |
+| C5 | Escape on a nav link -> closed, focus on MENU | vitest `escape closes menu` pass | `web/src/components/Tabs.test.tsx:87-89` - `("aria-expanded","false")`, `("data-open","false")`, `expect(menu()).toHaveFocus()` | PASS |
+| C6 | label `MENU · <label>` for 9 routes, `MENU` for `/login` | vitest `menu label` ×10 pass | `web/src/components/Tabs.test.tsx:120` - `toHaveTextContent(new RegExp(`^${label}$`))` over the table at `:105-116` (10 rows; refreshed, moved +13 by the fix) | PASS |
+| C7 | 390x844 menu flow to DEPLOY | playwright `C7 menu on phone` pass | `web/e2e/responsive.spec.ts:64` `toBeHidden()` ×9 · `:65-66` `toHaveText("MENU · TÍTULO")`, expanded false · `:72` names `toEqual` SCENES labels · `:75` `toHaveURL(/\/deploy$/)` · `:78-81` hidden, `MENU · DEPLOY`, false, `aria-current` `page` (lines unchanged: the fix only appended after `:264`) | PASS |
+| C8 | 360 and 390, 9 scenes, scrollWidth <= innerWidth | playwright `C8 360 *` ×9, `C8 390 *` ×9 pass | `web/e2e/responsive.spec.ts:89` and `:134` - `expect(scrollWidth).toBeLessThanOrEqual(innerWidth)` | PASS |
+| C9 | 360, controls within [0, innerWidth] | playwright `C9 360 *` ×9 pass | `web/e2e/responsive.spec.ts:141-142` - `boxes.length > 0`, `outside(boxes, 360) toEqual([])` (`:45`) | PASS |
+| C10 | 360, controls >= 24x24 except `.title-art a`, + open menu | playwright `C10 360 *` ×9 + `C10 360 menu open` pass | `web/e2e/responsive.spec.ts:149-150` `small toEqual([])` · `:158-160` 9 links, `small toEqual([])` | PASS |
+| C11 | 390, scene not clipped, last button reachable | playwright `C11 390 *` ×9 pass | `web/e2e/responsive.spec.ts:97` `scrollHeight <= clientHeight` · `:101-102` box inside 0..844 | PASS |
+| C12 | 360, 6 hud cards within width, SAIR visible | playwright `C12 hud` pass | `web/e2e/responsive.spec.ts:166` `toHaveCount(6)` · `:170-171` bounds · `:173` SAIR `toBeVisible()` | PASS |
+| C13 | 390, key art = frame width ±1, ratio 0.8, hotspots inside | playwright `C13 title` pass | `web/e2e/responsive.spec.ts:113-114` width and ratio · `:116-121` 6 spots inside art | PASS |
+| C14 | 360, 6 markers inside map, no chip visible | playwright `C14 world` pass | `web/e2e/responsive.spec.ts:181-187` count 6 + four edges · `:189` each `.node-chip` `toBeHidden()` | PASS |
+| C15 | 360, login / onboarding / server down / loading fit | playwright `C15 login`, `C15 onboarding`, `C15 server down`, `C15 loading` pass | `web/e2e/responsive.spec.ts:194-197` (`fitsPhone`) - `scrollWidth <= innerWidth`, `boxes.length > 0`, `outside(...) toEqual([])`; states reached at `:202`, `:212`, `:219`, `:226`. Still green after `fc4dc84` removed the override, against a build confirmed to lack it | PASS |
+| C16 | 1280, `.page` 1200, scene 760, 9 links one row, MENU hidden | playwright `C16 1280 *` ×9 pass | `web/e2e/responsive.spec.ts:251` `toBe(1200)` · `:252` `toBe(760)` · `:260` `ys.size toBe(1)` · `:261` MENU `toBeHidden()` | PASS |
+| C17 | 360, 4 backgrounds 1280px 720px + pixelated | playwright `C17 backgrounds` pass | `web/e2e/responsive.spec.ts:239` - `toEqual({ backgroundSize: "1280px 720px", imageRendering: "pixelated" })` | PASS |
+| C18 | 1280x720 game-art C33 still green | playwright `scene art scale *` ×4 pass | `web/e2e/art.spec.ts:22` - `toEqual({ backgroundSize: "1280px 720px", imageRendering: "pixelated" })` | PASS |
+| C19 | AD-015 literal door 2, active; AD-007 superseded | grep proof exit 0 | `.specs/STATE.md:21` AD-015 row, re-read against door 2 word for word, `active` · `.specs/STATE.md:13` `superseded by AD-015` (refreshed: the fix diff touched `STATE.md`) | PASS |
+| C20 | one `@media (max-width: 1199px)` in `web/src` | grep proof exit 0 | `web/src/app/globals.css:344` - `@media (max-width: 1199px) {`; `rg -n '@media' web/src` returns only this line (refreshed after `fc4dc84`) | PASS |
+| C21 | menu open: `Tab` and `a` on a nav link keep expanded=true, data-open=true | vitest `other keys keep menu open` pass | `web/src/components/Tabs.test.tsx:97` `keyboard("{Tab}")` -> `:98-99` `toHaveAttribute("aria-expanded","true")`, `("data-open","true")` · `:100` `keyboard("a")` -> `:101-102` same two asserts; focus on SKILLS link at `:96` | PASS |
+| C22 | 360 onboarding 409 `NOME JÁ EM USO` and 500 `erro de teste`: message visible, inside [0, innerWidth], no h-scroll | playwright `C22 onboarding name taken`, `C22 onboarding error` pass | `web/e2e/responsive.spec.ts:298` `fitsWith(page, page.locator(".field-error", { hasText: text }))` over the table at `:284-287` · `fitsWith` `:276` `toBeVisible()`, `:278` `b.x >= 0`, `:279` `b.x + b.width <= PHONE_S.width`, `:281` `scrollWidth <= innerWidth` | PASS |
+| C23 | 360 `role="alert"` of MUNDO, DEPLOY, SERVER visible, inside width, no h-scroll | playwright `C23 mundo alert`, `C23 deploy alert`, `C23 server alert` pass | `web/e2e/responsive.spec.ts:307`, `:315`, `:322` - `fitsWith(page, page.locator(scene(...)).getByRole("alert"))` (asserts at `:276-281`); 500s routed at `:304`, `:312`; GPU tap at `:321` | PASS |
+| C24 | 360 populated DEPLOY, BUG FIGHT, SKILLS, AVATAR, OFFICE, SERVER: no h-scroll, controls inside and >= 24x24, scene not clipped | playwright `C24 360 /deploy`, `/bug-fight`, `/skills`, `/avatar`, `/office`, `/server` pass | `web/e2e/responsive.spec.ts:382` `scrollWidth <= innerWidth` · `:384` `boxes.length > 0` · `:385` `outside(boxes, 360) toEqual([])` · `:387` `small toEqual([])` · `:389` `scrollHeight <= clientHeight`; populated preconditions asserted at `:331`, `:338`, `:345`, `:356`, `:364`, `:371` | PASS |
 
 ## Coverage
 
-Each set was recomputed from its authority: TABS and the route tree for scenes, `GameShell` for screens, `Hud.tsx` for cards, `globals.css` for backgrounds, `Tabs.tsx` plus the plan's close enumeration for the menu, and the plan's `Observable` table for states.
+These rows were verified at d6aa8f0: menu keys, keydown dispatch, onboarding errors, scene alerts, populated scenes, and screens outside the frame (re-checked because `fc4dc84` touched their CSS). Every other row is carried from a3b5e9f, because the fix changed no product component, route, `TABS`, `Hud.tsx` or background rule.
 
 | Set (size) | Recomputed from | Member -> proof | Unproven |
 | --- | --- | --- | --- |
-| menu close/open triggers (4) | plan assumption "Fechar o menu" (link, button, Escape) + `Tabs.tsx:40,51,26-30` | button open C2 · button close C4 · link C3 · Escape C5 | - |
-| keydown dispatch in `onKeyDown` (2 observable rows) | `web/src/components/Tabs.tsx:27` `if (e.key !== "Escape" \|\| !open) return;` | Escape while open -> close + focus C5 | non-Escape key while open -> stays open: no proof; the F1 mutant (any key closes) survived |
-| menu label by route (10) | `TABS` at `Tabs.tsx:7-17` (9) + fallback branch `:42` | 9 routes + `/login`, table-driven C6 (`Tabs.test.tsx:91-102`) | - |
-| scenes (9) | `web/src/app/(game)/` = page.tsx + avatar, bug-fight, deploy, loja, mundo, office, server, skills; equals `TABS` and `SCENES` (`responsive.spec.ts:10-20`) | C8 at 360 and 390, C9, C10, C11, C16 each iterate all 9 (test list in the gate log) | - |
-| HUD cards (6) | `web/src/components/Hud.tsx:25,34,41,48,55,62` (ready state; `:19` is the loading card) | C12 `toHaveCount(6)` + each bound | - |
-| screens outside the ready frame (4) | `web/src/components/GameShell.tsx:71-90` - unauthenticated, onboarding, down, loading | C15 ×4 | - |
-| scene backgrounds (4) | `globals.css:105,164,286,308` - the only `1280px 720px` rules | C17 at 360, C18 at 1280 | - |
-| viewports (3) | checks table: 360x740, 390x844, 1280x800 | 360: C8 C9 C10 C12 C14 C15 C17 · 390: C7 C8 C11 C13 · 1280: C16 (C18 at 1280x720) | - |
-| Landing doors (3) | plan `Landing` | door 1 C20 (+ C8, C16) · door 2 C19 · door 3 C1, C7 | - |
-| plan `Observable` error states at phone width (3) | plan `Observable` rows "error state" (scenes, onboarding) + `AC 14` | server down C15 | onboarding `field-error` (`Onboarding.tsx:66,87`) "fica no painel": no proof renders it · scene `role="alert"` messages "ficam na coluna" (`DeployScene`, `ServerScene`, `WorldScene`): no proof renders one at 360/390 |
-| plan `Observable` data density (2) | plan row "empty state: AC 7-10 valem para ele como para o cheio" | fresh dev (empty inventory, no running deploy) C8-C11 via `newDev` | populated state (running deploy, equipped avatar, battle log, filled office): no proof |
+| menu keys (3) - verified at d6aa8f0 | plan AC 5 + `web/src/components/Tabs.tsx:27` `if (e.key !== "Escape" \|\| !open) return;` | `Escape` closes + focus C5 · `Tab` keeps open C21 · printable `a` keeps open C21; F1 now killed | - |
+| keydown dispatch in `onKeyDown` (2 observable rows) - verified at d6aa8f0 | `Tabs.tsx:27` | Escape while open C5 · non-Escape while open C21 (round 1 gap closed) | - |
+| onboarding errors at 360 (2) - verified at d6aa8f0 | plan `Observable` "erro de nome (`field-error`) fica no painel" + `web/src/components/Onboarding.tsx:66` (name taken span) and `:87` (the one `p.field-error` that every other error message renders into) | `NOME JÁ EM USO` (`:66`) C22 · `:87` message C22 (500) | - |
+| scene alerts at 360 (3) - verified at d6aa8f0 | `rg 'role="alert"' web/src` in scene components: `WorldScene.tsx:68`, `DeployScene.tsx:155`, `ServerScene.tsx:141` (the fourth hit, `LoginScreen.tsx:12`, is outside the scenes) | MUNDO C23 · DEPLOY C23 · SERVER C23 | - |
+| populated scenes at 360 (7) - verified at d6aa8f0 | plan `Observable` "cada cena já tem o seu [empty state]; AC 7-10 valem para ele como para o cheio" + the scene code: which scenes render different controls or text once player data exists. TÍTULO is static. MUNDO always lists the 6 catalog regions, and only `aria-current` and the lock state move. The other 7 have a filled state | DEPLOY C24 · BUG FIGHT C24 · SKILLS C24 · AVATAR C24 · OFFICE C24 · SERVER C24 | LOJA filled state: `web/src/components/ShopScene.tsx:45-48` owned/equipped statuses (`EQUIPADO`, `NO INVENTÁRIO`, `NO GUARDA-ROUPA`), `:75` `possui: N`, and `:179-182` the `REMOVER EQUIPAMENTO` button, which exists only once equipped gear is selected. No proof lays it out at 360, and C9/C10 never measure that button. C24 `/avatar` buys CAFÉ in LOJA (`responsive.spec.ts:351-354`) but asserts layout only after `goto("/avatar")`. An ad-hoc probe at d6aa8f0 (360x740, café bought and selected) measured scrollWidth 360, 16 controls and 0 outside or under 24px, so the product fits today and the proof is what is missing |
+| screens outside the ready frame (4) - verified at d6aa8f0 | `web/src/components/GameShell.tsx:71-90` (unchanged) | login · onboarding · server down · loading, C15 ×4, green after `fc4dc84` | - |
+| menu label by route (10) - carried from a3b5e9f | `TABS` `Tabs.tsx:7-17` + fallback `:42` | table-driven C6 (`Tabs.test.tsx:105-116`) | - |
+| scenes (9) - carried from a3b5e9f | `web/src/app/(game)/` = `TABS` = `SCENES` | C8 (360, 390), C9, C10, C11, C16 each over all 9 | - |
+| HUD cards (6) - carried from a3b5e9f | `Hud.tsx:25,34,41,48,55,62` | C12 | - |
+| scene backgrounds (4) - carried from a3b5e9f | `globals.css:105,164,286,308` | C17 at 360, C18 at 1280 | - |
+| viewports (3) - carried from a3b5e9f | checks table | 360: C8 C9 C10 C12 C14 C15 C17 C22 C23 C24 · 390: C7 C8 C11 C13 · 1280: C16 C18 | - |
+| Landing doors (3) - carried from a3b5e9f | plan `Landing` | door 1 C20 (+C8, C16) · door 2 C19 · door 3 C1, C7 | - |
 
 ## Test policy rows
 
+Verified at d6aa8f0. Both rows that classify a file the fix touched were re-judged: `Tabs.tsx`, whose tests changed, and `globals.css`, whose CSS changed.
+
 | Row | Files it classifies | Required proof | Expectation met |
 | --- | --- | --- | --- |
-| Decides, reached across a boundary | `web/src/components/Tabs.tsx` (open state, keydown guard, label table) | boundary C7 · own layer C1-C6 | not met - there is one asserted case for each transition and each label row, but the keydown guard's non-Escape row (`Tabs.tsx:27`) has no assertion at either level, and mutant F1 survived |
-| Decides, not reached across a boundary | `web/src/app/globals.css` media block (dispatch by viewport, two rows: <=1199px and >=1200px; only the browser evaluates it, so its own layer is the browser) | <=1199: C8-C15, C17 · >=1200: C16; literal bound C20 | yes |
+| Decides, reached across a boundary | `web/src/components/Tabs.tsx` (open state, keydown guard, label table) | boundary C7 · own layer C1-C6, C21 | yes - every row now has an asserted own-layer case: 4 transitions (C2, C3, C4, C5), both observable keydown rows (Escape C5, non-Escape C21) and 10 label rows (C6). F1 is killed. The `\|\| !open` conjunct (Escape while closed) has no case, but it has no observable outcome in the browser: when closed below 1200px the only focusable element in `.tabs-bar` is MENU itself, and at 1200px and up MENU is `display: none` (C16), so `focus()` is a no-op. That makes it an equivalent row, not a missing one |
+| Decides, not reached across a boundary | `web/src/app/globals.css` media block (<=1199px / >=1200px) | <=1199: C8-C15, C17, C22-C24 · >=1200: C16; bound C20 | yes - `fc4dc84` removed an inert rule. C15, C20 and the full e2e set are green at d6aa8f0 |
 | Entry point that decides nothing | none in the diff | - | n/a |
-| Instrumentation, pass-throughs | none in the diff (`STATE.md`, the specs and the tests are not code under test) | - | n/a |
+| Instrumentation, pass-throughs | none in the diff | - | n/a |
 
 ## Faults injected
 
-Every fault ran in `git worktree add <scratchpad>/wt HEAD`, with `web/node_modules` as an APFS clone. Turbopack refused a symlink that points out of the root. The real-tree porcelain before and after is identical: the 14 pre-existing untracked entries. The worktree was removed with `--force`. The `:3100` server was rebuilt from the real tree and restarted, and it answers 200. The user's `:3000`, `:8080` and `:9180` servers were never touched.
+Verified at d6aa8f0.
+
+- **Setup.** Every fault ran in `git worktree add <scratchpad>/wt HEAD`, with `web/node_modules` as an APFS clone (`cp -c -R`). For each CSS fault, the `:3100` PID (found with `lsof`) was killed, the worktree `web/` was built with `API_URL=http://localhost:8180 npx next build`, and `next start --port 3100` was started from it. The served CSS was confirmed to carry the mutation.
+- **Cleanup.** The worktree server was killed and the real `web/` was rebuilt and restarted on `:3100`. It answers 200 and its cwd is the real `web/`. The served CSS was confirmed clean, and the full e2e set gave 79/79 again. The worktree was removed with `--force`.
+- **Real tree.** `git status --porcelain` of the real tree was identical before and after: the 14 pre-existing untracked entries.
+- **Untouched.** The user's `:3000`, `:8080` and `:9180` servers were never touched.
 
 | Mutation | Location | Killed |
 | --- | --- | --- |
-| F1 key filter dropped: `if (e.key !== "Escape" \|\| !open)` -> `if (!open)` (any key, e.g. Tab, closes the open menu) | `web/src/components/Tabs.tsx:27` | no - survived: `Tabs.test.tsx` gave 17/17 passed, and no e2e presses a key (`grep -n "press\|keyboard" e2e/responsive.spec.ts` has no hits) |
-| F2 link no longer closes the menu (`onClick={() => setOpen(false)}` removed) | `web/src/components/Tabs.tsx:51` | yes - `link closes menu` failed |
-| F3 media block disabled: `max-width: 1199px` -> `max-width: 1px` | `web/src/app/globals.css:344` | yes - 34 failed: C7, C8 (18/18), C9 (9/9), C10 menu open, C11 `/` and `/mundo`, C12, C14, C15 loading. It survived in C10 per scene, C11 on 7 scenes, C13, C15 login/onboarding/server down and C17. The desktop layout satisfies those claims too, so those surfaces needed targeted faults |
-| F4 phone scene height fixed again (`height: auto` removed from `.scene` override) | `web/src/app/globals.css:350` | yes - C11 failed on 7/9 scenes (`/` and `/office` fit in 760px) |
-| F5 title-art override removed (`.title-scene .title-art { position: relative; height: auto; }`) | `web/src/app/globals.css:361` | yes - C13 failed (hotspot bottom 602 > art bottom 394) |
+| F1 (re-injected) key filter dropped: `if (e.key !== "Escape" \|\| !open)` -> `if (!open)` | `web/src/components/Tabs.tsx:27` | yes - `other keys keep menu open` failed (1 failed, `escape closes menu` passed) |
+| F6 onboarding and scene error line gets a fixed width: `.field-error { ...; display: block; width: 420px; }` | `web/src/app/globals.css:87` | yes - `C22 onboarding name taken` and `C22 onboarding error` failed (`b.x` -30, expected >= 0). `C23 mundo alert` (right edge 444 > 360) and `C23 deploy alert` (460 > 360) also failed. `C23 server alert` and `C15 onboarding` passed, as expected for elements without `.field-error` |
+| F7 server notice gets a fixed width: `.server-notice { ...; width: 420px; ... }` | `web/src/app/globals.css:341` | yes - `C23 server alert` failed (right edge 444 > 360). `C24 360 /server` and `C9 360 /server` passed (no notice rendered) |
+| F8 running deploy's booster button stops wrapping: `.deploy-boost { align-self: flex-start; white-space: nowrap; }` | `web/src/app/globals.css:258` | yes - `C24 360 /deploy` failed, with `outside` = `["SEM ACELERADORES · veja a Loja"]`. `C8`/`C9`/`C10 360 /deploy` passed on the empty scene, which shows C24 carries a surface the empty-state proofs cannot see |
 
-The 5-fault cap stopped fault injection before these proofs were made to fail: C1, C4, C5 (focus), C6, C10 per scene, C15 login/onboarding/server down, C16 and C17/C18.
+Four faults were injected, within the cap of five. Each new assertion surface failed at least once: C21 (F1), C22 (F6), C23 mundo and deploy (F6), C23 server (F7), C24 (F8).
+
+Before building, candidate faults were pre-screened by injecting a stylesheet into the page. One candidate, `.deploy-run { flex-wrap: nowrap; gap: 0 }` (neutralising `globals.css:373`), was not pursued, because an ad-hoc probe at 360 found it equivalent for fit. It fits in both the running stage and the ready stage (`PRONTO PARA COLETAR` + `CONCLUÍDO`, reached with `page.clock.fastForward`), with scrollWidth 360 either way. The override only changes spacing. That is a note, not a surviving mutant: no check claims the wrap.
 
 ## Gate
 
-`cd web && npx playwright test e2e/responsive.spec.ts e2e/art.spec.ts` gave 68 passed, 0 failed. `npx vitest run` (full web suite) gave 288 passed, 0 failed. C19 and C20 grep proofs exited 0. All of these ran at `a3b5e9f` after the real-tree rebuild.
+At d6aa8f0:
+
+- `cd web && npx playwright test e2e/responsive.spec.ts e2e/art.spec.ts` gave 79 passed, 0 failed. It ran before the faults and again after the real-tree rebuild.
+- `npx vitest run` (the full web suite) gave 289 passed, 0 failed.
+- The C19 and C20 grep proofs exited 0.
 
 Ranked gaps:
 
-1. Mutant F1 survived. `Tabs.tsx:27` has a key filter that nothing proves. If any key closed the open menu, every proof would still pass, and a keyboard user pressing Tab from MENU would close the menu before reaching a link. Needed: an own-layer case (open, press a non-Escape key such as Tab or `a`, still `aria-expanded="true"`). This is also the unmet `Test policy` row.
-2. The plan's `Observable` names the onboarding `field-error` staying in the panel (AC 14) and the scenes' `role="alert"` messages staying in the column (AC 7). No proof renders either at phone width. C15 onboarding stops at the initial form.
-3. The plan's `Observable` says AC 7-10 hold for the empty and the full scene alike. Every layout proof runs on a fresh `newDev`, so no proof covers a populated state such as a running deploy, an equipped avatar or a battle log.
+1. LOJA's filled state at phone width is unproven. The plan's `Observable` makes AC 7-10 hold for the full state of every scene. The fix covered 6 of the 7 scenes that have one, and left out LOJA (`ShopScene.tsx:45-48`, `:75`, `:179-182`). LOJA is the only scene whose filled state adds a control, `REMOVER EQUIPAMENTO`, that no layout proof has ever measured. It fits today (ad-hoc probe: 0 offending controls), so the fix is one more row in C24's `populated` table. That row can reuse the café purchase the `/avatar` row already makes, and assert at `/loja` with the café selected.
+
+Round 1 gaps, re-judged:
+
+- F1 is killed by C21.
+- The unmet `Test policy` row is now met.
+- The onboarding and scene error states at 360 are proven by C22 and C23, and both surfaces were made to fail.
+- Populated scenes are proven by C24, except LOJA (gap 1 above).
 
 Notes on the checks (these do not fail the feature):
 
-- C13 precision: the claim compares the art to `.frame`, not to the viewport, so it passes with the media block removed. It only means something together with C8.
-- C15 login, onboarding and server down pass with the media block removed. `.center-screen` is a flex container (`globals.css:81`), so the 460px panel already shrinks. The override `.login-panel, .onboarding { width: 100% }` (`globals.css:359`) is inert, and the plan's "painel de 460px, maior que a tela" did not match the rendered behaviour.
-- C19's grep checks only `max-width: 1199px` inside the AD-015 row, not the whole door 2 literal. The row was read and it matches.
-- `Swept` "authorization: existing" holds: `GameShell.tsx:71-76` returns `LoginScreen`, `Onboarding` or `ServerDown` without `Frame`, so no menu is mounted before a session.
+- C22 precision: the plan says the name error "fica no painel", but C22 asserts the message against the viewport (`responsive.spec.ts:278-279`), not against `.onboarding`. At 360 the panel is nearly as wide as the viewport, so the two rarely diverge. Still, a message overflowing the panel by less than the gutter would pass.
+- `LoginScreen.tsx:12` renders a `role="alert"` (`/login?error=github|state`) that no proof lays out at 360. The plan names no login error state, so this is not a member of any set; noted for completeness.
+- These round 1 notes are carried from a3b5e9f and still hold:
+  - C13 compares the art to `.frame`, not the viewport, so it only means something alongside C8.
+  - C11 fits `/` and `/office` in 760px regardless of the media block.
+  - C19's grep checks only `max-width: 1199px` inside the AD-015 row; the row was re-read and it matches.
+  - C15 login, onboarding and server down were already satisfied by the desktop CSS because `.center-screen` is a flex container. The override `fc4dc84` removed was inert, and C15 stays green without it.
+- `Swept` "authorization: existing" still holds: `GameShell.tsx:71-76` is unchanged by the fix.
