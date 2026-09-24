@@ -564,3 +564,43 @@ func TestMe_SkipsSlotsOutsideCatalog(t *testing.T) {
 		t.Errorf("fix with gpu only: events %+v, want damage 21", ev)
 	}
 }
+
+// C45
+func TestRackRoutes_NoPlayer(t *testing.T) {
+	env := apptest.New(t)
+	ghost := env.Session(9, "ghost")
+	for _, path := range routes {
+		if rec := env.Do(http.MethodPost, path, map[string]string{"component": "cpu"}, ghost); rec.Code != 404 || apptest.ErrorCode(t, rec) != "player_not_found" {
+			t.Errorf("%s without a dev: %d %s, want 404 player_not_found", path, rec.Code, rec.Body.String())
+		}
+	}
+	if n := env.Count("player_rack"); n != 0 {
+		t.Errorf("player_rack = %d rows, want 0", n)
+	}
+}
+
+// C46
+func TestRack_GemsPricedComponent(t *testing.T) {
+	env := apptest.NewWithCatalog(t, func(c *catalog.Catalog) {
+		for i := range c.Rack.Components {
+			if c.Rack.Components[i].ID == "gpu" {
+				c.Rack.Components[i].Price = catalog.Price{Currency: "gems", Amount: 150}
+			}
+		}
+	})
+	f := &fixture{t, env, env.NewPlayer(1, "DEV_01", "BACKEND")}
+	f.sql(`UPDATE players SET gems = 149, coins = 0`)
+	before := f.snapshot()
+	f.status(f.buy("gpu"), 409, "not_enough_gems")
+	f.unchanged(before)
+
+	f.sql(`UPDATE players SET gems = 150`)
+	got := f.ok(f.buy("gpu"))
+	if got.Gems != 0 || got.Coins != 0 || rack(got.Rack) != "gpu,-,-,-,-,-" {
+		t.Fatalf("buy: gems %d coins %d rack %s, want 0, 0 and gpu in slot 0", got.Gems, got.Coins, rack(got.Rack))
+	}
+	got = f.ok(f.remove("0"))
+	if got.Gems != 150 || got.Coins != 0 || got.Rack[0] != nil {
+		t.Errorf("remove: gems %d coins %d slot %v, want 150, 0 and null", got.Gems, got.Coins, got.Rack[0])
+	}
+}

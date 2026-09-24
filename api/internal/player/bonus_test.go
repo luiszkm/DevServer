@@ -115,6 +115,8 @@ func TestBonus_Rack(t *testing.T) {
 	withOthers.Skills = []string{"f2", "f3"}
 	withOthers.Gear = []string{"macbook"}
 	withOthers.Equipment = map[string]*string{"setup": &macbook, "bebida": nil, "vestuario": nil, "acessorio": nil}
+	skinned := rack("gpu")
+	skinned.Skin = "neon"
 	for _, tc := range []struct {
 		name   string
 		p      player.Player
@@ -144,6 +146,7 @@ func TestBonus_Rack(t *testing.T) {
 		{"rack spregen", rack("gpu", "ram", "lb", "ssd", "cpu", "cache"), "spregen", 0},
 		{"summed with skills and gear dmg: 10 + 8 + 4", withOthers, "dmg", 22},
 		{"summed with skills sp: 8 + 6", withOthers, "sp", 14},
+		{"summed with skin neon dmg: 5 + 4", skinned, "dmg", 9},
 		{"unknown component dmg", rack("quantum"), "dmg", 0},
 		{"unknown component sp", rack("quantum"), "sp", 0},
 		{"unknown component coins", rack("quantum"), "coins", 0},

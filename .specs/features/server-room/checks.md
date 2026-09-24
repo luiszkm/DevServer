@@ -206,8 +206,8 @@ Proof: `cd api && go test ./internal/rack -run '^TestRack_GemsPricedComponent$'`
 - [x] C42
 - [x] C43
 - [x] C44
-- [ ] C45
-- [ ] C46
+- [x] C45
+- [x] C46
 
 ## Coverage
 
