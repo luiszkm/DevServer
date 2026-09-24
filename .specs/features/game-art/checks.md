@@ -119,10 +119,10 @@ Proof: `cd web && npx vitest run src/components/OfficeScene.test.tsx -t "furnitu
 **C30** - `.office-room` tem `background-image: url(/art/background/office.png)` (ART-06, AC 13) ✅
 Proof: `cd web && npx vitest run src/components/OfficeScene.test.tsx -t "office background"`
 
-**C31** - No MUNDO, cada um dos 6 nós mostra `/art/icon/region-<id>.png` `alt=""` `width=32` e nenhum `.node-diamond`; `.world-map` tem `background-image: url(/art/background/world.png)`; após `error` o nó mostra o texto do `tag` da região (`HUB`) (ART-07, AC 14, 5)
+**C31** - No MUNDO, cada um dos 6 nós mostra `/art/icon/region-<id>.png` `alt=""` `width=32` e nenhum `.node-diamond`; `.world-map` tem `background-image: url(/art/background/world.png)`; após `error` o nó mostra o texto do `tag` da região (`HUB`) (ART-07, AC 14, 5) ✅
 Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "region art"`
 
-**C32** - Com jogador nível 5 em `floresta`: marcadores de `torre` (8) e `nuvem` (12) têm `filter: grayscale(1) brightness(.6)`; `vila` (1), `mercado` (2) e `caverna` (5) não têm filtro; `floresta` tem a classe `here` e nenhum filtro (ART-07, AC 15)
+**C32** - Com jogador nível 5 em `floresta`: marcadores de `torre` (8) e `nuvem` (12) têm `filter: grayscale(1) brightness(.6)`; `vila` (1), `mercado` (2) e `caverna` (5) não têm filtro; `floresta` tem a classe `here` e nenhum filtro (ART-07, AC 15) ✅
 Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "marker state"`
 
 ## Coverage

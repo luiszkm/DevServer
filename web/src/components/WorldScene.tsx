@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { post } from "@/lib/api";
 import type { Player } from "@/lib/types";
+import { GameArt } from "./GameArt";
 import { useGame } from "./GameContext";
 
 // Map positions are presentation only; the regions themselves come from the catalog.
@@ -14,6 +15,9 @@ const POSITIONS: Record<string, { x: string; y: string }> = {
   torre: { x: "86%", y: "58%" },
   nuvem: { x: "48%", y: "12%" },
 };
+
+// A region above the player's level shows its marker greyed out (plan assumptions: marker states).
+const LOCKED = "grayscale(1) brightness(.6)";
 
 export function WorldScene() {
   const { player, catalog, setPlayer } = useGame();
@@ -37,7 +41,7 @@ export function WorldScene() {
 
   return (
     <section className="scene world" aria-label="MUNDO">
-      <div className="world-map">
+      <div className="world-map" style={{ backgroundImage: "url(/art/background/world.png)" }}>
         {catalog.regions.map((r) => {
           const pos = POSITIONS[r.id] ?? { x: "50%", y: "50%" };
           const here = r.id === player.region;
@@ -50,7 +54,9 @@ export function WorldScene() {
               data-region={r.id}
               aria-current={here ? "location" : undefined}
             >
-              <span className={`node-diamond${here ? " here" : open ? " open" : ""}`} />
+              <span className={`node-marker${here ? " here" : ""}`} style={open ? undefined : { filter: LOCKED }}>
+                <GameArt kind="region" id={r.id} scale={2} alt="" fallback={r.tag} />
+              </span>
               <span className={`pixel node-chip${here ? " here" : ""}`}>{r.name}</span>
             </div>
           );

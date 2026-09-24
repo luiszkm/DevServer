@@ -101,11 +101,10 @@ button { font-family: inherit; }
 .title-hint { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); font-size: 11px; color: #ffe08a; background: rgba(10,17,25,.88); padding: 11px 16px; }
 
 .world { display: flex; gap: 18px; padding: 18px; }
-.world-map { flex: 1; position: relative; border: 4px solid var(--edge); box-shadow: inset 0 0 0 2px var(--line-2); background: repeating-linear-gradient(45deg, #12283a 0 12px, #0f2131 12px 24px); }
+.world-map { flex: 1; position: relative; border: 4px solid var(--edge); box-shadow: inset 0 0 0 2px var(--line-2); background: #12283a center / 1280px 720px no-repeat; image-rendering: pixelated; }
 .map-node { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.node-diamond { width: 26px; height: 26px; transform: rotate(45deg); border: 3px solid var(--edge); background: #39536b; }
-.node-diamond.open { background: var(--cyan); }
-.node-diamond.here { background: var(--yellow); box-shadow: 0 0 0 2px #ffe08a; }
+.node-marker { min-width: 38px; height: 38px; padding: 0 1px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--edge); background: var(--panel-3); font-size: 8px; }
+.node-marker.here { border-color: var(--yellow); box-shadow: 0 0 0 2px #ffe08a; }
 .node-chip { font-size: 9px; padding: 6px 8px; border: 2px solid var(--edge); background: var(--panel-3); white-space: nowrap; }
 .node-chip.here { background: var(--yellow); color: var(--edge); }
 .world-current { position: absolute; right: 14px; bottom: 12px; color: #4d7ea8; }

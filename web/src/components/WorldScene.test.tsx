@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import type { Catalog, Player } from "@/lib/types";
@@ -13,6 +13,9 @@ function renderWorld(p: Player, catalog: Catalog = CATALOG) {
     </GameContext.Provider>,
   );
 }
+
+const marker = (id: string) => document.querySelector(`[data-region="${id}"] .node-marker`) as HTMLElement;
+const LOCKED = "grayscale(1) brightness(.6)";
 
 const button = (regionName: string) =>
   within(screen.getByRole("article", { name: regionName })).getByRole("button");
@@ -105,10 +108,45 @@ describe("WorldScene", () => {
   });
 
   it("marks map nodes as here, open or locked", () => {
-    const { container } = renderWorld(player({ level: 1, region: "vila" }));
-    const diamond = (id: string) => container.querySelector(`[data-region="${id}"] .node-diamond`)!.className;
-    expect(diamond("vila")).toContain("here");
-    expect(diamond("floresta")).toContain("open");
-    expect(diamond("caverna")).not.toMatch(/here|open/);
+    renderWorld(player({ level: 1, region: "vila" }));
+    expect(marker("vila")).toHaveClass("here");
+    expect(marker("vila").style.filter).toBe("");
+    expect(marker("floresta")).not.toHaveClass("here");
+    expect(marker("floresta").style.filter).toBe("");
+    expect(marker("caverna")).not.toHaveClass("here");
+    expect(marker("caverna").style.filter).toBe(LOCKED);
+  });
+
+  // game-art C31
+  it("region art", () => {
+    const { container } = renderWorld(player());
+    expect(container.querySelector(".node-diamond")).toBeNull();
+    for (const r of REGIONS) {
+      const img = marker(r.id).querySelector("img")!;
+      expect(img.getAttribute("src")).toBe(`/art/icon/region-${r.id}.png`);
+      expect(img.getAttribute("alt")).toBe("");
+      expect(img.getAttribute("width")).toBe("32");
+      expect(img).toHaveClass("pixelated");
+      expect(marker(r.id).textContent).toBe("");
+    }
+    const map = container.querySelector(".world-map") as HTMLElement;
+    expect(map.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/world.png)");
+
+    fireEvent.error(marker("vila").querySelector("img")!);
+    expect(marker("vila").querySelector("img")).toBeNull();
+    expect(marker("vila")).toHaveTextContent(/^HUB$/);
+    expect(marker("floresta").querySelector("img")).not.toBeNull();
+  });
+
+  // game-art C32
+  it("marker state", () => {
+    renderWorld(player({ level: 5, region: "floresta" }));
+    for (const id of ["torre", "nuvem"]) expect(marker(id).style.filter, id).toBe(LOCKED);
+    for (const id of ["vila", "mercado", "caverna"]) {
+      expect(marker(id).style.filter, id).toBe("");
+      expect(marker(id), id).not.toHaveClass("here");
+    }
+    expect(marker("floresta")).toHaveClass("here");
+    expect(marker("floresta").style.filter).toBe("");
   });
 });
