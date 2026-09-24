@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/responsive/plan.md`
 
-24 checks in 4 slices · 3 one-way doors · 0 open
+26 checks in 5 slices · 3 one-way doors · 0 open
 
 Tables used by the checks:
 
@@ -97,6 +97,14 @@ Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C23 "`
 **C24** - A 360x740, com a cena populada - DEPLOY com `BANCO DE DADOS` rodando, BUG FIGHT depois de um `FIX`, SKILLS com `f1` ativa, AVATAR com `CAFÉ EXPRESSO` equipado, OFFICE com `PLANTA DE CANTO` em `piso-5`, SERVER com `RAM 32GB` no slot 01 - vale o que C8-C11 exigem da cena vazia: `scrollWidth <= innerWidth`, todo `button`/`a`/`input` visível da cena e do HUD dentro de `[0, innerWidth]` e com pelo menos 24x24, e a seção com `scrollHeight <= clientHeight` (6 casos) (RESP-02, AC 7, 8, 9, 10; added after verification round 1) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C24 "`
 
+### S5 - fix round 2 · 1 file · added after verification round 2 (LOJA populated state unproven; C22 measured against the viewport, not the panel)
+
+**C25** - A 360x740, na LOJA com `CAFÉ EXPRESSO` comprado, equipado e selecionado (detalhe mostra `REMOVER EQUIPAMENTO`), vale o que C24 exige: `scrollWidth <= innerWidth`, todo `button`/`a`/`input` visível da cena e do HUD dentro de `[0, innerWidth]` e com pelo menos 24x24, e a seção com `scrollHeight <= clientHeight` (RESP-02, AC 7, 8, 9, 10; added after verification round 2) ✅
+Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C25 "`
+
+**C26** - A 360x740, nos dois casos de C22, a caixa da mensagem de erro fica inteira dentro da caixa do painel `.onboarding` (RESP-03, AC 14; plan `Observable` "erro de nome fica no painel"; added after verification round 2) ✅
+Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C26 "`
+
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
@@ -116,7 +124,8 @@ Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C24 "`
 | menu keys (3) | `Escape` closes C5 · `Tab` keeps open C21 · printable key keeps open C21 | - |
 | onboarding errors at 360 (2) | `NOME JÁ EM USO` C22 · `field-error` message C22 | - |
 | scene alerts at 360 (3) | MUNDO C23 · DEPLOY C23 · SERVER C23 | - |
-| populated scenes at 360 (6) | DEPLOY C24 · BUG FIGHT C24 · SKILLS C24 · AVATAR C24 · OFFICE C24 · SERVER C24 | - |
+| populated scenes at 360 (7) | DEPLOY C24 · BUG FIGHT C24 · SKILLS C24 · AVATAR C24 · OFFICE C24 · SERVER C24 · LOJA C25 | - |
+| onboarding errors inside the panel (2) | `NOME JÁ EM USO` C26 · `field-error` message C26 | - |
 | Landing doors (3) | door 1 media block C8, C16, C20 · door 2 AD-015 C19 · door 3 disclosure C1, C7 | - |
 
 - Claims about what the browser lays out (C7-C18): each proof runs in the real browser with `globals.css` loaded, because jsdom never evaluates media queries

@@ -285,17 +285,33 @@ test.describe("phone S states", () => {
     ["name taken", 409, { error: { code: "dev_name_taken", message: "nome em uso" } }, "NOME JÁ EM USO"],
     ["error", 500, { error: { code: "internal", message: "erro de teste" } }, "erro de teste"],
   ];
+  async function onboardingError(page: Page, status: number, body: object, text: string) {
+    const id = Date.now() * 1000 + Math.floor(Math.random() * 1000);
+    const res = await page.request.post(`${FAKE}/fake/next-user`, { data: { id, login: `e2e_${String(id).slice(-10)}` } });
+    expect(res.status()).toBe(204);
+    await fail(page, "/api/players", status, body);
+    await page.goto("/");
+    await page.getByRole("link", { name: "ENTRAR COM GITHUB" }).click();
+    await page.getByRole("button", { name: "BACKEND" }).click();
+    await page.getByRole("button", { name: "CRIAR DEV" }).click();
+    return page.locator(".field-error", { hasText: text });
+  }
+
   for (const [name, status, body, text] of onboardingErrors) {
     test(`C22 onboarding ${name}`, async ({ page }) => {
-      const id = Date.now() * 1000 + Math.floor(Math.random() * 1000);
-      const res = await page.request.post(`${FAKE}/fake/next-user`, { data: { id, login: `e2e_${String(id).slice(-10)}` } });
-      expect(res.status()).toBe(204);
-      await fail(page, "/api/players", status, body);
-      await page.goto("/");
-      await page.getByRole("link", { name: "ENTRAR COM GITHUB" }).click();
-      await page.getByRole("button", { name: "BACKEND" }).click();
-      await page.getByRole("button", { name: "CRIAR DEV" }).click();
-      await fitsWith(page, page.locator(".field-error", { hasText: text }));
+      await fitsWith(page, await onboardingError(page, status, body, text));
+    });
+
+    // C26 (added after verification round 2): the message stays inside the panel, not only the viewport
+    test(`C26 onboarding ${name}`, async ({ page }) => {
+      const error = await onboardingError(page, status, body, text);
+      await expect(error).toBeVisible();
+      const b = (await error.boundingBox())!;
+      const panel = (await page.locator(".onboarding").boundingBox())!;
+      expect(b.x).toBeGreaterThanOrEqual(panel.x);
+      expect(b.y).toBeGreaterThanOrEqual(panel.y);
+      expect(b.x + b.width).toBeLessThanOrEqual(panel.x + panel.width);
+      expect(b.y + b.height).toBeLessThanOrEqual(panel.y + panel.height);
     });
   }
 
@@ -372,21 +388,38 @@ test.describe("phone S states", () => {
       },
     },
   ];
+  async function fitsPopulated(page: Page, s: (typeof SCENES)[number]) {
+    const { scrollWidth, innerWidth } = await horizontalScroll(page);
+    expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
+    const boxes = await controls(page, [scene(s), "footer.hud"]);
+    expect(boxes.length).toBeGreaterThan(0);
+    expect(outside(boxes, PHONE_S.width)).toEqual([]);
+    const small = boxes.filter((b) => b.width < 24 || b.height < 24).map((b) => `${b.name} ${b.width}x${b.height}`);
+    expect(small).toEqual([]);
+    const clip = await page.locator(scene(s)).evaluate((el) => ({ scrollHeight: el.scrollHeight, clientHeight: el.clientHeight }));
+    expect(clip.scrollHeight).toBeLessThanOrEqual(clip.clientHeight);
+  }
+
   for (const p of populated) {
     test(`C24 360 ${p.route}`, async ({ page }) => {
       const s = SCENES.find((x) => x.route === p.route)!;
       await newDev(page);
       await openScene(page, s);
       await p.fill(page);
-      const { scrollWidth, innerWidth } = await horizontalScroll(page);
-      expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
-      const boxes = await controls(page, [scene(s), "footer.hud"]);
-      expect(boxes.length).toBeGreaterThan(0);
-      expect(outside(boxes, PHONE_S.width)).toEqual([]);
-      const small = boxes.filter((b) => b.width < 24 || b.height < 24).map((b) => `${b.name} ${b.width}x${b.height}`);
-      expect(small).toEqual([]);
-      const clip = await page.locator(scene(s)).evaluate((el) => ({ scrollHeight: el.scrollHeight, clientHeight: el.clientHeight }));
-      expect(clip.scrollHeight).toBeLessThanOrEqual(clip.clientHeight);
+      await fitsPopulated(page, s);
     });
   }
+
+  // C25 (added after verification round 2): LOJA with the equipped item selected shows REMOVER EQUIPAMENTO
+  test("C25 360 /loja", async ({ page }) => {
+    const s = SCENES[6];
+    await newDev(page);
+    await openScene(page, s);
+    await page.locator('[data-card="cafe"]').click();
+    const detail = page.getByRole("region", { name: "detalhe" });
+    await detail.getByRole("button", { name: "COMPRAR E EQUIPAR" }).click();
+    await expect(page.getByRole("status")).toHaveText("ITEM COMPRADO E EQUIPADO");
+    await expect(detail.getByRole("button", { name: "REMOVER EQUIPAMENTO" })).toBeVisible();
+    await fitsPopulated(page, s);
+  });
 });
