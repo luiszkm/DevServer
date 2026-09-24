@@ -200,6 +200,18 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: web/art/icon/menu-server.json legend m; .specs/features/game-menu/checks.md C26 (art)
 - last seen: 2026-09-24T20:22:33Z
 
+### L-032 - Count art tones by resolved palette hex, not by palette name, because aliased palette entries share a colour
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `art` · harmful: 0
+- features: game-menu
+- evidence: verification.md F5; web/src/lib/art.test.tsx:259-260 (art)
+- last seen: 2026-09-24T21:02:26Z
+
+### L-033 - When a check claims only one rule is left to judgement, enumerate every binding rule and show each one has a check or a named exemption
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `art` · harmful: 0
+- features: game-menu
+- evidence: verification.md gap 2; .specs/features/game-menu/checks.md:102 (art)
+- last seen: 2026-09-24T21:02:26Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
