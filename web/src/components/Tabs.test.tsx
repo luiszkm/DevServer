@@ -209,6 +209,16 @@ describe("Tabs hotbar", () => {
     expect(nav.push).not.toHaveBeenCalled();
   });
 
+  // C22 (added after verification round 1): a key another handler already consumed is left alone
+  it("shortcut ignores prevented", async () => {
+    render(<Tabs />);
+    const cancel = (e: KeyboardEvent) => e.preventDefault();
+    document.body.addEventListener("keydown", cancel);
+    await userEvent.keyboard("3");
+    document.body.removeEventListener("keydown", cancel);
+    expect(nav.push).not.toHaveBeenCalled();
+  });
+
   it("shortcut closes menu", async () => {
     render(<Tabs />);
     await userEvent.click(menu());
@@ -230,5 +240,16 @@ describe("Tabs hotbar", () => {
     render(<Tabs />);
     expect(menu().querySelector("img")).toBeNull();
     expect(menu()).toHaveTextContent(/^MENU$/);
+  });
+
+  // C23 (added after verification round 1): the icon comes first, for every scene
+  it.each(SLOTS)("menu button icon per scene %s %s", (_, label, href, icon) => {
+    nav.pathname = href;
+    render(<Tabs />);
+    const first = menu().firstElementChild;
+    expect(first?.tagName).toBe("IMG");
+    expect(first?.getAttribute("src")).toBe(`/art/icon/menu-${icon}.png`);
+    expect(first?.getAttribute("alt")).toBe("");
+    expect(first?.nextSibling?.textContent).toBe(`MENU · ${label}`);
   });
 });

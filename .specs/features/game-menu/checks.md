@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/game-menu/plan.md`
 
-18 checks in 4 slices · 3 one-way doors · 0 open
+24 checks in 6 slices · 3 one-way doors · 0 open
 
 Tables used by the checks (`TABS` order, door 1):
 
@@ -79,6 +79,28 @@ Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C[0-9]+ "`
 **C18** - As provas de `Tabs.test.tsx` do foundation e do responsive (ordem e rotas, `01`–`09`, `aria-current`, menu C1–C6, C21) continuam verdes sem mudar nenhum assert (plan `Impact`) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "tab order and routes|marks only the current|menu starts closed|menu opens|link closes menu|button closes menu|escape closes menu|other keys keep menu open|menu label"`
 
+### S6 - fix round 1 · 9 specs + 9 PNGs + 3 tests · added after verification round 1 (binding style source unchecked; `defaultPrevented` guard unproven; AC 13 on 1 of 9; arrangement positions unchecked)
+
+**C19** - Cada um dos 9 PNGs `menu-<icon>` tem 1px de margem transparente (nenhum pixel opaco na linha 0, linha 15, coluna 0 ou coluna 15) e a caixa dos pixels opacos mede entre 12 e 14px no maior lado (~80% de 16, style guide "icon") (MENU-01, AC 1; binding style source; added after verification round 1) ✅
+Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu icon margin"`
+
+**C20** - Em cada um dos 9 PNGs, todo pixel opaco com um vizinho (4-conexo) transparente é `ink.0` `#060612` (contorno fechado em ink, style guide) (MENU-01, AC 1; binding style source; added after verification round 1) ✅
+Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu icon outline"`
+
+**C21** - Em cada um dos 9 PNGs, a luminância média (Rec. 709) dos pixels opacos que não são `ink.0` com `x + y < 15` é maior que a dos com `x + y > 15` (luz de cima-esquerda, style guide) (MENU-01, AC 1; binding style source; added after verification round 1) ✅
+Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu icon light"`
+
+**C22** - Um `keydown` de `3` que outro listener já cancelou (`preventDefault` num listener do `body`, antes do `document`) não chama `router.push` (MENU-03, AC 8; door 3 `e.defaultPrevented`; added after verification round 1) ✅
+Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "shortcut ignores prevented"`
+
+**C23** - Para cada uma das 9 rotas de `TABS`, o botão `MENU` tem como primeiro filho um `<img src="/art/icon/menu-<icon>.png" alt="">` seguido do texto `MENU · <rótulo>` (9 casos, table-driven) (MENU-04, AC 13; added after verification round 1) ✅
+Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "menu button icon per scene"`
+
+**C24** - A 1280x800 e a 390x844 (menu aberto), em cada um dos 9 slots, a caixa do `.tab-num` fica acima e à esquerda da do `.tab-icon` (`num.x + num.width <= icon.x` e `num.y < icon.y`) e dentro do slot, e o rótulo fica abaixo do ícone (`label.y >= icon.y + icon.height`); no slot ativo o `box-shadow` do `.tab-icon` contém o brilho `rgb(255, 224, 138)` e nos outros 8 não (2 casos) (MENU-02, AC 5, 6; plan Sources "número no canto, rótulo embaixo, ativo com brilho"; added after verification round 1) ✅
+Proof: `cd web && npx playwright test e2e/game-menu.spec.ts -g "C24 "`
+
+Not mechanised, judged against the preview by the Verifier (enumerated, per icon): ink between two separate parts of one object stays ink as an object boundary - `deploy` fin/body seams, `office` monitor bottom over the stand, `bug-fight` head over the shell, `avatar` eyes (style guide sprite rule: eyes in ink); no other icon uses `ink.0` off the outline. "3-4 tones per material" and one specular pixel on glossy things (`deploy` window, `office` screen) are judged the same way.
+
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
@@ -93,6 +115,10 @@ Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "tab order and 
 | shortcut side effects (2) | navega C9, C14 · fecha menu C13 | - |
 | MENU button by route (2) | cena de `TABS` C15 · fora de `TABS` C15 | - |
 | phone widths with open menu (2) | 360 C16 · 390 C16 | - |
+| icon style rules, mechanised (4) | margin C19 · fill ~80% C19 · ink outline C20 · top-left light C21 | - |
+| shortcut guards: already handled (1) | `defaultPrevented` C22 | - |
+| MENU icon per scene (9) | `/` C23 · `/mundo` C23 · `/server` C23 · `/deploy` C23 · `/bug-fight` C23 · `/skills` C23 · `/loja` C23 · `/avatar` C23 · `/office` C23 | - |
+| slot arrangement (4) | number top-left C24 · icon in square frame C6 · label below C24 · active glow C24 | - |
 | Landing doors (3) | door 1 `TABS.icon` + address C1, C4 · door 2 `ArtKind` `menu` C3 · door 3 keydown listener C9-C14 | - |
 
 - Claims about what the browser lays out or navigates (C6-C8, C14, C16): each proof runs in the real browser with `globals.css` loaded

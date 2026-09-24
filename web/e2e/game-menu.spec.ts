@@ -93,3 +93,56 @@ for (const viewport of [
     });
   });
 }
+
+// C24 (added after verification round 1): number in the corner, label below, glow on the active slot
+async function expectArrangement(page: Page, activeLabel: string) {
+  const slots = await nav(page)
+    .getByRole("link")
+    .evaluateAll((ls) =>
+      ls.map((l) => {
+        const box = (el: Element) => {
+          const b = el.getBoundingClientRect();
+          return { x: b.x, y: b.y, w: b.width, h: b.height };
+        };
+        return {
+          text: l.textContent ?? "",
+          slot: box(l),
+          num: box(l.querySelector(".tab-num")!),
+          icon: box(l.querySelector(".tab-icon")!),
+          label: box(l.querySelector(":scope > span:last-child")!),
+          shadow: getComputedStyle(l.querySelector(".tab-icon")!).boxShadow,
+        };
+      }),
+    );
+  expect(slots).toHaveLength(9);
+  for (const s of slots) {
+    expect(s.num.x + s.num.w, s.text).toBeLessThanOrEqual(s.icon.x);
+    expect(s.num.y, s.text).toBeLessThan(s.icon.y);
+    expect(s.num.x, s.text).toBeGreaterThanOrEqual(s.slot.x);
+    expect(s.num.y, s.text).toBeGreaterThanOrEqual(s.slot.y);
+    expect(s.label.y, s.text).toBeGreaterThanOrEqual(s.icon.y + s.icon.h);
+    if (s.text.includes(activeLabel)) expect(s.shadow, s.text).toContain("rgb(255, 224, 138)");
+    else expect(s.shadow, s.text).not.toContain("rgb(255, 224, 138)");
+  }
+}
+
+test.describe("arrangement desktop", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+  test("C24 arrangement 1280", async ({ page }) => {
+    await newDev(page);
+    await page.goto("/server");
+    await expect(page.getByText("LOJA DE COMPONENTES")).toBeVisible();
+    await expectArrangement(page, "SERVER");
+  });
+});
+
+test.describe("arrangement phone", () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+  test("C24 arrangement 390", async ({ page }) => {
+    await newDev(page);
+    await page.goto("/loja");
+    await expect(page.getByText("LOJA DEVSERVER")).toBeVisible();
+    await page.getByRole("button", { name: /^MENU/ }).click();
+    await expectArrangement(page, "LOJA");
+  });
+});
