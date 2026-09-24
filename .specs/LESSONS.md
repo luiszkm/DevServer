@@ -86,6 +86,24 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: api/internal/catalog/catalog_test.go:146 (api/catalog)
 - last seen: 2026-09-23T20:20:14Z
 
+### L-013 - A validation-order claim needs one case per adjacent pair, including body decoding before path validation.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `api/httpx` · harmful: 0
+- features: office
+- evidence: C14; api/internal/office/office_test.go:391 (round 1) (api/httpx)
+- last seen: 2026-09-24T01:49:31Z
+
+### L-014 - A decision helper moved into a shared package is reached across more boundaries; add its own-layer test in the commit that moves it.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `api/test-policy` · harmful: 0
+- features: office
+- evidence: api/internal/player/player.go Pay (round 1, unmet Test policy row) (api/test-policy)
+- last seen: 2026-09-24T01:49:31Z
+
+### L-015 - When stored rows reference catalog ids, decide and test what happens once the catalog drops the id or shrinks the set.
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `api/catalog` · harmful: 0
+- features: office
+- evidence: api/internal/player/player.go:164, api/internal/office/office.go:122 (round 1) (api/catalog)
+- last seen: 2026-09-24T01:49:32Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

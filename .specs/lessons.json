@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 13,
+  "next_id": 16,
   "lessons": [
     {
       "id": "L-001",
@@ -220,6 +220,60 @@
       ],
       "created": "2026-09-23T20:20:14Z",
       "last_seen": "2026-09-23T20:20:14Z"
+    },
+    {
+      "id": "L-013",
+      "key": "ac_gap::a validation order claim needs one case per adjacent pair including body decoding before path validation",
+      "text": "A validation-order claim needs one case per adjacent pair, including body decoding before path validation.",
+      "signal": "ac_gap",
+      "scope": "api/httpx",
+      "status": "candidate",
+      "features": [
+        "office"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "C14; api/internal/office/office_test.go:391 (round 1) (api/httpx)"
+      ],
+      "created": "2026-09-24T01:49:31Z",
+      "last_seen": "2026-09-24T01:49:31Z"
+    },
+    {
+      "id": "L-014",
+      "key": "ac_gap::a decision helper moved into a shared package is reached across more boundaries add its own layer test in the commit that moves it",
+      "text": "A decision helper moved into a shared package is reached across more boundaries; add its own-layer test in the commit that moves it.",
+      "signal": "ac_gap",
+      "scope": "api/test-policy",
+      "status": "candidate",
+      "features": [
+        "office"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/player/player.go Pay (round 1, unmet Test policy row) (api/test-policy)"
+      ],
+      "created": "2026-09-24T01:49:31Z",
+      "last_seen": "2026-09-24T01:49:31Z"
+    },
+    {
+      "id": "L-015",
+      "key": "spec_precision_gap::when stored rows reference catalog ids decide and test what happens once the catalog drops the id or shrinks the set",
+      "text": "When stored rows reference catalog ids, decide and test what happens once the catalog drops the id or shrinks the set.",
+      "signal": "spec_precision_gap",
+      "scope": "api/catalog",
+      "status": "candidate",
+      "features": [
+        "office"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "api/internal/player/player.go:164, api/internal/office/office.go:122 (round 1) (api/catalog)"
+      ],
+      "created": "2026-09-24T01:49:32Z",
+      "last_seen": "2026-09-24T01:49:32Z"
     }
   ]
 }

@@ -16,13 +16,14 @@
 | AD-010 | Tempo de jogo vem de `app.Deps.Now` (relógio injetado) e as respostas com tempo trazem `serverTime` | testes avançam o tempo; o cliente nunca decide quando algo terminou | active | 2026-09-23 |
 | AD-011 | Todo sorteio do jogo vem de `app.Deps.Rand` (injetado), nunca de `rand` global | testes fixam o resultado e provam as regras; o cliente nunca sorteia | active | 2026-09-23 |
 | AD-012 | Bônus de combate e de HP têm uma regra só, `player.Bonus(cat, p, type)`: skills + equipamentos equipados + skin vestida; toda fonte nova entra nela | evita que a próxima fonte (office) seja esquecida em algum chamador | active | 2026-09-23 |
+| AD-013 | `player.Bonus` também soma os móveis do escritório nos tipos `xp`, `deploy` e `spregen`; `deploy` é limitado por `office.maxDeployCut` (40); o deploy congela duração e XP com bônus no início | estende AD-012 sem segunda regra; congelar no início segue o snapshot de recompensa de `deploy_jobs` (decisão do usuário) | active | 2026-09-23 |
 
 ## Handoff
 
-**Feature**: shop-inventory-avatar
-**Where**: C1–C49 fechados; Verifier round 2 PASS. MVP do AD-008 completo (foundation, deploy-pipelines, skills, bug-fight, shop-inventory-avatar)
+**Feature**: office
+**Where**: C1–C45 fechados; Verifier round 2 PASS (round 1 FAIL: ordem de validação, prova própria de `player.Pay`, móvel fora do catálogo)
 **In progress**: nenhum
-**Next step**: push e PRs das branches empilhadas, quando o usuário pedir
+**Next step**: usuário confirmar AC 33–35 (móvel fora do catálogo, `Confirmed? n`); push e PR de `feat/office` quando pedir
 **Blockers**: none
 **Uncommitted**: none
-**Branch**: feat/shop-inventory-avatar (empilhada sobre feat/bug-fight)
+**Branch**: feat/office (sobre main)
