@@ -46,6 +46,7 @@ rendem mais XP, e cada turno do Bug Fight regenera mais SP. Guardar um móvel de
 | Confirmação ao guardar | nenhuma; um clique guarda, e o rodapé avisa | protótipo | n |
 | Pré-checagem na tela | zona errada e saldo insuficiente avisam sem chamar a api | protótipo (`tapOfficeCell`); o servidor valida de novo | n |
 | Rota e aba | 8ª aba `OFFICE` em `/office`, depois de AVATAR | rótulo do protótipo; `/bug-fight` já segue o rótulo | n |
+| Móvel gravado que saiu do catálogo (AD-003 permite rebalancear só no catálogo) | a api trata o espaço como ocupado, guardar esvazia sem reembolso e o móvel não soma bônus; linha numa zona ou posição que o catálogo não tem mais é ignorada na leitura; a tela mostra `?` e o clique guarda | nenhum preço para devolver; não quebrar o jogador quando o catálogo encolhe (added after verification round 1) | n |
 
 **Open questions:** none - all resolved or logged above.
 
@@ -105,6 +106,16 @@ rendem mais XP, e cada turno do Bug Fight regenera mais SP. Guardar um móvel de
 
 **Independent test:** novo dev → OFFICE → instala PLANTA DE CANTO → HUD coins 75 → reload mantém → guarda → coins 87.
 
+### S5: Móvel fora do catálogo (P2) - added after verification round 1
+
+**Acceptance Criteria**
+
+33. IF um espaço gravado tem um móvel que não existe no catálogo THEN a api SHALL recusar instalar nele com `409` `cell_occupied`, guardar SHALL esvaziá-lo com `200` sem reembolso, e o móvel SHALL somar 0 em todo bônus
+34. IF uma linha gravada está numa zona que o catálogo não tem ou numa posição ≥ `cells` THEN a api SHALL ignorá-la ao montar `office`, devolvendo só as zonas e posições do catálogo
+35. IF um espaço do `player.office` tem um id que não existe no catálogo THEN a web SHALL exibir `?` nesse espaço, não contá-lo em `móveis instalados` nem no conforto, e o clique SHALL chamar o guardar e exibir `GUARDADO`
+
+**Independent test:** gravar `sofa` em `piso` 0 direto no banco → `/office` mostra `?` → clicar guarda sem mudar o saldo.
+
 ## Traceability
 
 | ID | Slice | Criteria | Status |
@@ -113,6 +124,7 @@ rendem mais XP, e cada turno do Bug Fight regenera mais SP. Guardar um móvel de
 | OFFICE-02 | S2 | 4-13 | Pending |
 | OFFICE-03 | S3 | 14-19 | Pending |
 | OFFICE-04 | S4 | 20-32 | Pending |
+| OFFICE-05 | S5 | 33, 34, 35 | Pending |
 
 ## Observable
 
@@ -123,6 +135,7 @@ rendem mais XP, e cada turno do Bug Fight regenera mais SP. Guardar um móvel de
 | screen `/office` | error state | AC 31 |
 | screen `/office` | unauthorised state | existing - shell redireciona para `/login` (foundation) |
 | screen `/office` | density and ordering | AC 21, AC 24 |
+| API install, remove and screen `/office` | móvel gravado fora do catálogo | AC 33, 34, 35 (added after verification round 1) |
 | screen `/office` | destructive action confirms | n/a - guardar é um clique como no protótipo, e o rodapé avisa a perda (AC 25) |
 | API install, remove | response shape | AC 4, AC 12 - `{"player": {...}}` (AD-004) |
 | API install, remove | error shape and codes | AC 5-10 - formato AD-005 |

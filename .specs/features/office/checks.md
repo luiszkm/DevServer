@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/office/plan.md`
 
-41 checks in 4 slices · 8 one-way doors · 0 open
+45 checks in 5 slices · 8 one-way doors · 0 open
 
 ## Checks
 
@@ -50,7 +50,7 @@ Proof: `cd api && go test ./internal/office -run '^TestRemove_RefundsHalf$'`
 **C13** - Guardar `piso` 5 vazio responde `200` e o jogador e `player_office` ficam iguais; guardar duas vezes o mesmo espaço devolve o reembolso uma vez só (OFFICE-02, AC 13)
 Proof: `cd api && go test ./internal/office -run '^TestRemove_EmptyCell$'`
 
-**C14** - A ordem das validações é a do plano: `office/x/0` com `{"furniture":"x"}` responde `unknown_cell`; `office/piso/0` com `{"furniture":"x"}` e o espaço ocupado responde `unknown_furniture`; `neon` em `piso` 0 ocupado responde `wrong_zone`; `planta` em `piso` 0 ocupado com 0 coins responde `cell_occupied` (OFFICE-02, AC 5–9; plan Assumptions)
+**C14** - A ordem das validações é a do plano: `office/x/0` com corpo `{` responde `invalid_body`; `office/x/0` com `{"furniture":"x"}` responde `unknown_cell`; `office/piso/0` com `{"furniture":"x"}` e o espaço ocupado responde `unknown_furniture`; `neon` em `piso` 0 ocupado responde `wrong_zone`; `planta` em `piso` 0 ocupado com 0 coins responde `cell_occupied` (OFFICE-02, AC 5–9; plan Assumptions)
 Proof: `cd api && go test ./internal/office -run '^TestInstall_ValidationOrder$'`
 
 ### Cross-cutting api · ~3 files · ~20 KB · ~5k
@@ -143,6 +143,21 @@ Proof: `cd web && npx playwright test e2e/office.spec.ts -g "install and remove"
 **C41** - Nenhuma das 8 rotas, `/office` incluída, exibe `EM BREVE` (shop C46; plan Impact)
 Proof: `cd web && npx vitest run src/components/ComingSoon.test.tsx -t "no scene shows EM BREVE"`
 
+### S5 - Móvel fora do catálogo, e a regra de saldo · ~5 files · ~25 KB · ~6k (added after verification round 1)
+
+**C42** - `player.Pay` na própria camada: gems 15 com preço 15 gems deixa 0; gems 14 devolve `ErrNotEnoughGems` e não muda; coins 50 com preço 50 coins deixa 0; coins 49 devolve `ErrNotEnoughCoins` e não muda; pagar em gems não mexe em coins e vice-versa (Test policy; shop C7)
+Proof: `cd api && go test ./internal/player -run '^TestPay_BalanceByCurrency$'`
+
+**C43** - Com `sofa` (fora do catálogo) gravado em `piso` 0 e 1000 coins: instalar `planta` em `piso` 0 responde `409 cell_occupied`; `player.Bonus` com `sofa` soma 0 em `xp`, `deploy` e `spregen`; guardar `piso` 0 responde `200` com coins 1000 e gems iguais, e o espaço fica `null` (OFFICE-05, AC 33)
+Proof: `cd api && go test ./internal/office -run '^TestUnknownFurniture_OccupiesAndRemoves$'`
+Proof: `cd api && go test ./internal/player -run '^TestBonus_Office$'`
+
+**C44** - Com linhas gravadas em `sotao` 0, `parede` 8 e `piso` 24, e `mesa` em `piso` 0, `GET /api/me` responde `200` com `office` só com `parede` (8 `null`) e `piso` (`mesa` + 23 `null`) (OFFICE-05, AC 34)
+Proof: `cd api && go test ./internal/office -run '^TestMe_SkipsCellsOutsideCatalog$'`
+
+**C45** - Com `sofa` em `piso` 0 e `mesa` em `piso` 1, o espaço `piso` 0 exibe `?`, a sala diz `1 móveis instalados` e `CONFORTO 8`; clicar `piso` 0 chama `POST /api/me/office/piso/0/remove` e exibe `GUARDADO` (OFFICE-05, AC 35)
+Proof: `cd web && npx vitest run src/components/OfficeScene.test.tsx -t "unknown furniture"`
+
 ## Progress
 
 - [x] C1
@@ -186,6 +201,10 @@ Proof: `cd web && npx vitest run src/components/ComingSoon.test.tsx -t "no scene
 - [x] C39
 - [x] C40
 - [x] C41
+- [ ] C42
+- [ ] C43
+- [ ] C44
+- [ ] C45
 
 ## Coverage
 
@@ -202,7 +221,7 @@ Proof: `cd web && npx vitest run src/components/ComingSoon.test.tsx -t "no scene
 | levels (5) | `CANTINHO` C1, C33 · `HOME OFFICE` C1, C33 · `ESTÚDIO` C1, C33 · `LAB DEV` C1, C33 · `SEDE DEVSERVE` C1, C33 | - |
 | cell bounds (7) | zona desconhecida C9 · -1 C9 · `parede` 7 C9 · `parede` 8 C9 · `piso` 23 C9 · `piso` 24 C9 · não inteiro C9 | - |
 | balance boundary (4) | coins abaixo C5 · coins igual C5 · gems abaixo C5 · gems igual C5 | - |
-| validation order (4) | `unknown_cell` antes de `unknown_furniture` C14 · `unknown_furniture` antes de `cell_occupied` C14 · `wrong_zone` antes de `cell_occupied` C14 · `cell_occupied` antes do saldo C14 | - |
+| validation order (5) | `invalid_body` antes de `unknown_cell` C14 · `unknown_cell` antes de `unknown_furniture` C14 · `unknown_furniture` antes de `cell_occupied` C14 · `wrong_zone` antes de `cell_occupied` C14 · `cell_occupied` antes do saldo C14 | - |
 | refund (3) | coins par C12 · coins ímpar arredonda para baixo C12 · gems C12 | - |
 | bonus types (3) | `xp` C21, C23 · `deploy` C21, C22 · `spregen` C21, C25 | - |
 | bonus limits and exclusions (4) | teto 40 C21, C22, C33 · móvel sem bônus C21 · escritório fora de `hp`/`sp`/`dmg` C21, C26 · outras fontes fora dos tipos do escritório C21 | - |
@@ -218,6 +237,8 @@ Proof: `cd web && npx vitest run src/components/ComingSoon.test.tsx -t "no scene
 | screen footer (2) | próximo nível C32 · nível máximo C32 | - |
 | screen toasts (7) | `<NOME> INSTALADO` C36 · `GUARDADO · +N COINS` C37 · `GUARDADO · +N GEMS` C37 · `ESSE MÓVEL VAI NA PAREDE` C34 · `ESSE MÓVEL VAI NO PISO` C34 · `COINS INSUFICIENTES` C35 · `GEMS INSUFICIENTES` C35 | - |
 | action outcomes on screen (8) | instalar: 200 C36 · erro com mensagem C38 · sem corpo C38 · rede C38; guardar: 200 C37 · erro com mensagem C38 · sem corpo C38 · rede C38 | - |
+| stored furniture outside the catalog (4) | móvel desconhecido ocupa C43 · guardar sem reembolso C43 · soma 0 de bônus C43 · zona ou posição fora do catálogo ignorada C44; tela `?` e guardar C45 | - |
+| `player.Pay` (4) | gems abaixo C42 · gems igual C42 · coins abaixo C42 · coins igual C42 | - |
 | Landing doors (8) | 1 C18, C20 · 2 C1 · 3 C21 · 4 C2 · 5 C4, C12 · 6 C22, C23, C24 · 7 C27 · 8 C19 | - |
 | entities (1) | `PlayerOfficeCell` C18 | - |
 | stored data (1) | jogadores existentes C20 | - |
@@ -234,6 +255,7 @@ Same rows as the repo's guide in `AGENTS.md` (`## Test policy`).
 Evidence:
 
 - `player.Bonus`: 4 fontes (skills, equipamentos, skin, escritório) × 6 tipos, teto em `deploy`, móvel sem bônus -> decides, own layer C21 and boundary C22, C23, C25
+- `player.Pay` (moved from `shop.pay`): saldo por moeda, reached through shop and office -> decides, own layer C42 and boundary shop C7, C25, office C5, C17
 - office handlers: zona conhecida, posição no limite, móvel conhecido, zona do móvel, espaço ocupado, saldo por moeda, reembolso por moeda -> decides, boundary C4–C14
 - `deploy.Start`: duração e XP com bônus e arredondamento -> decides, boundary C22–C24
 - `battle.EndTurn`: regen com bônus e limite -> decides, own layer C25 (`EndTurn`) and boundary C25, C26
@@ -243,12 +265,12 @@ Evidence:
 
 ## Swept
 
-- validation: C5, C7, C8, C9, C10, C14
+- validation: C5, C7, C8, C9, C10, C14, C43, C44
 - failure modes: C16, C38
 - idempotency: C13 (guardar vazio e guardar duas vezes), C6 (instalar em ocupado não cobra)
 - authorization: C15
 - concurrency: C17
-- data lifecycle: C20 (jogadores existentes); guardar apaga a linha (C12), sem arquivamento
+- data lifecycle: C20 (jogadores existentes); guardar apaga a linha (C12), sem arquivamento; móvel ou espaço que saiu do catálogo C43, C44, C45
 - dependency failure: n/a - nenhuma dependência externa nova; falha de banco coberta por C16
 - state transitions: C4, C12 (vazio → ocupado → vazio), C24 (deploy congelado no início)
 - observability: C16 (500 com `request_id` e causa); nenhum evento de log novo, como o `shop`
@@ -265,4 +287,10 @@ Evidence:
 - Leitura: api ~76 KB + web ~49 KB ≈ 125 KB / 4 ≈ 31k, mais ~40k de código novo - abaixo do budget de 150k: um builder, sem handoff
 - **Boundary:** one builder, C1–C41 closed, `2a73027..HEAD` (api `8dbb534`, web `74ab996`); every proof and the api, web and e2e suites green at HEAD
 - **Settled mid-build:** nothing by the user; consequences recorded under `Impact on earlier checks` (shop C47 test migrates to latest, `pay` moved to `player.Pay`)
+- **Abandoned:** none
+
+Round 2 (after verification round 1 FAIL):
+
+- **Boundary:** C42 (`player.Pay` own layer), C43–C45 (new S5, AC 33–35: stored furniture outside the catalog) added; C14 extended with `invalid_body` before `unknown_cell`; `occupant`'s bound guard removed from `office.go` (unreachable: `cellOf` and `player.Office` both follow the embedded catalog in production)
+- **Settled mid-build:** nothing by the user; AC 33–35 chosen by the author, `Confirmed? n` in plan Assumptions
 - **Abandoned:** none
