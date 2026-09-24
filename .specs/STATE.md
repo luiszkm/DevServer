@@ -22,9 +22,9 @@
 ## Handoff
 
 **Feature**: server-room
-**Where**: C1–C44 fechados em `a0a9412..61d7f69`; api, web, e2e e `ci-build` verdes
+**Where**: C1–C46 fechados; Verifier round 1 FAIL (404 das rotas do rack, C21 sem skin, reembolso em gems sem prova) → round 2 em `18713ee..7ed5db6`
 **In progress**: nenhum
-**Next step**: Verifier independente sobre `a0a9412..HEAD` com todos os checks
+**Next step**: Verifier round 2 (scoped) sobre `a0a9412..HEAD`
 **Blockers**: none
 **Uncommitted**: none
 **Branch**: feat/server-room (sobre feat/office)
