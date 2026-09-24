@@ -1,0 +1,49 @@
+{
+ "name": "gear-teclado_race",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "TECLADO RACE CONDITION: a legendary purple mechanical keyboard seen from the front, two rows of silver keycaps and a spacebar, with one gold and one cyan key racing each other on the top row.",
+ "legend": {
+  "o": "ink",
+  "h": "slime.3",
+  "s": "slime.2",
+  "m": "slime.1",
+  "d": "slime.0",
+  "k": "metal.3",
+  "K": "metal.2",
+  "g": "gold.3",
+  "G": "gold.1",
+  "W": "white",
+  "b": "net.3",
+  "B": "net.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    ".oooooooooooooo.",
+    ".ohhhhhhhhhhhmo.",
+    ".okksWgskksbbmo.",
+    ".oKKsGGsKKsBBmo.",
+    ".osssssssssssmo.",
+    ".okkskkkkkskkmo.",
+    ".oKKsKKKKKsKKmo.",
+    ".ommmmmmmmmmmmo.",
+    ".oddddddddddddo.",
+    ".oooooooooooooo.",
+    "................",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

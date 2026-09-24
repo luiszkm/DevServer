@@ -1,0 +1,44 @@
+{
+ "name": "gear-hoodie_trace",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MOLETOM STACK TRACE: the hoodie of gear-moletom in error red, laid flat with the hood around the collar, white drawstrings and two indented lines of a stack trace printed on the chest.",
+ "legend": {
+  "o": "ink",
+  "h": "red.3",
+  "l": "red.2",
+  "m": "red.1",
+  "d": "red.0",
+  "w": "cloud.2",
+  "T": "cloud.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "..oooooooooooo..",
+    ".ohhhmmddmmmmmo.",
+    ".ohhdlwmmwldmmo.",
+    ".ohhdlwllwldmmo.",
+    ".ohldTTTTlldlmo.",
+    ".ohldlllllldlmo.",
+    ".ommdlTTTTldmmo.",
+    ".oooolllllloooo.",
+    "....ohlllllo....",
+    "....ohlllllo....",
+    "....ommmmmmo....",
+    "....oooooooo....",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}
