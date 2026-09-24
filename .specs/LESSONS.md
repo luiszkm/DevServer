@@ -188,6 +188,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: web/src/components/Tabs.test.tsx:225 (web)
 - last seen: 2026-09-24T19:47:06Z
 
+### L-030 - Give every glossy icon surface (screen, gem, coin, slime) exactly one white or top-tone specular pixel and name its coordinates in the checks
+- signal: `spec_deviation` · recurrence: 1 feature(s) · scope: `web/art icon` · harmful: 0
+- features: game-menu
+- evidence: web/art/icon/menu-office.json:26-29 (web/art icon)
+- last seen: 2026-09-24T20:08:51Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
