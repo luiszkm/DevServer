@@ -78,13 +78,13 @@ Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "gear art"
 **C17** - No AVATAR: célula de equipamento da grade `alt=<gear.name>` `width=32`; slot `setup` com `macbook` mostra `/art/icon/gear-macbook.png` `alt=""`; slot vazio mostra `[ ]` e nenhum `<img>`; detalhe do equipamento `alt=""`; célula de skin continua `HeroSprite` e o detalhe da skin continua `SKN`; após `error` o slot mostra `[Mac]` (ART-04, AC 9, 5) ✅
 Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "gear art"`
 
-**C18** - Em SKILLS, os 9 botões de nó mostram `/art/icon/skill-<id>.png` `alt=""` `width=32`; cada chip de ativa no rodapé mostra o mesmo ícone `alt=""`; após `error` o nó mostra o glifo (ART-05, AC 10, 5)
+**C18** - Em SKILLS, os 9 botões de nó mostram `/art/icon/skill-<id>.png` `alt=""` `width=32`; cada chip de ativa no rodapé mostra o mesmo ícone `alt=""`; após `error` o nó mostra o glifo (ART-05, AC 10, 5) ✅
 Proof: `cd web && npx vitest run src/components/SkillsScene.test.tsx -t "skill art"`
 
-**C19** - O HUD mostra, para cada skill ativa (`["f1"]`, `["f1","b2","i3"]`), `<img>` `src="/art/icon/skill-<id>.png"` `alt=<node.name>` `width=32`; sem skills mostra `sem habilidades ativas` e nenhum `<img>` de skill; após `error` o chip mostra o glifo (ART-05, AC 10, 5)
+**C19** - O HUD mostra, para cada skill ativa (`["f1"]`, `["f1","b2","i3"]`), `<img>` `src="/art/icon/skill-<id>.png"` `alt=<node.name>` `width=32`; sem skills mostra `sem habilidades ativas` e nenhum `<img>` de skill; após `error` o chip mostra o glifo (ART-05, AC 10, 5) ✅
 Proof: `cd web && npx vitest run src/components/Hud.test.tsx -t "skill art"`
 
-**C20** - O HUD mostra `/art/icon/hud-xp.png` no cartão do `XP`, `hud-heart` no do `HP`, `hud-coin` no de `COINS`, `hud-gem` no de `GEMS`, cada um `alt=""` `width=32` (ART-07, AC 16)
+**C20** - O HUD mostra `/art/icon/hud-xp.png` no cartão do `XP`, `hud-heart` no do `HP`, `hud-coin` no de `COINS`, `hud-gem` no de `GEMS`, cada um `alt=""` `width=32` (ART-07, AC 16) ✅
 Proof: `cd web && npx vitest run src/components/Hud.test.tsx -t "currency art"`
 
 **C21** - Em DEPLOY, cada botão de tipo mostra `/art/icon/deploy-<id>.png` `alt=""` `width=32` antes do nome; o nome acessível do botão é exatamente `t.name` (`BACKEND`) e o texto não contém o glifo; após `error` mostra o glifo (`$_`) (ART-05, AC 11, 5)

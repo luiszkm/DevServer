@@ -129,6 +129,8 @@ describe("GameShell", () => {
     render(<GameShell><p>cena</p></GameShell>);
     await screen.findByText("cena");
     const hud = screen.getByRole("contentinfo", { name: "HUD" });
-    expect(within(hud).getByLabelText("habilidades ativas")).toHaveTextContent("</>");
+    const chip = within(within(hud).getByLabelText("habilidades ativas")).getByRole("img");
+    expect(chip.getAttribute("src")).toBe("/art/icon/skill-f1.png");
+    expect(chip.getAttribute("alt")).toBe("MARKUP SEMÂNTICO");
   });
 });

@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { CATALOG, player } from "@/test/helpers";
 import { GameShell } from "./GameShell";
@@ -37,14 +37,14 @@ describe("Hud", () => {
 
   // C22
   it.each([
-    [["f1", "b1"], "</>$_"],
-    [[], "sem habilidades ativas"],
-  ])("shows active skill glyphs (%j)", (skills, text) => {
+    [["f1", "b1"], ["MARKUP SEMÂNTICO", "API REST"]],
+    [[], []],
+  ])("shows active skill glyphs (%j)", (skills, names) => {
     render(<Hud player={player({ skills })} catalog={CATALOG} />);
     const hud = screen.getByRole("contentinfo", { name: "HUD" });
     const card = within(hud).getByText("SKILL PTS").parentElement!;
-    if (skills.length) expect(within(card).getByLabelText("habilidades ativas").textContent).toBe(text);
-    else expect(within(card).getByText(text)).toBeInTheDocument();
+    if (skills.length) expect(within(within(card).getByLabelText("habilidades ativas")).getAllByRole("img").map((i) => i.getAttribute("alt"))).toEqual(names);
+    else expect(within(card).getByText("sem habilidades ativas")).toBeInTheDocument();
   });
 
   it("shows active skill glyphs only with a catalog (none without one)", () => {
@@ -53,5 +53,50 @@ describe("Hud", () => {
     expect(within(hud).queryByLabelText("habilidades ativas")).not.toBeInTheDocument();
     expect(within(hud).queryByText("sem habilidades ativas")).not.toBeInTheDocument();
     expect(within(hud).getByText("SKILL PTS")).toBeInTheDocument();
+  });
+
+  // game-art C19
+  it.each([[["f1"]], [["f1", "b2", "i3"]]])("skill art (%j)", (skills) => {
+    render(<Hud player={player({ skills })} catalog={CATALOG} />);
+    const chips = screen.getByLabelText("habilidades ativas");
+    const imgs = within(chips).getAllByRole("img");
+    const names: Record<string, string> = { f1: "MARKUP SEMÂNTICO", b2: "CAMADA DE CACHE", i3: "AUTO-SCALING" };
+    expect(imgs.map((i) => i.getAttribute("src"))).toEqual(skills.map((id) => `/art/icon/skill-${id}.png`));
+    expect(imgs.map((i) => i.getAttribute("alt"))).toEqual(skills.map((id) => names[id]));
+    for (const img of imgs) {
+      expect(img.getAttribute("width")).toBe("32");
+      expect(img).toHaveClass("pixelated");
+    }
+  });
+
+  it("skill art (none active)", () => {
+    render(<Hud player={player({ skills: [] })} catalog={CATALOG} />);
+    const hud = screen.getByRole("contentinfo", { name: "HUD" });
+    expect(within(hud).getByText("sem habilidades ativas")).toBeInTheDocument();
+    expect(hud.querySelector('img[src^="/art/icon/skill-"]')).toBeNull();
+  });
+
+  it("skill art falls back to the glyph", () => {
+    render(<Hud player={player({ skills: ["f1"] })} catalog={CATALOG} />);
+    const chips = screen.getByLabelText("habilidades ativas");
+    fireEvent.error(within(chips).getByRole("img"));
+    expect(within(chips).queryByRole("img")).toBeNull();
+    expect(chips).toHaveTextContent("</>");
+  });
+
+  // game-art C20
+  it.each([
+    ["XP", "hud-xp"],
+    ["HP 100/100", "hud-heart"],
+    ["COINS", "hud-coin"],
+    ["GEMS", "hud-gem"],
+  ])("currency art (%s)", (label, icon) => {
+    render(<Hud player={player({ hp: 100, hpMax: 100 })} catalog={CATALOG} />);
+    const card = screen.getByText(label).closest(".hud-card") as HTMLElement;
+    const img = card.querySelector(`img[src="/art/icon/${icon}.png"]`)!;
+    expect(img).not.toBeNull();
+    expect(img.getAttribute("alt")).toBe("");
+    expect(img.getAttribute("width")).toBe("32");
+    expect(img).toHaveClass("pixelated");
   });
 });

@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import SkillsPage from "@/app/(game)/skills/page";
@@ -30,7 +30,7 @@ describe("SkillsScene", () => {
       const buttons = within(groups[i]).getAllByRole("button");
       expect(buttons.map((b) => b.dataset.skill)).toEqual(tree.nodes.map((n) => n.id));
       tree.nodes.forEach((n, j) => {
-        expect(buttons[j]).toHaveTextContent(n.glyph);
+        expect(buttons[j].querySelector("img")?.getAttribute("src")).toBe(`/art/icon/skill-${n.id}.png`);
         expect(buttons[j]).toHaveTextContent(n.name);
         expect(buttons[j]).toHaveTextContent(n.description);
       });
@@ -111,7 +111,9 @@ describe("SkillsScene", () => {
   // C21
   it("lists active skills", () => {
     renderScene(player({ skills: ["b1", "f1"] }));
-    expect(screen.getByLabelText("ativas em combate").textContent).toBe("</>MARKUP$_API");
+    const foot = screen.getByLabelText("ativas em combate");
+    expect(foot.textContent).toBe("MARKUPAPI");
+    expect(Array.from(foot.querySelectorAll("img")).map((i) => i.getAttribute("src"))).toEqual(["/art/icon/skill-f1.png", "/art/icon/skill-b1.png"]);
   });
 
   it("lists active skills (none)", () => {
@@ -140,5 +142,30 @@ describe("SkillsScene", () => {
     );
     expect(screen.getByText("ÁRVORE DE HABILIDADES")).toBeInTheDocument();
     expect(screen.queryByText("EM BREVE")).not.toBeInTheDocument();
+  });
+
+  // game-art C18
+  it("skill art", () => {
+    renderScene(player({ skills: ["f1", "b2", "i3"] }));
+    const nodes = SKILL_TREES.flatMap((t) => t.nodes);
+    expect(nodes).toHaveLength(9);
+    for (const n of nodes) {
+      const img = node(n.id).querySelector("img")!;
+      expect(img.getAttribute("src")).toBe(`/art/icon/skill-${n.id}.png`);
+      expect(img.getAttribute("alt")).toBe("");
+      expect(img.getAttribute("width")).toBe("32");
+      expect(img).toHaveClass("pixelated");
+      expect(node(n.id).querySelector(".skill-glyph")?.textContent).toBe("");
+    }
+    const chips = Array.from(screen.getByLabelText("ativas em combate").querySelectorAll("img"));
+    expect(chips.map((i) => i.getAttribute("src"))).toEqual(["/art/icon/skill-f1.png", "/art/icon/skill-b2.png", "/art/icon/skill-i3.png"]);
+    for (const chip of chips) {
+      expect(chip.getAttribute("alt")).toBe("");
+      expect(chip.getAttribute("width")).toBe("32");
+    }
+
+    fireEvent.error(node("f2").querySelector("img")!);
+    expect(node("f2").querySelector("img")).toBeNull();
+    expect(node("f2").querySelector(".skill-glyph")).toHaveTextContent("{}");
   });
 });

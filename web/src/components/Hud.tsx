@@ -1,4 +1,5 @@
 import type { Catalog, Player } from "@/lib/types";
+import { GameArt } from "./GameArt";
 
 type Props = { player?: Player; catalog?: Catalog; onLogout?: () => void };
 
@@ -24,27 +25,39 @@ export function Hud({ player, catalog, onLogout }: Props) {
       <div className="hud-card hud-grow">
         <span className="pixel hud-title">{`LEVEL ${player.level}`}</span>
         <div className="hud-row">
+          <GameArt kind="hud" id="xp" scale={2} alt="" fallback="" />
           <span className="chip chip-green">XP</span>
           <Bar value={player.xp} max={player.xpMax} color="var(--green)" />
           <span className="term">{`${player.xp}/${player.xpMax}`}</span>
         </div>
       </div>
       <div className="hud-card hud-grow">
-        <span className="pixel hud-title">{`HP ${player.hp}/${player.hpMax}`}</span>
+        <div className="hud-row">
+          <GameArt kind="hud" id="heart" scale={2} alt="" fallback="" />
+          <span className="pixel hud-title">{`HP ${player.hp}/${player.hpMax}`}</span>
+        </div>
         <Bar value={player.hp} max={player.hpMax} color="var(--red)" />
       </div>
       <div className="hud-card">
-        <span className="pixel hud-label">COINS</span>
+        <div className="hud-row">
+          <GameArt kind="hud" id="coin" scale={2} alt="" fallback="" />
+          <span className="pixel hud-label">COINS</span>
+        </div>
         <span className="pixel hud-value" style={{ color: "var(--yellow)" }}>{player.coins}</span>
       </div>
       <div className="hud-card">
-        <span className="pixel hud-label">GEMS</span>
+        <div className="hud-row">
+          <GameArt kind="hud" id="gem" scale={2} alt="" fallback="" />
+          <span className="pixel hud-label">GEMS</span>
+        </div>
         <span className="pixel hud-value" style={{ color: "var(--cyan)" }}>{player.gems}</span>
       </div>
       <div className="hud-card">
         <span className="pixel hud-label">SKILL PTS</span>
-        <span className="pixel hud-value" style={{ color: "var(--purple)" }}>{player.skillPoints}</span>
-        {catalog && <ActiveSkillGlyphs skills={player.skills} catalog={catalog} />}
+        <div className="hud-row">
+          <span className="pixel hud-value" style={{ color: "var(--purple)" }}>{player.skillPoints}</span>
+          {catalog && <ActiveSkillGlyphs skills={player.skills} catalog={catalog} />}
+        </div>
       </div>
       <div className="hud-card">
         <span className="pixel hud-label">{player.devName}</span>
@@ -65,7 +78,7 @@ function ActiveSkillGlyphs({ skills, catalog }: { skills: string[]; catalog: Cat
     <span className="hud-skills" aria-label="habilidades ativas">
       {nodes.map((n) => (
         <span key={n.id} className="pixel skill-chip">
-          {n.glyph}
+          <GameArt kind="skill" id={n.id} scale={2} alt={n.name} fallback={n.glyph} />
         </span>
       ))}
     </span>

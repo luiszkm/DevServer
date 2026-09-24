@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { post } from "@/lib/api";
 import type { Player, SkillNode } from "@/lib/types";
+import { GameArt } from "./GameArt";
 import { useGame } from "./GameContext";
 
 type NodeState = "ATIVA" | "1 PT" | "BLOQ.";
@@ -57,7 +58,9 @@ export function SkillsScene() {
                   disabled={pending || state !== "1 PT"}
                   onClick={() => unlock(node)}
                 >
-                  <span className="pixel skill-glyph">{node.glyph}</span>
+                  <span className="pixel skill-glyph">
+                    <GameArt kind="skill" id={node.id} scale={2} alt="" fallback={node.glyph} />
+                  </span>
                   <span className="skill-text">
                     <span className="pixel skill-name">{node.name}</span>
                     <span className="term">{node.description}</span>
@@ -80,7 +83,9 @@ export function SkillsScene() {
           ) : (
             active.map((n) => (
               <span key={n.id} className="skill-chip-wide">
-                <span className="pixel skill-chip">{n.glyph}</span>
+                <span className="pixel skill-chip">
+                  <GameArt kind="skill" id={n.id} scale={2} alt="" fallback={n.glyph} />
+                </span>
                 <span className="term">{n.name.split(" ")[0]}</span>
               </span>
             ))
