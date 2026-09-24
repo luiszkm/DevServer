@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -493,5 +494,42 @@ func TestCatalog_ServesOffice(t *testing.T) {
 				t.Errorf("furniture %d %s = %s, want %s", i, key, got, furniture[i][k])
 			}
 		}
+	}
+}
+
+// C1 (server-room)
+func TestCatalog_ServesRack(t *testing.T) {
+	env := apptest.New(t)
+	rec := env.Do(http.MethodGet, "/api/catalog", nil)
+	var b struct {
+		Rack any `json:"rack"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &b); err != nil {
+		t.Fatal(err)
+	}
+	// Every field by value, key names included; the order of stats and components is the prototype's.
+	const want = `{
+		"slots": 6,
+		"stats": [
+			{"id": "power", "name": "POWER", "color": "#45b7ff", "base": 20, "max": 100, "step": 10, "bonus": "dmg"},
+			{"id": "ram", "name": "RAM", "color": "#6bd425", "base": 15, "max": 100, "step": 5, "bonus": "sp"},
+			{"id": "uptime", "name": "UPTIME", "color": "#ffc93c", "base": 60, "max": 99, "step": 1, "bonus": "coins"}
+		],
+		"components": [
+			{"id": "cpu", "name": "CPU 8-CORE", "glyph": "::", "color": "#45b7ff", "price": {"currency": "coins", "amount": 80}, "effects": [{"stat": "power", "amount": 25}]},
+			{"id": "ram", "name": "RAM 32GB", "glyph": "[]", "color": "#6bd425", "price": {"currency": "coins", "amount": 60}, "effects": [{"stat": "ram", "amount": 30}]},
+			{"id": "ssd", "name": "SSD NVME", "glyph": "=", "color": "#ffc93c", "price": {"currency": "coins", "amount": 70}, "effects": [{"stat": "power", "amount": 12}, {"stat": "uptime", "amount": 8}]},
+			{"id": "cache", "name": "CACHE REDIS", "glyph": "~", "color": "#e05252", "price": {"currency": "coins", "amount": 90}, "effects": [{"stat": "power", "amount": 18}]},
+			{"id": "lb", "name": "LOAD BALANCER", "glyph": ">>", "color": "#b46cf0", "price": {"currency": "coins", "amount": 120}, "effects": [{"stat": "uptime", "amount": 20}]},
+			{"id": "gpu", "name": "GPU EDGE", "glyph": "#", "color": "#45b7ff", "price": {"currency": "coins", "amount": 150}, "effects": [{"stat": "power", "amount": 40}]}
+		]
+	}`
+	var w any
+	if err := json.Unmarshal([]byte(want), &w); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(b.Rack, w) {
+		got, _ := json.Marshal(b.Rack)
+		t.Fatalf("rack = %s", got)
 	}
 }

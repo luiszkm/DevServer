@@ -44,6 +44,8 @@ type Player struct {
 	// Office has every catalog zone as a key, each a list of its positions with the installed
 	// furniture id or null.
 	Office map[string][]*string `json:"office"`
+	// Rack has every catalog slot, with the installed component id or null.
+	Rack []*string `json:"rack"`
 }
 
 // DefaultSkin is owned by every player without a stored row (door 3).
@@ -65,6 +67,8 @@ func emptyOffice() map[string][]*string {
 	return o
 }
 
+func emptyRack() []*string { return make([]*string, catalog.Default().Rack.Slots) }
+
 // Classes are the cosmetic classes offered at onboarding.
 var Classes = []string{"FRONTEND", "BACKEND", "DEVOPS", "FULLSTACK"}
 
@@ -85,7 +89,7 @@ func newPlayer(githubUserID int64, devName, class string) *Player {
 		Coins: 100, Gems: 20, SkillPoints: 1, Region: "vila", Skin: "default", Skills: []string{},
 		Inventory: []catalog.ItemQuantity{},
 		Gear:      []string{}, Equipment: emptyEquipment(), Skins: []string{DefaultSkin},
-		Office: emptyOffice(),
+		Office: emptyOffice(), Rack: emptyRack(),
 	}
 }
 
@@ -147,7 +151,10 @@ func Get(ctx context.Context, q querier, githubUserID int64) (*Player, error) {
 	if err := LoadGear(ctx, q, p); err != nil {
 		return nil, err
 	}
-	return p, LoadOffice(ctx, q, p)
+	if err := LoadOffice(ctx, q, p); err != nil {
+		return nil, err
+	}
+	return p, LoadRack(ctx, q, p)
 }
 
 // LoadOffice reads the installed furniture into p.Office. A row outside the catalog's zones is
@@ -164,6 +171,26 @@ func LoadOffice(ctx context.Context, q querier, p *Player) error {
 		if cells, ok := p.Office[zone]; ok && pos < len(cells) {
 			f := id
 			cells[pos] = &f
+		}
+		return nil
+	})
+	return err
+}
+
+// LoadRack reads the installed components into p.Rack. A row at a slot the catalog no longer has
+// is skipped, like LoadOffice.
+func LoadRack(ctx context.Context, q querier, p *Player) error {
+	rows, err := q.Query(ctx, `SELECT slot, component_id FROM player_rack WHERE player_id = $1`, p.ID)
+	if err != nil {
+		return err
+	}
+	p.Rack = emptyRack()
+	var slot int
+	var id string
+	_, err = pgx.ForEachRow(rows, []any{&slot, &id}, func() error {
+		if slot < len(p.Rack) {
+			c := id
+			p.Rack[slot] = &c
 		}
 		return nil
 	})
@@ -306,6 +333,9 @@ func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn 
 	if err := LoadOffice(ctx, tx, p); err != nil {
 		return nil, err
 	}
+	if err := LoadRack(ctx, tx, p); err != nil {
+		return nil, err
+	}
 	if err := fn(tx, p); err != nil {
 		return nil, err
 	}
@@ -358,9 +388,9 @@ func (p *Player) Owns(gear string) bool { return slices.Contains(p.Gear, gear) }
 // OwnsSkin reports whether p owns a skin; DefaultSkin is always owned.
 func (p *Player) OwnsSkin(skin string) bool { return slices.Contains(p.Skins, skin) }
 
-// Bonus is the one bonus rule (AD-012, AD-013): the bonus of one type ("hp", "sp", "dmg", "xp",
-// "deploy", "spregen") summed over the unlocked skills, the equipped gear, the worn skin and the
-// installed furniture. Owned but unequipped gear adds nothing; "deploy" is capped at the
+// Bonus is the one bonus rule (AD-012, AD-013, AD-014): the bonus of one type ("hp", "sp", "dmg",
+// "xp", "deploy", "spregen", "coins") summed over the unlocked skills, the equipped gear, the worn
+// skin, the installed furniture and the rack's stats. Owned but unequipped gear adds nothing; "deploy" is capped at the
 // catalog's MaxDeployCut.
 func Bonus(cat *catalog.Catalog, p *Player, bonusType string) int {
 	sum := cat.SkillBonus(p.Skills, bonusType)
@@ -385,8 +415,37 @@ func Bonus(cat *catalog.Catalog, p *Player, bonusType string) int {
 			}
 		}
 	}
+	sum += rackBonus(cat, p.Rack, bonusType)
 	if bonusType == "deploy" {
 		sum = min(sum, cat.Office.MaxDeployCut)
+	}
+	return sum
+}
+
+// rackBonus is AD-014: each stat whose bonus is bonusType is base plus the installed effects,
+// capped at max, and adds one per step above base. A component outside the catalog adds nothing.
+func rackBonus(cat *catalog.Catalog, rack []*string, bonusType string) int {
+	sum := 0
+	for _, st := range cat.Rack.Stats {
+		if st.Bonus != bonusType {
+			continue
+		}
+		v := st.Base
+		for _, id := range rack {
+			if id == nil {
+				continue
+			}
+			k, ok := cat.ComponentItem(*id)
+			if !ok {
+				continue
+			}
+			for _, e := range k.Effects {
+				if e.Stat == st.ID {
+					v += e.Amount
+				}
+			}
+		}
+		sum += (min(v, st.Max) - st.Base) / st.Step
 	}
 	return sum
 }

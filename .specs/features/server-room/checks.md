@@ -75,7 +75,7 @@ Proof: `cd api && go test ./internal/rack -run '^TestMigration_RackExistingPlaye
 
 ### S3 - Bônus do rack · ~6 files · ~45 KB · ~11k
 
-**C21** - `player.Bonus` soma o rack na própria camada: vazio `dmg` 0, `sp` 0, `coins` 0; `gpu` `dmg` 4; `cpu` `dmg` 2; `cache` `dmg` 1 (POWER 38); `cpu` + `gpu` `dmg` 8 (POWER 85); 6 `gpu` `dmg` 8 (POWER limitado a 100); `ram` `sp` 6; 6 `ram` `sp` 17 (RAM limitado a 100); `lb` `coins` 20; 6 `lb` `coins` 39 (UPTIME limitado a 99); `ssd` `dmg` 1 e `coins` 8; o rack soma 0 em `hp`, `xp`, `deploy` e `spregen`; o rack soma junto com skills, equipamentos e skin no mesmo tipo (RACK-03, AC 15; door 3, door 9)
+**C21** - `player.Bonus` soma o rack na própria camada: vazio `dmg` 0, `sp` 0, `coins` 0; `gpu` `dmg` 4; `cpu` `dmg` 2; `cache` `dmg` 1 (POWER 38); `cpu` + `gpu` `dmg` 6 (POWER 85, 6,5); 6 `gpu` `dmg` 8 (POWER limitado a 100); `ram` `sp` 6; 6 `ram` `sp` 17 (RAM limitado a 100); `lb` `coins` 20; 6 `lb` `coins` 39 (UPTIME limitado a 99); `ssd` `dmg` 1 e `coins` 8; o rack soma 0 em `hp`, `xp`, `deploy` e `spregen`; o rack soma junto com skills, equipamentos e skin no mesmo tipo (RACK-03, AC 15; door 3, door 9)
 Proof: `cd api && go test ./internal/player -run '^TestBonus_Rack$'`
 
 **C22** - `POST /api/me/battle` na vila responde SP 56/56 com um `ram`, 67/67 com 6 `ram` e 50/50 sem rack (RACK-03, AC 16)
@@ -154,33 +154,33 @@ Proof: `cd web && npx playwright test e2e/server.spec.ts -g "entries"`
 
 ## Progress
 
-- [ ] C1
-- [ ] C2
-- [ ] C3
-- [ ] C4
-- [ ] C5
-- [ ] C6
-- [ ] C7
-- [ ] C8
-- [ ] C9
-- [ ] C10
-- [ ] C11
-- [ ] C12
-- [ ] C13
-- [ ] C14
-- [ ] C15
-- [ ] C16
-- [ ] C17
-- [ ] C18
-- [ ] C19
-- [ ] C20
-- [ ] C21
-- [ ] C22
-- [ ] C23
-- [ ] C24
-- [ ] C25
-- [ ] C26
-- [ ] C27
+- [x] C1
+- [x] C2
+- [x] C3
+- [x] C4
+- [x] C5
+- [x] C6
+- [x] C7
+- [x] C8
+- [x] C9
+- [x] C10
+- [x] C11
+- [x] C12
+- [x] C13
+- [x] C14
+- [x] C15
+- [x] C16
+- [x] C17
+- [x] C18
+- [x] C19
+- [x] C20
+- [x] C21
+- [x] C22
+- [x] C23
+- [x] C24
+- [x] C25
+- [x] C26
+- [x] C27
 - [ ] C28
 - [ ] C29
 - [ ] C30
@@ -271,7 +271,9 @@ Evidence:
 - office C27 (8 abas): passa a 9 com `SERVER` → `/server` como 03; C28 substitui a prova da ordem das abas
 - office C41 (`ComingSoon` sobre 8 cenas): C43 passa a cobrir 9
 - foundation tela-título (4 hotspots): C29 acrescenta 2 sem mudar os 4
+- office C20 (`TestMigration_OfficeExistingPlayers`): o teste migrava só até 00006 e servia o router atual, que agora lê `player_rack`; passa a aplicar todas as migrações depois de afirmar `player_office` vazia em 00006, como shop C47 - a afirmação não muda
 
 ## Handoff
 
 - Leitura: api ~79 KB + web ~61 KB ≈ 140 KB / 4 ≈ 35k, mais ~45k de código novo - abaixo do budget de 150k: um builder, sem handoff
+- **Settled mid-build:** C21 dizia `cpu` + `gpu` `dmg` 8; a fórmula aprovada (AC 15) dá `floor(65 / 10)` = 6 - erro aritmético do check, corrigido para 6 com o aval do usuário (2026-09-24)

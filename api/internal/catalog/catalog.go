@@ -163,6 +163,35 @@ type Office struct {
 	MaxDeployCut int `json:"maxDeployCut"`
 }
 
+// RackStat is POWER, RAM or UPTIME: base + installed effects, capped at max; every step above
+// base adds 1 to the bonus type (AD-014).
+type RackStat struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Color string `json:"color"`
+	Base  int    `json:"base"`
+	Max   int    `json:"max"`
+	Step  int    `json:"step"`
+	Bonus string `json:"bonus"`
+}
+type RackEffect struct {
+	Stat   string `json:"stat"`
+	Amount int    `json:"amount"`
+}
+type Component struct {
+	ID      string       `json:"id"`
+	Name    string       `json:"name"`
+	Glyph   string       `json:"glyph"`
+	Color   string       `json:"color"`
+	Price   Price        `json:"price"`
+	Effects []RackEffect `json:"effects"`
+}
+type Rack struct {
+	Slots      int         `json:"slots"`
+	Stats      []RackStat  `json:"stats"`
+	Components []Component `json:"components"`
+}
+
 type ItemQuantity struct {
 	Item     string `json:"item"`
 	Quantity int    `json:"quantity"`
@@ -197,6 +226,7 @@ type Catalog struct {
 	Gear         []Gear
 	Skins        []Skin
 	Office       Office
+	Rack         Rack
 	body         []byte
 }
 
@@ -287,6 +317,14 @@ func Load() (*Catalog, error) {
 		return nil, fmt.Errorf("office.json: %w", err)
 	}
 
+	raw, err = data.Files.ReadFile("rack.json")
+	if err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(raw, &c.Rack); err != nil {
+		return nil, fmt.Errorf("rack.json: %w", err)
+	}
+
 	c.body, err = json.Marshal(struct {
 		Version      string        `json:"version"`
 		Regions      []Region      `json:"regions"`
@@ -301,8 +339,9 @@ func Load() (*Catalog, error) {
 		Gear         []Gear        `json:"gear"`
 		Skins        []Skin        `json:"skins"`
 		Office       Office        `json:"office"`
+		Rack         Rack          `json:"rack"`
 	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees, c.Enemies, c.Commands, c.Items, c.Combat,
-		c.GearSlots, c.Gear, c.Skins, c.Office})
+		c.GearSlots, c.Gear, c.Skins, c.Office, c.Rack})
 	if err != nil {
 		return nil, err
 	}
@@ -456,6 +495,15 @@ func (c *Catalog) FurnitureItem(id string) (Furniture, bool) {
 		}
 	}
 	return Furniture{}, false
+}
+
+func (c *Catalog) ComponentItem(id string) (Component, bool) {
+	for _, k := range c.Rack.Components {
+		if k.ID == id {
+			return k, true
+		}
+	}
+	return Component{}, false
 }
 
 // SkillBonus sums the bonus of one type ("hp", "sp", "dmg") over the given skill ids.

@@ -585,6 +585,10 @@ func TestMigration_OfficeExistingPlayers(t *testing.T) {
 	if err := pool.QueryRow(ctx, "SELECT count(*) FROM player_office").Scan(&n); err != nil || n != 0 {
 		t.Errorf("player_office: %d rows (%v), want an empty table", n, err)
 	}
+	// The router reads every later table too, as the binary does after migrating at boot.
+	if err := db.Migrate(ctx, u.String()); err != nil {
+		t.Fatal(err)
+	}
 
 	cat, err := catalog.Load()
 	if err != nil {

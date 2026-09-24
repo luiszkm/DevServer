@@ -97,3 +97,60 @@ func TestBonus_Office(t *testing.T) {
 		}
 	}
 }
+
+// C21, C26 (server-room, own layer)
+func TestBonus_Rack(t *testing.T) {
+	cat := catalog.Default()
+	none := map[string]*string{"setup": nil, "bebida": nil, "vestuario": nil, "acessorio": nil}
+	rack := func(ids ...string) player.Player {
+		r := make([]*string, 6)
+		for i, id := range ids {
+			r[i] = &id
+		}
+		return player.Player{Equipment: none, Skin: "default", Rack: r}
+	}
+	six := func(id string) player.Player { return rack(id, id, id, id, id, id) }
+	macbook := "macbook"
+	withOthers := rack("gpu", "ram")
+	withOthers.Skills = []string{"f2", "f3"}
+	withOthers.Gear = []string{"macbook"}
+	withOthers.Equipment = map[string]*string{"setup": &macbook, "bebida": nil, "vestuario": nil, "acessorio": nil}
+	for _, tc := range []struct {
+		name   string
+		p      player.Player
+		typ    string
+		amount int
+	}{
+		{"empty dmg", rack(), "dmg", 0},
+		{"empty sp", rack(), "sp", 0},
+		{"empty coins", rack(), "coins", 0},
+		{"gpu: POWER 60", rack("gpu"), "dmg", 4},
+		{"cpu: POWER 45", rack("cpu"), "dmg", 2},
+		{"cache: POWER 38 floors to 1", rack("cache"), "dmg", 1},
+		{"cpu + gpu: POWER 85 floors to 6", rack("cpu", "gpu"), "dmg", 6},
+		{"6 gpu: POWER capped at 100", six("gpu"), "dmg", 8},
+		{"ram: RAM 45", rack("ram"), "sp", 6},
+		{"6 ram: RAM capped at 100", six("ram"), "sp", 17},
+		{"lb: UPTIME 80", rack("lb"), "coins", 20},
+		{"6 lb: UPTIME capped at 99", six("lb"), "coins", 39},
+		{"ssd dmg", rack("ssd"), "dmg", 1},
+		{"ssd coins", rack("ssd"), "coins", 8},
+		{"ram gives no dmg", rack("ram"), "dmg", 0},
+		{"gpu gives no coins", rack("gpu"), "coins", 0},
+		{"lb gives no sp", rack("lb"), "sp", 0},
+		{"rack hp", rack("gpu", "ram", "lb", "ssd", "cpu", "cache"), "hp", 0},
+		{"rack xp", rack("gpu", "ram", "lb", "ssd", "cpu", "cache"), "xp", 0},
+		{"rack deploy", rack("gpu", "ram", "lb", "ssd", "cpu", "cache"), "deploy", 0},
+		{"rack spregen", rack("gpu", "ram", "lb", "ssd", "cpu", "cache"), "spregen", 0},
+		{"summed with skills and gear dmg: 10 + 8 + 4", withOthers, "dmg", 22},
+		{"summed with skills sp: 8 + 6", withOthers, "sp", 14},
+		{"unknown component dmg", rack("quantum"), "dmg", 0},
+		{"unknown component sp", rack("quantum"), "sp", 0},
+		{"unknown component coins", rack("quantum"), "coins", 0},
+		{"unknown component beside gpu", rack("quantum", "gpu"), "dmg", 4},
+	} {
+		if got := player.Bonus(cat, &tc.p, tc.typ); got != tc.amount {
+			t.Errorf("%s: Bonus(%s) = %d, want %d", tc.name, tc.typ, got, tc.amount)
+		}
+	}
+}

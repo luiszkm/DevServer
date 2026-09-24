@@ -110,9 +110,11 @@ func (h *Handlers) Start(w http.ResponseWriter, r *http.Request) error {
 		seconds := math.Round(float64(lvl.Minutes*60) * float64(100-cut) / 100)
 		ends := now.Add(time.Duration(seconds) * time.Second)
 		xp := int(math.Round(float64(lvl.XP) * float64(100+player.Bonus(h.Catalog, p, "xp")) / 100))
+		// The rack's UPTIME is frozen the same way (AD-014).
+		coins := int(math.Round(float64(lvl.Coins) * float64(100+player.Bonus(h.Catalog, p, "coins")) / 100))
 		if _, err := tx.Exec(ctx, `INSERT INTO deploy_jobs (player_id, type, level, started_at, ends_at, xp, coins, gems)
 			VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-			p.ID, in.Type, lvl.Level, now, ends, xp, lvl.Coins, lvl.Gems); err != nil {
+			p.ID, in.Type, lvl.Level, now, ends, xp, coins, lvl.Gems); err != nil {
 			return err
 		}
 		started = job{Type: in.Type, Level: lvl.Level, StartedAt: stamp(now), EndsAt: stamp(ends)}
