@@ -153,6 +153,14 @@ describe("catalog art on disk", () => {
       expect(side).toBeLessThanOrEqual(14);
     });
 
+    // C31 (added after verification round 4): one object, centred
+    it("menu icon centred", () => {
+      const xs = points.map(([x]) => x);
+      const ys = points.map(([, y]) => y);
+      expect(Math.abs((Math.min(...xs) + Math.max(...xs)) / 2 - (width - 1) / 2)).toBeLessThanOrEqual(1);
+      expect(Math.abs((Math.min(...ys) + Math.max(...ys)) / 2 - (height - 1) / 2)).toBeLessThanOrEqual(1);
+    });
+
     it("menu icon outline in ink", () => {
       const edge = points.filter(([x, y]) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => !opaque(x + dx, y + dy)));
       expect(edge.filter(([x, y]) => !isInk(x, y))).toEqual([]);
@@ -249,6 +257,12 @@ describe("catalog art on disk", () => {
     for (const row of s.layers[0].grid!) for (const ch of row) if (ch !== "." && ch !== " ") counts[ch] = (counts[ch] ?? 0) + 1;
     return { legend: s.legend, counts };
   }
+  // Tones are counted by colour, not by name: some palette names share a hex (leaf.3 = grass.3).
+  const PALETTE = JSON.parse(readFileSync(`${ROOT}.claude/skills/pixel-assets/references/palette.json`, "utf8")) as Record<string, string[] | string>;
+  const toHex = (key: string) => {
+    const [ramp, index] = key.split(".");
+    return (PALETTE[ramp] as string[])[Number(index ?? 0)].toLowerCase();
+  };
   const size = (chars: string, counts: Record<string, number>) => [...chars].reduce((a, c) => a + (counts[c] ?? 0), 0);
 
   it.each(Object.entries(SURFACES).flatMap(([id, t]) => Object.entries(t.surfaces).map(([name, chars]) => [id, name, chars])))(
@@ -256,7 +270,7 @@ describe("catalog art on disk", () => {
     (id, _, chars) => {
       const { legend, counts } = spec(id);
       expect(size(chars, counts)).toBeGreaterThanOrEqual(12);
-      const tones = new Set([...chars].filter((c) => counts[c]).map((c) => legend[c]));
+      const tones = new Set([...chars].filter((c) => counts[c]).map((c) => toHex(legend[c])));
       expect(tones.size).toBeGreaterThanOrEqual(3);
     },
   );

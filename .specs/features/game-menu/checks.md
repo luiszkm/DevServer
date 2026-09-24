@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/game-menu/plan.md`
 
-30 checks in 8 slices · 3 one-way doors · 0 open
+31 checks in 9 slices · 3 one-way doors · 0 open
 
 Tables used by the checks (`TABS` order, door 1):
 
@@ -99,7 +99,7 @@ Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "menu button ic
 **C24** - A 1280x800 e a 390x844 (menu aberto), em cada um dos 9 slots, a caixa do `.tab-num` fica acima e à esquerda da do `.tab-icon` (`num.x + num.width <= icon.x` e `num.y < icon.y`) e dentro do slot, e o rótulo fica abaixo do ícone (`label.y >= icon.y + icon.height`); no slot ativo o `box-shadow` do `.tab-icon` contém o brilho `rgb(255, 224, 138)` e nos outros 8 não (2 casos) (MENU-02, AC 5, 6; plan Sources "número no canto, rótulo embaixo, ativo com brilho"; added after verification round 1) ✅
 Proof: `cd web && npx playwright test e2e/game-menu.spec.ts -g "C24 "`
 
-Ink off the outline is mechanised by C27 for all 9 icons; tones per material and the specular pixel are mechanised for all 9 icons by C28-C30 (S8), with C25/C26 as the first, narrower cases. Silhouette readability is the only style rule left to preview judgement.
+Ink off the outline is mechanised by C27 for all 9 icons; tones per material and the specular pixel are mechanised for all 9 icons by C28-C30 (S8), with C25/C26 as the first, narrower cases. Centring is C31. Left to preview judgement: silhouette readability and whether each object reads as the scene it names.
 
 ### S7 - fix round 2 · 2 specs + 2 PNGs + 1 test · added after verification round 2 (no specular on the `office` screen; 2 tones on the `mundo` paper and `office` bezel; ink exemption imprecise)
 
@@ -125,6 +125,11 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu surface table cov
 **C30** - Cada superfície brilhante da tabela (`loja` moeda, `office` tela, `deploy` vidro) tem exatamente um pixel no tom mais alto da sua rampa (`gold.4`, `code.4`, `net.4`) (MENU-01, AC 1; binding style source "one white or top-tone specular pixel"; added after verification round 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu glossy specular"`
 
+### S9 - fix round 4 · 1 test · added after verification round 4 (C28 counted palette names, not colours - surviving mutant F5; "centred" unchecked)
+
+**C31** - Em cada um dos 9 PNGs, o centro da caixa dos pixels opacos fica a no máximo 1px do centro da tela (7,5; 7,5) em x e em y (style guide: "one object, centred") (MENU-01, AC 1; added after verification round 4) ✅
+Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu icon centred"`
+
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
@@ -139,7 +144,7 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "menu glossy specular"`
 | shortcut side effects (2) | navega C9, C14 · fecha menu C13 | - |
 | MENU button by route (2) | cena de `TABS` C15 · fora de `TABS` C15 | - |
 | phone widths with open menu (2) | 360 C16 · 390 C16 | - |
-| icon style rules, mechanised (7) | margin C19 · fill ~80% C19 · ink outline C20 · top-left light C21 · specular on every glossy surface C25, C30 · tones on every surface ≥12px C26, C28, C29 · no inner-detail ink C27 | - |
+| icon style rules, mechanised (8) | centred C31 · margin C19 · fill ~80% C19 · ink outline C20 · top-left light C21 · specular on every glossy surface C25, C30 · tones on every surface ≥12px C26, C28, C29 · no inner-detail ink C27 | - |
 | surfaces ≥12px (18) | avatar rosto C28 · avatar cabelo C28 · avatar moletom C28 · bug-fight casco C28 · deploy corpo C28 · deploy aletas C28 · loja saco C28 · loja moeda C28 · mundo papel C28 · mundo terra C28 · office tela C28 · office moldura C28 · office mesa C28 · server estrutura C28 · server gavetas C28 · skills estrela C28 · titulo telhado C28 · titulo paredes C28 | - |
 | shortcut guards: already handled (1) | `defaultPrevented` C22 | - |
 | MENU icon per scene (9) | `/` C23 · `/mundo` C23 · `/server` C23 · `/deploy` C23 · `/bug-fight` C23 · `/skills` C23 · `/loja` C23 · `/avatar` C23 · `/office` C23 | - |
