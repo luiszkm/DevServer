@@ -64,6 +64,8 @@ var (
 	ErrRackFull           = &Error{http.StatusConflict, "rack_full", "rack cheio. remova um componente antes"}
 	ErrUnknownComponent   = &Error{http.StatusUnprocessableEntity, "unknown_component", "componente desconhecido"}
 	ErrUnknownSlot        = &Error{http.StatusUnprocessableEntity, "unknown_slot", "slot do rack desconhecido"}
+	ErrUnknownRecipe      = &Error{http.StatusUnprocessableEntity, "unknown_recipe", "receita desconhecida"}
+	ErrNotEnoughMaterials = &Error{http.StatusConflict, "not_enough_materials", "materiais insuficientes"}
 )
 
 type envelope struct {

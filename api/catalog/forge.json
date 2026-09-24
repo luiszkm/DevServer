@@ -1,0 +1,10 @@
+{
+  "recipes": [
+    { "id": "forja_cache", "output": { "kind": "item", "id": "sp_potion" }, "ingredients": [{ "item": "null_shard", "quantity": 2 }] },
+    { "id": "forja_memoria", "output": { "kind": "item", "id": "hp_potion" }, "ingredients": [{ "item": "log_essence", "quantity": 2 }] },
+    { "id": "forja_acelerador", "output": { "kind": "item", "id": "boost_deploy" }, "ingredients": [{ "item": "corrupt_dep", "quantity": 1 }, { "item": "wild_trace", "quantity": 1 }], "price": { "currency": "coins", "amount": 20 } },
+    { "id": "forja_caneca", "output": { "kind": "gear", "id": "caneca_log" }, "ingredients": [{ "item": "log_essence", "quantity": 3 }, { "item": "null_shard", "quantity": 2 }], "price": { "currency": "coins", "amount": 40 } },
+    { "id": "forja_hoodie", "output": { "kind": "gear", "id": "hoodie_trace" }, "ingredients": [{ "item": "wild_trace", "quantity": 3 }, { "item": "corrupt_dep", "quantity": 2 }], "price": { "currency": "coins", "amount": 80 } },
+    { "id": "forja_teclado", "output": { "kind": "gear", "id": "teclado_race" }, "ingredients": [{ "item": "race_core", "quantity": 2 }, { "item": "memory_crystal", "quantity": 1 }, { "item": "wild_trace", "quantity": 3 }], "price": { "currency": "coins", "amount": 150 } }
+  ]
+}

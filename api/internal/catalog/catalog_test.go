@@ -336,10 +336,11 @@ func TestCatalog_ServesShop(t *testing.T) {
 		"cadeira|CADEIRA ERGONÔMICA|vestuario|RARO|gems 150|hp 30",
 		"fone|FONE COM CANCELAMENTO|acessorio|INCOMUM|gems 90|dmg 6",
 	}
-	if len(b.Gear) != len(gear) {
-		t.Fatalf("gear = %d, want 6", len(b.Gear))
+	// The forge's craft-only gear follows these six (forge C2).
+	if len(b.Gear) < len(gear) {
+		t.Fatalf("gear = %d, want at least 6", len(b.Gear))
 	}
-	for i, g := range b.Gear {
+	for i, g := range b.Gear[:len(gear)] {
 		if g.Price == nil || g.Bonus == nil {
 			t.Errorf("gear %s lacks price or bonus", g.ID)
 			continue
@@ -531,5 +532,169 @@ func TestCatalog_ServesRack(t *testing.T) {
 	if !reflect.DeepEqual(b.Rack, w) {
 		got, _ := json.Marshal(b.Rack)
 		t.Fatalf("rack = %s", got)
+	}
+}
+
+type forgePrice struct {
+	Currency string `json:"currency"`
+	Amount   int    `json:"amount"`
+}
+
+// C1 (forge)
+func TestCatalog_ServesForge(t *testing.T) {
+	env := apptest.New(t)
+	rec := env.Do(http.MethodGet, "/api/catalog", nil)
+	var b struct {
+		Recipes []struct {
+			ID     string `json:"id"`
+			Output struct {
+				Kind string `json:"kind"`
+				ID   string `json:"id"`
+			} `json:"output"`
+			Ingredients []struct {
+				Item     string `json:"item"`
+				Quantity int    `json:"quantity"`
+			} `json:"ingredients"`
+			Price *forgePrice `json:"price"`
+		} `json:"recipes"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &b); err != nil {
+		t.Fatal(err)
+	}
+	var raw struct {
+		Recipes []map[string]json.RawMessage `json:"recipes"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &raw); err != nil {
+		t.Fatal(err)
+	}
+	want := []string{
+		"forja_cache|item sp_potion|null_shard 2|-",
+		"forja_memoria|item hp_potion|log_essence 2|-",
+		"forja_acelerador|item boost_deploy|corrupt_dep 1,wild_trace 1|coins 20",
+		"forja_caneca|gear caneca_log|log_essence 3,null_shard 2|coins 40",
+		"forja_hoodie|gear hoodie_trace|wild_trace 3,corrupt_dep 2|coins 80",
+		"forja_teclado|gear teclado_race|race_core 2,memory_crystal 1,wild_trace 3|coins 150",
+	}
+	if len(b.Recipes) != len(want) {
+		t.Fatalf("recipes = %d, want %d", len(b.Recipes), len(want))
+	}
+	for i, r := range b.Recipes {
+		ings := []string{}
+		for _, in := range r.Ingredients {
+			ings = append(ings, fmt.Sprintf("%s %d", in.Item, in.Quantity))
+		}
+		price := "-"
+		if r.Price != nil {
+			price = fmt.Sprintf("%s %d", r.Price.Currency, r.Price.Amount)
+		}
+		got := fmt.Sprintf("%s|%s %s|%s|%s", r.ID, r.Output.Kind, r.Output.ID, strings.Join(ings, ","), price)
+		if got != want[i] {
+			t.Errorf("recipe %d = %s, want %s", i, got, want[i])
+		}
+		if _, has := raw.Recipes[i]["price"]; has != (r.Price != nil) || (price == "-") == has {
+			t.Errorf("recipe %s: price key present = %v, want %v", r.ID, has, price != "-")
+		}
+	}
+}
+
+// C2 (forge)
+func TestCatalog_ServesForgeGear(t *testing.T) {
+	env := apptest.New(t)
+	rec := env.Do(http.MethodGet, "/api/catalog", nil)
+	var b struct {
+		Gear []struct {
+			ID, Name, Glyph, Slot, Rarity, Description string
+			Price                                      *forgePrice
+			Bonus                                      *struct {
+				Type   string `json:"type"`
+				Amount int    `json:"amount"`
+			}
+		} `json:"gear"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &b); err != nil {
+		t.Fatal(err)
+	}
+	var raw struct {
+		Gear []map[string]json.RawMessage `json:"gear"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &raw); err != nil {
+		t.Fatal(err)
+	}
+	want := []string{
+		"macbook|price gems 120",
+		"monitor|price gems 200",
+		"cafe|price coins 50",
+		"moletom|price coins 70",
+		"cadeira|price gems 150",
+		"fone|price gems 90",
+		"caneca_log|CANECA DE LOGS|[u]|bebida|INCOMUM|Café coado no filtro de stack trace.|sp 16",
+		"hoodie_trace|MOLETOM STACK TRACE|{#}|vestuario|RARO|Cada linha do erro costurada à mão.|hp 36",
+		"teclado_race|TECLADO RACE CONDITION|[kbd]|acessorio|LENDÁRIO|As teclas chegam antes de você apertar.|dmg 12",
+	}
+	if len(b.Gear) != len(want) {
+		t.Fatalf("gear = %d, want %d", len(b.Gear), len(want))
+	}
+	for i, g := range b.Gear {
+		_, hasPrice := raw.Gear[i]["price"]
+		var got string
+		if i < 6 {
+			if g.Price == nil {
+				t.Errorf("gear %s lacks price", g.ID)
+				continue
+			}
+			got = fmt.Sprintf("%s|price %s %d", g.ID, g.Price.Currency, g.Price.Amount)
+		} else {
+			if hasPrice {
+				t.Errorf("gear %s has a price key: %s", g.ID, raw.Gear[i]["price"])
+			}
+			if g.Bonus == nil {
+				t.Errorf("gear %s lacks bonus", g.ID)
+				continue
+			}
+			got = fmt.Sprintf("%s|%s|%s|%s|%s|%s|%s %d", g.ID, g.Name, g.Glyph, g.Slot, g.Rarity, g.Description, g.Bonus.Type, g.Bonus.Amount)
+		}
+		if got != want[i] {
+			t.Errorf("gear %d = %s, want %s", i, got, want[i])
+		}
+	}
+}
+
+// C3 (forge)
+func TestCatalog_RecipesReferenceCatalog(t *testing.T) {
+	c, err := catalog.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	made := map[string]bool{}
+	for _, r := range c.Recipes {
+		switch r.Output.Kind {
+		case "item":
+			if _, ok := c.Item(r.Output.ID); !ok {
+				t.Errorf("recipe %s makes unknown item %q", r.ID, r.Output.ID)
+			}
+		case "gear":
+			if _, ok := c.GearItem(r.Output.ID); !ok {
+				t.Errorf("recipe %s makes unknown gear %q", r.ID, r.Output.ID)
+			}
+			made[r.Output.ID] = true
+		default:
+			t.Errorf("recipe %s output kind = %q, want item or gear", r.ID, r.Output.Kind)
+		}
+		if len(r.Ingredients) == 0 {
+			t.Errorf("recipe %s has no ingredients", r.ID)
+		}
+		for _, in := range r.Ingredients {
+			if _, ok := c.Item(in.Item); !ok {
+				t.Errorf("recipe %s uses unknown item %q", r.ID, in.Item)
+			}
+			if in.Quantity < 1 {
+				t.Errorf("recipe %s uses %d of %s, want at least 1", r.ID, in.Quantity, in.Item)
+			}
+		}
+	}
+	for _, g := range c.Gear {
+		if g.Price == nil && !made[g.ID] {
+			t.Errorf("gear %s has no price and no recipe", g.ID)
+		}
 	}
 }

@@ -1,5 +1,5 @@
-// Package shop sells items, gear and skins, and equips, removes, wears and discards what the
-// player owns. Every rule runs inside player.WithLocked (AD-004).
+// Package shop sells items, gear and skins, forges recipes, and equips, removes, wears and
+// discards what the player owns. Every rule runs inside player.WithLocked (AD-004).
 package shop
 
 import (
@@ -106,11 +106,14 @@ func (h *Handlers) BuyGear(w http.ResponseWriter, r *http.Request) error {
 	if !ok {
 		return httpx.ErrUnknownGear
 	}
+	if g.Price == nil {
+		return httpx.ErrNotForSale
+	}
 	return h.mutate(w, r, func(ctx context.Context, tx pgx.Tx, p *player.Player) error {
 		if p.Owns(g.ID) {
 			return httpx.ErrAlreadyOwned
 		}
-		if err := player.Pay(p, g.Price); err != nil {
+		if err := player.Pay(p, *g.Price); err != nil {
 			return err
 		}
 		if _, err := tx.Exec(ctx, `INSERT INTO player_gear (player_id, gear_id) VALUES ($1, $2)`, p.ID, g.ID); err != nil {

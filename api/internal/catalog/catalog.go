@@ -115,8 +115,9 @@ type Gear struct {
 	Slot        string `json:"slot"`
 	Rarity      string `json:"rarity"`
 	Description string `json:"description"`
-	Price       Price  `json:"price"`
-	Bonus       Bonus  `json:"bonus"`
+	// Price is nil for gear the shop does not sell (made only at the forge).
+	Price *Price `json:"price,omitempty"`
+	Bonus Bonus  `json:"bonus"`
 }
 
 type Skin struct {
@@ -197,6 +198,21 @@ type ItemQuantity struct {
 	Quantity int    `json:"quantity"`
 }
 
+// RecipeOutput is what a forge recipe makes; Kind is "item" or "gear".
+type RecipeOutput struct {
+	Kind string `json:"kind"`
+	ID   string `json:"id"`
+}
+
+// Recipe turns its ingredients, plus an optional price, into one unit of its output.
+type Recipe struct {
+	ID          string         `json:"id"`
+	Output      RecipeOutput   `json:"output"`
+	Ingredients []ItemQuantity `json:"ingredients"`
+	// Price is nil for a recipe that costs only its ingredients.
+	Price *Price `json:"price,omitempty"`
+}
+
 type CombatRules struct {
 	Counter            []int   `json:"counter"`
 	SPRegen            int     `json:"spRegen"`
@@ -227,6 +243,7 @@ type Catalog struct {
 	Skins        []Skin
 	Office       Office
 	Rack         Rack
+	Recipes      []Recipe
 	body         []byte
 }
 
@@ -325,6 +342,18 @@ func Load() (*Catalog, error) {
 		return nil, fmt.Errorf("rack.json: %w", err)
 	}
 
+	raw, err = data.Files.ReadFile("forge.json")
+	if err != nil {
+		return nil, err
+	}
+	var forge struct {
+		Recipes []Recipe `json:"recipes"`
+	}
+	if err := json.Unmarshal(raw, &forge); err != nil {
+		return nil, fmt.Errorf("forge.json: %w", err)
+	}
+	c.Recipes = forge.Recipes
+
 	c.body, err = json.Marshal(struct {
 		Version      string        `json:"version"`
 		Regions      []Region      `json:"regions"`
@@ -340,8 +369,9 @@ func Load() (*Catalog, error) {
 		Skins        []Skin        `json:"skins"`
 		Office       Office        `json:"office"`
 		Rack         Rack          `json:"rack"`
+		Recipes      []Recipe      `json:"recipes"`
 	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees, c.Enemies, c.Commands, c.Items, c.Combat,
-		c.GearSlots, c.Gear, c.Skins, c.Office, c.Rack})
+		c.GearSlots, c.Gear, c.Skins, c.Office, c.Rack, c.Recipes})
 	if err != nil {
 		return nil, err
 	}
@@ -504,6 +534,15 @@ func (c *Catalog) ComponentItem(id string) (Component, bool) {
 		}
 	}
 	return Component{}, false
+}
+
+func (c *Catalog) Recipe(id string) (Recipe, bool) {
+	for _, r := range c.Recipes {
+		if r.ID == id {
+			return r, true
+		}
+	}
+	return Recipe{}, false
 }
 
 // SkillBonus sums the bonus of one type ("hp", "sp", "dmg") over the given skill ids.
