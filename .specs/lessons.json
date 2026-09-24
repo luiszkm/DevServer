@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 35,
+  "next_id": 37,
   "lessons": [
     {
       "id": "L-001",
@@ -616,6 +616,42 @@
       ],
       "created": "2026-09-24T21:21:26Z",
       "last_seen": "2026-09-24T21:21:26Z"
+    },
+    {
+      "id": "L-035",
+      "key": "surviving_mutant::when a label follows a priority order test each higher priority state combined with every lower priority condition failing not only with the others satisfied",
+      "text": "When a label follows a priority order, test each higher-priority state combined with every lower-priority condition failing, not only with the others satisfied.",
+      "signal": "surviving_mutant",
+      "scope": "web-screens",
+      "status": "candidate",
+      "features": [
+        "forge"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "verification.md F4 / C22 web/src/components/ShopScene.tsx:247 (web-screens)"
+      ],
+      "created": "2026-09-24T22:19:02Z",
+      "last_seen": "2026-09-24T22:19:02Z"
+    },
+    {
+      "id": "L-036",
+      "key": "ac_gap::a guard for a catalog reference the embedded data never breaks still needs a proof through apptest newwithcatalog and a status in surface or it should be removed",
+      "text": "A guard for a catalog reference the embedded data never breaks still needs a proof through apptest.NewWithCatalog and a status in Surface, or it should be removed.",
+      "signal": "ac_gap",
+      "scope": "api-routes",
+      "status": "candidate",
+      "features": [
+        "forge"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "verification.md coverage / api/internal/shop/forge.go:26 (api-routes)"
+      ],
+      "created": "2026-09-24T22:19:02Z",
+      "last_seen": "2026-09-24T22:19:02Z"
     }
   ]
 }

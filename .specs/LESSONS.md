@@ -218,6 +218,18 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: checks.md S10 rows 1px outline / outline weight; F11 (web/art icon style)
 - last seen: 2026-09-24T21:21:26Z
 
+### L-035 - When a label follows a priority order, test each higher-priority state combined with every lower-priority condition failing, not only with the others satisfied.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `web-screens` · harmful: 0
+- features: forge
+- evidence: verification.md F4 / C22 web/src/components/ShopScene.tsx:247 (web-screens)
+- last seen: 2026-09-24T22:19:02Z
+
+### L-036 - A guard for a catalog reference the embedded data never breaks still needs a proof through apptest.NewWithCatalog and a status in Surface, or it should be removed.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `api-routes` · harmful: 0
+- features: forge
+- evidence: verification.md coverage / api/internal/shop/forge.go:26 (api-routes)
+- last seen: 2026-09-24T22:19:02Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
