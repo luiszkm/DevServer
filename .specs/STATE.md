@@ -23,9 +23,9 @@
 ## Handoff
 
 **Feature**: game-menu
-**Where**: C1–C27 fechados; Verifier round 1 FAIL e round 2 FAIL (arte: especular, tons, lista de ink) - corrigidos; falta Verifier round 3 (último antes de escalar)
+**Where**: C1–C30 fechados; rounds 1-3 FAIL só em regras de arte; usuário decidiu a definição de material e mandou medir tudo; falta Verifier round 4 (scoped)
 **In progress**: nenhum
-**Next step**: Verifier round 3 (scoped) sobre `80fd17e..HEAD`; depois push e PR de `feat/office`, `feat/server-room`, `feat/game-art`, `feat/responsive` e `feat/game-menu` quando o usuário pedir
+**Next step**: Verifier round 4 (scoped) sobre `80fd17e..HEAD`; depois push e PR de `feat/office`, `feat/server-room`, `feat/game-art`, `feat/responsive` e `feat/game-menu` quando o usuário pedir
 **Blockers**: none
 **Uncommitted**: none
 **Branch**: feat/game-menu (sobre feat/responsive)
