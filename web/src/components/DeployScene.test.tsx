@@ -340,4 +340,22 @@ describe("DeployScene", () => {
     expect(typeButton("BACKEND")).toHaveTextContent("14:00 restante");
     expect(setPlayer).toHaveBeenCalledWith(updated);
   });
+
+  // shop-inventory-avatar C48
+  it.each([
+    ["409 with message", () => json(409, { error: { code: "no_item", message: "você não tem este item" } }), "você não tem este item"],
+    ["500 without body", () => new Response(null, { status: 500 }), "erro ao acelerar"],
+    ["network", () => Promise.reject(new TypeError("Failed to fetch")), "SERVIDOR FORA DO AR"],
+  ])("boost errors (%s)", async (_name, failure, text) => {
+    mockFetch({
+      "GET /api/me/deploys": list([job("backend", 2, 1, 30)]),
+      "POST /api/me/deploys/backend/boost": failure as () => Response,
+    });
+    renderScene({ p: player({ level: 3, inventory: [{ item: "boost_deploy", quantity: 1 }] }) });
+    await screen.findByText("29:00 restante");
+    await userEvent.click(within(panel()).getByRole("button", { name: "ACELERAR (-15min) · 1 disponíveis" }));
+    expect(await within(panel()).findByText(text)).toBeInTheDocument();
+    expect(panel().querySelector(".deploy-remaining")).toHaveTextContent("29:00");
+    expect(typeButton("BACKEND")).toHaveTextContent("29:00 restante");
+  });
 });

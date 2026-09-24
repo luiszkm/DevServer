@@ -59,6 +59,15 @@ describe("AvatarScene", () => {
     expect(screen.queryByText("EM BREVE")).not.toBeInTheDocument();
   });
 
+  // C35 (owned but unequipped gear adds nothing)
+  it("preview and totals (owned, not equipped)", () => {
+    renderAvatar(geared({ gear: ["macbook", "monitor", "cafe", "moletom", "fone"] }));
+    const stats = screen.getByLabelText("atributos");
+    expect(within(stats).getByText("HP máx 125")).toBeInTheDocument();
+    expect(within(stats).getByText("dano +18%")).toBeInTheDocument();
+    expect(within(stats).getByText("SP +30")).toBeInTheDocument();
+  });
+
   // C36
   it("paper doll slots", () => {
     renderAvatar(player({ gear: ["macbook"], equipment: { setup: "macbook", bebida: null, vestuario: null, acessorio: null } }));
@@ -190,5 +199,21 @@ describe("AvatarScene", () => {
     await userEvent.click(tab("EQUIP"));
     await userEvent.click(cell("macbook"));
     expect(detailButton("REMOVER")).toBeDisabled();
+  });
+
+  it("avatar errors and pending (pending, every button)", async () => {
+    mockFetch({ "POST /api/me/items/null_shard/discard": () => new Promise<Response>(() => {}) });
+    renderAvatar(geared({ equipment: { setup: "macbook", bebida: "cafe", vestuario: null, acessorio: null } }));
+    await userEvent.click(tab("LOOT"));
+    await userEvent.click(detailButton("DESCARTAR 1"));
+    expect(detailButton("DESCARTAR 1")).toBeDisabled();
+    await userEvent.click(tab("EQUIP"));
+    await userEvent.click(cell("moletom"));
+    expect(detailButton("EQUIPAR")).toBeDisabled();
+    await userEvent.click(cell("macbook"));
+    expect(detailButton("REMOVER")).toBeDisabled();
+    await userEvent.click(tab("SKINS"));
+    await userEvent.click(cell("default"));
+    expect(detailButton("VESTIR")).toBeDisabled();
   });
 });

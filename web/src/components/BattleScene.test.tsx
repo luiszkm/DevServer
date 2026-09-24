@@ -261,4 +261,18 @@ describe("BattleScene", () => {
     expect(img.getAttribute("src")).toBe("/hero.png");
     expect(img.style.filter).toBe(filter);
   });
+
+  // shop-inventory-avatar C49
+  it("potions exclude the booster", async () => {
+    const p = player({ inventory: [{ item: "boost_deploy", quantity: 1 }] });
+    mockFetch({ "POST /api/me/battle": startWith(battle(), p) });
+    renderScene({ p });
+    await screen.findByLabelText("dev em combate");
+    const items = [...document.querySelectorAll<HTMLButtonElement>("[data-item]")];
+    expect(items.map((b) => b.dataset.item)).toEqual(["sp_potion", "hp_potion"]);
+    expect(items[0]).toHaveTextContent("POÇÃO DE CACHE");
+    expect(items[1]).toHaveTextContent("POÇÃO DE MEMÓRIA");
+    expect(document.querySelector('[data-item="boost_deploy"]')).toBeNull();
+    expect(screen.queryByRole("button", { name: /ACELERADOR DE DEPLOY/ })).not.toBeInTheDocument();
+  });
 });

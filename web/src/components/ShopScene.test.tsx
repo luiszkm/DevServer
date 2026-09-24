@@ -136,6 +136,10 @@ describe("ShopScene", () => {
     [15, 100, "sp_potion", "COMPRAR", true],
     [20, 49, "cafe", "COINS INSUFICIENTES", false],
     [20, 50, "cafe", "COMPRAR E EQUIPAR", true],
+    [119, 100, "macbook", "GEMS INSUFICIENTES", false],
+    [120, 100, "macbook", "COMPRAR E EQUIPAR", true],
+    [59, 100, "neon", "GEMS INSUFICIENTES", false],
+    [60, 100, "neon", "COMPRAR E EQUIPAR", true],
   ])("insufficient balance (%i gems, %i coins, %s)", async (gems, coins, id, label, enabled) => {
     renderShop(player({ gems, coins }));
     await userEvent.click(card(id));
@@ -192,6 +196,27 @@ describe("ShopScene", () => {
     expect(buttons.map((b) => b.textContent)).toEqual(["REMOVER EQUIPAMENTO", "EQUIPADO"]);
     for (const b of buttons) expect(b).toBeDisabled();
     await userEvent.click(card("moletom"));
+    expect(detailButton("EQUIPAR")).toBeDisabled();
+  });
+
+  // C34 (every panel button, with a balance that could pay)
+  it("pending disables panel (every button)", async () => {
+    mockFetch({ "POST /api/me/shop/items/sp_potion": () => new Promise<Response>(() => {}) });
+    renderShop({ ...dressed(), gems: 500, coins: 500 });
+    await userEvent.click(card("sp_potion"));
+    await userEvent.click(detailButton("COMPRAR"));
+    expect(detailButton("COMPRAR")).toBeDisabled();
+    await userEvent.click(card("macbook"));
+    expect(detailButton("REMOVER EQUIPAMENTO")).toBeDisabled();
+    await userEvent.click(card("monitor"));
+    expect(detailButton("COMPRAR E EQUIPAR")).toBeDisabled();
+    await userEvent.click(card("cafe"));
+    expect(detailButton("COMPRAR E EQUIPAR")).toBeDisabled();
+    await userEvent.click(card("moletom"));
+    expect(detailButton("EQUIPAR")).toBeDisabled();
+    await userEvent.click(card("golden"));
+    expect(detailButton("COMPRAR E EQUIPAR")).toBeDisabled();
+    await userEvent.click(card("shadow"));
     expect(detailButton("EQUIPAR")).toBeDisabled();
   });
 });

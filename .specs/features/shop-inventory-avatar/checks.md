@@ -222,8 +222,8 @@ Proof: `cd api && go test ./internal/shop -run '^TestMigration_ExistingPlayers$'
 - [x] C45
 - [x] C46
 - [x] C47
-- [ ] C48
-- [ ] C49
+- [x] C48
+- [x] C49
 
 ## Coverage
 
