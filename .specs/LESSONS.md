@@ -134,6 +134,24 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: verification.md Coverage - scene background scale x4 + pixelated, web/src/app/globals.css:104,163,285,307 (web-css)
 - last seen: 2026-09-24T14:53:18Z
 
+### L-021 - A key handler that reacts to one key needs a test that presses another key and asserts the state did not change.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `web/screens` · harmful: 0
+- features: responsive
+- evidence: verification.md F1 - web/src/components/Tabs.tsx:27 (web/screens)
+- last seen: 2026-09-24T18:17:11Z
+
+### L-022 - When the plan lands a state on a layout criterion, the layout proof must render that state, not only the default screen.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `web/layout` · harmful: 0
+- features: responsive
+- evidence: verification.md Coverage - plan Observable error states (onboarding field-error, scene role=alert) at phone width (web/layout)
+- last seen: 2026-09-24T18:17:11Z
+
+### L-023 - Measure a responsive element against the viewport, not only its container, or the check passes with the breakpoint removed.
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `web-css` · harmful: 0
+- features: responsive
+- evidence: verification.md F3 - C13 web/e2e/responsive.spec.ts:113 survived the media block removal (web-css)
+- last seen: 2026-09-24T18:17:11Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

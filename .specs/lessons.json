@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 21,
+  "next_id": 24,
   "lessons": [
     {
       "id": "L-001",
@@ -364,6 +364,60 @@
       ],
       "created": "2026-09-24T14:53:18Z",
       "last_seen": "2026-09-24T14:53:18Z"
+    },
+    {
+      "id": "L-021",
+      "key": "surviving_mutant::a key handler that reacts to one key needs a test that presses another key and asserts the state did not change",
+      "text": "A key handler that reacts to one key needs a test that presses another key and asserts the state did not change.",
+      "signal": "surviving_mutant",
+      "scope": "web/screens",
+      "status": "candidate",
+      "features": [
+        "responsive"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "verification.md F1 - web/src/components/Tabs.tsx:27 (web/screens)"
+      ],
+      "created": "2026-09-24T18:17:11Z",
+      "last_seen": "2026-09-24T18:17:11Z"
+    },
+    {
+      "id": "L-022",
+      "key": "ac_gap::when the plan lands a state on a layout criterion the layout proof must render that state not only the default screen",
+      "text": "When the plan lands a state on a layout criterion, the layout proof must render that state, not only the default screen.",
+      "signal": "ac_gap",
+      "scope": "web/layout",
+      "status": "candidate",
+      "features": [
+        "responsive"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "verification.md Coverage - plan Observable error states (onboarding field-error, scene role=alert) at phone width (web/layout)"
+      ],
+      "created": "2026-09-24T18:17:11Z",
+      "last_seen": "2026-09-24T18:17:11Z"
+    },
+    {
+      "id": "L-023",
+      "key": "spec_precision_gap::measure a responsive element against the viewport not only its container or the check passes with the breakpoint removed",
+      "text": "Measure a responsive element against the viewport, not only its container, or the check passes with the breakpoint removed.",
+      "signal": "spec_precision_gap",
+      "scope": "web-css",
+      "status": "candidate",
+      "features": [
+        "responsive"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "verification.md F3 - C13 web/e2e/responsive.spec.ts:113 survived the media block removal (web-css)"
+      ],
+      "created": "2026-09-24T18:17:11Z",
+      "last_seen": "2026-09-24T18:17:11Z"
     }
   ]
 }
