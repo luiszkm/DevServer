@@ -23,9 +23,9 @@
 ## Handoff
 
 **Feature**: game-menu
-**Where**: C1–C31 fechados; round 4 FAIL (C28 contava nomes, não cores; centralização sem check) - corrigido; falta Verifier round 5 (scoped)
+**Where**: C1–C33 fechados; round 5 FAIL (frase do S6 omitia 5 regras) - substituída pela tabela S10; falta Verifier round 6 (scoped)
 **In progress**: nenhum
-**Next step**: Verifier round 5 (scoped) sobre `80fd17e..HEAD`; depois push e PR de `feat/office`, `feat/server-room`, `feat/game-art`, `feat/responsive` e `feat/game-menu` quando o usuário pedir
+**Next step**: Verifier round 6 (scoped) sobre `80fd17e..HEAD`; depois push e PR de `feat/office`, `feat/server-room`, `feat/game-art`, `feat/responsive` e `feat/game-menu` quando o usuário pedir
 **Blockers**: none
 **Uncommitted**: none
 **Branch**: feat/game-menu (sobre feat/responsive)

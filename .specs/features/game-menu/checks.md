@@ -231,3 +231,6 @@ Intended split, with the arithmetic (`wc -c` / 4), written before any code:
 - **Boundary:** C31 closed at `139aaba` (fix round 4 for verification round 4): C28 now maps each legend name through `palette.json` to its hex before counting, as its claim ("3 cores distintas") says, so aliases like `leaf.3`/`grass.3` no longer count twice - F5 (`mundo` `L` -> `grass.3`) confirmed red before keeping; C31 adds the centring rule; the S6 sentence now names what stays judged by eye. No art changed. `npx vitest run` (400) green at `139aaba`; e2e untouched since `2b44c49` (101 green there)
 - **Settled mid-build:** nothing asked of the user
 - **Abandoned:** nothing
+- **Boundary:** C32-C33 closed at `6ae8584` (fix round 5 for verification round 5): one-object and gold-coin checks; C30's test now compares by colour like C28; the S6 sentence is replaced by the S10 table mapping every icon rule of the style guide to its proof or to "judged by eye". Both new tests were confirmed red on a mutated `skills` (stray pixel) and `loja` (coin `M` -> `dirt.1`) before the files were restored. No art changed. `npx vitest run` (409) and `make art-check` green at `6ae8584`; e2e untouched since `2b44c49`
+- **Settled mid-build:** nothing asked of the user
+- **Abandoned:** nothing
