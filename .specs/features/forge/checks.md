@@ -170,11 +170,14 @@ Evidence:
 ## Impact on earlier checks
 
 - shop-inventory-avatar web "shows the three sections": asserts `EQUIPAMENTOS DO DEV` with 6 names from the web mock; the mock gains the 3 craft-only gears (C29), so the list becomes 9 names - the claim (catalog order) does not change
-- shop-inventory-avatar api `TestCatalog_ServesShop`: asserts `gear` by value; `Price` becomes `*Price`, the 6 existing values do not change
+- shop-inventory-avatar api `TestCatalog_ServesShop`: asserts `gear` by value; `Price` becomes `*Price`, and the count check changes from exactly 6 to the first 6 by value (the 3 craft-only pieces follow, proven by C2) - the 6 existing values do not change
 
 ## Handoff
 
 - Leitura: api ~95 KB + web ~70 KB ≈ 165 KB / 4 ≈ 41k, mais ~40k de código novo - abaixo do budget de 150k: um builder, sem handoff
+- **Boundary:** one builder, C1–C31 closed, `a089239..HEAD` (specs `169103d`, api `c4fc09c`, art `cb67dd5`, web `fa32ff0`); api `go test ./...`, web `vitest run` (433), e2e `playwright test` (104), `go vet`, `eslint`, `next build` and `make art-check` green at `fa32ff0`
+- **Settled mid-build:** nada pelo usuário. O e2e roda num `git worktree` com `node_modules` clonado (`cp -Rc`), porque o `next dev` do usuário ocupa `web/` e o Next recusa um segundo servidor no mesmo diretório; Turbopack recusa `node_modules` por symlink
+- **Abandoned:** e2e forjando de verdade - os e2e não semeiam o banco e um dev novo não tem drops; C28 prova a rota pela reescrita `/api` com o `409`, e o `200` fica nas provas da api (C5, C6) e da tela (C23)
 
 ## Progress
 
@@ -204,8 +207,8 @@ Evidence:
 - [x] C24
 - [x] C25
 - [x] C26
-- [ ] C27
-- [ ] C28
+- [x] C27
+- [x] C28
 - [x] C29
 - [x] C30
 - [x] C31
