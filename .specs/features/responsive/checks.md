@@ -77,7 +77,7 @@ Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C17 "`
 **C18** - A 1280x720 (viewport padrão), a prova game-art C33 continua verde (RESP-04, AC 16) ✅
 Proof: `cd web && npx playwright test e2e/art.spec.ts -g "scene art scale"`
 
-**C19** - `.specs/STATE.md` tem a linha `AD-015` com o texto literal da door 2 e status `active`, e a linha `AD-007` tem status `superseded by AD-015` (door 2)
+**C19** - `.specs/STATE.md` tem a linha `AD-015` com o texto literal da door 2 e status `active`, e a linha `AD-007` tem status `superseded by AD-015` (door 2) ✅
 Proof: `grep -q '| AD-015 |.*max-width: 1199px.*| active |' .specs/STATE.md && grep -q '| AD-007 |.*| superseded by AD-015 |' .specs/STATE.md`
 
 **C20** - As regras de responsividade estão num único bloco `@media (max-width: 1199px)` em `globals.css` e em nenhum outro arquivo de `web/src` (door 1) ✅
@@ -130,3 +130,6 @@ Intended split, with the arithmetic (`wc -c` / 4), written before any code:
 
 - read: `globals.css` 31 KB + `Tabs.tsx`/`Tabs.test.tsx` 3 KB + `GameShell.tsx` 3 KB + e2e helpers/specs 6 KB + the 9 scene components as needed ~70 KB ≈ 28k; ×1.5 for edits, browser runs and screenshots ≈ 42k, + screenshots at 360 per scene ≈ 20k -> ~62k
 - one builder; well under the 150k budget, no hand-off
+- **Boundary:** C1-C20 closed at the `docs(specs)` commit after `f4069d3` (menu `18c7403`, media block + `e2e/responsive.spec.ts` `f4069d3`, AD-015 in `STATE.md`); `npx vitest run` (288), `tsc --noEmit`, `eslint src e2e` and the full `npx playwright test` (79: 64 responsive + 15 existing) green. The e2e run used a manually started stack (api `:8180` on `devserver_e2e`, `next build` with `API_URL=http://localhost:8180` + `next start --port 3100`) because a user `next dev` on `:3000` blocks a second dev server in `web/`; `reuseExistingServer` picked it up
+- **Settled mid-build:** nothing asked of the user. Builder choices: `Tabs` wraps the button and the nav in `.tabs-bar` and closes on link click and on `Escape` from a `keydown` on that wrapper; the closed state hides the `.tab` links, not the `<nav>`, so the landmark stays in the tree (AC 1 says links); `.tabs-bar .menu-btn` beats `.btn`'s `display` by specificity instead of by order; `keyart.png` is 1402x1122 (ratio 0.8003), not 1200x960 as the `TitleScene` comment says; phone layout choices: open menu is a 3x3 grid, HUD a 2-column grid with XP/HP spanning, shop potions/gear 1 column and skins 2, avatar doll preview above the two slot columns, office stats 2 columns, battle commands lose their `max-height`
+- **Abandoned:** hiding the whole `<nav>` with `display: none` (the landmark left the accessibility tree, so `getByRole("navigation", { name: "Cenas" })` found no links)
