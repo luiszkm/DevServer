@@ -107,10 +107,10 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "region"`
 **C26** - Existem `background/world`, `background/office`, `background/server` (spec e PNG 320x180) (ART-01, AC 2, 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "scene background"`
 
-**C27** - Em SERVER: slot com `gpu` mostra `/art/icon/rack-gpu.png` `alt=""` `width=32` sobre `background: #45b7ff`; slot vazio mostra `-` sem `<img>`; slot com id fora do catálogo mostra `?` sem `<img>`; cada cartão da loja mostra `/art/icon/rack-<id>.png` `alt=""`; após `error` o slot mostra o glifo (`#`) (ART-06, AC 12, 5)
+**C27** - Em SERVER: slot com `gpu` mostra `/art/icon/rack-gpu.png` `alt=""` `width=32` sobre `background: #45b7ff`; slot vazio mostra `-` sem `<img>`; slot com id fora do catálogo mostra `?` sem `<img>`; cada cartão da loja mostra `/art/icon/rack-<id>.png` `alt=""`; após `error` o slot mostra o glifo (`#`) (ART-06, AC 12, 5) ✅
 Proof: `cd web && npx vitest run src/components/ServerScene.test.tsx -t "rack art"`
 
-**C28** - A seção `.server` tem `background-image: url(/art/background/server.png)` (ART-06, AC 12)
+**C28** - A seção `.server` tem `background-image: url(/art/background/server.png)` (ART-06, AC 12) ✅
 Proof: `cd web && npx vitest run src/components/ServerScene.test.tsx -t "server background"`
 
 **C29** - Em OFFICE: cada cartão da loja mostra `/art/icon/office-<id>.png` `alt=""` `width=32`; o detalhe do selecionado idem; célula com `mesa` mostra `office-mesa.png` `alt=""`; célula vazia mostra `+` sem `<img>`; célula com id fora do catálogo mostra `?` sem `<img>`; após `error` o cartão mostra o glifo (`[==]`) (ART-06, AC 13, 5)

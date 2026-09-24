@@ -5,6 +5,7 @@ import { post } from "@/lib/api";
 import { CONNECTION_FAILED, canPay, insufficient, priceShort } from "@/lib/gear";
 import { effectsText, rackStats, slotLabel, statBonus, statValue } from "@/lib/rack";
 import type { Player, Price, RackComponent } from "@/lib/types";
+import { GameArt } from "./GameArt";
 import { useGame } from "./GameContext";
 
 const HELLO = "> selecione um componente para instalar no rack.";
@@ -62,7 +63,7 @@ export function ServerScene() {
   }
 
   return (
-    <section className="scene server" aria-label="SERVER">
+    <section className="scene server" aria-label="SERVER" style={{ backgroundImage: "url(/art/background/server.png)" }}>
       <div className="server-stats" role="region" aria-label="stats do rack">
         {stats.map((s) => (
           <div key={s.stat.id} className="panel server-stat" data-stat={s.stat.id}>
@@ -95,7 +96,7 @@ export function ServerScene() {
                 onClick={() => tapSlot(i)}
               >
                 <span className="pixel server-slot-glyph" style={k ? { background: k.color } : undefined}>
-                  {k ? k.glyph : id ? "?" : "-"}
+                  {k ? <GameArt kind="rack" id={k.id} scale={2} alt="" fallback={k.glyph} /> : id ? "?" : "-"}
                 </span>
                 <span className="pixel server-slot-name">{k ? k.name : id ? "" : `SLOT ${slotLabel(i)} VAZIO`}</span>
                 <span className="term server-slot-note">{k ? effectsText(k) : id ? "" : "livre"}</span>
@@ -121,7 +122,7 @@ export function ServerScene() {
                 >
                   <span className="server-card-head">
                     <span className="pixel server-card-glyph" style={{ background: k.color }}>
-                      {k.glyph}
+                      <GameArt kind="rack" id={k.id} scale={2} alt="" fallback={k.glyph} />
                     </span>
                     <span className="pixel server-card-name">{k.name}</span>
                   </span>

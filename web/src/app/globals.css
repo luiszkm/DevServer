@@ -305,7 +305,7 @@ button { font-family: inherit; }
 .office-stat-value.cyan { color: var(--cyan); }
 .office-message { flex: 1; background: var(--panel-3); padding: 10px; font-size: 17px; line-height: 1.3; color: var(--green); }
 
-.server { display: flex; flex-direction: column; gap: 14px; padding: 18px; background: #0c1a26; }
+.server { display: flex; flex-direction: column; gap: 14px; padding: 18px; background: #0c1a26 center / 1280px 720px no-repeat; image-rendering: pixelated; }
 .server-stats { display: flex; gap: 12px; }
 .server-stat { flex: 1; display: flex; flex-direction: column; gap: 9px; padding: 12px 14px; }
 .server-stat-head { display: flex; justify-content: space-between; align-items: center; }
@@ -321,7 +321,7 @@ button { font-family: inherit; }
 .server-slot.filled { background: #1d3a52; }
 .server-slot:hover:not(:disabled) { filter: brightness(1.25); }
 .server-slot:disabled, .server-card:disabled { cursor: wait; }
-.server-slot-glyph { width: 34px; height: 34px; flex: none; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); font-size: 11px; background: #152430; color: #3f5b73; }
+.server-slot-glyph { width: 36px; height: 36px; flex: none; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); font-size: 11px; background: #152430; color: #3f5b73; }
 .server-slot.filled .server-slot-glyph { color: var(--edge); }
 .server-slot-name { flex: 1; font-size: 10px; color: var(--dim); }
 .server-slot.filled .server-slot-name { color: var(--text); }
@@ -332,7 +332,7 @@ button { font-family: inherit; }
 .server-card { display: flex; flex-direction: column; gap: 9px; padding: 12px; border: 3px solid var(--edge); background: var(--panel-3); box-shadow: inset 0 -4px 0 var(--edge); cursor: pointer; text-align: left; }
 .server-card:hover:not(:disabled) { background: #1d3a52; }
 .server-card-head { display: flex; align-items: center; gap: 9px; }
-.server-card-glyph { width: 28px; height: 28px; flex: none; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); font-size: 10px; color: var(--edge); }
+.server-card-glyph { width: 36px; height: 36px; flex: none; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); font-size: 10px; color: var(--edge); }
 .server-card-name { font-size: 9px; line-height: 1.5; color: var(--text); }
 .server-card-foot { display: flex; justify-content: space-between; align-items: center; }
 .server-card-effect { font-size: 19px; color: var(--muted); }

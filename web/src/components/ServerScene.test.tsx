@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import ServerPage from "@/app/(game)/server/page";
@@ -79,14 +79,15 @@ describe("ServerScene", () => {
   // C32
   it("slot states", () => {
     renderServer(player({ rack: rack({ 1: "gpu", 2: "ssd", 3: "quantum" }) }));
+    const glyph = (i: number) => slot(i).querySelector(".server-slot-glyph")!;
     const read = (i: number) => [
-      slot(i).querySelector(".server-slot-glyph")?.textContent,
+      glyph(i).querySelector("img")?.getAttribute("src") ?? glyph(i).textContent,
       slot(i).querySelector(".server-slot-name")?.textContent,
       slot(i).querySelector(".server-slot-note")?.textContent,
     ];
     expect(read(0)).toEqual(["-", "SLOT 01 VAZIO", "livre"]);
-    expect(read(1)).toEqual(["#", "GPU EDGE", "power +40"]);
-    expect(read(2)).toEqual(["=", "SSD NVME", "power +12 · uptime +8"]);
+    expect(read(1)).toEqual(["/art/icon/rack-gpu.png", "GPU EDGE", "power +40"]);
+    expect(read(2)).toEqual(["/art/icon/rack-ssd.png", "SSD NVME", "power +12 · uptime +8"]);
     expect(read(3)[0]).toBe("?");
     expect(read(4)).toEqual(["-", "SLOT 05 VAZIO", "livre"]);
     expect(read(5)).toEqual(["-", "SLOT 06 VAZIO", "livre"]);
@@ -96,18 +97,18 @@ describe("ServerScene", () => {
   it("shop cards", () => {
     const { unmount } = renderServer(player({ coins: 100 }));
     const read = (id: string) => [
-      card(id).querySelector(".server-card-glyph")?.textContent,
+      card(id).querySelector(".server-card-glyph img")?.getAttribute("src"),
       card(id).querySelector(".server-card-name")?.textContent,
       card(id).querySelector(".server-card-effect")?.textContent,
       card(id).querySelector(".server-card-price")?.textContent,
     ];
     expect(cardIds().map((id) => read(id!))).toEqual([
-      ["::", "CPU 8-CORE", "power +25", "80C"],
-      ["[]", "RAM 32GB", "ram +30", "60C"],
-      ["=", "SSD NVME", "power +12 · uptime +8", "70C"],
-      ["~", "CACHE REDIS", "power +18", "90C"],
-      [">>", "LOAD BALANCER", "uptime +20", "120C"],
-      ["#", "GPU EDGE", "power +40", "150C"],
+      ["/art/icon/rack-cpu.png", "CPU 8-CORE", "power +25", "80C"],
+      ["/art/icon/rack-ram.png", "RAM 32GB", "ram +30", "60C"],
+      ["/art/icon/rack-ssd.png", "SSD NVME", "power +12 · uptime +8", "70C"],
+      ["/art/icon/rack-cache.png", "CACHE REDIS", "power +18", "90C"],
+      ["/art/icon/rack-lb.png", "LOAD BALANCER", "uptime +20", "120C"],
+      ["/art/icon/rack-gpu.png", "GPU EDGE", "power +40", "150C"],
     ]);
     expect(card("lb").style.opacity).toBe("0.45");
     expect(card("gpu").style.opacity).toBe("0.45");
@@ -252,5 +253,47 @@ describe("ServerScene", () => {
     await userEvent.click(slot(0));
     expect(m.calls("POST /api/me/rack/0/remove")).toBe(1);
     expect(terminal()).toHaveTextContent(/^> GPU EDGE removido\. 150 gems devolvidos\.$/);
+  });
+
+  // game-art C27
+  it("rack art", () => {
+    renderServer(player({ rack: rack({ 1: "gpu", 3: "quantum" }) }));
+    const glyph = (i: number) => slot(i).querySelector(".server-slot-glyph") as HTMLElement;
+
+    const gpu = glyph(1).querySelector("img")!;
+    expect(gpu.getAttribute("src")).toBe("/art/icon/rack-gpu.png");
+    expect(gpu.getAttribute("alt")).toBe("");
+    expect(gpu.getAttribute("width")).toBe("32");
+    expect(gpu).toHaveClass("pixelated");
+    expect(glyph(1)).toHaveStyle({ background: "#45b7ff" });
+    expect(glyph(1).textContent).not.toContain("#");
+
+    expect(glyph(0).querySelector("img")).toBeNull();
+    expect(glyph(0).textContent).toBe("-");
+    expect(glyph(3).querySelector("img")).toBeNull();
+    expect(glyph(3).textContent).toBe("?");
+
+    for (const k of RACK.components) {
+      const box = card(k.id).querySelector(".server-card-glyph") as HTMLElement;
+      const img = box.querySelector("img")!;
+      expect(img.getAttribute("src")).toBe(`/art/icon/rack-${k.id}.png`);
+      expect(img.getAttribute("alt")).toBe("");
+      expect(img.getAttribute("width")).toBe("32");
+      expect(img).toHaveClass("pixelated");
+      expect(box).toHaveStyle({ background: k.color });
+      expect(box.textContent).not.toContain(k.glyph);
+    }
+
+    fireEvent.error(gpu);
+    expect(glyph(1).querySelector("img")).toBeNull();
+    expect(glyph(1).textContent).toBe("#");
+    expect(glyph(1)).toHaveStyle({ background: "#45b7ff" });
+  });
+
+  // game-art C28
+  it("server background", () => {
+    renderServer();
+    const scene = document.querySelector("section.server") as HTMLElement;
+    expect(scene.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/server.png)");
   });
 });
