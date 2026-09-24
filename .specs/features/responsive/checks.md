@@ -19,22 +19,22 @@ after `newDev`; the menu tests live in `web/src/components/Tabs.test.tsx`.
 
 ### S1 - menu de cenas · 3 files · ~9 KB · ~3k
 
-**C1** - `Tabs` renderiza um `<button type="button">` cujo nome começa com `MENU`, com `aria-expanded="false"` e `aria-controls="cenas-nav"`; a `<nav aria-label="Cenas">` tem `id="cenas-nav"` e `data-open="false"` (RESP-01, AC 1; door 3)
+**C1** - `Tabs` renderiza um `<button type="button">` cujo nome começa com `MENU`, com `aria-expanded="false"` e `aria-controls="cenas-nav"`; a `<nav aria-label="Cenas">` tem `id="cenas-nav"` e `data-open="false"` (RESP-01, AC 1; door 3) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "menu starts closed"`
 
-**C2** - WHEN o botão `MENU` fechado é clicado THEN `aria-expanded="true"` e a nav `data-open="true"` (RESP-01, AC 2)
+**C2** - WHEN o botão `MENU` fechado é clicado THEN `aria-expanded="true"` e a nav `data-open="true"` (RESP-01, AC 2) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "menu opens"`
 
-**C3** - WHEN um link da nav é clicado com o menu aberto THEN `aria-expanded="false"` e a nav `data-open="false"` (RESP-01, AC 3)
+**C3** - WHEN um link da nav é clicado com o menu aberto THEN `aria-expanded="false"` e a nav `data-open="false"` (RESP-01, AC 3) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "link closes menu"`
 
-**C4** - WHEN o botão `MENU` aberto é clicado THEN `aria-expanded="false"` e a nav `data-open="false"` (RESP-01, AC 4)
+**C4** - WHEN o botão `MENU` aberto é clicado THEN `aria-expanded="false"` e a nav `data-open="false"` (RESP-01, AC 4) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "button closes menu"`
 
-**C5** - IF `Escape` é pressionado com o menu aberto e o foco num link da nav THEN o menu fecha (`aria-expanded="false"`) e o foco vai para o botão `MENU` (RESP-01, AC 5)
+**C5** - IF `Escape` é pressionado com o menu aberto e o foco num link da nav THEN o menu fecha (`aria-expanded="false"`) e o foco vai para o botão `MENU` (RESP-01, AC 5) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "escape closes menu"`
 
-**C6** - O texto do botão é `MENU · <rótulo>` para cada uma das 9 rotas de `TABS` (`/` -> `MENU · TÍTULO`, `/deploy` -> `MENU · DEPLOY`, ... table-driven sobre as 9) e `MENU` para `/login` (rota fora de `TABS`) (RESP-01, AC 6)
+**C6** - O texto do botão é `MENU · <rótulo>` para cada uma das 9 rotas de `TABS` (`/` -> `MENU · TÍTULO`, `/deploy` -> `MENU · DEPLOY`, ... table-driven sobre as 9) e `MENU` para `/login` (rota fora de `TABS`) (RESP-01, AC 6) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "menu label"`
 
 **C7** - No browser a 390x844, depois do login: os 9 links da nav `Cenas` estão escondidos e o botão `MENU · TÍTULO` visível com `aria-expanded="false"`; ao tocar nele os 9 links ficam visíveis na ordem de `TABS`; ao tocar `DEPLOY` a URL vira `/deploy`, os links somem, o botão diz `MENU · DEPLOY` e o link DEPLOY tem `aria-current="page"` (RESP-01, AC 1, 2, 3, 6; door 1, door 3)
