@@ -20,9 +20,9 @@
 ## Handoff
 
 **Feature**: shop-inventory-avatar
-**Where**: C1–C47 closed; falta o Verifier. Build em `2b32f50` (api), `21400d2`, `e046c82` (web) e no commit do round trip; `go test ./...`, `vitest`, `tsc`, `eslint`, `playwright`, `make ci-build` e `make check-deps` verdes
+**Where**: round 2 fixes closed; falta Verifier round 2. C1–C49 fechados; round 2 em `7e3635d` (C31, C34, C35, C41 estendidos, C48, C49 novos, só testes); os 7 mutantes sobreviventes do round 1 (W1, W2, W3, W16, W17, W18, W19) agora morrem; `go test ./...`, `vitest`, `tsc`, `eslint`, `playwright` verdes
 **In progress**: nenhum
-**Next step**: Verifier fresco sobre `d783bb1..HEAD` com todos os 47 checks (profile standard)
+**Next step**: round 2 fixes closed; falta Verifier round 2 - Verifier fresco sobre `d783bb1..HEAD` com todos os 49 checks (profile standard)
 **Blockers**: none
 **Uncommitted**: none
 **Branch**: feat/shop-inventory-avatar (empilhada sobre feat/bug-fight)
