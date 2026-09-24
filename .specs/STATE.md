@@ -22,9 +22,9 @@
 ## Handoff
 
 **Feature**: server-room
-**Where**: C1–C46 fechados; Verifier round 1 FAIL (404 das rotas do rack, C21 sem skin, reembolso em gems sem prova) → round 2 em `18713ee..7ed5db6`
+**Where**: C1–C46 fechados; Verifier round 2 PASS (round 1 FAIL: 404 das rotas do rack, C21 sem skin, reembolso em gems)
 **In progress**: nenhum
-**Next step**: Verifier round 2 (scoped) sobre `a0a9412..HEAD`
+**Next step**: usuário confirmar assumptions `Confirmed? n` do plan (incl. componente em gems); follow-up: tela diz "coins" mesmo para preço em gems; push e PR de `feat/office` e `feat/server-room` quando pedir
 **Blockers**: none
 **Uncommitted**: none
 **Branch**: feat/server-room (sobre feat/office)
