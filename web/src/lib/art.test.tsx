@@ -161,6 +161,24 @@ describe("catalog art on disk", () => {
       expect(Math.abs((Math.min(...ys) + Math.max(...ys)) / 2 - (height - 1) / 2)).toBeLessThanOrEqual(1);
     });
 
+    // C32 (added after verification round 5): one object - the opaque pixels form one 8-connected shape
+    it("menu icon one object", () => {
+      const seen = new Set<string>([points[0].join()]);
+      const stack = [points[0]];
+      while (stack.length) {
+        const [x, y] = stack.pop()!;
+        for (let dy = -1; dy <= 1; dy++)
+          for (let dx = -1; dx <= 1; dx++) {
+            const k = `${x + dx},${y + dy}`;
+            if (!seen.has(k) && opaque(x + dx, y + dy)) {
+              seen.add(k);
+              stack.push([x + dx, y + dy]);
+            }
+          }
+      }
+      expect(seen.size).toBe(points.length);
+    });
+
     it("menu icon outline in ink", () => {
       const edge = points.filter(([x, y]) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => !opaque(x + dx, y + dy)));
       expect(edge.filter(([x, y]) => !isInk(x, y))).toEqual([]);
@@ -289,9 +307,17 @@ describe("catalog art on disk", () => {
       const { legend, counts } = spec(id);
       const t = SURFACES[id];
       const chars = t.surfaces[name] ?? t.small[name];
-      expect([...chars].filter((c) => legend[c] === top).reduce((a, c) => a + (counts[c] ?? 0), 0)).toBe(1);
+      expect([...chars].filter((c) => toHex(legend[c]) === toHex(top)).reduce((a, c) => a + (counts[c] ?? 0), 0)).toBe(1);
     },
   );
+
+  // C33 (added after verification round 5): the coin is drawn from the gold ramp only (style guide: coin = gold)
+  it("menu coin in gold", () => {
+    const { legend, counts } = spec("loja");
+    const coin = [...SURFACES.loja.surfaces.moeda].filter((c) => counts[c]);
+    const gold = (PALETTE.gold as string[]).map((h) => h.toLowerCase());
+    expect(coin.filter((c) => !gold.includes(toHex(legend[c])))).toEqual([]);
+  });
 
   // C26: fixed names, no catalog entry (door 1)
   it("scene background for the map, the room and the machine hall, 320x180", () => {
