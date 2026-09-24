@@ -13,12 +13,20 @@ import {
   priceShort,
   quantity,
 } from "@/lib/gear";
-import type { Gear, Item, Player, Price, Skin } from "@/lib/types";
+import type { Gear, Item, Player, Price, Recipe, Skin } from "@/lib/types";
 import { GameArt } from "./GameArt";
 import { useGame } from "./GameContext";
 import { HeroSprite } from "./HeroSprite";
 
-type Selection = { kind: "item" | "gear" | "skin"; id: string };
+type Selection = { kind: "item" | "gear" | "skin" | "recipe"; id: string };
+
+// What a forge recipe can do for this player, in the button's priority order.
+function forgeState(player: Player, r: Recipe) {
+  const owned = r.output.kind === "gear" && player.gear.includes(r.output.id);
+  const materials = r.ingredients.every((i) => quantity(player, i.item) >= i.quantity);
+  const afford = !r.price || canPay(player, r.price);
+  return { owned, materials, afford, ready: !owned && materials && afford };
+}
 
 export function ShopScene() {
   const { player, catalog, setPlayer } = useGame();
@@ -43,10 +51,17 @@ export function ShopScene() {
 
   const slotName = (id: string) => catalog.gearSlots.find((s) => s.id === id)?.name ?? id;
   const gearStatus = (g: Gear) =>
-    isEquipped(player, g.id, g.slot) ? "EQUIPADO" : player.gear.includes(g.id) ? "NO INVENTÁRIO" : priceShort(g.price);
+    isEquipped(player, g.id, g.slot) ? "EQUIPADO" : player.gear.includes(g.id) ? "NO INVENTÁRIO" : g.price ? priceShort(g.price) : "FORJA";
   const skinStatus = (s: Skin) =>
     player.skin === s.id ? "EQUIPADA" : player.skins.includes(s.id) ? "NO GUARDA-ROUPA" : priceShort(s.price);
   const picked = (kind: Selection["kind"], id: string) => sel.kind === kind && sel.id === id;
+  const output = (r: Recipe) =>
+    r.output.kind === "gear" ? catalog.gear.find((g) => g.id === r.output.id) : catalog.items.find((i) => i.id === r.output.id);
+  const itemName = (id: string) => catalog.items.find((i) => i.id === id)?.name ?? id;
+  const recipeStatus = (r: Recipe) => {
+    const st = forgeState(player, r);
+    return st.owned ? "JÁ POSSUI" : st.ready ? "PRONTO" : "FALTAM MATERIAIS";
+  };
 
   return (
     <section className="scene shop" aria-label="LOJA">
@@ -123,6 +138,32 @@ export function ShopScene() {
             ))}
           </div>
         </div>
+        <div className="panel shop-section" role="region" aria-label="FORJA">
+          <span className="pixel shop-section-title">FORJA</span>
+          <div className="shop-grid shop-grid-3">
+            {catalog.recipes.map((r) => {
+              const out = output(r);
+              return (
+                <button
+                  key={r.id}
+                  type="button"
+                  className="shop-card"
+                  data-recipe={r.id}
+                  aria-pressed={picked("recipe", r.id)}
+                  onClick={() => setSel({ kind: "recipe", id: r.id })}
+                >
+                  <span className="pixel shop-glyph">
+                    <GameArt kind={r.output.kind} id={r.output.id} scale={2} alt="" fallback={out?.glyph ?? "?"} />
+                  </span>
+                  <span className="shop-card-text">
+                    <span className="pixel shop-card-name">{out?.name ?? r.output.id}</span>
+                  </span>
+                  <span className="pixel shop-status">{recipeStatus(r)}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
       <div className="shop-side">
         <div className="panel shop-detail" role="region" aria-label="detalhe">
@@ -157,12 +198,13 @@ export function ShopScene() {
         </>
       );
     }
+    if (sel.kind === "recipe") return recipeDetail();
     if (sel.kind === "gear") {
       const g = catalog.gear.find((x) => x.id === sel.id)!;
       const owned = player.gear.includes(g.id);
       const equipped = isEquipped(player, g.id, g.slot);
-      const afford = canPay(player, g.price);
-      const label = equipped ? "EQUIPADO" : owned ? "EQUIPAR" : afford ? "COMPRAR E EQUIPAR" : insufficient(g.price);
+      const afford = !!g.price && canPay(player, g.price);
+      const label = equipped ? "EQUIPADO" : owned ? "EQUIPAR" : !g.price ? "SÓ NA FORJA" : afford ? "COMPRAR E EQUIPAR" : insufficient(g.price);
       const action = owned
         ? () => run(`/api/me/gear/${g.id}/equip`, "ITEM EQUIPADO")
         : () => run(`/api/me/shop/gear/${g.id}`, "ITEM COMPRADO E EQUIPADO");
@@ -175,7 +217,7 @@ export function ShopScene() {
           <span className="pixel shop-detail-name">{g.name}</span>
           <span className="term shop-desc">{g.description}</span>
           <span className="term shop-bonus">{`bônus: ${bonusLong(g.bonus)}`}</span>
-          <span className="term">{`custo: ${owned ? "já possui" : priceLong(g.price)}`}</span>
+          <span className="term">{`custo: ${owned ? "já possui" : g.price ? priceLong(g.price) : "só na forja"}`}</span>
           {equipped && (
             <button type="button" className="btn btn-dark" disabled={pending}
               onClick={() => run(`/api/me/gear/${g.id}/unequip`, "ITEM REMOVIDO")}>
@@ -191,6 +233,43 @@ export function ShopScene() {
       );
     }
     const s = catalog.skins.find((x) => x.id === sel.id)!;
+    return skinDetail(s);
+  }
+
+  function recipeDetail() {
+    const r = catalog.recipes.find((x) => x.id === sel.id);
+    const out = r && output(r);
+    if (!r || !out) return null;
+    const st = forgeState(player, r);
+    const gear = r.output.kind === "gear" ? (out as Gear) : null;
+    const label = st.ready
+      ? gear ? "FORJAR E EQUIPAR" : "FORJAR"
+      : st.owned ? "JÁ POSSUI" : !st.materials ? "FALTAM MATERIAIS" : insufficient(r.price!);
+    return (
+      <>
+        <span className="pixel shop-detail-glyph">
+          <GameArt kind={r.output.kind} id={out.id} scale={4} alt="" fallback={out.glyph} />
+        </span>
+        <span className="pixel shop-rarity">{out.rarity}</span>
+        <span className="pixel shop-detail-name">{out.name}</span>
+        <span className="term shop-desc">{out.description}</span>
+        {gear && <span className="term shop-bonus">{`bônus: ${bonusLong(gear.bonus)}`}</span>}
+        <ul className="forge-materials" aria-label="materiais">
+          {r.ingredients.map((i) => (
+            <li key={i.item} className="term">{`${itemName(i.item)} ${quantity(player, i.item)}/${i.quantity}`}</li>
+          ))}
+        </ul>
+        {r.price && <span className="term">{`custo: ${priceLong(r.price)}`}</span>}
+        <div className="shop-spacer" />
+        <button type="button" className={`btn ${st.ready ? "btn-green" : "btn-locked"}`} disabled={pending || !st.ready}
+          onClick={() => run(`/api/me/forge/${r.id}`, gear ? "ITEM FORJADO E EQUIPADO" : `+1 ${out.name}`)}>
+          {label}
+        </button>
+      </>
+    );
+  }
+
+  function skinDetail(s: Skin) {
     const owned = player.skins.includes(s.id);
     const worn = player.skin === s.id;
     const afford = canPay(player, s.price);

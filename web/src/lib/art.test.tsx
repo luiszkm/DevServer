@@ -324,3 +324,15 @@ describe("catalog art on disk", () => {
     expectAssets(["world", "office", "server"].map((name) => ({ category: "background", name, size: [320, 180] })));
   });
 });
+
+// forge C29: the web mock copies the forge recipes and the craft-only pieces by value.
+describe("web mock", () => {
+  it("web mock matches forge catalog", async () => {
+    const { RECIPES, GEAR } = await import("@/test/helpers");
+    const forge = catalog<{ recipes: unknown[] }>("forge.json");
+    expect(RECIPES).toEqual(forge.recipes);
+    const full = catalog<{ gear: { id: string; price?: unknown }[] }>("shop.json").gear.filter((g) => !g.price);
+    expect(full.map((g) => g.id)).toEqual(["caneca_log", "hoodie_trace", "teclado_race"]);
+    expect(GEAR.filter((g) => !g.price)).toEqual(full);
+  });
+});

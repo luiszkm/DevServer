@@ -61,6 +61,11 @@ export const COMMANDS: Catalog["commands"] = [
 
 export const ITEMS: Catalog["items"] = [
   { id: "null_shard", name: "FRAGMENTO NULL", glyph: "0x0", rarity: "COMUM", description: "resto de slime" },
+  { id: "log_essence", name: "ESSÊNCIA DE LOG", glyph: "</>", rarity: "COMUM", description: "resto de wisp" },
+  { id: "corrupt_dep", name: "DEPENDÊNCIA CORROMPIDA", glyph: "!pkg", rarity: "INCOMUM", description: "resto de pacote" },
+  { id: "wild_trace", name: "STACK TRACE SELVAGEM", glyph: "{!}", rarity: "INCOMUM", description: "resto de exceção" },
+  { id: "race_core", name: "NÚCLEO DE CONCORRÊNCIA", glyph: "//", rarity: "RARO", description: "resto de race" },
+  { id: "memory_crystal", name: "CRISTAL DE MEMÓRIA", glyph: "^^", rarity: "LENDÁRIO", description: "resto de leak" },
   { id: "sp_potion", name: "POÇÃO DE CACHE", glyph: "++", rarity: "COMUM", description: "30 SP", restore: { stat: "sp", amount: 30 }, price: { currency: "gems", amount: 15 } },
   { id: "hp_potion", name: "POÇÃO DE MEMÓRIA", glyph: "HP+", rarity: "COMUM", description: "40 HP", restore: { stat: "hp", amount: 40 }, price: { currency: "gems", amount: 12 } },
   { id: "boost_deploy", name: "ACELERADOR DE DEPLOY", glyph: ">>", rarity: "COMUM", description: "-15 min", price: { currency: "gems", amount: 35 } },
@@ -80,6 +85,10 @@ export const GEAR: Catalog["gear"] = [
   { id: "moletom", name: "MOLETOM CONFORTÁVEL", glyph: "[[]]", slot: "vestuario", rarity: "COMUM", description: "conforto", price: { currency: "coins", amount: 70 }, bonus: { type: "hp", amount: 15 } },
   { id: "cadeira", name: "CADEIRA ERGONÔMICA", glyph: "[|]", slot: "vestuario", rarity: "RARO", description: "postura", price: { currency: "gems", amount: 150 }, bonus: { type: "hp", amount: 30 } },
   { id: "fone", name: "FONE COM CANCELAMENTO", glyph: "((o))", slot: "acessorio", rarity: "INCOMUM", description: "foco", price: { currency: "gems", amount: 90 }, bonus: { type: "dmg", amount: 6 } },
+  // Copied by value from api/catalog/shop.json (forge C29 asserts the same values).
+  { id: "caneca_log", name: "CANECA DE LOGS", glyph: "[u]", slot: "bebida", rarity: "INCOMUM", description: "Café coado no filtro de stack trace.", bonus: { type: "sp", amount: 16 } },
+  { id: "hoodie_trace", name: "MOLETOM STACK TRACE", glyph: "{#}", slot: "vestuario", rarity: "RARO", description: "Cada linha do erro costurada à mão.", bonus: { type: "hp", amount: 36 } },
+  { id: "teclado_race", name: "TECLADO RACE CONDITION", glyph: "[kbd]", slot: "acessorio", rarity: "LENDÁRIO", description: "As teclas chegam antes de você apertar.", bonus: { type: "dmg", amount: 12 } },
 ];
 
 export const SKINS: Catalog["skins"] = [
@@ -147,11 +156,21 @@ export function rack(filled: Record<number, string> = {}): Player["rack"] {
   return Array.from({ length: 6 }, (_, i) => filled[i] ?? null);
 }
 
+// Copied by value from api/catalog/forge.json (forge C29 asserts the same values).
+export const RECIPES: Catalog["recipes"] = [
+  { id: "forja_cache", output: { kind: "item", id: "sp_potion" }, ingredients: [{ item: "null_shard", quantity: 2 }] },
+  { id: "forja_memoria", output: { kind: "item", id: "hp_potion" }, ingredients: [{ item: "log_essence", quantity: 2 }] },
+  { id: "forja_acelerador", output: { kind: "item", id: "boost_deploy" }, ingredients: [{ item: "corrupt_dep", quantity: 1 }, { item: "wild_trace", quantity: 1 }], price: { currency: "coins", amount: 20 } },
+  { id: "forja_caneca", output: { kind: "gear", id: "caneca_log" }, ingredients: [{ item: "log_essence", quantity: 3 }, { item: "null_shard", quantity: 2 }], price: { currency: "coins", amount: 40 } },
+  { id: "forja_hoodie", output: { kind: "gear", id: "hoodie_trace" }, ingredients: [{ item: "wild_trace", quantity: 3 }, { item: "corrupt_dep", quantity: 2 }], price: { currency: "coins", amount: 80 } },
+  { id: "forja_teclado", output: { kind: "gear", id: "teclado_race" }, ingredients: [{ item: "race_core", quantity: 2 }, { item: "memory_crystal", quantity: 1 }, { item: "wild_trace", quantity: 3 }], price: { currency: "coins", amount: 150 } },
+];
+
 export const CATALOG: Catalog = {
   version: "v1", regions: REGIONS, deployTypes: DEPLOY_TYPES, deployLevels: DEPLOY_LEVELS, skillTrees: SKILL_TREES,
   enemies: ENEMIES, commands: COMMANDS, items: ITEMS,
   combat: { counter: [7, 14], spRegen: 5, weaknessMultiplier: 1.8, victory: { xp: 90, coins: 40, gems: 1 }, dropChance: 65, potionChance: 30, potion: "sp_potion" },
-  gearSlots: GEAR_SLOTS, gear: GEAR, skins: SKINS, office: OFFICE, rack: RACK,
+  gearSlots: GEAR_SLOTS, gear: GEAR, skins: SKINS, office: OFFICE, rack: RACK, recipes: RECIPES,
 };
 
 export function player(overrides: Partial<Player> = {}): Player {

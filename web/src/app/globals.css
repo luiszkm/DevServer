@@ -218,6 +218,7 @@ button { font-family: inherit; }
 .shop-rarity { align-self: flex-start; font-size: 9px; padding: 6px 8px; border: 2px solid var(--edge); background: var(--panel-3); color: var(--yellow); }
 .shop-detail-name { font-size: 12px; line-height: 1.6; }
 .shop-desc { color: #a9c6dd; }
+.forge-materials { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .shop-spacer { flex: 1; }
 .shop-message { background: var(--panel-3); font-size: 19px; line-height: 1.35; }
 

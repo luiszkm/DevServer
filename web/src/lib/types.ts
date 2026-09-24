@@ -94,7 +94,8 @@ export type Gear = {
   slot: string;
   rarity: string;
   description: string;
-  price: Price;
+  /** Absent for gear the shop does not sell (made only at the forge). */
+  price?: Price;
   bonus: Bonus;
 };
 
@@ -158,6 +159,14 @@ export type RackComponent = {
 
 export type Rack = { slots: number; stats: RackStat[]; components: RackComponent[] };
 
+/** A forge recipe: its ingredients, plus an optional price, make one unit of its output. */
+export type Recipe = {
+  id: string;
+  output: { kind: "item" | "gear"; id: string };
+  ingredients: { item: string; quantity: number }[];
+  price?: Price;
+};
+
 export type Catalog = {
   version: string;
   regions: Region[];
@@ -173,6 +182,7 @@ export type Catalog = {
   skins: Skin[];
   office: Office;
   rack: Rack;
+  recipes: Recipe[];
 };
 
 export type Battle = {
