@@ -144,7 +144,7 @@ Style guide rules for icons (`.claude/skills/pixel-assets/references/style-guide
 | --- | --- |
 | 16-bit JRPG look, bright and saturated, friendly (8-9) | judged by eye on the preview |
 | dev-life motifs; the icon reads as the scene it names (10-12) | judged by eye on the preview |
-| 1px `ink` outline on every foreground shape (13) | C20 |
+| 1px `ink` outline on every foreground shape (13) | C20 (edge pixels are ink), C27 (no ink inside, so the outline is 1px) |
 | inner detail never in ink (14) | C27 |
 | inner detail in the darkest tone of the material's own ramp (13-14) | judged by eye on the preview |
 | light from the top-left (15) | C21 |
@@ -161,7 +161,7 @@ Style guide rules for icons (`.claude/skills/pixel-assets/references/style-guide
 | filling ~80% of the canvas (48) | C19 |
 | full outline (48) | C20 |
 | coin = `gold` ramp; HP, gem, XP ramps (49-50) | C33 for the coin; no gem, heart or XP in the 9 icons |
-| one set shares light direction, outline weight, fill ratio (51-52) | C21, C20, C19 over all 9 |
+| one set shares light direction, outline weight, fill ratio (51-52) | C21, C20 + C27, C19 over all 9 |
 | `pixelated`, whole-number scale, `alt` (displaying) | C3, C4 |
 
 ## Coverage

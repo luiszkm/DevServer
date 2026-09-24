@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 34,
+  "next_id": 35,
   "lessons": [
     {
       "id": "L-001",
@@ -598,6 +598,24 @@
       ],
       "created": "2026-09-24T21:02:26Z",
       "last_seen": "2026-09-24T21:02:26Z"
+    },
+    {
+      "id": "L-034",
+      "key": "spec_precision_gap::in a rule to proof table cite the check that fails when the rule is broken not one that sounds related an edge pixels are ink check stays green under a 2px outline so outline weight needs the enclosed ink check",
+      "text": "In a rule-to-proof table, cite the check that fails when the rule is broken, not one that sounds related: an 'edge pixels are ink' check stays green under a 2px outline, so outline weight needs the enclosed-ink check.",
+      "signal": "spec_precision_gap",
+      "scope": "web/art icon style",
+      "status": "candidate",
+      "features": [
+        "game-menu"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "checks.md S10 rows 1px outline / outline weight; F11 (web/art icon style)"
+      ],
+      "created": "2026-09-24T21:21:26Z",
+      "last_seen": "2026-09-24T21:21:26Z"
     }
   ]
 }

@@ -212,6 +212,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: verification.md gap 2; .specs/features/game-menu/checks.md:102 (art)
 - last seen: 2026-09-24T21:02:26Z
 
+### L-034 - In a rule-to-proof table, cite the check that fails when the rule is broken, not one that sounds related: an 'edge pixels are ink' check stays green under a 2px outline, so outline weight needs the enclosed-ink check.
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `web/art icon style` · harmful: 0
+- features: game-menu
+- evidence: checks.md S10 rows 1px outline / outline weight; F11 (web/art icon style)
+- last seen: 2026-09-24T21:21:26Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

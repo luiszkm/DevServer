@@ -97,10 +97,10 @@ os mesmos slots numa janela 3x3.
 
 | ID | Slice | Criteria | Status |
 | --- | --- | --- | --- |
-| MENU-01 | S1 | 1, 2 | Pending |
-| MENU-02 | S2 | 3, 4, 5, 6, 7 | Pending |
-| MENU-03 | S3 | 8, 9, 10, 11, 12 | Pending |
-| MENU-04 | S4 | 13, 14 | Pending |
+| MENU-01 | S1 | 1, 2 | Verified |
+| MENU-02 | S2 | 3, 4, 5, 6, 7 | Verified |
+| MENU-03 | S3 | 8, 9, 10, 11, 12 | Verified |
+| MENU-04 | S4 | 13, 14 | Verified |
 
 ## Observable
 
