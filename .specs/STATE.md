@@ -23,9 +23,9 @@
 ## Handoff
 
 **Feature**: responsive
-**Where**: C1–C20 fechados; falta o Verifier
+**Where**: C1–C24 fechados; Verifier round 1 FAIL (mutante F1, estados de erro e cenas populadas sem prova) - corrigido em 96793fd e fc4dc84; falta Verifier round 2
 **In progress**: nenhum
-**Next step**: Verifier independente sobre `35765ef^..HEAD`; depois push e PR de `feat/office`, `feat/server-room`, `feat/game-art` e `feat/responsive` quando o usuário pedir
+**Next step**: Verifier round 2 (scoped) sobre `5cdbe61..HEAD`; depois push e PR de `feat/office`, `feat/server-room`, `feat/game-art` e `feat/responsive` quando o usuário pedir
 **Blockers**: none
 **Uncommitted**: none
 **Branch**: feat/responsive (sobre feat/game-art)
