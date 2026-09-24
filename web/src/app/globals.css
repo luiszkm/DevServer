@@ -46,6 +46,7 @@ button { font-family: inherit; }
 .tab:hover { filter: brightness(1.25); }
 .tab[aria-current="page"] { background: #1d3a52; color: var(--green); }
 .tab-num { font-size: 8px; color: var(--dim); }
+.tabs-bar .menu-btn { display: none; }
 
 .frame { border: 6px solid var(--edge); background: #0d1620; box-shadow: 0 0 0 2px var(--line-2), 0 22px 60px rgba(0,0,0,.65); }
 .scene { position: relative; height: 760px; overflow: hidden; background: var(--bg-2); }
@@ -338,3 +339,82 @@ button { font-family: inherit; }
 .server-card-price { font-size: 10px; color: var(--yellow); }
 .server-terminal { background: var(--edge); padding: 12px 14px; font-size: 20px; color: var(--green); min-height: 64px; }
 .server-notice { align-self: flex-start; font-size: 10px; color: var(--edge); background: var(--yellow); padding: 8px 10px; }
+
+/* Below 1200px every scene is one column and the tabs collapse behind MENU (AD-015). Grouped per scene, in the order above. */
+@media (max-width: 1199px) {
+  .page { width: auto; padding: 12px 8px 24px; gap: 10px; }
+  .tabs-bar { display: flex; flex-direction: column; gap: 6px; }
+  .tabs-bar .menu-btn { display: flex; }
+  .tabs { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .tabs[data-open="false"] > .tab { display: none; }
+  .scene { height: auto; min-height: 320px; }
+
+  .panel { padding: 12px; }
+  .hud { height: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; }
+  .hud-card { height: auto; min-height: 72px; min-width: 0; padding: 10px; overflow-wrap: anywhere; }
+  .hud-grow { grid-column: 1 / -1; }
+  .hud-loading { grid-column: 1 / -1; }
+  .hud-row { flex-wrap: wrap; }
+
+  .login-panel, .onboarding { width: 100%; }
+
+  .title-scene .title-art { position: relative; height: auto; }
+  .title-hint { width: 90%; text-align: center; font-size: 8px; line-height: 1.5; bottom: 8px; padding: 8px; }
+
+  .world { flex-direction: column; padding: 10px; gap: 10px; }
+  .world-map { flex: none; height: 300px; }
+  .node-chip { display: none; }
+  .world-current { font-size: 16px; }
+  .world-list { width: auto; overflow: visible; }
+
+  .deploy { padding: 10px; gap: 10px; }
+  .deploy-head { flex-wrap: wrap; gap: 8px; }
+  .deploy-types { grid-template-columns: repeat(2, 1fr); }
+  .deploy-body { flex-direction: column; }
+  .deploy-levels { grid-template-columns: repeat(3, 1fr); }
+  .deploy-run { flex-wrap: wrap; gap: 8px; }
+  .deploy-log { width: auto; min-height: 150px; }
+
+  .skills { padding: 10px; gap: 10px; }
+  .skills-head { flex-wrap: wrap; gap: 8px; }
+  .skills-trees { flex-direction: column; }
+  .skills-foot { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .skills-message { flex: none; }
+
+  .battle { padding: 10px; gap: 10px; }
+  .battle-body { flex-direction: column; }
+  .battle-enemy-card { width: 100%; max-width: 300px; }
+  .battle-side { width: auto; }
+  .battle-commands { max-height: none; }
+  .battle-hero { flex-wrap: wrap; gap: 10px; }
+
+  .shop { flex-direction: column; padding: 10px; gap: 10px; }
+  .shop-main { overflow: visible; }
+  .shop-head { flex-wrap: wrap; gap: 8px; }
+  .shop-section { padding: 10px; }
+  .shop-grid-2, .shop-grid-3 { grid-template-columns: 1fr; }
+  .shop-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .shop-side { width: auto; }
+
+  .avatar { grid-template-columns: 1fr; grid-template-rows: auto; padding: 10px; }
+  .avatar-bag { grid-row: auto; }
+  .avatar-cells { max-height: 360px; }
+  .avatar-doll { grid-template-columns: 1fr 1fr; padding: 10px; }
+  .avatar-center { grid-column: 1 / -1; grid-row: 1; }
+  .avatar-preview { flex: none; height: 260px; }
+
+  .office { flex-direction: column; padding: 10px; gap: 10px; }
+  .office-left { width: auto; }
+  .office-catalog { max-height: 360px; }
+  .office-room-panel { grid-template-columns: 1fr; padding: 10px; }
+  .office-room { padding: 10px; }
+  .office-cells { gap: 4px; }
+  .office-stats { display: grid; grid-template-columns: 1fr 1fr; }
+  .office-message { grid-column: 1 / -1; }
+
+  .server { padding: 10px; gap: 10px; }
+  .server-stats { flex-direction: column; gap: 8px; }
+  .server-body { flex-direction: column; }
+  .server-rack { width: auto; padding: 12px; }
+  .server-cards { grid-template-columns: 1fr; }
+}

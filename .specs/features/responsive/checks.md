@@ -37,50 +37,50 @@ Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "escape closes 
 **C6** - O texto do botão é `MENU · <rótulo>` para cada uma das 9 rotas de `TABS` (`/` -> `MENU · TÍTULO`, `/deploy` -> `MENU · DEPLOY`, ... table-driven sobre as 9) e `MENU` para `/login` (rota fora de `TABS`) (RESP-01, AC 6) ✅
 Proof: `cd web && npx vitest run src/components/Tabs.test.tsx -t "menu label"`
 
-**C7** - No browser a 390x844, depois do login: os 9 links da nav `Cenas` estão escondidos e o botão `MENU · TÍTULO` visível com `aria-expanded="false"`; ao tocar nele os 9 links ficam visíveis na ordem de `TABS`; ao tocar `DEPLOY` a URL vira `/deploy`, os links somem, o botão diz `MENU · DEPLOY` e o link DEPLOY tem `aria-current="page"` (RESP-01, AC 1, 2, 3, 6; door 1, door 3)
+**C7** - No browser a 390x844, depois do login: os 9 links da nav `Cenas` estão escondidos e o botão `MENU · TÍTULO` visível com `aria-expanded="false"`; ao tocar nele os 9 links ficam visíveis na ordem de `TABS`; ao tocar `DEPLOY` a URL vira `/deploy`, os links somem, o botão diz `MENU · DEPLOY` e o link DEPLOY tem `aria-current="page"` (RESP-01, AC 1, 2, 3, 6; door 1, door 3) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C7 menu on phone"`
 
 ### S2 - cada tela cabe em 360px · 3 files + scene CSS · ~45 KB · ~12k
 
-**C8** - A 360x740 e a 390x844, em cada uma das 9 cenas, `document.documentElement.scrollWidth <= window.innerWidth` (18 casos) (RESP-02, AC 7; door 1)
+**C8** - A 360x740 e a 390x844, em cada uma das 9 cenas, `document.documentElement.scrollWidth <= window.innerWidth` (18 casos) (RESP-02, AC 7; door 1) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C8 "`
 
-**C9** - A 360x740, em cada uma das 9 cenas, todo `button`, `a` e `input` visível dentro da seção da cena e do HUD tem `x >= 0` e `x + width <= innerWidth` (RESP-02, AC 8)
+**C9** - A 360x740, em cada uma das 9 cenas, todo `button`, `a` e `input` visível dentro da seção da cena e do HUD tem `x >= 0` e `x + width <= innerWidth` (RESP-02, AC 8) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C9 "`
 
-**C10** - A 360x740, em cada uma das 9 cenas, todo `button`, `a` e `input` visível da seção da cena, do HUD e do botão `MENU`, exceto `.title-art a`, mede `width >= 24` e `height >= 24`; e com o menu aberto os 9 links da nav também (RESP-02, AC 9)
+**C10** - A 360x740, em cada uma das 9 cenas, todo `button`, `a` e `input` visível da seção da cena, do HUD e do botão `MENU`, exceto `.title-art a`, mede `width >= 24` e `height >= 24`; e com o menu aberto os 9 links da nav também (RESP-02, AC 9) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C10 "`
 
-**C11** - A 390x844, em cada uma das 9 cenas, a seção da cena tem `scrollHeight <= clientHeight` (nada cortado pelo `overflow: hidden`) e, depois de rolar até o último `button` da seção, a caixa dele está inteira dentro da viewport (RESP-02, AC 10)
+**C11** - A 390x844, em cada uma das 9 cenas, a seção da cena tem `scrollHeight <= clientHeight` (nada cortado pelo `overflow: hidden`) e, depois de rolar até o último `button` da seção, a caixa dele está inteira dentro da viewport (RESP-02, AC 10) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C11 "`
 
-**C12** - A 360x740, os 6 `.hud-card` do HUD estão visíveis com `x >= 0` e `x + width <= innerWidth`, e o botão `SAIR` está visível (RESP-03, AC 11)
+**C12** - A 360x740, os 6 `.hud-card` do HUD estão visíveis com `x >= 0` e `x + width <= innerWidth`, e o botão `SAIR` está visível (RESP-03, AC 11) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C12 hud"`
 
-**C13** - A 390x844, na tela-título, a key art tem largura igual à largura interna do `.frame` (±1px) e `height / width` = 0.8 (±0.01), e cada um dos 6 hotspots (`.title-art a`) tem a caixa dentro da caixa da imagem (RESP-03, AC 12)
+**C13** - A 390x844, na tela-título, a key art tem largura igual à largura interna do `.frame` (±1px) e `height / width` = 0.8 (±0.01), e cada um dos 6 hotspots (`.title-art a`) tem a caixa dentro da caixa da imagem (RESP-03, AC 12) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C13 title"`
 
-**C14** - A 360x740, no MUNDO, os 6 `.node-marker` têm a caixa dentro da caixa do `.world-map` e nenhum `.node-chip` está visível (RESP-03, AC 13)
+**C14** - A 360x740, no MUNDO, os 6 `.node-marker` têm a caixa dentro da caixa do `.world-map` e nenhum `.node-chip` está visível (RESP-03, AC 13) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C14 world"`
 
-**C15** - A 360x740, login (`ENTRAR COM GITHUB`), onboarding (input do nome + botões de classe + `CRIAR DEV`), servidor fora do ar (`/api/me` respondendo 500 via `page.route` -> `TENTAR DE NOVO`) e carregando (`/api/me` sem resposta via `page.route` -> `CARREGANDO...`) têm `scrollWidth <= innerWidth` e cada `button`, `a` e `input` visível dentro de `[0, innerWidth]` (4 casos) (RESP-03, AC 14)
+**C15** - A 360x740, login (`ENTRAR COM GITHUB`), onboarding (input do nome + botões de classe + `CRIAR DEV`), servidor fora do ar (`/api/me` respondendo 500 via `page.route` -> `TENTAR DE NOVO`) e carregando (`/api/me` sem resposta via `page.route` -> `CARREGANDO...`) têm `scrollWidth <= innerWidth` e cada `button`, `a` e `input` visível dentro de `[0, innerWidth]` (4 casos) (RESP-03, AC 14) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C15 "`
 
 ### S3 - desktop inalterado · 1 file · ~3 KB · ~1k
 
-**C16** - A 1280x800, em cada uma das 9 cenas, `.page` mede 1200px de largura, a seção da cena mede 760px de altura, os 9 links da nav estão visíveis com o mesmo `y` e o botão `MENU` não está visível (RESP-04, AC 15; door 1)
+**C16** - A 1280x800, em cada uma das 9 cenas, `.page` mede 1200px de largura, a seção da cena mede 760px de altura, os 9 links da nav estão visíveis com o mesmo `y` e o botão `MENU` não está visível (RESP-04, AC 15; door 1) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C16 "`
 
-**C17** - A 360x740, `.world-map`, `.server`, `.office-room` e `.battle` têm `background-size` = `1280px 720px` e `image-rendering` = `pixelated` (RESP-04, AC 16)
+**C17** - A 360x740, `.world-map`, `.server`, `.office-room` e `.battle` têm `background-size` = `1280px 720px` e `image-rendering` = `pixelated` (RESP-04, AC 16) ✅
 Proof: `cd web && npx playwright test e2e/responsive.spec.ts -g "C17 "`
 
-**C18** - A 1280x720 (viewport padrão), a prova game-art C33 continua verde (RESP-04, AC 16)
+**C18** - A 1280x720 (viewport padrão), a prova game-art C33 continua verde (RESP-04, AC 16) ✅
 Proof: `cd web && npx playwright test e2e/art.spec.ts -g "scene art scale"`
 
 **C19** - `.specs/STATE.md` tem a linha `AD-015` com o texto literal da door 2 e status `active`, e a linha `AD-007` tem status `superseded by AD-015` (door 2)
 Proof: `grep -q '| AD-015 |.*max-width: 1199px.*| active |' .specs/STATE.md && grep -q '| AD-007 |.*| superseded by AD-015 |' .specs/STATE.md`
 
-**C20** - As regras de responsividade estão num único bloco `@media (max-width: 1199px)` em `globals.css` e em nenhum outro arquivo de `web/src` (door 1)
+**C20** - As regras de responsividade estão num único bloco `@media (max-width: 1199px)` em `globals.css` e em nenhum outro arquivo de `web/src` (door 1) ✅
 Proof: `cd web && test "$(grep -rc '@media' src | awk -F: '{s+=$2} END {print s}')" = 1 && grep -q '@media (max-width: 1199px)' src/app/globals.css`
 
 ## Coverage
