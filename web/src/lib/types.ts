@@ -21,6 +21,8 @@ export type Player = {
   skins: string[];
   /** Every catalog zone, each a list of its positions with the installed furniture id or null. */
   office: Record<string, (string | null)[]>;
+  /** Every rack slot, with the installed component id or null. */
+  rack: (string | null)[];
 };
 
 export type Region = {
@@ -142,6 +144,20 @@ export type CombatRules = {
   potion: string;
 };
 
+/** POWER, RAM or UPTIME: base + installed effects, capped at max; each step above base adds 1 to `bonus` (AD-014). */
+export type RackStat = { id: string; name: string; color: string; base: number; max: number; step: number; bonus: "dmg" | "sp" | "coins" };
+
+export type RackComponent = {
+  id: string;
+  name: string;
+  glyph: string;
+  color: string;
+  price: Price;
+  effects: { stat: string; amount: number }[];
+};
+
+export type Rack = { slots: number; stats: RackStat[]; components: RackComponent[] };
+
 export type Catalog = {
   version: string;
   regions: Region[];
@@ -156,6 +172,7 @@ export type Catalog = {
   gear: Gear[];
   skins: Skin[];
   office: Office;
+  rack: Rack;
 };
 
 export type Battle = {

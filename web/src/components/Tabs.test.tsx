@@ -5,7 +5,7 @@ import { Tabs } from "./Tabs";
 vi.mock("next/navigation", () => ({ usePathname: () => "/mundo" }));
 
 describe("Tabs", () => {
-  // C26 (foundation), C27 (office)
+  // C26 (foundation), C27 (office), C28 (server-room)
   it("tab order and routes", () => {
     render(<Tabs />);
     const links = within(screen.getByRole("navigation", { name: "Cenas" })).getAllByRole("link");
@@ -13,6 +13,7 @@ describe("Tabs", () => {
     expect(got).toEqual([
       ["TÍTULO", "/"],
       ["MUNDO", "/mundo"],
+      ["SERVER", "/server"],
       ["DEPLOY", "/deploy"],
       ["BUG FIGHT", "/bug-fight"],
       ["SKILLS", "/skills"],
@@ -20,7 +21,8 @@ describe("Tabs", () => {
       ["AVATAR", "/avatar"],
       ["OFFICE", "/office"],
     ]);
-    expect(links[7].querySelector(".tab-num")?.textContent).toBe("08");
+    expect(links.map((l) => l.querySelector(".tab-num")?.textContent)).toEqual(["01", "02", "03", "04", "05", "06", "07", "08", "09"]);
+    expect(links[2].querySelector(".tab-num")?.textContent).toBe("03");
   });
 
   it("marks only the current route's tab as current", () => {

@@ -124,18 +124,41 @@ export function room(filled: { parede?: Record<number, string>; piso?: Record<nu
   return { parede: zone(8, filled.parede), piso: zone(24, filled.piso) };
 }
 
+// Copied by value from api/catalog/rack.json (api C1 asserts the same values).
+export const RACK: Catalog["rack"] = {
+  slots: 6,
+  stats: [
+    { id: "power", name: "POWER", color: "#45b7ff", base: 20, max: 100, step: 10, bonus: "dmg" },
+    { id: "ram", name: "RAM", color: "#6bd425", base: 15, max: 100, step: 5, bonus: "sp" },
+    { id: "uptime", name: "UPTIME", color: "#ffc93c", base: 60, max: 99, step: 1, bonus: "coins" },
+  ],
+  components: [
+    { id: "cpu", name: "CPU 8-CORE", glyph: "::", color: "#45b7ff", price: { currency: "coins", amount: 80 }, effects: [{ stat: "power", amount: 25 }] },
+    { id: "ram", name: "RAM 32GB", glyph: "[]", color: "#6bd425", price: { currency: "coins", amount: 60 }, effects: [{ stat: "ram", amount: 30 }] },
+    { id: "ssd", name: "SSD NVME", glyph: "=", color: "#ffc93c", price: { currency: "coins", amount: 70 }, effects: [{ stat: "power", amount: 12 }, { stat: "uptime", amount: 8 }] },
+    { id: "cache", name: "CACHE REDIS", glyph: "~", color: "#e05252", price: { currency: "coins", amount: 90 }, effects: [{ stat: "power", amount: 18 }] },
+    { id: "lb", name: "LOAD BALANCER", glyph: ">>", color: "#b46cf0", price: { currency: "coins", amount: 120 }, effects: [{ stat: "uptime", amount: 20 }] },
+    { id: "gpu", name: "GPU EDGE", glyph: "#", color: "#45b7ff", price: { currency: "coins", amount: 150 }, effects: [{ stat: "power", amount: 40 }] },
+  ],
+};
+
+/** A rack with the given slots filled: rack({ 1: "gpu" }). */
+export function rack(filled: Record<number, string> = {}): Player["rack"] {
+  return Array.from({ length: 6 }, (_, i) => filled[i] ?? null);
+}
+
 export const CATALOG: Catalog = {
   version: "v1", regions: REGIONS, deployTypes: DEPLOY_TYPES, deployLevels: DEPLOY_LEVELS, skillTrees: SKILL_TREES,
   enemies: ENEMIES, commands: COMMANDS, items: ITEMS,
   combat: { counter: [7, 14], spRegen: 5, weaknessMultiplier: 1.8, victory: { xp: 90, coins: 40, gems: 1 }, dropChance: 65, potionChance: 30, potion: "sp_potion" },
-  gearSlots: GEAR_SLOTS, gear: GEAR, skins: SKINS, office: OFFICE,
+  gearSlots: GEAR_SLOTS, gear: GEAR, skins: SKINS, office: OFFICE, rack: RACK,
 };
 
 export function player(overrides: Partial<Player> = {}): Player {
   return {
     devName: "DEV_01", class: "BACKEND", level: 1, xp: 0, xpMax: 500, hp: 100, hpMax: 100,
     coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], inventory: [{ item: "sp_potion", quantity: 2 }],
-    gear: [], equipment: { setup: null, bebida: null, vestuario: null, acessorio: null }, skins: ["default"], office: room(), ...overrides,
+    gear: [], equipment: { setup: null, bebida: null, vestuario: null, acessorio: null }, skins: ["default"], office: room(), rack: rack(), ...overrides,
   };
 }
 

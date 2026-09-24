@@ -8,15 +8,17 @@ import SkillsPage from "@/app/(game)/skills/page";
 import ShopPage from "@/app/(game)/loja/page";
 import AvatarPage from "@/app/(game)/avatar/page";
 import OfficePage from "@/app/(game)/office/page";
+import ServerPage from "@/app/(game)/server/page";
 import { CATALOG, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 
 // Foundation C28 listed the scenes still showing EM BREVE; with LOJA and AVATAR shipped that set is empty.
 describe("ComingSoon", () => {
-  // C46 (shop), C41 (office)
+  // C46 (shop), C41 (office), C43 (server-room)
   it.each([
     ["/", TitlePage],
     ["/mundo", WorldPage],
+    ["/server", ServerPage],
     ["/deploy", DeployPage],
     ["/bug-fight", BugFightPage],
     ["/skills", SkillsPage],

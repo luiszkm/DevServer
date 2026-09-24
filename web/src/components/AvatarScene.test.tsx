@@ -1,9 +1,9 @@
-import { render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import AvatarPage from "@/app/(game)/avatar/page";
 import type { Player } from "@/lib/types";
-import { CATALOG, SKINS, json, mockFetch, player } from "@/test/helpers";
+import { CATALOG, SKINS, json, mockFetch, player, rack } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 
 function renderAvatar(p: Player = player(), setPlayer = vi.fn()) {
@@ -57,6 +57,19 @@ describe("AvatarScene", () => {
     expect(within(stats).getByText("dano +18%")).toBeInTheDocument();
     expect(within(stats).getByText("SP +30")).toBeInTheDocument();
     expect(screen.queryByText("EM BREVE")).not.toBeInTheDocument();
+  });
+
+  // C41 (server-room)
+  it("rack bonuses", () => {
+    renderAvatar(player({ rack: rack({ 0: "gpu", 1: "ram" }) }));
+    let stats = screen.getByLabelText("atributos");
+    // gpu: POWER 60 -> +4% dano; ram: RAM 45 -> +6 SP
+    expect(within(stats).getByText("dano +4%")).toBeInTheDocument();
+    expect(within(stats).getByText("SP +6")).toBeInTheDocument();
+    cleanup();
+    renderAvatar(player({ rack: rack({ 0: "gpu", 1: "ram" }), gear: ["macbook"], equipment: { setup: "macbook", bebida: null, vestuario: null, acessorio: null } }));
+    stats = screen.getByLabelText("atributos");
+    expect(within(stats).getByText("dano +12%")).toBeInTheDocument();
   });
 
   // C35 (owned but unequipped gear adds nothing)

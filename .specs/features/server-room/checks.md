@@ -181,23 +181,23 @@ Proof: `cd web && npx playwright test e2e/server.spec.ts -g "entries"`
 - [x] C25
 - [x] C26
 - [x] C27
-- [ ] C28
-- [ ] C29
-- [ ] C30
-- [ ] C31
-- [ ] C32
-- [ ] C33
-- [ ] C34
-- [ ] C35
-- [ ] C36
-- [ ] C37
-- [ ] C38
-- [ ] C39
-- [ ] C40
-- [ ] C41
-- [ ] C42
-- [ ] C43
-- [ ] C44
+- [x] C28
+- [x] C29
+- [x] C30
+- [x] C31
+- [x] C32
+- [x] C33
+- [x] C34
+- [x] C35
+- [x] C36
+- [x] C37
+- [x] C38
+- [x] C39
+- [x] C40
+- [x] C41
+- [x] C42
+- [x] C43
+- [x] C44
 
 ## Coverage
 
@@ -276,4 +276,5 @@ Evidence:
 ## Handoff
 
 - Leitura: api ~79 KB + web ~61 KB ≈ 140 KB / 4 ≈ 35k, mais ~45k de código novo - abaixo do budget de 150k: um builder, sem handoff
+- **Boundary:** one builder, C1–C44 closed, `5805f2d..HEAD` (api `1c0b1d5`, web next commit); every proof and the api, web and e2e suites green at HEAD; `make ci-build` green
 - **Settled mid-build:** C21 dizia `cpu` + `gpu` `dmg` 8; a fórmula aprovada (AC 15) dá `floor(65 / 10)` = 6 - erro aritmético do check, corrigido para 6 com o aval do usuário (2026-09-24)
