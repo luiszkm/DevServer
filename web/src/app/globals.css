@@ -356,8 +356,6 @@ button { font-family: inherit; }
   .hud-loading { grid-column: 1 / -1; }
   .hud-row { flex-wrap: wrap; }
 
-  .login-panel, .onboarding { width: 100%; }
-
   .title-scene .title-art { position: relative; height: auto; }
   .title-hint { width: 90%; text-align: center; font-size: 8px; line-height: 1.5; bottom: 8px; padding: 8px; }
 
