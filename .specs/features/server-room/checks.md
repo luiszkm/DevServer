@@ -276,5 +276,5 @@ Evidence:
 ## Handoff
 
 - Leitura: api ~79 KB + web ~61 KB ≈ 140 KB / 4 ≈ 35k, mais ~45k de código novo - abaixo do budget de 150k: um builder, sem handoff
-- **Boundary:** one builder, C1–C44 closed, `5805f2d..HEAD` (api `1c0b1d5`, web next commit); every proof and the api, web and e2e suites green at HEAD; `make ci-build` green
+- **Boundary:** one builder, C1–C44 closed, `a0a9412..HEAD` (specs `a7532b0`, api `1c0b1d5`, web `61d7f69`); every proof and the api, web and e2e suites green at HEAD; `make ci-build` green
 - **Settled mid-build:** C21 dizia `cpu` + `gpu` `dmg` 8; a fórmula aprovada (AC 15) dá `floor(65 / 10)` = 6 - erro aritmético do check, corrigido para 6 com o aval do usuário (2026-09-24)

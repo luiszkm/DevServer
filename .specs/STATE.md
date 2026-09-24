@@ -22,9 +22,9 @@
 ## Handoff
 
 **Feature**: server-room
-**Where**: plan aprovado; checks C1–C44 escritos; build não iniciado
+**Where**: C1–C44 fechados em `a0a9412..61d7f69`; api, web, e2e e `ci-build` verdes
 **In progress**: nenhum
-**Next step**: build S1–S4 (api `internal/rack`, migração 00007, `player.Bonus`, deploy coins; web `ServerScene`, aba, hotspots, `totalBonus`)
+**Next step**: Verifier independente sobre `a0a9412..HEAD` com todos os checks
 **Blockers**: none
 **Uncommitted**: none
 **Branch**: feat/server-room (sobre feat/office)
