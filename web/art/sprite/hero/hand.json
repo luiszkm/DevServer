@@ -1,0 +1,16 @@
+{
+  "name": "hand",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Traced from the prototype hero (web/public/hero.png); front hand holding the laptop from below, in skin (tone); drawn over the laptop.",
+  "legend": {"o": "ink", "1": "skin.0", "2": "skin.1", "3": "skin.2", "4": "skin.3"},
+  "layers": [
+    {"grid": [
+      ".o34o34o3o.",
+      "o243343332o",
+      "o123233232o",
+      "o11222221o.",
+      ".ooooooooo."
+    ], "at": [31, 42]}
+  ]
+}

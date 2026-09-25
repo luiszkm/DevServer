@@ -1,0 +1,26 @@
+{
+  "name": "laptop-basico",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Traced from the prototype hero (web/public/hero.png); grey laptop, lid completed to the right of the crop; fixed metal.",
+  "legend": {"o": "ink", "m": "metal.0", "n": "metal.1", "M": "metal.2", "N": "metal.3", "w": "white"},
+  "layers": [
+    {"grid": [
+      "............ooooo..",
+      "...........oNNNNNo.",
+      "...........oNMMMMMo",
+      "..........oNMnnnnmo",
+      "..........oNMnnnnmo",
+      ".........oNMnnnnwmo",
+      ".........oNMnnnMnmo",
+      ".........oNMnnnnnmo",
+      ".........oNMnnnnnmo",
+      ".........oNMnnnnnmo",
+      ".........oNMnnnnnmo",
+      ".oooooooooNMnnnnnmo",
+      "onnnnnnnnnnMnnnnnmo",
+      "ommmmmmmmmmmmmmmmmo",
+      "oooooooooooooooooo."
+    ], "at": [24, 28]}
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "top-jaqueta",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Fixed brown leather jacket (wood) over a dark roof tee, on the traced body. Ignores topColor.",
+  "legend": {"o": "ink", "a": "wood.0", "b": "wood.1", "c": "wood.2", "d": "wood.3", "e": "wood.4", "t": "roof.1", "T": "roof.2", "z": "metal.3", "Z": "metal.2"},
+  "layers": [
+    {"grid": [
+      "........ooooooooo.......ooo....",
+      ".....ooobbbbbeecto.....otbeo...",
+      "....obbcecbbbbeeTao...otaeaoo..",
+      "...obbddddccbbbeaao.ootteabbbo.",
+      "...obcddcdcbccbeaaoottoteabbco.",
+      "...ocddcccbbccccTatTTtttaccbbbo",
+      "..occdddcbbbcccccatTTTttaccbbbo",
+      ".obcdddccbbbcccccatTTTTtaccbbbo",
+      ".obcccccbbbbcccccatTTTTtaccbbo.",
+      "obbcccbbbbbbbccccatTTTttacbbbbo",
+      "obcccbbbbbbbbccccztTTtttacbbbbo",
+      "obccccbbbbbbbbcccZtTTtttabboobo",
+      "obbcddcbbbbbbbcccatTtttoooo..o.",
+      ".obcccbbbbbbbbbbbatttoo........",
+      "obbbcdcboooobbbbbatTto.........",
+      ".obcbooo...obbcccatttooo....o..",
+      "..ooo......obbbbbatttttboooobo.",
+      "..........obbbbbbatttttbabbbbo.",
+      "...........oooooooooooooooooo.."
+    ], "at": [2, 27]}
+  ]
+}

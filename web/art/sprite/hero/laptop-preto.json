@@ -1,0 +1,26 @@
+{
+  "name": "laptop-preto",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Black laptop (roof) on the traced lid/deck, net-blue LED. Fixed.",
+  "legend": {"o": "ink", "m": "roof.0", "n": "roof.1", "M": "roof.2", "N": "roof.3", "l": "net.3", "w": "roof.3"},
+  "layers": [
+    {"grid": [
+      "............ooooo..",
+      "...........oNNNNNo.",
+      "...........oNMMMMMo",
+      "..........oNMnnnnmo",
+      "..........oNMnnnnmo",
+      ".........oNMnnnnwmo",
+      ".........oNMnnnMnMo",
+      ".........oNMnnnnnmo",
+      ".........oNMnnnnnmo",
+      ".........oNMnnnnnmo",
+      ".........oNMnnnnnmo",
+      ".oooooooooNMnnnnnmo",
+      "onnnnnnnnnnMnnnnnmo",
+      "ommmmmmmmmmmmmmmlmo",
+      "oooooooooooooooooo."
+    ], "at": [24, 28]}
+  ]
+}

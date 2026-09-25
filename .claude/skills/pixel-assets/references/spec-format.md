@@ -2,7 +2,8 @@
 
 A spec is one JSON file that `scripts/render.py` turns into one PNG. Specs are the source
 of truth: they live in `web/art/<category>/<name>.json`, the PNGs in
-`web/public/art/<category>/<name>.png` are build output, and you change a PNG by changing
+`web/public/art/<category>/<name>.png` are build output (subfolders under the category
+folder are kept: `web/art/sprite/hero/body.json` → `web/public/art/sprite/hero/body.png`), and you change a PNG by changing
 its spec and re-rendering.
 
 ```json

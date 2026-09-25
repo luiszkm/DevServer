@@ -31,7 +31,8 @@ invent hex values.
 
 ### sprite: characters, enemies, props
 
-- Sizes: 32x32 (enemy, prop), 32x48 (humanoid), 48x48 / 64x64 (boss, big prop).
+- Sizes: 32x32 (enemy, prop), 32x48 (humanoid), 48x64 (the layered hero), 48x48 / 64x64
+  (boss, big prop).
 - Chibi proportions, like the hero: head about 40% of the height, big simple eyes (2x2 or
   2x3 ink with one white pixel), short legs.
 - The silhouette must read at 1x. Test it: squint at the preview. If you can't tell what it
@@ -41,6 +42,28 @@ invent hex values.
   corrupted-data blobs, a "null pointer" ghost. Tie the design to the enemy's name.
 - Variants (colour, level) are a `use` with `recolor`, not a copied grid.
 - Draw facing right. Flip in CSS (`transform: scaleX(-1)`) or with `flip: "h"`.
+
+### hero layers
+
+- The player avatar is a **48x64 humanoid** built from stacked layers in
+  `web/art/sprite/hero/` (PNGs in `web/public/art/sprite/hero/`). Every layer is a full
+  48x64 transparent canvas on the **same grid**, so the game stacks them with no offsets.
+  Draw order: `body` → `bottom` → `top-<style>` → `laptop-<style>` → `hand` → `hair-<style>`.
+- Each recolourable layer is painted with its part's **default ramp (the base ramp)**: body
+  = `skin` + `av-eyes-castanho` (iris), hand = `skin`, bottom = `denim`, swappable tops =
+  `av-top-grafite`, hair (and eyebrows, which belong to the hair layer) = `av-hair-preto`.
+  The game recolours at runtime by swapping hex→hex from the base ramp to the chosen option
+  ramp, index for index.
+- `av-*` ramps are the option ramps. Each has the **same tone count as its base ramp**
+  (4), darkest first, and every hex is unique across the palette so the swap is unambiguous.
+- **Never mix a base ramp colour into a fixed element**: shoes, the `</>` logo, laptops and
+  fixed tops (`top-jaqueta`, `top-moletom_gear`, `top-hoodie_trace`) use other ramps
+  (`ink`, `wood`, `dirt`, `stone`, `metal`, `red`, `net`, `gold`...), or they would get
+  recoloured with the part.
+- `ink` outline, `white` highlights and `code` are never swapped.
+- A layer on its own is not a closed silhouette (the hand, eyebrows, a hair fringe), so the
+  per-sprite outline check may `WARN` on it; judge the outline on a stacked preview (a spec
+  that `use`s the layers in draw order, with `recolor` for the options).
 
 ### icon: items, currency, HUD, skills
 

@@ -33,7 +33,7 @@ PALETTE_PATH = os.path.join(HERE, "..", "references", "palette.json")
 # because a boss or a panorama can legitimately break the grid.
 SIZES = {
     "icon": {(16, 16), (24, 24)},
-    "sprite": {(32, 32), (32, 48), (48, 48), (64, 64)},
+    "sprite": {(32, 32), (32, 48), (48, 48), (48, 64), (64, 64)},
     "background": {(320, 180), (480, 180), (640, 180)},
     "ui": {(24, 24), (48, 24), (48, 48)},
     "fx": {(128, 32)},
@@ -427,6 +427,15 @@ def contact_sheet(images, path):
     png.write(path, sheet)
 
 
+def category_subdir(path, category):
+    """Folders between the spec's '<category>/' ancestor and the spec: web/art/sprite/hero/body.json -> 'hero'."""
+    parts = os.path.normpath(os.path.abspath(path)).split(os.sep)[:-1]
+    if category not in parts:
+        return ""
+    i = len(parts) - 1 - parts[::-1].index(category)
+    return os.path.join(*parts[i + 1:]) if parts[i + 1:] else ""
+
+
 def collect(paths):
     specs = []
     for p in paths:
@@ -441,7 +450,7 @@ def collect(paths):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("paths", nargs="+", help="spec files or directories (or PNGs with --check)")
-    ap.add_argument("--out", help="output root; each spec lands at <out>/<category>/<name>.png")
+    ap.add_argument("--out", help="output root; each spec lands at <out>/<category>/[<subfolders>/]<name>.png")
     ap.add_argument("--scale", type=int, default=1, help="integer upscale baked into the PNG (default 1: let CSS scale)")
     ap.add_argument("--preview", help="also write a zoomed contact sheet of everything rendered")
     ap.add_argument("--check", action="store_true", help="only check existing PNGs")
@@ -470,7 +479,7 @@ def main():
             spec = canvas.spec
             cat = spec.get("category", "sprite")
             name = spec.get("name") or os.path.splitext(os.path.basename(path))[0]
-            out = os.path.join(args.out, cat, f"{name}.png")
+            out = os.path.join(args.out, cat, category_subdir(path, cat), f"{name}.png")
             os.makedirs(os.path.dirname(out), exist_ok=True)
             errors, warnings = check(to_rows(canvas), cat, palette, path)
             png.write(out, to_rows(canvas, args.scale))

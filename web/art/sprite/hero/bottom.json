@@ -1,0 +1,32 @@
+{
+  "name": "bottom",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Traced from the prototype hero (web/public/hero.png); jeans in denim (bottomColor), dark sneakers in the fixed roof ramp.",
+  "legend": {"o": "ink", "1": "denim.0", "2": "denim.1", "3": "denim.2", "k": "ink.1", "K": "ink.2", "q": "stone.2", "Q": "stone.3"},
+  "layers": [
+    {"grid": [
+      ".....oooooooooooooooooo....",
+      "....o111111111111111111o...",
+      "....o111111111111111111o...",
+      "....o111111111111111111o...",
+      "....o11111111111111111o....",
+      "....o11222222222222221o....",
+      "...o1113333322222222221o...",
+      "...o1223333211o11122321o...",
+      "...o22233321oooo1223332o...",
+      "..oo12333321o.oo11233331o..",
+      "..o11233332oo.oo11133331o..",
+      "..o12222222o..oo11123321o..",
+      "..o12222211o...oo1112221o..",
+      ".oo1112111o....oo1111111o..",
+      "oo11222211o....oo1112211o..",
+      "ookKKkooooo....ookKKkkoooo.",
+      "oooooKKKko.....ooooookkKKko",
+      "ooooqQQQKoo....oooooooKQQKo",
+      "ookKKKKKooo....oooookKKKooo",
+      ".ooooooooo......ooooooooooo",
+      "...oooooo........o..oooooo."
+    ], "at": [7, 42]}
+  ]
+}
