@@ -1,0 +1,16 @@
+{
+  "name": "glasses-escuro-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "The glasses-escuro design with the lenses on her eyes. Fixed colours.",
+  "legend": {"o": "ink", "s": "stone.1", "S": "stone.2", "T": "stone.3"},
+  "layers": [
+    {"grid": [
+      "...oooooo..oooooo.",
+      "ooooTsssooooTsssoo",
+      "...osTsso..osTsso.",
+      "...oSSSSo..oSSSSo.",
+      "...oooooo..oooooo."
+    ], "at": [17, 16]}
+  ]
+}

@@ -760,7 +760,7 @@ func TestCatalog_ServesAvatar(t *testing.T) {
 	}
 
 	// Body contract: the two bodies, masculino (the original look) first; only feminino overrides a default.
-	bodies := []string{`{"id":"masculino","name":"MASCULINO"}`, `{"id":"feminino","name":"FEMININO","defaults":{"hair":"hair_longo"}}`}
+	bodies := []string{`{"id":"masculino","name":"MASCULINO"}`, `{"id":"feminino","name":"FEMININO","defaults":{"bottomColor":"bottom_preto","eyes":"eyes_cinza","hair":"hair_rabo","hairColor":"hair_castanho"}}`}
 	if len(a.Bodies) != len(bodies) {
 		t.Fatalf("bodies = %d, want %d", len(a.Bodies), len(bodies))
 	}
@@ -1091,7 +1091,8 @@ func TestCatalog_AvatarBodyRules(t *testing.T) {
 	}
 	c := catalog.Default()
 	for _, tc := range []struct{ name, body, part, want string }{
-		{"body overrides the part", "feminino", "hair", "hair_longo"},
+		{"body overrides the part", "feminino", "hair", "hair_rabo"},
+		{"body overrides a colour part", "feminino", "bottomColor", "bottom_preto"},
 		{"body does not list the part", "feminino", "beard", "beard_nenhuma"},
 		{"body without overrides", "masculino", "hair", "hair_espetado"},
 		{"unknown body gets the shared default", "outro", "hair", "hair_espetado"},

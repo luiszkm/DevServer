@@ -1,0 +1,17 @@
+{
+  "name": "glasses-redondo-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "The glasses-redondo design with the lenses on her eyes. Fixed colours.",
+  "legend": {"m": "metal.1", "M": "metal.2", "w": "white"},
+  "layers": [
+    {"grid": [
+      ".....MM......MM...",
+      "....M..M.MM.M..M..",
+      "mmmM.w..M..M....Mm",
+      "...M....M..M....M.",
+      "....M..M....M..M..",
+      ".....MM......MM..."
+    ], "at": [17, 16]}
+  ]
+}

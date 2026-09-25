@@ -1,0 +1,28 @@
+{
+  "name": "laptop-preto-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Feminine body traced from web/public/female_keyart.png; black laptop (roof) at her laptop's place, net-blue LED.",
+  "legend": {"o": "ink", "m": "roof.0", "n": "roof.1", "M": "roof.2", "N": "roof.3", "l": "net.3", "w": "roof.3"},
+  "layers": [
+    {"grid": [
+      "......o.............",
+      "...........ooooooooo",
+      "..........omNNNNNNNo",
+      "..........onMMMMMMMo",
+      ".........omMMnnnnnno",
+      ".........omNnnnnnnno",
+      ".........onMnnnnnnno",
+      ".........oMnnnnnnNMo",
+      "........omNnnnnnMwMo",
+      "........oMMnnnnnwwMo",
+      "........oMnnnnnnMMno",
+      "........oMnnnnnnnnno",
+      "o..oooo.oMnnnnnnnnno",
+      "mnnmmmmoMnnnnnnnnnno",
+      "omnlnnnnMnnnooonnnno",
+      ".o....ommooo..oMmoo.",
+      ".......oo......oo..."
+    ], "at": [27, 27]}
+  ]
+}

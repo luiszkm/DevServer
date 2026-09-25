@@ -328,8 +328,8 @@ describe("catalog art on disk", () => {
   it("hero layers per avatar.json, 48x64", () => {
     const { options } = catalog<{ options: { layer?: string }[] }>("avatar.json");
     const { options: all } = catalog<{ options: { part: string; layer?: string }[] }>("avatar.json");
-    // body, bottom and every top are drawn per body; the feminine variant ends in -f
-    const feminine = ["body-f", "bottom-f", ...all.filter((o) => o.part === "top" && o.layer).map((o) => `${o.layer}-f`)];
+    // the feminine body has its own "-f" drawing of every layer but beards (masculine only)
+    const feminine = ["body", "bottom", "hand", ...all.filter((o) => o.layer && o.part !== "beard").map((o) => o.layer!)].map((l) => `${l}-f`);
     const layers = ["body", "bottom", "hand", ...feminine, ...options.flatMap((o) => (o.layer ? [o.layer] : []))];
     expectAssets(layers.map((name) => ({ category: "sprite", name: `hero/${name}`, size: [48, 64] })));
   });

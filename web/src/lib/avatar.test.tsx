@@ -117,17 +117,23 @@ describe("resolveLook", () => {
     expect(resolveLook(input({ appearance: { hairColor: "hair_loiro" } }), catalog).key).not.toBe(a);
   });
 
-  it("feminino draws its own torso layers and shares head, hand and laptop", () => {
+  it("feminino draws its own version of every layer", () => {
     const look = resolveLook(input({ body: "feminino" }), catalog);
     expect(look.layers.map((l) => l.src)).toEqual([
-      src("body-f"), src("bottom-f"), src("top-moletom-f"), src("laptop-basico"), src("hand"), src("hair-longo"),
+      src("body-f"), src("bottom-f"), src("top-moletom-f"), src("laptop-basico-f"), src("hand-f"), src("hair-rabo-f"),
     ]);
-    expect(look.parts.hair).toEqual({ option: "hair_longo", by: "default" });
+    // feminino's own defaults: brown ponytail and black pants, swapped from the base ramps
+    expect(look.parts.hair).toEqual({ option: "hair_rabo", by: "default" });
+    const ramp = (id: string) => catalog.avatar.options.find((o) => o.id === id)!.ramp!;
+    expect(look.layers[1].swap).toEqual(zip(ramp("bottom_jeans"), ramp("bottom_preto")));
+    expect(look.layers[5].swap).toEqual(zip(HAIR, ramp("hair_castanho")));
   });
 
-  it("gear top on feminino uses the feminine variant", () => {
-    const look = resolveLook(input({ body: "feminino", equipment: { ...EMPTY, vestuario: "hoodie_trace" } }), catalog);
+  it("gear and glasses on feminino use the feminine variants", () => {
+    const look = resolveLook(input({ body: "feminino", equipment: { ...EMPTY, vestuario: "hoodie_trace", setup: "macbook" }, appearance: { glasses: "glasses_redondo" } }), catalog);
     expect(look.layers[2]).toEqual({ src: src("top-hoodie_trace-f"), swap: {} });
+    expect(look.layers[3]).toEqual({ src: src("laptop-macbook-f"), swap: {} });
+    expect(look.layers.at(-1)).toEqual({ src: src("glasses-redondo-f"), swap: {} });
   });
 
   it.each([

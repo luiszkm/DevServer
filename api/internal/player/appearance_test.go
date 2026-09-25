@@ -22,7 +22,10 @@ func TestResolveAppearance_Rows(t *testing.T) {
 		}
 		return m
 	}
-	feminino := with("hair", "hair_longo")
+	femPairs := []string{"eyes", "eyes_cinza", "hair", "hair_rabo", "hairColor", "hair_castanho", "bottomColor", "bottom_preto"}
+	feminino := with(femPairs...)
+	// feminino's defaults with some parts picked
+	withF := func(pairs ...string) map[string]string { return with(append(append([]string{}, femPairs...), pairs...)...) }
 	for _, tc := range []struct {
 		name, body string
 		picks      map[string]string
@@ -36,8 +39,8 @@ func TestResolveAppearance_Rows(t *testing.T) {
 		{"a gear-only option falls back", "masculino", map[string]string{"top": "top_hoodie_trace"}, defaults},
 		{"a part no longer in the catalog is dropped", "masculino", map[string]string{"hat": "hat_bone"}, defaults},
 		{"feminino without picks wears the body's defaults over the shared ones", "feminino", nil, feminino},
-		{"a pick available to every body is worn by feminino", "feminino", map[string]string{"hair": "hair_espetado"}, with("hair", "hair_espetado")},
-		{"a pick only for the body is worn", "feminino", map[string]string{"hair": "hair_rabo"}, with("hair", "hair_rabo")},
+		{"a pick available to every body is worn by feminino", "feminino", map[string]string{"hair": "hair_espetado"}, withF("hair", "hair_espetado")},
+		{"a pick only for the body is worn", "feminino", map[string]string{"hair": "hair_rabo"}, withF("hair", "hair_rabo")},
 		{"a masculino-only pick falls back to feminino's default", "feminino", map[string]string{"beard": "beard_cheia"}, feminino},
 		{"a feminino-only pick falls back to masculino's default", "masculino", map[string]string{"hair": "hair_trancas"}, defaults},
 		{"a masculino-only pick is worn by masculino", "masculino", map[string]string{"beard": "beard_cheia"}, with("beard", "beard_cheia")},

@@ -1,0 +1,22 @@
+{
+  "name": "hair-moicano-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "The masculine hair-moicano design placed on her head (+4px), av-hair-preto (hairColor).",
+  "legend": {"o": "ink", "1": "av-hair-preto.0", "2": "av-hair-preto.1", "3": "av-hair-preto.2", "4": "av-hair-preto.3"},
+  "layers": [
+    {"grid": [
+      ".o.oo..o...",
+      "o1o31oo1o..",
+      "o33243321o.",
+      "o323221221o",
+      "o323221221o",
+      "o323221221o",
+      "o323221221o",
+      "o323221221o",
+      "o323221221o",
+      "o113111111o",
+      ".ooooooooo."
+    ], "at": [20, 2]}
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "laptop-gamer-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Feminine body traced from web/public/female_keyart.png; gamer laptop at her laptop's place: black shell, red logo, RGB deck in code/net/slime/red.",
+  "legend": {"o": "ink", "m": "ink.1", "n": "ink.2", "M": "roof.1", "r": "red.2", "R": "red.3", "g": "code.3", "b": "net.3", "p": "slime.3"},
+  "layers": [
+    {"grid": [
+      "......o.............",
+      "...........ooooooooo",
+      "..........omMMMMMMMo",
+      "..........omnnnnnnno",
+      ".........omnnmmmmmmo",
+      ".........omMmmmmmmmo",
+      ".........omnmmmRmmmo",
+      ".........onmmmrRrMno",
+      "........omMmmrmmnrno",
+      "........onnmmmmmnnno",
+      "........onmmmmmmnnmo",
+      "........onmmmmmmmmmo",
+      "o..oooo.onmmmmmmmmmo",
+      "mmmmmmmonmmmmmmmmmmo",
+      "obbpprrggbbpoooggbbo",
+      ".o....ommooo..onmoo.",
+      ".......oo......oo..."
+    ], "at": [27, 27]}
+  ]
+}

@@ -25,7 +25,7 @@ func wantDefaults(body string) map[string]string {
 		m[k] = v
 	}
 	if body == "feminino" {
-		m["hair"] = "hair_longo"
+		m["eyes"], m["hair"], m["hairColor"], m["bottomColor"] = "eyes_cinza", "hair_rabo", "hair_castanho", "bottom_preto"
 	}
 	return m
 }

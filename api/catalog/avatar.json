@@ -13,7 +13,7 @@
   ],
   "bodies": [
     { "id": "masculino", "name": "MASCULINO" },
-    { "id": "feminino", "name": "FEMININO", "defaults": { "hair": "hair_longo" } }
+    { "id": "feminino", "name": "FEMININO", "defaults": { "eyes": "eyes_cinza", "hair": "hair_rabo", "hairColor": "hair_castanho", "bottomColor": "bottom_preto" } }
   ],
   "options": [
     { "id": "tone_clara", "part": "tone", "name": "CLARA", "ramp": ["#b07858", "#d8a07c", "#f8cfa8", "#ffe8cc"] },

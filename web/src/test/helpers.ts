@@ -171,7 +171,7 @@ export const RECIPES: Catalog["recipes"] = [
 export const AVATAR: Catalog["avatar"] = {
   bodies: [
     {"id": "masculino", "name": "MASCULINO"},
-    {"id": "feminino", "name": "FEMININO", "defaults": {"hair": "hair_longo"}},
+    {"id": "feminino", "name": "FEMININO", "defaults": {"eyes": "eyes_cinza", "hair": "hair_rabo", "hairColor": "hair_castanho", "bottomColor": "bottom_preto"}},
   ],
   parts: [
     {"id": "tone", "name": "PELE", "kind": "color"},

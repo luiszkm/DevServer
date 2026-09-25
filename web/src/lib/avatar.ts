@@ -19,7 +19,7 @@ export type Look = {
 
 const layerSrc = (layer: string) => `/art/sprite/hero/${layer}.png`;
 
-// The torso layers are drawn per body; head, hand and everything on them are shared.
+// Each body has its own drawing of every layer (feminino: "<layer>-f"); beards are masculine only.
 const BODY_SUFFIX: Record<string, string> = { feminino: "-f" };
 
 export function availableFor(option: AvatarOption, body: string): boolean {
@@ -77,18 +77,18 @@ export function resolveLook(input: LookInput, catalog: Catalog): Look {
   };
   // A style without a layer (SEM BARBA, SEM ÓCULOS) draws nothing.
   const suffix = BODY_SUFFIX[input.body] ?? "";
-  const style = (part: string, colour?: string, perBody = false): Layer[] => {
+  const style = (part: string, colour?: string): Layer[] => {
     const o = styles[part];
-    const layer = o.layer && (perBody ? o.layer + suffix : o.layer);
+    const layer = o.layer && o.layer + suffix;
     return layer ? [{ src: layerSrc(layer), swap: o.fixed || !colour ? {} : swap(colour) }] : [];
   };
   const layers: Layer[] = [
     // The body carries the eyebrows, painted in the hair ramp so they follow the hair colour.
     { src: layerSrc(`body${suffix}`), swap: swap("tone", "eyes", "hairColor") },
     { src: layerSrc(`bottom${suffix}`), swap: swap("bottomColor") },
-    ...style("top", "topColor", true),
+    ...style("top", "topColor"),
     ...style("laptop"),
-    { src: layerSrc("hand"), swap: swap("tone") },
+    { src: layerSrc(`hand${suffix}`), swap: swap("tone") },
     ...style("beard", "hairColor"),
     ...style("hair", "hairColor"),
     ...style("glasses"),

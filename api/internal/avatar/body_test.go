@@ -37,7 +37,7 @@ func (f *fixture) storedPicks() string {
 
 // femDefaults is every part at feminino's default.
 func femDefaults(pairs ...string) map[string]string {
-	m := with("hair", "hair_longo")
+	m := with("eyes", "eyes_cinza", "hair", "hair_rabo", "hairColor", "hair_castanho", "bottomColor", "bottom_preto")
 	for i := 0; i < len(pairs); i += 2 {
 		m[pairs[i]] = pairs[i+1]
 	}

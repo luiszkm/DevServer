@@ -50,9 +50,11 @@ invent hex values.
   48x64 transparent canvas on the **same grid**, so the game stacks them with no offsets.
   Draw order: `body` → `bottom` → `top-<style>` → `laptop-<style>` → `hand` → `beard-<style>`
   (optional) → `hair-<style>` → `glasses-<style>` (optional).
-- Two bodies. The feminine body swaps `body`, `bottom` and every `top-*` for its `-f` variant
-  (`body-f`, `bottom-f`, `top-moletom-f`...). Its head outline and front-hand position are identical to
-  the masculine body, so `hand`, `laptop-*`, `hair-*`, `beard-*` and `glasses-*` are shared by both.
+- Two bodies. The masculine body is traced from `web/public/keyart.png`, the feminine body from
+  `web/public/female_keyart.png`. On the feminine body EVERY layer uses its `-f` variant (`body-f`,
+  `bottom-f`, `top-*-f`, `hand-f`, `laptop-*-f`, `hair-*-f`, `glasses-*-f`); `beard-*` is masculine only.
+  Her head sits 4px right of his and her laptop is the frontal one of her key art, so masculine hair,
+  glasses and laptops are re-fitted, not reused.
 - Each recolourable layer is painted with its part's **default ramp (the base ramp)**: body
   = `skin` + `av-eyes-castanho` (iris), hand = `skin`, bottom = `denim`, swappable tops =
   `av-top-grafite`, hair and beards = `av-hair-preto`
