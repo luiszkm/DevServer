@@ -1,0 +1,29 @@
+{
+  "name": "mob-robo",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A grey helper robot with green eyes and a red antenna light (INIMIGOS: robô).",
+  "layers": [
+    {"rect": [9, 5, 14, 11], "color": "metal.2"},
+    {"rect": [9, 5, 14, 1], "color": "metal.3"},
+    {"rect": [11, 7, 10, 6], "color": "ink.1"},
+    {"rect": [12, 9, 2, 2], "color": "code.3"},
+    {"rect": [18, 9, 2, 2], "color": "code.3"},
+    {"rect": [15, 1, 2, 4], "color": "metal.1"},
+    {"rect": [14, 0, 4, 2], "color": "red.3"},
+    {"rect": [7, 16, 18, 10], "color": "metal.1"},
+    {"rect": [7, 16, 18, 1], "color": "metal.2"},
+    {"rect": [11, 18, 10, 5], "color": "stone.1"},
+    {"rect": [13, 20, 1, 1], "color": "net.3"},
+    {"rect": [16, 20, 1, 1], "color": "gold.2"},
+    {"rect": [19, 20, 1, 1], "color": "red.3"},
+    {"rect": [3, 17, 4, 8], "color": "metal.2"},
+    {"rect": [25, 17, 4, 8], "color": "metal.2"},
+    {"rect": [3, 25, 4, 2], "color": "metal.1"},
+    {"rect": [25, 25, 4, 2], "color": "metal.1"},
+    {"rect": [9, 26, 5, 4], "color": "metal.2"},
+    {"rect": [18, 26, 5, 4], "color": "metal.2"},
+    {"outline": "ink"},
+    {"rect": [0, 0, 32, 1], "color": null}
+  ]
+}

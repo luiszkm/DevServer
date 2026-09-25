@@ -129,3 +129,18 @@ describe("Hud assets", () => {
     expect(sair.children).toHaveLength(0);
   });
 });
+
+function expectLoadingFx(text: HTMLElement) {
+  const fx = text.querySelector("span.fx-loading") as HTMLElement;
+  expect(fx).not.toBeNull();
+  expect(fx.getAttribute("aria-hidden")).toBe("true");
+  expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/loading.png)");
+}
+
+describe("Hud loading", () => {
+  // assets C30
+  it("loading fx", () => {
+    render(<Hud />);
+    expectLoadingFx(screen.getByText("CARREGANDO..."));
+  });
+});

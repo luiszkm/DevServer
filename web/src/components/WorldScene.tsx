@@ -4,6 +4,7 @@ import { useState } from "react";
 import { post } from "@/lib/api";
 import type { Player } from "@/lib/types";
 import { GameArt } from "./GameArt";
+import { FxOnce } from "./LoadingFx";
 import { useGame } from "./GameContext";
 
 // Map positions are presentation only; the regions themselves come from the catalog.
@@ -22,6 +23,8 @@ const LOCKED = "grayscale(1) brightness(.6)";
 export function WorldScene() {
   const { player, catalog, setPlayer } = useGame();
   const [pending, setPending] = useState(false);
+  // The region just reached by a successful travel; `key` replays the teleport strip.
+  const [arrived, setArrived] = useState<{ region: string; key: number } | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const current = catalog.regions.find((r) => r.id === player.region);
 
@@ -30,7 +33,10 @@ export function WorldScene() {
     setMessage(null);
     try {
       const r = await post<{ player: Player }>("/api/me/travel", { region: id });
-      if (r.ok) setPlayer(r.data.player);
+      if (r.ok) {
+        setArrived((a) => ({ region: r.data.player.region, key: (a?.key ?? 0) + 1 }));
+        setPlayer(r.data.player);
+      }
       else setMessage(r.error?.message ?? "erro ao viajar");
     } catch {
       setMessage("SERVIDOR FORA DO AR");
@@ -56,7 +62,9 @@ export function WorldScene() {
             >
               <span className={`node-marker${here ? " here" : ""}`} style={open ? undefined : { filter: LOCKED }}>
                 <GameArt kind="region" id={r.id} scale={2} alt="" fallback={r.tag} />
+                {here && <GameArt kind="build" id="flag" scale={1} alt="" fallback="" className="node-flag" />}
               </span>
+              {arrived?.region === r.id && <FxOnce key={arrived.key} id="teleport" />}
               <span className={`pixel node-chip${here ? " here" : ""}`}>{r.name}</span>
             </div>
           );

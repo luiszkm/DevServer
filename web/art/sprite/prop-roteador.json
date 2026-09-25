@@ -1,0 +1,21 @@
+{
+  "name": "prop-roteador",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A flat two-tier network box with blue status lights (PROPS row 2).",
+  "layers": [
+    {"rect": [4, 16, 24, 6], "color": "stone.2"},
+    {"rect": [4, 16, 24, 1], "color": "stone.3"},
+    {"rect": [6, 18, 12, 1], "color": "net.2"},
+    {"rect": [20, 18, 1, 1], "color": "code.3"},
+    {"rect": [22, 18, 1, 1], "color": "net.3"},
+    {"rect": [6, 10, 20, 6], "color": "metal.2"},
+    {"rect": [6, 10, 20, 1], "color": "metal.3"},
+    {"rect": [8, 12, 10, 2], "color": "stone.1"},
+    {"rect": [20, 12, 1, 1], "color": "net.3"},
+    {"rect": [23, 12, 1, 1], "color": "net.3"},
+    {"rect": [5, 22, 3, 2], "color": "ink.2"},
+    {"rect": [24, 22, 3, 2], "color": "ink.2"},
+    {"outline": "ink"}
+  ]
+}

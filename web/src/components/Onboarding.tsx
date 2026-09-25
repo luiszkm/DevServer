@@ -5,6 +5,7 @@ import { api, post } from "@/lib/api";
 import { bodyDefaults } from "@/lib/avatar";
 import type { Catalog, Player } from "@/lib/types";
 import { HeroAvatar } from "./HeroAvatar";
+import { LoadingFx } from "./LoadingFx";
 
 type OnboardingData = { suggestedDevName: string; classes: string[] };
 
@@ -62,7 +63,12 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
     <main className="center-screen">
       <form className="panel onboarding" onSubmit={submit}>
         <h1 className="pixel">CRIE SEU DEV</h1>
-        {!data && !error && <p className="term">CARREGANDO...</p>}
+        {!data && !error && (
+          <p className="term">
+            <LoadingFx />
+            CARREGANDO...
+          </p>
+        )}
         {data && (
           <>
             <label className="field">

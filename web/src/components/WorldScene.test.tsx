@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import type { Catalog, Player } from "@/lib/types";
@@ -132,8 +132,9 @@ describe("WorldScene", () => {
     const map = container.querySelector(".world-map") as HTMLElement;
     expect(map.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/world.png)");
 
+    // The current marker also carries the flag (assets C34): the fallback is about the region's own icon.
     fireEvent.error(marker("vila").querySelector("img")!);
-    expect(marker("vila").querySelector("img")).toBeNull();
+    expect(marker("vila").querySelector('img[src^="/art/icon/region-"]')).toBeNull();
     expect(marker("vila")).toHaveTextContent(/^HUB$/);
     expect(marker("floresta").querySelector("img")).not.toBeNull();
   });
@@ -167,5 +168,37 @@ describe("WorldScene assets", () => {
     expectIcon(locked.firstElementChild, "/art/icon/ic-lock.png");
     expect(locked.firstChild).toBe(locked.firstElementChild);
     expect(button("FLORESTA DE LOGS").querySelector('img[src="/art/icon/ic-lock.png"]')).toBeNull();
+  });
+});
+
+describe("WorldScene world pieces", () => {
+  // assets C34
+  it("flag on the current marker only", () => {
+    renderWorld(player({ region: "floresta" }));
+    const flags = document.querySelectorAll('img[src="/art/sprite/build-flag.png"]');
+    expect(flags).toHaveLength(1);
+    expect(flags[0].closest(".node-marker.here")).toBe(marker("floresta"));
+    expect(flags[0].getAttribute("alt")).toBe("");
+    expect(flags[0].getAttribute("width")).toBe("32");
+  });
+
+  // assets C35
+  it("teleport after a 200 travel", async () => {
+    mockFetch({ "POST /api/me/travel": json(200, { player: player({ region: "floresta" }) }) });
+    renderWorld(player({ region: "vila" }));
+    await userEvent.click(button("FLORESTA DE LOGS"));
+    await waitFor(() => expect(document.querySelector('[data-fx="teleport"]')).not.toBeNull());
+    const fx = document.querySelector('[data-fx="teleport"]') as HTMLElement;
+    expect(fx.closest("[data-region]")!.getAttribute("data-region")).toBe("floresta");
+    expect(fx.getAttribute("data-fx")).toBe("teleport");
+    expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/teleport.png)");
+  });
+
+  it("teleport only on success (travel error)", async () => {
+    mockFetch({ "POST /api/me/travel": json(422, { error: { code: "level_too_low", message: "nível insuficiente para esta região" } }) });
+    renderWorld(player({ region: "vila" }));
+    await userEvent.click(button("FLORESTA DE LOGS"));
+    expect(await screen.findByText("nível insuficiente para esta região")).toBeInTheDocument();
+    expect(document.querySelector('[data-fx="teleport"]')).toBeNull();
   });
 });

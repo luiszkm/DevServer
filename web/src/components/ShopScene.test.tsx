@@ -502,3 +502,14 @@ describe("ShopScene assets", () => {
     expectIcon(coinPrice.firstElementChild, "/art/icon/hud-coin.png");
   });
 });
+
+describe("ShopScene npc", () => {
+  // assets C36
+  it("npc with the tip bubble", () => {
+    renderShop();
+    const npc = screen.getByRole("img", { name: "lojista" });
+    expect(npc.getAttribute("src")).toBe("/art/sprite/npc-dev.png");
+    expect(npc.getAttribute("width")).toBe("64");
+    expect(screen.getByText("FORJE GEAR COM OS DROPS DO BUG FIGHT!")).toBeInTheDocument();
+  });
+});

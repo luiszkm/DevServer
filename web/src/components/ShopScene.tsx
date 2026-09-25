@@ -77,6 +77,10 @@ export function ShopScene() {
 
   return (
     <section className="scene shop" aria-label="LOJA">
+      <div className="shop-npc">
+        <GameArt kind="npc" id="dev" scale={2} alt="lojista" fallback="" />
+        <p className="pixel shop-bubble">FORJE GEAR COM OS DROPS DO BUG FIGHT!</p>
+      </div>
       <div className="shop-main">
         <div className="panel shop-head">
           <span className="pixel">LOJA DEVSERVER</span>

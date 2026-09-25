@@ -1,0 +1,23 @@
+{
+  "name": "extra-bau",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A closed wooden treasure chest with gold bands and lock (EXTRAS: baú).",
+  "layers": [
+    {"poly": [[4, 15], [4, 9], [8, 5], [24, 5], [28, 9], [28, 15]], "color": "wood.3"},
+    {"rect": [8, 5, 16, 1], "color": "wood.4"},
+    {"rect": [4, 9, 24, 1], "color": "wood.4"},
+    {"rect": [8, 5, 2, 10], "color": "gold.1"},
+    {"rect": [22, 5, 2, 10], "color": "gold.1"},
+    {"rect": [4, 15, 24, 13], "color": "wood.3"},
+    {"rect": [4, 15, 24, 1], "color": "wood.4"},
+    {"rect": [4, 27, 24, 1], "color": "wood.1"},
+    {"rect": [8, 15, 2, 13], "color": "gold.1"},
+    {"rect": [22, 15, 2, 13], "color": "gold.1"},
+    {"rect": [4, 21, 24, 1], "color": "wood.1"},
+    {"rect": [14, 13, 4, 5], "color": "gold.2"},
+    {"rect": [15, 14, 1, 1], "color": "gold.4"},
+    {"rect": [15, 16, 1, 1], "color": "ink"},
+    {"outline": "ink"}
+  ]
+}

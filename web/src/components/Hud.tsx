@@ -1,5 +1,6 @@
 import type { Catalog, Player } from "@/lib/types";
 import { GameArt } from "./GameArt";
+import { LoadingFx } from "./LoadingFx";
 
 type Props = { player?: Player; catalog?: Catalog; onLogout?: () => void };
 
@@ -16,7 +17,10 @@ export function Hud({ player, catalog, onLogout }: Props) {
   if (!player) {
     return (
       <footer className="hud" aria-label="HUD">
-        <div className="hud-card hud-loading">CARREGANDO...</div>
+        <div className="hud-card hud-loading">
+          <LoadingFx />
+          CARREGANDO...
+        </div>
       </footer>
     );
   }

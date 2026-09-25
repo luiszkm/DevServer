@@ -1,0 +1,24 @@
+{
+  "name": "npc-dev",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A hooded dev in a dark hoodie, face in shadow, glowing eyes, </> on the chest (INIMIGOS: NPC).",
+  "layers": [
+    {"ellipse": [16, 11, 8, 8], "color": "hoodie.2"},
+    {"ellipse": [15, 10, 7, 7], "color": "hoodie.3"},
+    {"ellipse": [16, 13, 5, 5], "color": "ink.1"},
+    {"rect": [14, 12, 2, 2], "color": "net.3"},
+    {"rect": [18, 12, 2, 2], "color": "net.3"},
+    {"poly": [[7, 18], [25, 18], [27, 29], [5, 29]], "color": "hoodie.2"},
+    {"poly": [[7, 18], [16, 18], [16, 29], [5, 29]], "color": "hoodie.3"},
+    {"rect": [15, 20, 2, 6], "color": "hoodie.1"},
+    {"rect": [12, 22, 8, 3], "color": "ink.1"},
+    {"grid": [
+      ".G..G.G.",
+      "G...G..G",
+      ".G.G..G."
+    ], "legend": {"G": "code.3"}, "at": [12, 21]},
+    {"rect": [6, 29, 20, 1], "color": "hoodie.1"},
+    {"outline": "ink"}
+  ]
+}

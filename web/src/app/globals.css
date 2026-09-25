@@ -224,6 +224,17 @@ button { font-family: inherit; }
 .battle-stage.is-shake { animation: shake .3s steps(6); }
 
 @keyframes fx-play { to { background-position: -384px 0; } }
+/* assets: the loading strip loops at 1x beside CARREGANDO...; one-shot strips (collect, teleport) play at 3x. */
+.fx-loading { display: inline-block; width: 32px; height: 32px; margin-right: 8px; vertical-align: middle; background: no-repeat 0 0 / 128px 32px; image-rendering: pixelated; animation: fx-loop .6s steps(4) infinite; }
+@keyframes fx-loop { to { background-position: -128px 0; } }
+.fx-once { position: absolute; left: 50%; top: 50%; width: 96px; height: 96px; margin: -48px 0 0 -48px; background: no-repeat 0 0 / 384px 96px; image-rendering: pixelated; pointer-events: none; animation: fx-play .4s steps(4) forwards; }
+.node-marker { position: relative; }
+.node-flag { position: absolute; left: 70%; bottom: 60%; }
+.deploy-claimed { position: relative; display: flex; justify-content: center; }
+.shop-npc { position: absolute; right: 18px; top: 12px; z-index: 2; display: flex; align-items: flex-start; gap: 6px; pointer-events: none; }
+.shop-bubble { max-width: 220px; margin: 0; padding: 8px 10px 14px; font-size: 8px; line-height: 1.6; color: var(--edge); border: 3px solid transparent; border-image: url(/art/ui/ui-bubble.png) 8 fill / 24px round; image-rendering: pixelated; order: -1; }
+.server-terminal-row { display: flex; align-items: flex-end; gap: 10px; }
+.server-terminal-row .server-terminal { flex: 1; }
 @keyframes float-up { from { transform: translate(-50%, 0); opacity: 1; } 70% { opacity: 1; } to { transform: translate(-50%, -40px); opacity: 0; } }
 @keyframes lunge-right { 40%, 60% { transform: translateX(48px); } }
 @keyframes lunge-left { 40%, 60% { transform: translateX(-48px); } }
@@ -237,6 +248,8 @@ button { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .battle-stage, .battle-actor, .battle-float, .battle-fx { animation: none !important; }
   .battle-fx { display: none; }
+  .fx-loading { animation: none; }
+  .fx-once { display: none; }
   .battle-enemy-card .bar > div, .battle-hero-bar > div { transition: none; }
 }
 

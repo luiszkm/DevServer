@@ -1,0 +1,25 @@
+{
+  "name": "extra-bau-aberto",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "The chest thrown open, gold coins and a gem inside.",
+  "layers": [
+    {"poly": [[4, 13], [7, 3], [25, 3], [28, 13]], "color": "wood.2"},
+    {"rect": [7, 3, 18, 1], "color": "wood.4"},
+    {"rect": [6, 6, 20, 1], "color": "gold.1"},
+    {"rect": [5, 13, 22, 4], "color": "soil.1"},
+    {"ellipse": [16, 14, 9, 3], "color": "gold.2"},
+    {"ellipse": [15, 13, 6, 2], "color": "gold.3"},
+    {"rect": [12, 12, 1, 1], "color": "white"},
+    {"rect": [19, 13, 1, 1], "color": "gem.3"},
+    {"rect": [22, 14, 1, 1], "color": "gold.4"},
+    {"rect": [4, 15, 24, 13], "color": "wood.3"},
+    {"rect": [4, 15, 24, 1], "color": "wood.4"},
+    {"rect": [4, 27, 24, 1], "color": "wood.1"},
+    {"rect": [8, 15, 2, 13], "color": "gold.1"},
+    {"rect": [22, 15, 2, 13], "color": "gold.1"},
+    {"rect": [4, 21, 24, 1], "color": "wood.1"},
+    {"rect": [14, 17, 4, 3], "color": "gold.2"},
+    {"outline": "ink"}
+  ]
+}

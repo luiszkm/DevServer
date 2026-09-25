@@ -143,8 +143,11 @@ export function ServerScene() {
               ))}
             </div>
           </div>
-          <div className="panel server-terminal term" role="status">
-            {message}
+          <div className="server-terminal-row">
+            <GameArt kind="mob" id="robo" scale={2} alt="robô" fallback="" />
+            <div className="panel server-terminal term" role="status">
+              {message}
+            </div>
           </div>
           {notice && (
             <div className="pixel server-notice" role="alert">

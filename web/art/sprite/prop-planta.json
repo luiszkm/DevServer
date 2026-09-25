@@ -1,0 +1,20 @@
+{
+  "name": "prop-planta",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "Potted fern, bright leaf fronds over a clay pot (PROPS row 2).",
+  "layers": [
+    {"poly": [[10, 20], [22, 20], [20, 28], [12, 28]], "color": "wood.3"},
+    {"rect": [10, 20, 12, 2], "color": "wood.4"},
+    {"rect": [12, 27, 8, 1], "color": "wood.1"},
+    {"rect": [19, 22, 2, 5], "color": "wood.2"},
+    {"poly": [[16, 20], [8, 8], [11, 9]], "color": "leaf.2"},
+    {"poly": [[16, 20], [24, 6], [21, 10]], "color": "leaf.2"},
+    {"poly": [[16, 20], [15, 4], [18, 6]], "color": "leaf.3"},
+    {"poly": [[16, 20], [5, 14], [9, 13]], "color": "leaf.1"},
+    {"poly": [[16, 20], [27, 13], [23, 12]], "color": "leaf.1"},
+    {"line": [16, 20, 10, 10], "color": "leaf.3"},
+    {"line": [16, 20, 22, 8], "color": "leaf.3"},
+    {"outline": "ink"}
+  ]
+}

@@ -179,3 +179,18 @@ describe("Onboarding body", () => {
   });
 });
 
+function expectLoadingFx(text: HTMLElement) {
+  const fx = text.querySelector("span.fx-loading") as HTMLElement;
+  expect(fx).not.toBeNull();
+  expect(fx.getAttribute("aria-hidden")).toBe("true");
+  expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/loading.png)");
+}
+
+describe("Onboarding loading", () => {
+  // assets C30
+  it("loading fx", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
+    render(<Onboarding onCreated={vi.fn()} />);
+    expectLoadingFx(screen.getByText("CARREGANDO..."));
+  });
+});

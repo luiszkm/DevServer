@@ -485,3 +485,19 @@ describe("BattleScene assets", () => {
     expect(sp.firstChild).toBe(img);
   });
 });
+
+function expectLoadingFx(text: HTMLElement) {
+  const fx = text.querySelector("span.fx-loading") as HTMLElement;
+  expect(fx).not.toBeNull();
+  expect(fx.getAttribute("aria-hidden")).toBe("true");
+  expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/loading.png)");
+}
+
+describe("BattleScene loading", () => {
+  // assets C30
+  it("loading fx", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
+    renderScene();
+    expectLoadingFx(screen.getByText("CARREGANDO..."));
+  });
+});

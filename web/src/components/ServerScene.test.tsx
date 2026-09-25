@@ -327,3 +327,13 @@ describe("ServerScene assets", () => {
     expect(label.firstChild).toBe(label.firstElementChild);
   });
 });
+
+describe("ServerScene robot", () => {
+  // assets C36
+  it("robot beside the terminal", () => {
+    renderServer(player({ rack: rack() }));
+    const robot = screen.getByRole("img", { name: "robô" });
+    expect(robot.getAttribute("src")).toBe("/art/sprite/mob-robo.png");
+    expect(robot.getAttribute("width")).toBe("64");
+  });
+});

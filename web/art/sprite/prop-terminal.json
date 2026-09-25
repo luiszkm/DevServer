@@ -1,0 +1,22 @@
+{
+  "name": "prop-terminal",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A small terminal PC with a keyboard, </> on the screen (PROPS row 3).",
+  "layers": [
+    {"rect": [6, 5, 20, 16], "color": "metal.2"},
+    {"rect": [6, 5, 20, 1], "color": "metal.3"},
+    {"rect": [8, 7, 16, 11], "color": "ink.1"},
+    {"grid": [
+      "..L..L.L..",
+      ".G...G..G.",
+      "G...G....G",
+      ".G..G...G.",
+      "..G.G..G.."
+    ], "legend": {"G": "code.3", "L": "code.4"}, "at": [11, 10]},
+    {"rect": [4, 21, 24, 5], "color": "metal.1"},
+    {"rect": [4, 21, 24, 1], "color": "metal.2"},
+    {"rect": [7, 23, 18, 1], "color": "stone.2"},
+    {"outline": "ink"}
+  ]
+}

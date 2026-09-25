@@ -6,6 +6,7 @@ import { beatOf, type Beat } from "@/lib/battleFx";
 import { eventText } from "@/lib/battleLog";
 import type { Battle, BattleEvent, Player } from "@/lib/types";
 import { GameArt, nativeSize } from "./GameArt";
+import { LoadingFx } from "./LoadingFx";
 import { useGame } from "./GameContext";
 import { HeroAvatar } from "./HeroAvatar";
 
@@ -129,7 +130,10 @@ export function BattleScene() {
   if (battle === undefined) {
     return (
       <section className="scene battle battle-center" aria-label="BUG FIGHT">
-        <p className="term">CARREGANDO...</p>
+        <p className="term">
+            <LoadingFx />
+            CARREGANDO...
+          </p>
       </section>
     );
   }

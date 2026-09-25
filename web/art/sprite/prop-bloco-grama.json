@@ -1,0 +1,24 @@
+{
+  "name": "prop-bloco-grama",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A crate block with a mossy grass top dripping over the edges (PROPS row 3).",
+  "layers": [
+    {"rect": [5, 12, 22, 16], "color": "wood.3"},
+    {"frame": [5, 12, 22, 16], "color": "wood.1"},
+    {"frame": [6, 13, 20, 14], "color": "wood.2"},
+    {"line": [7, 14, 24, 25], "color": "wood.1"},
+    {"line": [24, 14, 7, 25], "color": "wood.1"},
+    {"rect": [6, 13, 20, 1], "color": "wood.4"},
+    {"rect": [6, 13, 1, 14], "color": "wood.4"},
+    {"rect": [4, 7, 24, 7], "color": "grass.2"},
+    {"rect": [4, 7, 24, 2], "color": "grass.3"},
+    {"rect": [4, 13, 24, 1], "color": "grass.1"},
+    {"rect": [6, 14, 2, 3], "color": "grass.2"},
+    {"rect": [12, 14, 2, 2], "color": "grass.2"},
+    {"rect": [19, 14, 2, 4], "color": "grass.2"},
+    {"rect": [24, 14, 2, 2], "color": "grass.2"},
+    {"scatter": [4, 7, 24, 6], "colors": ["leaf.3", "grass.1"], "density": 0.2, "seed": 3, "on": "grass.2"},
+    {"outline": "ink"}
+  ]
+}

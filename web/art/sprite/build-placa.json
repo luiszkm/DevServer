@@ -1,0 +1,20 @@
+{
+  "name": "build-placa",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A wooden direction signpost, two arrows (ESTRUTURAS row 3).",
+  "layers": [
+    {"rect": [15, 12, 3, 17], "color": "wood.2"},
+    {"rect": [15, 12, 1, 17], "color": "wood.3"},
+    {"poly": [[4, 6], [26, 6], [29, 9], [26, 12], [4, 12]], "color": "wood.3"},
+    {"rect": [4, 6, 22, 1], "color": "wood.4"},
+    {"rect": [4, 11, 22, 1], "color": "wood.1"},
+    {"poly": [[27, 14], [6, 14], [3, 17], [6, 20], [27, 20]], "color": "wood.3"},
+    {"rect": [6, 14, 21, 1], "color": "wood.4"},
+    {"rect": [6, 19, 21, 1], "color": "wood.1"},
+    {"rect": [16, 9, 1, 1], "color": "metal.2"},
+    {"rect": [16, 17, 1, 1], "color": "metal.2"},
+    {"rect": [13, 28, 7, 2], "color": "stone.2"},
+    {"outline": "ink"}
+  ]
+}

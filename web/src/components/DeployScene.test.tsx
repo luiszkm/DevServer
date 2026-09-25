@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import DeployPage from "@/app/(game)/deploy/page";
@@ -405,5 +405,61 @@ describe("DeployScene assets", () => {
     expectIcon(tag.firstElementChild, "/art/icon/ic-lock.png");
     expect(tag.firstChild).toBe(tag.firstElementChild);
     expect(levelButton(1).querySelector('img[src="/art/icon/ic-lock.png"]')).toBeNull();
+  });
+});
+
+function expectLoadingFx(text: HTMLElement) {
+  const fx = text.querySelector("span.fx-loading") as HTMLElement;
+  expect(fx).not.toBeNull();
+  expect(fx.getAttribute("aria-hidden")).toBe("true");
+  expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/loading.png)");
+}
+
+describe("DeployScene world pieces", () => {
+  // assets C30
+  it("loading fx", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
+    renderScene();
+    expectLoadingFx(within(panel()).getByText("CARREGANDO..."));
+  });
+
+  // assets C32
+  it("chest closed on the claim button", async () => {
+    mockFetch({ "GET /api/me/deploys": list([job("backend", 1, 15, 15)]) });
+    renderScene();
+    const btn = await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" });
+    const img = btn.querySelector("img")!;
+    expect(img.getAttribute("src")).toBe("/art/sprite/extra-bau.png");
+    expect(img.getAttribute("alt")).toBe("");
+    expect(img.getAttribute("width")).toBe("32");
+  });
+
+  // assets C33
+  it("chest opens after a 200 claim", async () => {
+    mockFetch({
+      "GET /api/me/deploys": list([job("backend", 1, 15, 15)]),
+      "POST /api/me/deploys/backend/claim": json(200, { player: player(), reward: { xp: 80, coins: 40, gems: 0, levelsGained: 0 } }),
+    });
+    renderScene();
+    await userEvent.click(await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" }));
+    await waitFor(() => expect(document.querySelector('img[src="/art/sprite/extra-bau-aberto.png"]')).not.toBeNull());
+    const open = document.querySelector('img[src="/art/sprite/extra-bau-aberto.png"]')!;
+    expect(open.getAttribute("alt")).toBe("");
+    expect(open.getAttribute("width")).toBe("64");
+    const fx = document.querySelector('[data-fx="collect"]') as HTMLElement;
+    expect(fx).not.toBeNull();
+    expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/collect.png)");
+  });
+
+  it("chest opens only on success (claim error)", async () => {
+    mockFetch({
+      "GET /api/me/deploys": list([job("backend", 1, 15, 15)]),
+      "POST /api/me/deploys/backend/claim": json(409, { error: { code: "not_ready", message: "deploy ainda rodando" } }),
+    });
+    renderScene();
+    await userEvent.click(await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" }));
+    expect(await screen.findByText("deploy ainda rodando")).toBeInTheDocument();
+    expect(document.querySelector('img[src="/art/sprite/extra-bau-aberto.png"]')).toBeNull();
+    expect(document.querySelector('[data-fx="collect"]')).toBeNull();
   });
 });

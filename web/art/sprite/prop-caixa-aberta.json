@@ -1,0 +1,22 @@
+{
+  "name": "prop-caixa-aberta",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "Light crate with its lid propped open, a glint inside.",
+  "layers": [
+    {"rect": [5, 12, 22, 16], "color": "dirt.2"},
+    {"frame": [5, 12, 22, 16], "color": "wood.1"},
+    {"frame": [6, 13, 20, 14], "color": "wood.2"},
+    {"line": [7, 14, 24, 25], "color": "wood.1"},
+    {"line": [24, 14, 7, 25], "color": "wood.1"},
+    {"rect": [6, 13, 20, 1], "color": "wood.4"},
+    {"rect": [6, 13, 1, 14], "color": "wood.4"},
+    {"rect": [7, 12, 18, 3], "color": "soil.1"},
+    {"poly": [[4, 11], [20, 3], [23, 6], [7, 13]], "color": "dirt.2"},
+    {"line": [4, 11, 20, 3], "color": "dirt.3"},
+    {"line": [7, 13, 23, 6], "color": "wood.1"},
+    {"rect": [12, 10, 1, 1], "color": "gold.3"},
+    {"rect": [16, 11, 1, 1], "color": "gem.3"},
+    {"outline": "ink"}
+  ]
+}

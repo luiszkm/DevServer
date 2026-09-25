@@ -115,13 +115,13 @@ Proof: `cd web && npx vitest run src/components/Hud.test.tsx -t "icon fails"`
 
 ### S3 - peças do mundo, efeitos e NPCs · shared files · ~20k
 
-**C28** - each prop, build, mob, npc and extra of the door 1 table has spec and PNG in `sprite/` at its native size (`build-server-hut` 96x96, all others 32x32) (AST-04, AC 17)
+**C28** - each prop, build, mob, npc and extra of the door 1 table has spec and PNG in `sprite/` at its native size (`build-server-hut` 96x96, all others 32x32) (AST-04, AC 17) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "world piece"`
 
-**C29** - each new fx (`dust`, `sparkle`, `teleport`, `fire`, `loading`, `collect`) has spec and a 128x32 PNG in `fx/` (AST-04, AC 17)
+**C29** - each new fx (`dust`, `sparkle`, `teleport`, `fire`, `loading`, `collect`) has spec and a 128x32 PNG in `fx/` (AST-04, AC 17) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "new effect"`
 
-**C30** - WHILE loading, `GameShell`, `Hud`, Bug Fight, DEPLOY and Onboarding each render `CARREGANDO...` and a `span.fx-loading` `aria-hidden="true"` with inline `background-image` `url(/art/fx/loading.png)` (AST-04, AC 18)
+**C30** - WHILE loading, `GameShell`, `Hud`, Bug Fight, DEPLOY and Onboarding each render `CARREGANDO...` and a `span.fx-loading` `aria-hidden="true"` with inline `background-image` `url(/art/fx/loading.png)` (AST-04, AC 18) ✅
 Proof: `cd web && npx vitest run src/components/GameShell.test.tsx -t "loading fx"`
 Proof: `cd web && npx vitest run src/components/Hud.test.tsx -t "loading fx"`
 Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "loading fx"`
@@ -131,19 +131,19 @@ Proof: `cd web && npx vitest run src/components/Onboarding.test.tsx -t "loading 
 **C31** - in the browser, `.fx-loading` has computed `animation-iteration-count` `infinite` and `image-rendering` `pixelated`; with `prefers-reduced-motion: reduce` its `animation-name` is `none` (AST-04, AC 18; AC 32)
 Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "loading loops"`
 
-**C32** - DEPLOY: WHILE a job is ready, `COLETAR RECOMPENSA` keeps its accessible name and holds `img` `src="/art/sprite/extra-bau.png"` `alt=""` `width=32` (AST-04, AC 19)
+**C32** - DEPLOY: WHILE a job is ready, `COLETAR RECOMPENSA` keeps its accessible name and holds `img` `src="/art/sprite/extra-bau.png"` `alt=""` `width=32` (AST-04, AC 19) ✅
 Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx -t "chest closed"`
 
-**C33** - DEPLOY: WHEN the claim POST answers `200` THEN `img` `src="/art/sprite/extra-bau-aberto.png"` `alt=""` `width=64` and a `[data-fx="collect"]` with `url(/art/fx/collect.png)` appear; WHEN it answers an error THEN neither appears (AST-04, AC 20)
+**C33** - DEPLOY: WHEN the claim POST answers `200` THEN `img` `src="/art/sprite/extra-bau-aberto.png"` `alt=""` `width=64` and a `[data-fx="collect"]` with `url(/art/fx/collect.png)` appear; WHEN it answers an error THEN neither appears (AST-04, AC 20) ✅
 Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx -t "chest opens"`
 
-**C34** - MUNDO: exactly one `img` `src="/art/sprite/build-flag.png"` `alt=""` `width=32` exists, inside the `.node-marker.here` of `player.region` (AST-05, AC 21)
+**C34** - MUNDO: exactly one `img` `src="/art/sprite/build-flag.png"` `alt=""` `width=32` exists, inside the `.node-marker.here` of `player.region` (AST-05, AC 21) ✅
 Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "flag"`
 
-**C35** - MUNDO: WHEN travel answers `200` THEN a `[data-fx="teleport"]` with `url(/art/fx/teleport.png)` appears in the new region's `.map-node`; WHEN travel answers an error THEN none appears (AST-05, AC 22)
+**C35** - MUNDO: WHEN travel answers `200` THEN a `[data-fx="teleport"]` with `url(/art/fx/teleport.png)` appears in the new region's `.map-node`; WHEN travel answers an error THEN none appears (AST-05, AC 22) ✅
 Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "teleport"`
 
-**C36** - LOJA shows `img` `alt="lojista"` `src="/art/sprite/npc-dev.png"` `width=64` and the text `FORJE GEAR COM OS DROPS DO BUG FIGHT!`; SERVER shows `img` `alt="robô"` `src="/art/sprite/mob-robo.png"` `width=64` (AST-05, AC 23, 24)
+**C36** - LOJA shows `img` `alt="lojista"` `src="/art/sprite/npc-dev.png"` `width=64` and the text `FORJE GEAR COM OS DROPS DO BUG FIGHT!`; SERVER shows `img` `alt="robô"` `src="/art/sprite/mob-robo.png"` `width=64` (AST-05, AC 23, 24) ✅
 Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "npc"`
 Proof: `cd web && npx vitest run src/components/ServerScene.test.tsx -t "robot"`
 

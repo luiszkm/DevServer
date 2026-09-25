@@ -1,0 +1,31 @@
+{
+  "name": "teleport",
+  "category": "fx",
+  "size": [128, 32],
+  "_design": "TELEPORTE: a blue oval portal opens from a thin line, flares with sparks, then collapses to a streak.",
+  "layers": [
+    {"ellipse": [16, 16, 2, 12], "color": "net.1"},
+    {"ellipse": [16, 16, 1, 11], "color": "net.3"},
+    {"ellipse": [48, 16, 7, 14], "color": "net.1"},
+    {"ellipse": [48, 16, 6, 13], "color": "net.3"},
+    {"ellipse": [48, 16, 5, 12], "color": "net.4"},
+    {"ellipse": [48, 16, 3, 10], "color": "gem.4"},
+    {"rect": [36, 6, 3, 1], "color": "net.3"},
+    {"rect": [37, 5, 1, 3], "color": "net.3"},
+    {"rect": [37, 6, 1, 1], "color": "white"},
+    {"rect": [58, 25, 3, 1], "color": "net.3"},
+    {"rect": [59, 24, 1, 3], "color": "net.3"},
+    {"rect": [59, 25, 1, 1], "color": "white"},
+    {"ellipse": [80, 16, 5, 13], "color": "net.1"},
+    {"ellipse": [80, 16, 4, 12], "color": "net.3"},
+    {"ellipse": [80, 16, 3, 11], "color": "net.4"},
+    {"ellipse": [80, 16, 1, 9], "color": "gem.4"},
+    {"rect": [68, 20, 1, 1], "color": "net.3"},
+    {"rect": [92, 10, 1, 1], "color": "net.3"},
+    {"rect": [73, 28, 1, 1], "color": "net.2"},
+    {"rect": [112, 11, 1, 10], "color": "net.3"},
+    {"rect": [106, 8, 1, 1], "color": "net.2"},
+    {"rect": [118, 24, 1, 1], "color": "net.2"},
+    {"rect": [116, 6, 1, 1], "color": "net.3"}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "prop-macbook",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "Silver laptop seen from the back, a plain white badge on the lid (no brand).",
+  "layers": [
+    {"poly": [[8, 5], [24, 5], [26, 20], [6, 20]], "color": "metal.3"},
+    {"poly": [[16, 5], [24, 5], [26, 20], [16, 20]], "color": "metal.2"},
+    {"ellipse": [16, 12, 2, 2], "color": "white"},
+    {"rect": [17, 10, 1, 1], "color": "cloud.1"},
+    {"poly": [[4, 20], [28, 20], [30, 24], [2, 24]], "color": "metal.2"},
+    {"rect": [4, 20, 24, 1], "color": "metal.3"},
+    {"rect": [2, 24, 29, 1], "color": "metal.1"},
+    {"rect": [12, 22, 8, 1], "color": "metal.1"},
+    {"outline": "ink"}
+  ]
+}

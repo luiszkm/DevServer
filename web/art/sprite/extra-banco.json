@@ -1,0 +1,19 @@
+{
+  "name": "extra-banco",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A wooden park bench (EXTRAS: banco).",
+  "layers": [
+    {"rect": [4, 9, 24, 5], "color": "wood.3"},
+    {"rect": [4, 9, 24, 1], "color": "wood.4"},
+    {"rect": [4, 13, 24, 1], "color": "wood.1"},
+    {"rect": [3, 17, 26, 5], "color": "wood.3"},
+    {"rect": [3, 17, 26, 1], "color": "wood.4"},
+    {"rect": [3, 21, 26, 1], "color": "wood.1"},
+    {"rect": [6, 14, 2, 3], "color": "wood.1"},
+    {"rect": [24, 14, 2, 3], "color": "wood.1"},
+    {"rect": [5, 22, 3, 6], "color": "wood.2"},
+    {"rect": [24, 22, 3, 6], "color": "wood.2"},
+    {"outline": "ink"}
+  ]
+}

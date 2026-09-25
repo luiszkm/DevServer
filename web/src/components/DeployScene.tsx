@@ -5,6 +5,7 @@ import { api, post } from "@/lib/api";
 import { formatMinutes, formatRemaining } from "@/lib/time";
 import type { DeployJob, DeployLevel, Player } from "@/lib/types";
 import { GameArt } from "./GameArt";
+import { FxOnce, LoadingFx } from "./LoadingFx";
 import { useGame } from "./GameContext";
 
 const STAGES = ["LINT", "BUILD", "TEST", "SHIP"];
@@ -26,6 +27,8 @@ export function DeployScene() {
   const [selType, setSelType] = useState(catalog.deployTypes[0].id);
   const [selLevel, setSelLevel] = useState<Record<string, number>>({});
   const [log, setLog] = useState<string[]>(INITIAL_LOG);
+  // Counts successful claims; while > 0 the opened chest shows, and the count replays its collect strip.
+  const [claimed, setClaimed] = useState(0);
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -68,6 +71,7 @@ export function DeployScene() {
       sync(r.data.serverTime);
       setNow(Date.now());
       setJobs((js) => [...(js ?? []), r.data.deploy]);
+      setClaimed(0);
       setPlayer(r.data.player);
       const minutes = catalog.deployLevels.find((l) => l.level === level)!.minutes;
       addLog(`$ devserver deploy --tipo=${selType} --nivel=${level}`, `> pipeline de ${typeName(selType)} iniciado. estimativa: ${minutes}min.`);
@@ -85,6 +89,7 @@ export function DeployScene() {
       const r = await post<{ player: Player }>(`/api/me/deploys/${job.type}/claim`);
       if (!r.ok) return setMessage(r.error?.message ?? "erro ao coletar");
       setJobs((js) => (js ?? []).filter((j) => j.type !== job.type));
+      setClaimed((n) => n + 1);
       setPlayer(r.data.player);
       addLog(`> release de ${typeName(job.type)} nível ${job.level} publicada.`);
     } catch {
@@ -151,6 +156,12 @@ export function DeployScene() {
       <div className="deploy-body">
         <div className="panel deploy-panel" aria-label="painel de deploy" role="region">
           <span className="pixel">{typeName(selType)}</span>
+          {claimed > 0 && (
+            <div className="deploy-claimed" key={claimed}>
+              <GameArt kind="extra" id="bau-aberto" scale={2} alt="" fallback="" />
+              <FxOnce id="collect" />
+            </div>
+          )}
           {message && (
             <p role="alert" className="term field-error">
               {message}
@@ -164,7 +175,10 @@ export function DeployScene() {
               </button>
             </div>
           ) : jobs === null ? (
-            <p className="term">CARREGANDO...</p>
+              <p className="term">
+              <LoadingFx />
+              CARREGANDO...
+            </p>
           ) : current ? (
             <Running
               job={current}
@@ -252,6 +266,7 @@ function Running({ job, remainingMs, pending, boosters, onClaim, onBoost }: Runn
         </button>
       )}
       <button type="button" className="btn btn-green" disabled={!ready || pending} onClick={onClaim}>
+        {ready && <GameArt kind="extra" id="bau" scale={1} alt="" fallback="" className="inline-icon" />}
         COLETAR RECOMPENSA
       </button>
     </>
