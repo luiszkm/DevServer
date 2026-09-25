@@ -23,6 +23,10 @@ export type Player = {
   office: Record<string, (string | null)[]>;
   /** Every rack slot, with the installed component id or null. */
   rack: (string | null)[];
+  /** Every avatar part, with the chosen option id (catalog defaults fill what was never picked). */
+  appearance: Record<string, string>;
+  /** Owned priced avatar options, catalog order. */
+  looks: string[];
 };
 
 export type Region = {
@@ -97,6 +101,8 @@ export type Gear = {
   /** Absent for gear the shop does not sell (made only at the forge). */
   price?: Price;
   bonus: Bonus;
+  /** The avatar option this gear puts on the hero while equipped. */
+  look?: { part: string; option: string };
 };
 
 export type Skin = {
@@ -104,10 +110,30 @@ export type Skin = {
   name: string;
   rarity: string;
   description: string;
-  filter: string;
+  /** Ramps (4 tones, darkest first) this skin forces on avatar colour parts while worn. */
+  palette: Record<string, string[]>;
   price: Price;
   bonus: Bonus | null;
 };
+
+export type AvatarPart = { id: string; name: string; kind: "color" | "style"; gearSlot?: string };
+
+export type AvatarOption = {
+  id: string;
+  part: string;
+  name: string;
+  /** Colour options: 4 tones, darkest first. */
+  ramp?: string[];
+  /** Style options: the PNG at /art/sprite/hero/<layer>.png. */
+  layer?: string;
+  /** A style with its own colours; the part's colour does not apply. */
+  fixed?: boolean;
+  /** Worn only through gear; never picked. */
+  gearOnly?: boolean;
+  price?: Price;
+};
+
+export type Avatar = { parts: AvatarPart[]; options: AvatarOption[]; defaults: Record<string, string> };
 
 /** Furniture bonus: "xp" is % deploy XP, "deploy" is % off deploy time, "spregen" is SP per turn. */
 export type OfficeBonus = { type: "xp" | "deploy" | "spregen"; amount: number };
@@ -180,6 +206,7 @@ export type Catalog = {
   gearSlots: GearSlot[];
   gear: Gear[];
   skins: Skin[];
+  avatar: Avatar;
   office: Office;
   rack: Rack;
   recipes: Recipe[];

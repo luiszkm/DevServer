@@ -4,11 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { post } from "@/lib/api";
 import { beatOf, type Beat } from "@/lib/battleFx";
 import { eventText } from "@/lib/battleLog";
-import { skinFilter } from "@/lib/gear";
 import type { Battle, BattleEvent, Player } from "@/lib/types";
 import { GameArt, nativeSize } from "./GameArt";
 import { useGame } from "./GameContext";
-import { HeroSprite } from "./HeroSprite";
+import { HeroAvatar } from "./HeroAvatar";
 
 // Whole-number zoom per native enemy size, so every enemy fits the 180x150 sprite box.
 const ENEMY_SCALE: Record<number, number> = { 32: 4, 48: 3, 64: 2 };
@@ -247,7 +246,7 @@ export function BattleScene() {
     return (
       <div className={`battle-stage${beat?.shake ? " is-shake" : ""}`}>
         <div className={`battle-actor battle-hero-actor${beat?.hero ? ` anim-${beat.hero}` : ""}`} aria-label="herói na arena">
-          <HeroSprite filter={skinFilter(catalog, player.skin)} className="battle-hero-sprite" />
+          <HeroAvatar look={player} scale={2} className="battle-hero-sprite" />
           {effects("hero")}
         </div>
         <div className={`battle-actor battle-enemy-actor${beat?.enemy ? ` anim-${beat.enemy}` : ""}${down ? " is-down" : ""}`}>

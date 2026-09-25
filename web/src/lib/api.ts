@@ -20,3 +20,7 @@ export async function api<T>(path: string, init?: RequestInit): Promise<ApiResul
 export function post<T>(path: string, body?: unknown): Promise<ApiResult<T>> {
   return api<T>(path, { method: "POST", body: body === undefined ? undefined : JSON.stringify(body) });
 }
+
+export function put<T>(path: string, body: unknown): Promise<ApiResult<T>> {
+  return api<T>(path, { method: "PUT", body: JSON.stringify(body) });
+}

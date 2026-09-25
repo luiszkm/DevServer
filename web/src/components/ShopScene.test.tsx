@@ -439,3 +439,45 @@ describe("ShopScene forge", () => {
     expect(f.calls("POST /api/me/gear/teclado_race/equip")).toBe(1);
   });
 });
+
+describe("ShopScene avatar styles", () => {
+  const priced = CATALOG.avatar.options.filter((o) => o.price);
+
+  it("lists every priced avatar option with its status", () => {
+    const p = player({ looks: ["hair_moicano", "hair_azul"], appearance: { ...CATALOG.avatar.defaults, hair: "hair_moicano" } });
+    renderShop(p);
+    expect(cardNames("ESTILOS DO AVATAR")).toEqual(priced.map((o) => o.name));
+    const status = (id: string) => card(id).querySelector(".shop-status")?.textContent;
+    expect(status("hair_moicano")).toBe("EM USO");
+    expect(status("hair_azul")).toBe("NO GUARDA-ROUPA");
+    expect(status("hair_topete")).toBe("30g");
+    expect(status("top_jaqueta")).toBe("150c");
+    // the card shows the player's own hero wearing the option
+    expect(card("hair_topete").querySelector("canvas")!.dataset.look).toContain("/art/sprite/hero/hair-topete.png");
+  });
+
+  it.each([
+    [player({ gems: 30 }), "hair_topete", "COMPRAR E USAR", "POST /api/me/shop/looks/hair_topete", "TOPETE COMPRADO"],
+    [player({ looks: ["hair_topete"] }), "hair_topete", "USAR", "PUT /api/me/appearance", "VISUAL SALVO"],
+  ])("style actions (%#)", async (p, id, label, route, toast) => {
+    const updated = player({ devName: "UPDATED" });
+    const f = mockFetch({ [route]: json(200, { player: updated }) });
+    const { setPlayer } = renderShop(p);
+    await userEvent.click(card(id));
+    await userEvent.click(detailButton(label));
+    expect(await screen.findByRole("status")).toHaveTextContent(toast);
+    expect(f.calls(route)).toBe(1);
+    if (route.startsWith("PUT")) expect(JSON.parse(f.fn.mock.calls[0][1]!.body as string)).toEqual({ appearance: { hair: "hair_topete" } });
+    expect(setPlayer).toHaveBeenCalledWith(updated);
+  });
+
+  it.each([
+    [player({ gems: 29 }), "GEMS INSUFICIENTES"],
+    [player({ looks: ["hair_topete"], appearance: { ...CATALOG.avatar.defaults, hair: "hair_topete" } }), "EM USO"],
+  ])("style button off (%#)", async (p, label) => {
+    renderShop(p);
+    await userEvent.click(card("hair_topete"));
+    expect(detailButton(label)).toBeDisabled();
+  });
+});
+

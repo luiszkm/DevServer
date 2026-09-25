@@ -323,6 +323,31 @@ describe("catalog art on disk", () => {
   it("scene background for the map, the room and the machine hall, 320x180", () => {
     expectAssets(["world", "office", "server"].map((name) => ({ category: "background", name, size: [320, 180] })));
   });
+
+  // avatar customization: the fixed layers plus every style layer avatar.json names, all on one 48x64 grid
+  it("hero layers per avatar.json, 48x64", () => {
+    const { options } = catalog<{ options: { layer?: string }[] }>("avatar.json");
+    const layers = ["body", "bottom", "hand", ...options.flatMap((o) => (o.layer ? [o.layer] : []))];
+    expectAssets(layers.map((name) => ({ category: "sprite", name: `hero/${name}`, size: [48, 64] })));
+  });
+
+  // avatar customization: the game swaps colours hex to hex, so every ramp must be a palette ramp
+  it("avatar ramps in the palette", () => {
+    const { options } = catalog<{ options: { id: string; ramp?: string[] }[] }>("avatar.json");
+    const skins = catalog<{ skins: { id: string; palette: Record<string, string[]> }[] }>("shop.json").skins;
+    const ramps = Object.values(PALETTE).filter(Array.isArray).map((r) => (r as string[]).map((h) => h.toLowerCase()).join());
+    const used = [...options.flatMap((o) => (o.ramp ? [[o.id, o.ramp] as const] : [])), ...skins.flatMap((s) => Object.entries(s.palette).map(([k, r]) => [`${s.id}.${k}`, r] as const))];
+    expect(used.length).toBeGreaterThan(0);
+    for (const [id, ramp] of used) expect.soft(ramps, id).toContain(ramp.map((h) => h.toLowerCase()).join());
+  });
+});
+
+// avatar customization: the web mock copies avatar.json by value.
+describe("web mock avatar", () => {
+  it("web mock matches avatar catalog", async () => {
+    const { AVATAR } = await import("@/test/helpers");
+    expect(AVATAR).toEqual(catalog("avatar.json"));
+  });
 });
 
 // forge C29: the web mock copies the forge recipes and the craft-only pieces by value.

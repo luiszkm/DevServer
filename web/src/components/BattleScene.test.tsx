@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import BugFightPage from "@/app/(game)/bug-fight/page";
+import { resolveLook } from "@/lib/avatar";
 import type { Battle, BattleEvent, Catalog, Player } from "@/lib/types";
 import { CATALOG, ENEMIES, COMMANDS, REGIONS, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
@@ -267,17 +268,14 @@ describe("BattleScene", () => {
   });
 
   // shop-inventory-avatar C44
-  it.each([
-    ["neon", "hue-rotate(140deg) saturate(1.8) brightness(1.1)"],
-    ["default", "none"],
-  ])("hero sprite wears skin (%s)", async (skin, filter) => {
+  it.each(["neon", "default"])("hero sprite wears skin (%s)", async (skin) => {
     const p = player({ skin, skins: ["default", "neon"] });
     mockFetch({ "POST /api/me/battle": startWith(battle(), p) });
     renderScene({ p });
     const hero = await screen.findByLabelText("herói na arena");
-    const img = within(hero).getByRole("img");
-    expect(img.getAttribute("src")).toBe("/hero.png");
-    expect(img.style.filter).toBe(filter);
+    const img = within(hero).getByRole("img", { name: "herói" });
+    expect(img.dataset.look).toBe(resolveLook(p, CATALOG).key);
+    expect(img.dataset.look!.includes(">")).toBe(skin !== "default");
   });
 
   // shop-inventory-avatar C49

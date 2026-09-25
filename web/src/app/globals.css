@@ -188,7 +188,6 @@ button { font-family: inherit; }
 .battle-command:disabled, .battle-potion:disabled { opacity: .5; cursor: default; }
 .battle-potions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .battle-hero { display: flex; gap: 18px; align-items: center; padding: 12px 16px; font-size: 11px; }
-.battle-hero-sprite { width: 88px; height: 150px; object-fit: contain; }
 .battle-hero-bar { flex: none; width: 160px; }
 
 /* Arena: the turn plays one beat at a time (BattleScene); steps() keeps the motion pixel-y. */
@@ -230,7 +229,7 @@ button { font-family: inherit; }
   .battle-enemy-card .bar > div, .battle-hero-bar > div { transition: none; }
 }
 
-.hero-sprite { display: block; object-fit: contain; object-position: bottom; }
+.hero-avatar { display: block; image-rendering: pixelated; }
 
 .shop { display: flex; gap: 16px; padding: 18px; }
 .shop-main { flex: 1; display: flex; flex-direction: column; gap: 14px; min-height: 0; overflow: auto; }
@@ -252,11 +251,10 @@ button { font-family: inherit; }
 .shop-bonus { color: var(--green); }
 .shop-price, .shop-status { font-size: 8px; color: var(--yellow); text-align: right; }
 .shop-skin { flex-direction: column; text-align: center; }
-.shop-skin-sprite { width: 56px; height: 72px; }
 .shop-side { width: 340px; display: flex; flex-direction: column; gap: 14px; }
 .shop-detail { flex: 1; display: flex; flex-direction: column; gap: 12px; }
 .shop-detail-glyph { align-self: center; min-width: 70px; height: 70px; padding: 0 6px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--edge); background: var(--panel-3); font-size: 12px; }
-.shop-detail-sprite { align-self: center; width: 80px; height: 104px; }
+.shop-detail-sprite { align-self: center; }
 .shop-rarity { align-self: flex-start; font-size: 9px; padding: 6px 8px; border: 2px solid var(--edge); background: var(--panel-3); color: var(--yellow); }
 .shop-detail-name { font-size: 12px; line-height: 1.6; }
 .shop-desc { color: #a9c6dd; }
@@ -273,8 +271,7 @@ button { font-family: inherit; }
 .avatar-cell[data-active="true"] { border-color: var(--green); color: var(--green); }
 .avatar-cell[aria-pressed="true"] { background: #20364a; border-color: var(--text); }
 .avatar-cell-tag { font-size: 13px; line-height: 1; }
-.avatar-cell-sprite { width: 26px; height: 40px; }
-.avatar-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.avatar-tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
 .avatar-tab { padding: 12px 3px; border: 3px solid var(--edge); background: #1b2b3a; color: #a9c6dd; cursor: pointer; font-size: 9px; }
 .avatar-tab[aria-selected="true"] { background: var(--green); border-color: var(--green); color: var(--edge); }
 .avatar-detail { display: flex; flex-direction: column; gap: 9px; background: var(--panel-2); padding: 12px 13px; }
@@ -282,6 +279,23 @@ button { font-family: inherit; }
 .avatar-detail-head { display: flex; align-items: center; gap: 10px; }
 .avatar-detail-glyph { min-width: 36px; height: 36px; padding: 0 3px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--edge); background: var(--panel-3); font-size: 9px; }
 .avatar-detail-name { flex: 1; font-size: 9px; }
+.avatar-editor { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 9px; background: #101c27; padding: 9px; overflow: auto; }
+.avatar-parts { display: flex; flex-wrap: wrap; gap: 4px; }
+.avatar-part { padding: 7px 8px; border: 2px solid var(--line-2); background: var(--panel); color: #a9c6dd; cursor: pointer; font-size: 8px; }
+.avatar-part[aria-pressed="true"] { border-color: var(--green); color: var(--green); }
+.avatar-options { display: grid; gap: 5px; align-content: start; }
+.avatar-options-style { grid-template-columns: repeat(4, 1fr); }
+.avatar-options-color { grid-template-columns: repeat(3, 1fr); }
+.avatar-option { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 7px 4px; border: 2px solid var(--line-2); background: var(--panel); color: var(--text); cursor: pointer; }
+.avatar-option[aria-pressed="true"] { border-color: var(--green); background: #17303f; }
+.avatar-option[data-locked="true"] .hero-avatar, .avatar-option[data-locked="true"] .avatar-swatch { opacity: .6; }
+.avatar-option-name { font-size: 13px; line-height: 1; text-align: center; }
+.avatar-option-price { position: absolute; top: 3px; right: 3px; padding: 2px 3px; background: var(--edge); color: var(--yellow); font-size: 7px; }
+.avatar-swatch { display: flex; width: 100%; height: 24px; border: 2px solid var(--edge); }
+.avatar-swatch > span { flex: 1; }
+.avatar-visual-note { color: var(--yellow); }
+.avatar-visual-actions { display: flex; gap: 8px; }
+.avatar-visual-actions .btn { flex: 1; }
 .avatar-doll { display: grid; grid-template-columns: 118px 1fr 118px; gap: 12px; background: #0f1c28; padding: 14px; min-height: 0; }
 .avatar-col { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
 .avatar-skins { border: 3px solid var(--edge); background: var(--panel-2); padding: 8px; display: flex; flex-direction: column; gap: 7px; }
@@ -290,7 +304,6 @@ button { font-family: inherit; }
 .avatar-skin { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border: 2px solid var(--line-2); background: var(--panel-3); cursor: pointer; overflow: hidden; padding: 0; }
 .avatar-skin[aria-pressed="true"] { border-color: var(--green); }
 .avatar-skin[aria-disabled="true"] { cursor: default; border-color: #1b2b3a; }
-.avatar-skin .hero-sprite { width: 22px; height: 36px; }
 .avatar-skin-locked { opacity: .35; }
 .avatar-slots { flex: 1; display: flex; flex-direction: column; gap: 10px; }
 .avatar-slot { flex: 1; min-height: 96px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 6px; border: 3px solid var(--line-2); background: #101c27; color: #3f5b73; cursor: pointer; }
@@ -299,7 +312,7 @@ button { font-family: inherit; }
 .avatar-slot-label { font-size: 15px; line-height: 1; text-align: center; }
 .avatar-center { display: flex; flex-direction: column; align-items: center; gap: 10px; min-height: 0; }
 .avatar-preview { flex: 1; width: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; border: 3px solid var(--edge); box-shadow: inset 0 0 0 2px #22384c; background: radial-gradient(circle at 50% 42%, #1a3247 0%, #0a1622 70%); overflow: hidden; }
-.avatar-hero { height: 100%; max-height: 404px; width: auto; }
+.avatar-hero { height: 100%; max-height: 384px; width: auto; aspect-ratio: 3 / 4; }
 .avatar-name { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 11px 14px; border: 3px solid var(--edge); background: var(--panel); font-size: 11px; }
 .avatar-skin-name { color: var(--green); font-size: 19px; }
 .avatar-stats { border: 3px solid var(--edge); background: var(--panel-2); padding: 9px 8px; display: flex; flex-direction: column; gap: 6px; }

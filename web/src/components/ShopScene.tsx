@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { post } from "@/lib/api";
+import { type ApiResult, post, put } from "@/lib/api";
 import {
   CONNECTION_FAILED,
   bonusLong,
@@ -13,12 +13,12 @@ import {
   priceShort,
   quantity,
 } from "@/lib/gear";
-import type { Gear, Item, Player, Price, Recipe, Skin } from "@/lib/types";
+import type { AvatarOption, Gear, Item, Player, Price, Recipe, Skin } from "@/lib/types";
 import { GameArt } from "./GameArt";
 import { useGame } from "./GameContext";
-import { HeroSprite } from "./HeroSprite";
+import { HeroAvatar } from "./HeroAvatar";
 
-type Selection = { kind: "item" | "gear" | "skin" | "recipe"; id: string };
+type Selection = { kind: "item" | "gear" | "skin" | "look" | "recipe"; id: string };
 
 // What a forge recipe can do for this player, in the button's priority order.
 function forgeState(player: Player, r: Recipe) {
@@ -35,10 +35,10 @@ export function ShopScene() {
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  async function run(path: string, done: string) {
+  async function run(path: string, done: string, request: () => Promise<ApiResult<{ player: Player }>> = () => post(path)) {
     setPending(true);
     try {
-      const r = await post<{ player: Player }>(path);
+      const r = await request();
       if (!r.ok) return setMessage(r.error?.message ?? CONNECTION_FAILED);
       setPlayer(r.data.player);
       setMessage(done);
@@ -54,6 +54,10 @@ export function ShopScene() {
     isEquipped(player, g.id, g.slot) ? "EQUIPADO" : player.gear.includes(g.id) ? "NO INVENTÁRIO" : g.price ? priceShort(g.price) : "FORJA";
   const skinStatus = (s: Skin) =>
     player.skin === s.id ? "EQUIPADA" : player.skins.includes(s.id) ? "NO GUARDA-ROUPA" : priceShort(s.price);
+  const looks = catalog.avatar.options.filter((o): o is AvatarOption & { price: Price } => !!o.price);
+  const partName = (id: string) => catalog.avatar.parts.find((p) => p.id === id)?.name ?? id;
+  const lookStatus = (o: AvatarOption & { price: Price }) =>
+    player.appearance[o.part] === o.id ? "EM USO" : player.looks.includes(o.id) ? "NO GUARDA-ROUPA" : priceShort(o.price);
   const picked = (kind: Selection["kind"], id: string) => sel.kind === kind && sel.id === id;
   const output = (r: Recipe) =>
     r.output.kind === "gear" ? catalog.gear.find((g) => g.id === r.output.id) : catalog.items.find((i) => i.id === r.output.id);
@@ -130,10 +134,30 @@ export function ShopScene() {
                 aria-pressed={picked("skin", s.id)}
                 onClick={() => setSel({ kind: "skin", id: s.id })}
               >
-                <HeroSprite filter={s.filter} className="shop-skin-sprite" />
+                <HeroAvatar look={{ ...player, skin: s.id }} scale={1} className="shop-skin-sprite" />
                 <span className="pixel shop-card-name">{s.name}</span>
                 <span className="term shop-bonus">{bonusShort(s.bonus)}</span>
                 <span className="pixel shop-status">{skinStatus(s)}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="panel shop-section" role="region" aria-label="ESTILOS DO AVATAR">
+          <span className="pixel shop-section-title">ESTILOS DO AVATAR</span>
+          <div className="shop-grid shop-grid-4">
+            {looks.map((o) => (
+              <button
+                key={o.id}
+                type="button"
+                className="shop-card shop-skin"
+                data-card={o.id}
+                aria-pressed={picked("look", o.id)}
+                onClick={() => setSel({ kind: "look", id: o.id })}
+              >
+                <HeroAvatar look={wearing(o)} scale={1} className="shop-skin-sprite" />
+                <span className="pixel shop-card-name">{o.name}</span>
+                <span className="term shop-bonus">{partName(o.part)}</span>
+                <span className="pixel shop-status">{lookStatus(o)}</span>
               </button>
             ))}
           </div>
@@ -199,6 +223,10 @@ export function ShopScene() {
       );
     }
     if (sel.kind === "recipe") return recipeDetail();
+    if (sel.kind === "look") {
+      const o = looks.find((x) => x.id === sel.id);
+      return o ? lookDetail(o) : null;
+    }
     if (sel.kind === "gear") {
       const g = catalog.gear.find((x) => x.id === sel.id)!;
       const owned = player.gear.includes(g.id);
@@ -269,6 +297,35 @@ export function ShopScene() {
     );
   }
 
+  // The player's own hero with this option on, the way the avatar editor previews it.
+  function wearing(o: AvatarOption): Player {
+    return { ...player, appearance: { ...player.appearance, [o.part]: o.id } };
+  }
+
+  function lookDetail(o: AvatarOption & { price: Price }) {
+    const owned = player.looks.includes(o.id);
+    const worn = player.appearance[o.part] === o.id;
+    const afford = canPay(player, o.price);
+    const label = worn ? "EM USO" : owned ? "USAR" : afford ? "COMPRAR E USAR" : insufficient(o.price);
+    const action = owned
+      ? () => run("/api/me/appearance", "VISUAL SALVO", () => put("/api/me/appearance", { appearance: { [o.part]: o.id } }))
+      : () => run(`/api/me/shop/looks/${o.id}`, `${o.name} COMPRADO`);
+    return (
+      <>
+        <HeroAvatar look={wearing(o)} scale={2} className="shop-detail-sprite" />
+        <span className="pixel shop-rarity">{partName(o.part)}</span>
+        <span className="pixel shop-detail-name">{o.name}</span>
+        <span className="term shop-desc">Estilo extra para o seu dev. Troque quando quiser no AVATAR → VISUAL.</span>
+        <span className="term">{`custo: ${owned ? "já possui" : priceLong(o.price)}`}</span>
+        <div className="shop-spacer" />
+        <button type="button" className={`btn ${!worn && (owned || afford) ? "btn-green" : "btn-locked"}`}
+          disabled={pending || worn || (!owned && !afford)} onClick={action}>
+          {label}
+        </button>
+      </>
+    );
+  }
+
   function skinDetail(s: Skin) {
     const owned = player.skins.includes(s.id);
     const worn = player.skin === s.id;
@@ -279,7 +336,7 @@ export function ShopScene() {
       : () => run(`/api/me/shop/skins/${s.id}`, "SKIN COMPRADA E EQUIPADA");
     return (
       <>
-        <HeroSprite filter={s.filter} className="shop-detail-sprite" />
+        <HeroAvatar look={{ ...player, skin: s.id }} scale={2} className="shop-detail-sprite" />
         <span className="pixel shop-rarity">{s.rarity}</span>
         <span className="pixel shop-detail-name">{s.name}</span>
         <span className="term shop-desc">{s.description}</span>

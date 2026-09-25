@@ -1,21 +1,23 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
-import { post } from "@/lib/api";
-import { CONNECTION_FAILED, bonusLong, isEquipped, quantity, skinFilter, totalBonus } from "@/lib/gear";
-import type { Player } from "@/lib/types";
+import { type ApiResult, post, put } from "@/lib/api";
+import { resolveLook } from "@/lib/avatar";
+import { CONNECTION_FAILED, bonusLong, canPay, insufficient, isEquipped, priceLong, priceShort, quantity, totalBonus } from "@/lib/gear";
+import type { AvatarOption, Player } from "@/lib/types";
 import { GameArt } from "./GameArt";
 import { useGame } from "./GameContext";
-import { HeroSprite } from "./HeroSprite";
+import { HeroAvatar } from "./HeroAvatar";
 
-type Bag = "equip" | "pocao" | "loot" | "skin";
-type Entry = { kind: "gear" | "item" | "skin"; id: string; name: string; glyph: string; tag: string; active: boolean; filter?: string };
+type Bag = "equip" | "pocao" | "loot" | "skin" | "visual";
+type Entry = { kind: "gear" | "item" | "skin"; id: string; name: string; glyph: string; tag: string; active: boolean };
 
 const BAGS: { id: Bag; label: string; hint: string }[] = [
   { id: "equip", label: "EQUIP", hint: "clique para equipar" },
   { id: "pocao", label: "POÇÕES", hint: "use no Bug Fight" },
   { id: "loot", label: "LOOT", hint: "material de craft" },
   { id: "skin", label: "SKINS", hint: "clique para vestir" },
+  { id: "visual", label: "VISUAL", hint: "monte o seu dev" },
 ];
 
 const SLOT_TAG: Record<string, string> = { setup: "setup", bebida: "bebida", vestuario: "roupa", acessorio: "acess" };
@@ -28,14 +30,18 @@ export function AvatarScene() {
   const [picked, setPicked] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  // Unsaved avatar picks, shown on the preview until SALVAR or DESFAZER.
+  const [draft, setDraft] = useState<Record<string, string>>({});
+  const [part, setPart] = useState(catalog.avatar.parts[0].id);
 
-  async function run(path: string, done: string) {
+  async function run(path: string, done: string, request: () => Promise<ApiResult<{ player: Player }>> = () => post(path), after?: () => void) {
     setPending(true);
     try {
-      const r = await post<{ player: Player }>(path);
+      const r = await request();
       if (!r.ok) return setMessage(r.error?.message ?? CONNECTION_FAILED);
       setPlayer(r.data.player);
       setMessage(done);
+      after?.();
     } catch {
       setMessage(CONNECTION_FAILED);
     } finally {
@@ -48,8 +54,11 @@ export function AvatarScene() {
     setPicked(id);
   }
 
+  const preview: Player = { ...player, appearance: { ...player.appearance, ...draft } };
   const entries: Entry[] =
-    bag === "equip"
+    bag === "visual"
+      ? []
+      : bag === "equip"
       ? catalog.gear
           .filter((g) => player.gear.includes(g.id))
           .map((g) => {
@@ -61,7 +70,7 @@ export function AvatarScene() {
             .filter((s) => player.skins.includes(s.id))
             .map((s) => {
               const on = player.skin === s.id;
-              return { kind: "skin", id: s.id, name: s.name, glyph: "", tag: on ? "EM USO" : s.name.replace("DEV ", "").slice(0, 7).toLowerCase(), active: on, filter: s.filter };
+              return { kind: "skin", id: s.id, name: s.name, glyph: "", tag: on ? "EM USO" : s.name.replace("DEV ", "").slice(0, 7).toLowerCase(), active: on };
             })
         : catalog.items
             // Shop items are the potions tab; everything else is loot from the Bug Fight.
@@ -78,26 +87,7 @@ export function AvatarScene() {
           <span className="pixel">INVENTÁRIO</span>
           <span className="term">{hint}</span>
         </div>
-        <div className="panel avatar-cells" role="region" aria-label="mochila">
-          {entries.map((e) => (
-            <button
-              key={e.id}
-              type="button"
-              className="avatar-cell"
-              data-entry={e.id}
-              data-active={e.active}
-              aria-pressed={current?.id === e.id}
-              onClick={() => setPicked(e.id)}
-            >
-              {e.kind === "skin" ? (
-                <HeroSprite filter={e.filter ?? "none"} className="avatar-cell-sprite" />
-              ) : (
-                <GameArt kind={e.kind} id={e.id} scale={2} alt={e.name} fallback={e.glyph} />
-              )}
-              <span className="term avatar-cell-tag">{e.tag}</span>
-            </button>
-          ))}
-        </div>
+        {bag === "visual" ? editor() : cells()}
         <div className="avatar-tabs" role="tablist" aria-label="abas da mochila">
           {BAGS.map((b) => (
             <button key={b.id} type="button" role="tab" aria-selected={bag === b.id} className="avatar-tab pixel" onClick={() => openBag(b.id)}>
@@ -133,7 +123,7 @@ export function AvatarScene() {
                       run(`/api/me/skins/${s.id}/equip`, "SKIN EQUIPADA");
                     }}
                   >
-                    <HeroSprite filter={owned ? s.filter : "grayscale(1) brightness(.5)"} className={owned ? "" : "avatar-skin-locked"} />
+                    <HeroAvatar look={{ ...player, skin: s.id }} scale={0.5} className={owned ? "" : "avatar-skin-locked"} />
                   </button>
                 );
               })}
@@ -146,7 +136,7 @@ export function AvatarScene() {
 
         <div className="avatar-center">
           <div className="avatar-preview">
-            <HeroSprite filter={skinFilter(catalog, player.skin)} className="avatar-hero" />
+            <HeroAvatar look={preview} className="avatar-hero" />
           </div>
           <div className="avatar-name">
             <span className="pixel">{player.devName}</span>
@@ -185,7 +175,128 @@ export function AvatarScene() {
     );
   }
 
+  function cells() {
+    return (
+      <div className="panel avatar-cells" role="region" aria-label="mochila">
+        {entries.map((e) => (
+          <button
+            key={e.id}
+            type="button"
+            className="avatar-cell"
+            data-entry={e.id}
+            data-active={e.active}
+            aria-pressed={current?.id === e.id}
+            onClick={() => setPicked(e.id)}
+          >
+            {e.kind === "skin" ? (
+              <HeroAvatar look={{ ...player, skin: e.id }} scale={0.5} className="avatar-cell-sprite" />
+            ) : (
+              <GameArt kind={e.kind} id={e.id} scale={2} alt={e.name} fallback={e.glyph} />
+            )}
+            <span className="term avatar-cell-tag">{e.tag}</span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  function editor() {
+    const options = catalog.avatar.options.filter((o) => o.part === part && !o.gearOnly);
+    const kind = catalog.avatar.parts.find((p) => p.id === part)!.kind;
+    return (
+      <div className="panel avatar-editor" role="region" aria-label="editor visual">
+        <div className="avatar-parts" role="group" aria-label="partes">
+          {catalog.avatar.parts.map((p) => (
+            <button key={p.id} type="button" className="avatar-part pixel" data-part={p.id} aria-pressed={part === p.id} onClick={() => setPart(p.id)}>
+              {p.name}
+            </button>
+          ))}
+        </div>
+        <div className={`avatar-options avatar-options-${kind}`} role="group" aria-label="opções">
+          {options.map((o) => (
+            <button
+              key={o.id}
+              type="button"
+              className="avatar-option"
+              data-option={o.id}
+              data-locked={locked(o)}
+              aria-label={o.name}
+              aria-pressed={preview.appearance[part] === o.id}
+              onClick={() => setDraft((d) => ({ ...d, [part]: o.id }))}
+            >
+              {o.ramp ? (
+                <span className="avatar-swatch" aria-hidden="true">
+                  {o.ramp.map((hex) => (
+                    <span key={hex} style={{ background: hex }} />
+                  ))}
+                </span>
+              ) : (
+                <HeroAvatar look={{ ...preview, appearance: { ...preview.appearance, [part]: o.id } }} scale={1} />
+              )}
+              <span className="term avatar-option-name">{o.name}</span>
+              {locked(o) && <span className="pixel avatar-option-price">{priceShort(o.price!)}</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  function locked(o: AvatarOption) {
+    return !!o.price && !player.looks.includes(o.id);
+  }
+
+  function visualDetail() {
+    const p = catalog.avatar.parts.find((x) => x.id === part)!;
+    const o = catalog.avatar.options.find((x) => x.id === preview.appearance[part]);
+    const source = resolveLook(preview, catalog).parts[part];
+    const lockedDraft = catalog.avatar.options.filter((x) => draft[x.part] === x.id && locked(x));
+    const dirty = Object.entries(draft).some(([k, v]) => player.appearance[k] !== v);
+    let note: string | null = null;
+    if (source.by === "gear") {
+      const g = catalog.gear.find((x) => x.id === player.equipment[p.gearSlot!])!;
+      note = `em uso: ${g.name} — remova o item para usar a sua escolha.`;
+    } else if (source.by === "skin") {
+      note = `a skin ${catalog.skins.find((s) => s.id === player.skin)!.name} define esta cor.`;
+    }
+    return (
+      <>
+        <DetailHead icon="VIS" name={`${p.name} · ${o?.name ?? ""}`} rarity={o && locked(o) ? priceLong(o.price!) : o?.price ? "COMPRADO" : "GRÁTIS"} />
+        {note && <span className="term avatar-visual-note">{note}</span>}
+        {o && locked(o) && (
+          <button
+            type="button"
+            className={`btn ${canPay(player, o.price!) ? "btn-yellow" : "btn-locked"}`}
+            disabled={pending || !canPay(player, o.price!)}
+            onClick={() =>
+              run(`/api/me/shop/looks/${o.id}`, `${o.name} COMPRADO`, undefined, () =>
+                setDraft((d) => Object.fromEntries(Object.entries(d).filter(([k]) => k !== o.part))),
+              )
+            }
+          >
+            {canPay(player, o.price!) ? `COMPRAR · ${priceLong(o.price!)}` : insufficient(o.price!)}
+          </button>
+        )}
+        <div className="avatar-visual-actions">
+          <button
+            type="button"
+            className="btn btn-green"
+            disabled={pending || !dirty || lockedDraft.length > 0}
+            onClick={() => run("/api/me/appearance", "VISUAL SALVO", () => put("/api/me/appearance", { appearance: draft }), () => setDraft({}))}
+          >
+            SALVAR
+          </button>
+          <button type="button" className="btn btn-dark" disabled={pending || !dirty} onClick={() => setDraft({})}>
+            DESFAZER
+          </button>
+        </div>
+        {lockedDraft.length > 0 && <span className="term">{`compre ${lockedDraft.map((x) => x.name).join(", ")} para salvar.`}</span>}
+      </>
+    );
+  }
+
   function detail() {
+    if (bag === "visual") return visualDetail();
     if (!current) {
       return (
         <>
