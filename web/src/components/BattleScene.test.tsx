@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import BugFightPage from "@/app/(game)/bug-fight/page";
 import type { Battle, BattleEvent, Catalog, Player } from "@/lib/types";
 import { CATALOG, ENEMIES, COMMANDS, REGIONS, json, mockFetch, player } from "@/test/helpers";
@@ -11,14 +11,18 @@ const battle = (o: Partial<Battle> = {}): Battle => ({
   region: "vila", enemyHp: 60, enemyHpMax: 60, sp: 50, spMax: 50, weakness: false, status: "active", ...o,
 });
 
+// Stubs the OS "reduce motion" setting the scene reads to decide between playback and an instant turn.
+const motion = (reduce: boolean) =>
+  vi.stubGlobal("matchMedia", (q: string) => ({ matches: reduce && q === "(prefers-reduced-motion: reduce)", media: q }));
+
 function renderScene(opts: { p?: Player; catalog?: Catalog; setPlayer?: (p: Player) => void } = {}) {
   const setPlayer = opts.setPlayer ?? vi.fn();
-  render(
+  const view = render(
     <GameContext.Provider value={{ player: opts.p ?? player(), catalog: opts.catalog ?? CATALOG, setPlayer }}>
       <BattleScene />
     </GameContext.Provider>,
   );
-  return { setPlayer };
+  return { setPlayer, unmount: view.unmount };
 }
 
 const startWith = (b: Battle | null = battle(), p: Player = player()) => json(200, { battle: b, player: p });
@@ -39,6 +43,9 @@ const EVERY_ENEMY: Catalog = { ...CATALOG, enemies: ALL_ENEMIES };
 const sprite = () => document.querySelector(".battle-sprite") as HTMLElement;
 
 describe("BattleScene", () => {
+  // These prove what a turn leaves behind; with reduced motion the turn lands at once. Playback has its own describe.
+  beforeEach(() => motion(true));
+
   // C41
   it("starts and shows the enemy", async () => {
     const f = mockFetch({ "POST /api/me/battle": startWith() });
@@ -267,7 +274,7 @@ describe("BattleScene", () => {
     const p = player({ skin, skins: ["default", "neon"] });
     mockFetch({ "POST /api/me/battle": startWith(battle(), p) });
     renderScene({ p });
-    const hero = await screen.findByLabelText("dev em combate");
+    const hero = await screen.findByLabelText("herói na arena");
     const img = within(hero).getByRole("img");
     expect(img.getAttribute("src")).toBe("/hero.png");
     expect(img.style.filter).toBe(filter);
@@ -348,5 +355,119 @@ describe("BattleScene", () => {
     expect(potion("hp_potion").querySelector("img")).toBeNull();
     expect(potion("hp_potion")).toHaveTextContent("HP+");
     expect(potion("sp_potion").querySelector("img")).not.toBeNull();
+  });
+});
+
+describe("BattleScene turn playback", () => {
+  beforeEach(() => motion(false));
+  afterEach(() => vi.useRealTimers());
+
+  const lines = () => Array.from(screen.getByRole("log").children).map((c) => c.textContent);
+  const heroActor = () => screen.getByLabelText("herói na arena");
+  const enemyActor = () => sprite().parentElement!;
+  const fx = () => document.querySelector<HTMLElement>(".battle-fx");
+  const float = () => document.querySelector<HTMLElement>(".battle-float");
+
+  async function fightOneTurn(events: BattleEvent[], after: Battle | null, p = player({ hp: 100, hpMax: 100 })) {
+    const setPlayer = vi.fn();
+    const next = player({ hp: 91, hpMax: 100 });
+    mockFetch({ "POST /api/me/battle": startWith(battle(), p), "POST /api/me/battle/commands": turn(after, events, next) });
+    const view = renderScene({ p, setPlayer });
+    await screen.findByLabelText("inimigo");
+    setPlayer.mockClear();
+    // Faked only now: RTL's findBy* polls with real timers.
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    fireEvent.click(command("fix"));
+    await act(() => vi.advanceTimersByTimeAsync(0));
+    return { ...view, setPlayer, next };
+  }
+
+  it("plays the turn one event at a time", async () => {
+    const { setPlayer, next } = await fightOneTurn(
+      [{ type: "damage", command: "f1", amount: 20 }, { type: "counter", amount: 9 }],
+      battle({ enemyHp: 40, sp: 40 }),
+    );
+    // beat 1: the dev's hit
+    expect(lines().at(-1)).toBe("> </> MARKUP: 20 de dano");
+    expect(heroActor()).toHaveClass("anim-lunge");
+    expect(enemyActor()).toHaveClass("anim-hit");
+    expect(fx()!.dataset.fx).toBe("code");
+    expect(fx()!.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/code.png)");
+    expect(within(enemyActor()).getByText("-20")).toBeInTheDocument();
+    expect(screen.getByLabelText("inimigo")).toHaveTextContent("HP 40/60");
+    expect(screen.getByLabelText("dev em combate")).toHaveTextContent("HP 100/100");
+    for (const b of document.querySelectorAll<HTMLButtonElement>("[data-command], [data-item]")) expect(b).toBeDisabled();
+    expect(setPlayer).not.toHaveBeenCalled();
+
+    // beat 2: the counter
+    act(() => vi.advanceTimersByTime(600));
+    expect(lines().at(-1)).toBe("< NULL SLIME devolve um stack trace: -9 HP");
+    expect(heroActor()).toHaveClass("anim-hit");
+    expect(enemyActor()).toHaveClass("anim-lunge");
+    expect(fx()!.dataset.fx).toBe("impact");
+    expect(within(heroActor()).getByText("-9")).toBeInTheDocument();
+    expect(screen.getByLabelText("dev em combate")).toHaveTextContent("HP 91/100");
+    expect(command("fix")).toBeDisabled();
+    expect(setPlayer).not.toHaveBeenCalled();
+
+    // end: the server's state lands and the stage is quiet
+    act(() => vi.advanceTimersByTime(600));
+    expect(setPlayer).toHaveBeenCalledWith(next);
+    expect(screen.getByLabelText("dev em combate")).toHaveTextContent("SP 40/50");
+    expect(command("fix")).toBeEnabled();
+    expect(fx()).toBeNull();
+    expect(float()).toBeNull();
+    expect(heroActor().className).not.toMatch(/anim-/);
+  });
+
+  it("crit shakes the stage", async () => {
+    await fightOneTurn([{ type: "damage", command: "fix", amount: 36, weakness: true }], battle({ enemyHp: 24 }));
+    expect(document.querySelector(".battle-stage")).toHaveClass("is-shake");
+    expect(float()).toHaveTextContent("-36 CRÍTICO!");
+    expect(float()).toHaveClass("tone-crit");
+  });
+
+  it("victory leaves the enemy down and RESOLVIDO after the last beat", async () => {
+    const { setPlayer } = await fightOneTurn(
+      [{ type: "damage", command: "fix", amount: 20 }, { type: "victory" }, { type: "reward", xp: 90, coins: 40, gems: 1, levelsGained: 0 }, { type: "drop", item: "null_shard" }],
+      battle({ enemyHp: 0, status: "won" }),
+    );
+    act(() => vi.advanceTimersByTime(600));
+    expect(enemyActor()).toHaveClass("anim-defeat");
+    expect(enemyActor()).toHaveClass("is-down");
+    expect(screen.queryByText("RESOLVIDO")).toBeNull();
+    act(() => vi.advanceTimersByTime(700));
+    expect(within(heroActor()).getByText("+90 XP")).toBeInTheDocument();
+    act(() => vi.advanceTimersByTime(450));
+    expect(within(enemyActor()).getByText("+1")).toBeInTheDocument();
+    expect(float()!.querySelector("img")).toHaveAttribute("src", "/art/icon/item-null_shard.png");
+    expect(lines().at(-1)).toBe("+1 FRAGMENTO NULL · dropou!");
+    act(() => vi.advanceTimersByTime(450));
+    expect(screen.getByText("RESOLVIDO")).toBeInTheDocument();
+    expect(enemyActor()).toHaveClass("is-down");
+    expect(setPlayer).toHaveBeenCalledTimes(1);
+  });
+
+  it("reduced motion lands the turn at once", async () => {
+    motion(true);
+    const { setPlayer, next } = await fightOneTurn(
+      [{ type: "damage", command: "fix", amount: 20 }, { type: "counter", amount: 9 }],
+      battle({ enemyHp: 40 }),
+    );
+    expect(lines().slice(-2)).toEqual(["> FIX: 20 de dano", "< NULL SLIME devolve um stack trace: -9 HP"]);
+    expect(setPlayer).toHaveBeenCalledWith(next);
+    expect(fx()).toBeNull();
+    expect(heroActor().className).not.toMatch(/anim-/);
+    expect(command("fix")).toBeEnabled();
+  });
+
+  it("unmount mid-turn drops the rest of the playback", async () => {
+    const { setPlayer, unmount } = await fightOneTurn(
+      [{ type: "damage", command: "fix", amount: 20 }, { type: "counter", amount: 9 }],
+      battle({ enemyHp: 40 }),
+    );
+    unmount();
+    act(() => vi.advanceTimersByTime(5000));
+    expect(setPlayer).not.toHaveBeenCalled();
   });
 });

@@ -10,6 +10,15 @@ test("fight to victory", async ({ page }) => {
   await expect(enemy).toContainText("HP 60/60");
 
   const fix = page.locator('[data-command="fix"]');
+  await expect(page.getByLabel("herói na arena").getByRole("img", { name: "herói" })).toBeVisible();
+  // The first hit plays on the stage: the FIX slash strip and the damage number over the enemy.
+  await fix.click();
+  await expect(page.locator('.battle-fx[data-fx="slash"]')).toBeAttached();
+  const art = await page.locator(".battle-fx").evaluate((el) => getComputedStyle(el).backgroundImage);
+  expect(art).toContain("/art/fx/slash.png");
+  await expect(page.locator(".battle-float").first()).toContainText(/^-\d+/);
+  await expect(fix).toBeEnabled();
+
   for (let i = 0; i < 8 && !(await page.getByText("RESOLVIDO", { exact: true }).isVisible()); i++) {
     await expect(fix).toBeEnabled();
     await fix.click();
