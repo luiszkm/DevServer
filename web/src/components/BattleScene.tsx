@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { post } from "@/lib/api";
+import type { AvatarAnim } from "@/lib/avatar";
 import { beatOf, type Beat } from "@/lib/battleFx";
 import { eventText } from "@/lib/battleLog";
 import type { Battle, BattleEvent, Player } from "@/lib/types";
@@ -17,6 +18,12 @@ type TurnResponse = { battle: Battle | null; player: Player; events: BattleEvent
 type Shown = { heroHp?: number; enemyHp?: number };
 
 const reducedMotion = () => typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// The hero's strip for the beat on stage (plan assumptions: anim per screen); a won fight jumps.
+const BEAT_ANIM: Partial<Record<Beat["hero"] & string, AvatarAnim>> = { lunge: "run", cast: "interact" };
+function heroAnim(beat: Beat | null, status: Battle["status"]): AvatarAnim {
+  return (beat?.hero && BEAT_ANIM[beat.hero]) || (status === "won" ? "jump" : "idle");
+}
 
 export function BattleScene() {
   const { player, catalog, setPlayer } = useGame();
@@ -255,7 +262,7 @@ export function BattleScene() {
     return (
       <div className={`battle-stage${beat?.shake ? " is-shake" : ""}`}>
         <div className={`battle-actor battle-hero-actor${beat?.hero ? ` anim-${beat.hero}` : ""}`} aria-label="herói na arena">
-          <HeroAvatar look={player} scale={2} className="battle-hero-sprite" />
+          <HeroAvatar look={player} scale={2} className="battle-hero-sprite" anim={heroAnim(beat, battle.status)} />
           {effects("hero")}
         </div>
         <div className={`battle-actor battle-enemy-actor${beat?.enemy ? ` anim-${beat.enemy}` : ""}${down ? " is-down" : ""}`}>

@@ -145,8 +145,15 @@ invent hex values.
   `run`, `jump`, `interact`.
 - The renderer warns about a frame touching its 1px cell margin, an empty frame and two identical
   frames, like `fx`.
-- Strips are built from the static layers with `use` + `clip` (see the rig in `web/art/sprite/hero/anim/_poses.json`),
-  so recolouring keeps working: never paint a new hex into a strip.
+- Strips are generated, never hand-drawn: `scripts/hero_anim.py` cuts each static layer into the rig's
+  regions (`head`, `torso`, `legL`, `legR` in `web/art/sprite/hero/anim/_poses.json`) and repaints them
+  with each frame's offsets (`use` + `clip`), so the game's hex recolour keeps working. A new layer needs
+  a body in the rig's `assign` table (the script exits 1 otherwise), then a regenerate and render.
+- Offsets only move a region down or sideways relative to the one below it (head dy >= torso dy >= legs
+  dy), so no gap opens at a cut. The hair already sits 1px from the top, so nothing rises: `jump` is
+  crouch/tuck poses and the game lifts the canvas on the airborne frames.
+- Expected `WARN`s: the empty `hair-careca*` strips ("frame N is empty") and "identical frames" on a
+  layer that lives in one region when that region's offset repeats (a hair layer in `walk`).
 
 ### logo
 

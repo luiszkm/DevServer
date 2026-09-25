@@ -380,6 +380,31 @@ describe("BattleScene turn playback", () => {
     return { ...view, setPlayer, next };
   }
 
+  // assets C47: the beat on stage picks the hero's animation
+  const heroAnim = () => within(heroActor()).getByRole("img", { name: "herói" }).dataset.anim;
+  it.each<[string, BattleEvent[], string]>([
+    ["lunge", [{ type: "damage", command: "fix", amount: 20 }], "run"],
+    ["cast", [{ type: "heal", amount: 10 }], "interact"],
+    ["hit", [{ type: "counter", amount: 9 }], "idle"],
+  ])("hero anim on beat %s", async (_beat, events, anim) => {
+    await fightOneTurn(events, battle({ enemyHp: 40 }));
+    expect(heroAnim()).toBe(anim);
+  });
+
+  it("hero anim with no beat is idle", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle()) });
+    renderScene();
+    await screen.findByLabelText("inimigo");
+    expect(heroAnim()).toBe("idle");
+  });
+
+  it("hero anim when the battle is won is jump", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ status: "won", enemyHp: 0 })) });
+    renderScene();
+    await screen.findByLabelText("inimigo");
+    expect(heroAnim()).toBe("jump");
+  });
+
   it("plays the turn one event at a time", async () => {
     const { setPlayer, next } = await fightOneTurn(
       [{ type: "damage", command: "f1", amount: 20 }, { type: "counter", amount: 9 }],

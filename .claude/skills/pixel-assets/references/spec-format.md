@@ -62,6 +62,8 @@ python3 $S/render.py web/art/sprite/slime.json --out web/public/art \
         --preview /tmp/preview.png                                      # one, plus a 4x sheet
 python3 $S/render.py --check some.png --category icon                   # check a PNG not built from a spec
 python3 $S/sample_colors.py web/public/keyart.png 1245,755,45,60        # pull tones from the key art
+python3 $S/hero_anim.py && python3 $S/render.py web/art/sprite/hero/anim --out web/public/art
+                                                                        # hero strips: regenerate after a new hero layer or a rig change
 ```
 
 `ok` = passes; `WARN` = style rule bent (fix it or say why); `ERROR` = off-palette color,

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { post } from "@/lib/api";
 import type { Player } from "@/lib/types";
 import { GameArt } from "./GameArt";
+import { HeroAvatar } from "./HeroAvatar";
 import { FxOnce } from "./LoadingFx";
 import { useGame } from "./GameContext";
 
@@ -65,6 +66,7 @@ export function WorldScene() {
                 {here && <GameArt kind="build" id="flag" scale={1} alt="" fallback="" className="node-flag" />}
               </span>
               {arrived?.region === r.id && <FxOnce key={arrived.key} id="teleport" />}
+              {here && <HeroAvatar look={player} scale={1} anim={pending ? "walk" : "idle"} className="map-hero" />}
               <span className={`pixel node-chip${here ? " here" : ""}`}>{r.name}</span>
             </div>
           );

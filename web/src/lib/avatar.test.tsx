@@ -149,3 +149,19 @@ describe("resolveLook", () => {
     expect(look.parts.hair).toEqual({ option: "hair_curto", by: "player" });
   });
 });
+
+// assets C41: a frame of the animation strip, same swaps as the static layer (door 3)
+describe("heroFrame", () => {
+  it.each([0, 1, 2, 3])("strip frame %i", async (i) => {
+    const { heroFrame } = await import("./avatar");
+    const layer = { src: "/art/sprite/hero/hair-curto-f.png", swap: { "#141420": "#8a6420" } };
+    expect(heroFrame(layer, "walk", i)).toEqual({
+      src: "/art/sprite/hero/anim/hair-curto-f-walk.png",
+      sx: 48 * i,
+      sy: 0,
+      w: 48,
+      h: 64,
+      swap: { "#141420": "#8a6420" },
+    });
+  });
+});

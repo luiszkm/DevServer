@@ -202,3 +202,21 @@ describe("WorldScene world pieces", () => {
     expect(document.querySelector('[data-fx="teleport"]')).toBeNull();
   });
 });
+
+describe("WorldScene hero anim", () => {
+  // assets C48
+  const hero = () => document.querySelector("[data-region] canvas") as HTMLCanvasElement;
+  it("hero anim: idle beside the current marker", () => {
+    renderWorld(player({ region: "floresta" }));
+    expect(document.querySelectorAll("[data-region] canvas")).toHaveLength(1);
+    expect(hero().closest("[data-region]")!.getAttribute("data-region")).toBe("floresta");
+    expect(hero().dataset.anim).toBe("idle");
+  });
+
+  it("hero anim: walk while the travel is pending", async () => {
+    mockFetch({ "POST /api/me/travel": () => new Promise<Response>(() => {}) });
+    renderWorld(player({ region: "vila" }));
+    await userEvent.click(button("FLORESTA DE LOGS"));
+    expect(hero().dataset.anim).toBe("walk");
+  });
+});

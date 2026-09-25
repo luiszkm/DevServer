@@ -48,7 +48,7 @@ Proof: `python3 .claude/skills/pixel-assets/scripts/test_render.py -k sprite_siz
 **C6** - `make art-check` exits `0` and prints `art ok` (AST-01, AC 6; door 3 of game-art) ✅
 Proof: `make art-check`
 
-**C7** - `hero_anim.py` writes `web/art/sprite/hero/anim/<layer>-<anim>.json` for every layer spec in `web/art/sprite/hero/` × the 5 anims, each `category: "anim"` 192x64; IF a layer is not assigned to a region group in `_poses.json` THEN it exits `1` naming the layer and writes nothing (AST-07, AC 27; door 4)
+**C7** - `hero_anim.py` writes `web/art/sprite/hero/anim/<layer>-<anim>.json` for every layer spec in `web/art/sprite/hero/` × the 5 anims, each `category: "anim"` 192x64; IF a layer is not assigned to a region group in `_poses.json` THEN it exits `1` naming the layer and writes nothing (AST-07, AC 27; door 4) ✅
 Proof: `python3 .claude/skills/pixel-assets/scripts/test_render.py -k hero_anim`
 
 **C8** - `artSrc`/`nativeSize` for the new kinds: `btn`, `ic`, `medal` → `/art/icon/<kind>-<id>.png` at 16; `prop`, `build`, `mob`, `npc`, `extra` → `/art/sprite/<kind>-<id>.png` at 32, except `build` `server-hut` at 96; the old kinds keep their paths (AST-02, AC 7; door 1) ✅
@@ -164,31 +164,31 @@ Proof: `cd web && npx playwright test e2e/art.spec.ts -g "scene art scale"`
 
 ### S5 - herói animado · 8 files · ~56 KB · ~14k (+ generated specs)
 
-**C40** - for every `web/public/art/sprite/hero/*.png` and each anim of `idle`, `walk`, `run`, `jump`, `interact`, `web/art/sprite/hero/anim/<layer>-<anim>.json` and a 192x64 PNG `web/public/art/sprite/hero/anim/<layer>-<anim>.png` exist (AST-07, AC 27; door 3)
+**C40** - for every `web/public/art/sprite/hero/*.png` and each anim of `idle`, `walk`, `run`, `jump`, `interact`, `web/art/sprite/hero/anim/<layer>-<anim>.json` and a 192x64 PNG `web/public/art/sprite/hero/anim/<layer>-<anim>.png` exist (AST-07, AC 27; door 3) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "hero strip"`
 
-**C41** - `heroFrame(layer, anim, i)` returns `src` `/art/sprite/hero/anim/<layer>-<anim>.png` and source rect x = `48·i`, y = `0`, 48x64, with the same `swap` as the static layer; for `i` = 0..3 (AST-07, AC 28)
+**C41** - `heroFrame(layer, anim, i)` returns `src` `/art/sprite/hero/anim/<layer>-<anim>.png` and source rect x = `48·i`, y = `0`, 48x64, with the same `swap` as the static layer; for `i` = 0..3 (AST-07, AC 28) ✅
 Proof: `cd web && npx vitest run src/lib/avatar.test.tsx -t "strip frame"`
 
-**C42** - `HeroAvatar` with `anim="walk"` has `data-anim="walk"` and `data-frame` `0`, then `1`, `2`, `3`, `0` after each 166 ms (fake timers) (AST-07, AC 29; door 5)
+**C42** - `HeroAvatar` with `anim="walk"` has `data-anim="walk"` and `data-frame` `0`, then `1`, `2`, `3`, `0` after each 166 ms (fake timers) (AST-07, AC 29; door 5) ✅
 Proof: `cd web && npx vitest run src/components/HeroAvatar.test.tsx -t "advances"`
 
-**C43** - WHEN `anim` changes from `walk` at frame 2 to `run` THEN `data-frame` is `0` and `data-anim` is `run`, and a strip load of the old anim that resolves afterwards paints nothing (AST-07, AC 30)
+**C43** - WHEN `anim` changes from `walk` at frame 2 to `run` THEN `data-frame` is `0` and `data-anim` is `run`, and a strip load of the old anim that resolves afterwards paints nothing (AST-07, AC 30) ✅
 Proof: `cd web && npx vitest run src/components/HeroAvatar.test.tsx -t "restarts"`
 
-**C44** - IF the strip of one layer fails to load THEN the canvas draws that layer's static PNG at 0,0 and the other layers from their strips, and `data-frame` keeps advancing (AST-07, AC 31)
+**C44** - IF the strip of one layer fails to load THEN the canvas draws that layer's static PNG at 0,0 and the other layers from their strips, and `data-frame` keeps advancing (AST-07, AC 31) ✅
 Proof: `cd web && npx vitest run src/components/HeroAvatar.test.tsx -t "strip fails"`
 
-**C45** - WHILE `matchMedia("(prefers-reduced-motion: reduce)")` matches, `HeroAvatar` with `anim="run"` loads only static layer PNGs and `data-frame` stays `0` after 1000 ms (AST-07, AC 32)
+**C45** - WHILE `matchMedia("(prefers-reduced-motion: reduce)")` matches, `HeroAvatar` with `anim="run"` loads only static layer PNGs and `data-frame` stays `0` after 1000 ms (AST-07, AC 32) ✅
 Proof: `cd web && npx vitest run src/components/HeroAvatar.test.tsx -t "reduced motion"`
 
-**C46** - `HeroAvatar` without `anim` loads only static layer PNGs, has no `data-frame`, and schedules no timer (AST-08, AC 34)
+**C46** - `HeroAvatar` without `anim` loads only static layer PNGs, has no `data-frame`, and schedules no timer (AST-08, AC 34) ✅
 Proof: `cd web && npx vitest run src/components/HeroAvatar.test.tsx -t "static"`
 
-**C47** - Bug Fight hero `data-anim`, table-driven: beat `lunge` → `run`, beat `cast` → `interact`, `battle.status` `won` → `jump`, no beat → `idle`, beat `hit` → `idle` (AST-08, AC 33)
+**C47** - Bug Fight hero `data-anim`, table-driven: beat `lunge` → `run`, beat `cast` → `interact`, `battle.status` `won` → `jump`, no beat → `idle`, beat `hit` → `idle` (AST-08, AC 33) ✅
 Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "hero anim"`
 
-**C48** - AVATAR preview `data-anim="idle"`; DEPLOY hero `interact` with a running job and `idle` with a ready one; MUNDO hero beside the current marker `idle`, and `walk` while the travel POST is pending (AST-08, AC 33)
+**C48** - AVATAR preview `data-anim="idle"`; DEPLOY hero `interact` with a running job and `idle` with a ready one; MUNDO hero beside the current marker `idle`, and `walk` while the travel POST is pending (AST-08, AC 33) ✅
 Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "hero anim"`
 Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx -t "hero anim"`
 Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "hero anim"`

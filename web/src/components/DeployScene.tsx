@@ -7,6 +7,7 @@ import type { DeployJob, DeployLevel, Player } from "@/lib/types";
 import { GameArt } from "./GameArt";
 import { FxOnce, LoadingFx } from "./LoadingFx";
 import { useGame } from "./GameContext";
+import { HeroAvatar } from "./HeroAvatar";
 
 const STAGES = ["LINT", "BUILD", "TEST", "SHIP"];
 /** The inventory item a boost consumes. */
@@ -181,6 +182,7 @@ export function DeployScene() {
             </p>
           ) : current ? (
             <Running
+              player={player}
               job={current}
               remainingMs={remaining(current)}
               pending={pending}
@@ -237,6 +239,7 @@ export function DeployScene() {
 }
 
 type RunningProps = {
+  player: Player;
   job: DeployJob;
   remainingMs: number;
   pending: boolean;
@@ -245,13 +248,16 @@ type RunningProps = {
   onBoost: () => void;
 };
 
-function Running({ job, remainingMs, pending, boosters, onClaim, onBoost }: RunningProps) {
+function Running({ player, job, remainingMs, pending, boosters, onClaim, onBoost }: RunningProps) {
   const total = Date.parse(job.endsAt) - Date.parse(job.startedAt);
   const ready = remainingMs <= 0;
   const pct = ready ? 100 : Math.max(0, Math.min(100, ((total - remainingMs) / total) * 100));
   const stage = ready ? "PRONTO PARA COLETAR" : STAGES[Math.min(3, Math.floor(pct / 25))];
   return (
     <>
+      <div className="deploy-hero">
+        <HeroAvatar look={player} scale={2} anim={ready ? "idle" : "interact"} />
+      </div>
       <span className="term">{`nível ${job.level} em andamento`}</span>
       <div className="bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct)}>
         <div style={{ width: `${pct}%`, background: "var(--green)" }} />

@@ -478,3 +478,12 @@ describe("AvatarScene scene", () => {
     expect(section.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/scene-floresta.png)");
   });
 });
+
+describe("AvatarScene hero anim", () => {
+  // assets C48
+  it("hero anim: the preview idles", () => {
+    renderAvatar();
+    const hero = document.querySelector(".avatar-preview canvas") as HTMLCanvasElement;
+    expect(hero.dataset.anim).toBe("idle");
+  });
+});

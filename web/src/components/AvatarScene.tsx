@@ -136,7 +136,7 @@ export function AvatarScene() {
 
         <div className="avatar-center">
           <div className="avatar-preview">
-            <HeroAvatar look={preview} className="avatar-hero" />
+            <HeroAvatar look={preview} className="avatar-hero" anim="idle" />
           </div>
           <div className="avatar-name">
             <span className="pixel">{player.devName}</span>

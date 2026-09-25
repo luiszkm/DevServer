@@ -19,6 +19,24 @@ export type Look = {
 
 const layerSrc = (layer: string) => `/art/sprite/hero/${layer}.png`;
 
+/** What the hero is doing on a screen; each has a 4-frame strip per layer (assets door 3). */
+export type AvatarAnim = "idle" | "walk" | "run" | "jump" | "interact";
+
+export const HERO_W = 48;
+export const HERO_H = 64;
+
+/** Frame `i` of a layer's animation strip: sprite/hero/anim/<layer>-<anim>.png, x = 48·i, same swaps. */
+export function heroFrame(layer: Layer, anim: AvatarAnim, i: number) {
+  return {
+    src: layer.src.replace(/\/hero\/([^/]+)\.png$/, `/hero/anim/$1-${anim}.png`),
+    sx: HERO_W * i,
+    sy: 0,
+    w: HERO_W,
+    h: HERO_H,
+    swap: layer.swap,
+  };
+}
+
 // Each body has its own drawing of every layer (feminino: "<layer>-f"); beards are masculine only.
 const BODY_SUFFIX: Record<string, string> = { feminino: "-f" };
 

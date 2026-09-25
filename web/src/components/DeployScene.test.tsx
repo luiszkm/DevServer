@@ -473,3 +473,21 @@ describe("DeployScene scene", () => {
     expect(section.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/scene-dia.png)");
   });
 });
+
+describe("DeployScene hero anim", () => {
+  // assets C48
+  const hero = () => within(panel()).getByRole("img", { name: "herói" });
+  it("hero anim: interact while the job runs", async () => {
+    mockFetch({ "GET /api/me/deploys": list([job("backend", 1, 5, 15)]) });
+    renderScene();
+    await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" });
+    expect(hero().dataset.anim).toBe("interact");
+  });
+
+  it("hero anim: idle when the job is ready", async () => {
+    mockFetch({ "GET /api/me/deploys": list([job("backend", 1, 15, 15)]) });
+    renderScene();
+    await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" });
+    expect(hero().dataset.anim).toBe("idle");
+  });
+});

@@ -147,5 +147,42 @@ class SpriteSizeTest(unittest.TestCase):
         self.assertEqual(len(size_warnings(warnings)), 1)
 
 
+class HeroAnimTest(unittest.TestCase):
+    RIG = {"cell": [48, 64],
+           "bodies": {"m": {"head": [0, 0, 48, 24], "torso": [0, 24, 48, 22], "legL": [0, 46, 20, 18], "legR": [20, 46, 28, 18]}},
+           "assign": {"m": ["body", "hair-*"]}, "order": ["legL", "legR", "torso", "head"],
+           "anims": {a: [{"head": [0, i % 2], "torso": [0, 0], "legL": [0, 0], "legR": [0, 0]} for i in range(4)]
+                     for a in ("idle", "walk", "run", "jump", "interact")}}
+
+    def hero_dir(self, d, layers):
+        os.makedirs(os.path.join(d, "anim"))
+        for name in layers:
+            write_spec(d, name, {"category": "sprite", "size": [48, 64], "layers": [{"rect": [10, 10, 20, 40], "color": "gold.2"}]})
+        with open(os.path.join(d, "anim", "_poses.json"), "w") as f:
+            json.dump(self.RIG, f)
+
+    def test_hero_anim_writes_a_strip_per_layer_and_anim(self):
+        import hero_anim
+        with tempfile.TemporaryDirectory() as d:
+            self.hero_dir(d, ["body", "hair-curto"])
+            self.assertEqual(hero_anim.main(["--hero", d]), 0)
+            written = sorted(f for f in os.listdir(os.path.join(d, "anim")) if not f.startswith("_"))
+            expected = sorted(f"{l}-{a}.json" for l in ("body", "hair-curto") for a in ("idle", "walk", "run", "jump", "interact"))
+            self.assertEqual(written, expected)
+            for f in written:
+                with open(os.path.join(d, "anim", f)) as fh:
+                    spec = json.load(fh)
+                self.assertEqual((spec["category"], spec["size"]), ("anim", [192, 64]), f)
+            rows = render.to_rows(render.render_spec(os.path.join(d, "anim", "body-idle.json"), PALETTE))
+            self.assertEqual((len(rows[0]), len(rows)), (192, 64))
+
+    def test_hero_anim_unassigned_layer_exits_1_and_writes_nothing(self):
+        import hero_anim
+        with tempfile.TemporaryDirectory() as d:
+            self.hero_dir(d, ["body", "cape"])
+            self.assertEqual(hero_anim.main(["--hero", d]), 1)
+            self.assertEqual([f for f in os.listdir(os.path.join(d, "anim")) if not f.startswith("_")], [])
+
+
 if __name__ == "__main__":
     unittest.main()
