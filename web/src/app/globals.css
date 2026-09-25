@@ -230,7 +230,7 @@ button { font-family: inherit; }
   .battle-enemy-card .bar > div, .battle-hero-bar > div { transition: none; }
 }
 
-.hero-sprite { display: block; object-fit: cover; object-position: top; }
+.hero-sprite { display: block; object-fit: contain; object-position: bottom; }
 
 .shop { display: flex; gap: 16px; padding: 18px; }
 .shop-main { flex: 1; display: flex; flex-direction: column; gap: 14px; min-height: 0; overflow: auto; }
@@ -252,11 +252,11 @@ button { font-family: inherit; }
 .shop-bonus { color: var(--green); }
 .shop-price, .shop-status { font-size: 8px; color: var(--yellow); text-align: right; }
 .shop-skin { flex-direction: column; text-align: center; }
-.shop-skin-sprite { width: 56px; height: 72px; border: 2px solid var(--edge); background: #0a1622; }
+.shop-skin-sprite { width: 56px; height: 72px; }
 .shop-side { width: 340px; display: flex; flex-direction: column; gap: 14px; }
 .shop-detail { flex: 1; display: flex; flex-direction: column; gap: 12px; }
 .shop-detail-glyph { align-self: center; min-width: 70px; height: 70px; padding: 0 6px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--edge); background: var(--panel-3); font-size: 12px; }
-.shop-detail-sprite { align-self: center; width: 80px; height: 104px; border: 3px solid var(--edge); background: #0a1622; }
+.shop-detail-sprite { align-self: center; width: 80px; height: 104px; }
 .shop-rarity { align-self: flex-start; font-size: 9px; padding: 6px 8px; border: 2px solid var(--edge); background: var(--panel-3); color: var(--yellow); }
 .shop-detail-name { font-size: 12px; line-height: 1.6; }
 .shop-desc { color: #a9c6dd; }
