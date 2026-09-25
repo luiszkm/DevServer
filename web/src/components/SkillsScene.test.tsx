@@ -189,3 +189,12 @@ describe("SkillsScene assets", () => {
     expect(node("f1").querySelector('img[src="/art/icon/ic-lock.png"]')).toBeNull();
   });
 });
+
+describe("SkillsScene scene", () => {
+  // assets C39
+  it("scene background", () => {
+    renderScene();
+  const section = document.querySelector("section.scene") as HTMLElement;
+    expect(section.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/scene-noite.png)");
+  });
+});

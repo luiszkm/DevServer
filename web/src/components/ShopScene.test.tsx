@@ -513,3 +513,12 @@ describe("ShopScene npc", () => {
     expect(screen.getByText("FORJE GEAR COM OS DROPS DO BUG FIGHT!")).toBeInTheDocument();
   });
 });
+
+describe("ShopScene scene", () => {
+  // assets C39
+  it("scene background", () => {
+    renderShop();
+  const section = document.querySelector("section.scene") as HTMLElement;
+    expect(section.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/scene-dungeon.png)");
+  });
+});

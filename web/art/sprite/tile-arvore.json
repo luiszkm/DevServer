@@ -1,0 +1,16 @@
+{
+  "name": "tile-arvore",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "Small tree decal: round canopy on a short trunk.",
+  "layers": [
+    {"rect": [14, 18, 4, 11], "color": "wood.2"},
+    {"rect": [14, 18, 1, 11], "color": "wood.3"},
+    {"rect": [10, 28, 12, 2], "color": "stone.2"},
+    {"ellipse": [16, 12, 11, 10], "color": "leaf.1"},
+    {"ellipse": [15, 10, 9, 8], "color": "leaf.2"},
+    {"ellipse": [12, 7, 4, 3], "color": "leaf.3"},
+    {"scatter": [5, 2, 22, 20], "colors": ["leaf.3", "leaf.1"], "density": 0.1, "seed": 51, "on": "leaf.2"},
+    {"outline": "ink"}
+  ]
+}

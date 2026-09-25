@@ -32,7 +32,7 @@ export function SkillsScene() {
   }
 
   return (
-    <section className="scene skills" aria-label="SKILLS">
+    <section className="scene skills" aria-label="SKILLS" style={{ backgroundImage: "url(/art/background/scene-noite.png)" }}>
       <div className="panel skills-head">
         <span className="pixel">ÁRVORE DE HABILIDADES</span>
         <span className="term">{`bônus ativo: +${bonus("hp")} HP · +${bonus("sp")} SP · +${bonus("dmg")}% dano`}</span>

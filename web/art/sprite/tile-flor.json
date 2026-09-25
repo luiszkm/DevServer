@@ -1,0 +1,19 @@
+{
+  "name": "tile-flor",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "Flowers decal: a white and a yellow flower.",
+  "layers": [
+    {"line": [10, 16, 10, 27], "color": "leaf.2"},
+    {"line": [21, 12, 21, 27], "color": "leaf.2"},
+    {"poly": [[10, 22], [6, 19], [9, 24]], "color": "leaf.3"},
+    {"poly": [[21, 20], [25, 17], [22, 22]], "color": "leaf.3"},
+    {"rect": [8, 12, 5, 5], "color": "white"},
+    {"rect": [10, 14, 1, 1], "color": "gold.3"},
+    {"rect": [19, 8, 5, 5], "color": "gold.2"},
+    {"rect": [21, 10, 1, 1], "color": "lamp.0"},
+    {"rect": [9, 11, 1, 1], "color": "white"},
+    {"rect": [18, 10, 1, 1], "color": "gold.3"},
+    {"outline": "ink"}
+  ]
+}

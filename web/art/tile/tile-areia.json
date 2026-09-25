@@ -1,0 +1,10 @@
+{
+  "name": "tile-areia",
+  "category": "tile",
+  "size": [32, 32],
+  "_design": "Sand path: warm sand with grains.",
+  "layers": [
+    {"fill": "dirt.2"},
+    {"scatter": [0, 0, 32, 32], "colors": ["dirt.3", "dirt.1"], "density": 0.14, "seed": 46}
+  ]
+}

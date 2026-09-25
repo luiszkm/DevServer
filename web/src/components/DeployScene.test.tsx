@@ -463,3 +463,13 @@ describe("DeployScene world pieces", () => {
     expect(document.querySelector('[data-fx="collect"]')).toBeNull();
   });
 });
+
+describe("DeployScene scene", () => {
+  // assets C39
+  it("scene background", () => {
+    mockFetch({ "GET /api/me/deploys": list([]) });
+    renderScene();
+  const section = document.querySelector("section.scene") as HTMLElement;
+    expect(section.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/scene-dia.png)");
+  });
+});

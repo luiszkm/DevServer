@@ -76,7 +76,7 @@ export function ShopScene() {
   };
 
   return (
-    <section className="scene shop" aria-label="LOJA">
+    <section className="scene shop" aria-label="LOJA" style={{ backgroundImage: "url(/art/background/scene-dungeon.png)" }}>
       <div className="shop-npc">
         <GameArt kind="npc" id="dev" scale={2} alt="lojista" fallback="" />
         <p className="pixel shop-bubble">FORJE GEAR COM OS DROPS DO BUG FIGHT!</p>

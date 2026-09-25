@@ -149,10 +149,10 @@ Proof: `cd web && npx vitest run src/components/ServerScene.test.tsx -t "robot"`
 
 ### S4 - cenários e tileset · shared files · ~8k
 
-**C37** - `scene-dia`, `scene-noite`, `scene-floresta`, `scene-dungeon` have spec and a 320x180 PNG in `background/` with every pixel alpha `255` (AST-06, AC 25)
+**C37** - `scene-dia`, `scene-noite`, `scene-floresta`, `scene-dungeon` have spec and a 320x180 PNG in `background/` with every pixel alpha `255` (AST-06, AC 25) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "new scene"`
 
-**C38** - each tile of the door 1 table has spec and PNG in `tile/` (32x32, or 128x32 for `agua`, `agua-funda`, `cachoeira`) with every pixel alpha `255`, and each tile decal has spec and PNG in `sprite/` at its size (AST-06, AC 25)
+**C38** - each tile of the door 1 table has spec and PNG in `tile/` (32x32, or 128x32 for `agua`, `agua-funda`, `cachoeira`) with every pixel alpha `255`, and each tile decal has spec and PNG in `sprite/` at its size (AST-06, AC 25) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "tileset"`
 
 **C39** - `section.scene` has inline `background-image` `url(/art/background/scene-dia.png)` on DEPLOY, `scene-noite` on SKILLS, `scene-floresta` on AVATAR, `scene-dungeon` on LOJA; in the browser each has `background-size` `1280px 720px` and `image-rendering` `pixelated` (AST-06, AC 26)

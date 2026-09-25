@@ -1,0 +1,22 @@
+{
+  "name": "tile-pedra",
+  "category": "tile",
+  "size": [32, 32],
+  "_design": "Stone blocks: four blue-grey slabs with lit tops.",
+  "layers": [
+    {"fill": "stone.0"},
+    {"rect": [1, 1, 14, 14], "color": "stone.2"},
+    {"rect": [17, 1, 14, 14], "color": "stone.2"},
+    {"rect": [1, 17, 14, 14], "color": "stone.2"},
+    {"rect": [17, 17, 14, 14], "color": "stone.2"},
+    {"rect": [1, 1, 14, 1], "color": "stone.3"},
+    {"rect": [1, 17, 14, 1], "color": "stone.3"},
+    {"rect": [17, 1, 14, 1], "color": "stone.3"},
+    {"rect": [17, 17, 14, 1], "color": "stone.3"},
+    {"rect": [1, 14, 14, 1], "color": "stone.1"},
+    {"rect": [1, 30, 14, 1], "color": "stone.1"},
+    {"rect": [17, 14, 14, 1], "color": "stone.1"},
+    {"rect": [17, 30, 14, 1], "color": "stone.1"},
+    {"scatter": [0, 0, 32, 32], "colors": ["stone.1", "stone.3"], "density": 0.06, "seed": 45, "on": "stone.2"}
+  ]
+}

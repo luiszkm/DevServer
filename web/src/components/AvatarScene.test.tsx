@@ -470,3 +470,11 @@ describe("AvatarScene body", () => {
   });
 });
 
+describe("AvatarScene scene", () => {
+  // assets C39
+  it("scene background", () => {
+    renderAvatar();
+  const section = document.querySelector("section.scene") as HTMLElement;
+    expect(section.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/scene-floresta.png)");
+  });
+});

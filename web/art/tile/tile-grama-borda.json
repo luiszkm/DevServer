@@ -1,0 +1,17 @@
+{
+  "name": "tile-grama-borda",
+  "category": "tile",
+  "size": [32, 32],
+  "_design": "Grass edge: grass ending in a dirt lip on the bottom (cliff edge).",
+  "layers": [
+    {"fill": "grass.2"},
+    {"scatter": [0, 0, 32, 24], "colors": ["grass.1", "grass.3"], "density": 0.16, "seed": 44},
+    {"rect": [0, 24, 32, 8], "color": "dirt.1"},
+    {"rect": [0, 24, 32, 1], "color": "grass.1"},
+    {"rect": [4, 24, 2, 2], "color": "grass.2"},
+    {"rect": [13, 24, 2, 2], "color": "grass.2"},
+    {"rect": [22, 24, 2, 2], "color": "grass.2"},
+    {"rect": [29, 24, 2, 2], "color": "grass.2"},
+    {"rect": [0, 30, 32, 2], "color": "dirt.0"}
+  ]
+}

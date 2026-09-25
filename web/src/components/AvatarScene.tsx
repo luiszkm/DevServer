@@ -81,7 +81,7 @@ export function AvatarScene() {
   const hint = BAGS.find((b) => b.id === bag)!.hint;
 
   return (
-    <section className="scene avatar" aria-label="AVATAR">
+    <section className="scene avatar" aria-label="AVATAR" style={{ backgroundImage: "url(/art/background/scene-floresta.png)" }}>
       <div className="avatar-bag">
         <div className="panel avatar-bag-head">
           <span className="pixel">INVENTÁRIO</span>

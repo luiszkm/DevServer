@@ -1,0 +1,10 @@
+{
+  "name": "tile-grama",
+  "category": "tile",
+  "size": [32, 32],
+  "_design": "Grass fill: lush green with blade specks; tiles seamlessly.",
+  "layers": [
+    {"fill": "grass.2"},
+    {"scatter": [0, 0, 32, 32], "colors": ["grass.1", "grass.3", "leaf.3"], "density": 0.18, "seed": 42}
+  ]
+}

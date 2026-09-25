@@ -121,7 +121,7 @@ export function DeployScene() {
   const boosters = player.inventory.find((i) => i.item === BOOST_ITEM)?.quantity ?? 0;
 
   return (
-    <section className="scene deploy" aria-label="DEPLOY">
+    <section className="scene deploy" aria-label="DEPLOY" style={{ backgroundImage: "url(/art/background/scene-dia.png)" }}>
       <div className="panel deploy-head">
         <span className="pixel">PIPELINES DE DEPLOY</span>
         <span className="term">cada tipo roda em paralelo · tempo real por nível</span>

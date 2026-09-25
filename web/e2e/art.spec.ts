@@ -8,6 +8,11 @@ const scenes: { link: string; selector: string; ready: (page: Page) => Promise<v
   { link: "SERVER", selector: ".server", ready: (page) => expect(page.getByText("LOJA DE COMPONENTES")).toBeVisible() },
   { link: "OFFICE", selector: ".office-room", ready: (page) => expect(page.getByText("CATÁLOGO")).toBeVisible() },
   { link: "BUG FIGHT", selector: ".battle", ready: (page) => expect(page.getByText("ENCONTRO · VILA LOCALHOST")).toBeVisible() },
+  // assets C39: the asset sheet's four scenes
+  { link: "DEPLOY", selector: "section.deploy", ready: (page) => expect(page.getByRole("button", { name: "INICIAR DEPLOY" })).toBeVisible() },
+  { link: "SKILLS", selector: "section.skills", ready: (page) => expect(page.getByRole("region", { name: "SKILLS" })).toBeVisible() },
+  { link: "AVATAR", selector: "section.avatar", ready: (page) => expect(page.getByRole("region", { name: "AVATAR" })).toBeVisible() },
+  { link: "LOJA", selector: "section.shop", ready: (page) => expect(page.getByText("LOJA DEVSERVER")).toBeVisible() },
 ];
 
 for (const { link, selector, ready } of scenes) {
