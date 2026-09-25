@@ -31,8 +31,8 @@ invent hex values.
 
 ### sprite: characters, enemies, props
 
-- Sizes: 32x32 (enemy, prop), 32x48 (humanoid), 48x64 (the layered hero), 48x48 / 64x64
-  (boss, big prop).
+- Sizes: 32x32 (enemy, prop, NPC, extra), 32x48 (humanoid), 48x64 (the layered hero), 48x48 / 64x64
+  (boss, big prop), 96x96 (building).
 - Chibi proportions, like the hero: head about 40% of the height, big simple eyes (2x2 or
   2x3 ink with one white pixel), short legs.
 - The silhouette must read at 1x. Test it: squint at the preview. If you can't tell what it
@@ -127,6 +127,31 @@ invent hex values.
 - Shown at 3x (a 96x96 box) as a CSS sprite: `background: url(/art/fx/slash.png) 0 0 / 384px
   96px; image-rendering: pixelated; animation: fx 400ms steps(4) forwards;` with
   `@keyframes fx { to { background-position: -384px 0; } }`.
+
+### tile: tileset
+
+- Ground tiles are **32x32 and fully opaque** (`tile/tile-<name>`), drawn so the same tile
+  repeats seamlessly next to itself: check the preview with the tile placed 3x3.
+- Animated tiles (water, waterfall) are a 128x32 strip of 4 frames, like `fx`, with no margin rule
+  (a tile fills its cell edge to edge) and every frame different.
+- Decals that sit on top of the ground (bush, flower, trees, fence) are transparent sprites named
+  `sprite/tile-<name>`, outlined like any sprite.
+- Top-down light: highlight the top edge of a block, shade its bottom, as in the key art's tileset.
+
+### anim: hero animation strips
+
+- One 192x64 PNG = **4 frames of 48x64**, frame `i` at x = `48*i`, on the same grid as the static
+  hero layer, per layer per anim: `sprite/hero/anim/<layer>-<anim>.png`, anims `idle`, `walk`,
+  `run`, `jump`, `interact`.
+- The renderer warns about a frame touching its 1px cell margin, an empty frame and two identical
+  frames, like `fx`.
+- Strips are built from the static layers with `use` + `clip` (see the rig in `web/art/sprite/hero/anim/_poses.json`),
+  so recolouring keeps working: never paint a new hex into a strip.
+
+### logo
+
+- `sprite/logo` (160x64) is the one image allowed to carry text: it is a logotype (WCAG 1.4.5
+  exception), shown with `alt="DevServer"`. Taglines and every other label stay HTML.
 
 ## Displaying assets
 

@@ -30,28 +30,28 @@ avatar layer with no strips turns it red.
 
 ### S1 - pipeline · 7 files · 54 KB · ~14k
 
-**C1** - `render.py` with a `category: "tile"` spec of 32x32 and of 128x32 reports no size `WARN`; a tile spec with one transparent pixel reports `ERROR` and the run exits `1` (AST-01, AC 1; door 2)
-Proof: `python3 -m unittest .claude/skills/pixel-assets/scripts/test_render.py -k tile`
+**C1** - `render.py` with a `category: "tile"` spec of 32x32 and of 128x32 reports no size `WARN`; a tile spec with one transparent pixel reports `ERROR` and the run exits `1` (AST-01, AC 1; door 2) ✅
+Proof: `python3 .claude/skills/pixel-assets/scripts/test_render.py -k tile`
 
-**C2** - `render.py` with a `category: "anim"` 192x64 spec reports no size `WARN`; it reports one `WARN` naming the frame for (a) a frame with a pixel on its 1px margin of the 48x64 cell, (b) an empty frame, (c) two identical frames; a clean 4-frame strip reports `ok` (AST-01, AC 2; door 2)
-Proof: `python3 -m unittest .claude/skills/pixel-assets/scripts/test_render.py -k anim`
+**C2** - `render.py` with a `category: "anim"` 192x64 spec reports no size `WARN`; it reports one `WARN` naming the frame for (a) a frame with a pixel on its 1px margin of the 48x64 cell, (b) an empty frame, (c) two identical frames; a clean 4-frame strip reports `ok` (AST-01, AC 2; door 2) ✅
+Proof: `python3 .claude/skills/pixel-assets/scripts/test_render.py -k anim`
 
-**C3** - an `fx` 128x32 strip still reports the margin, empty and identical `WARN`s on 32x32 cells, and a clean one reports `ok` (AST-01, AC 3)
-Proof: `python3 -m unittest .claude/skills/pixel-assets/scripts/test_render.py -k fx`
+**C3** - an `fx` 128x32 strip still reports the margin, empty and identical `WARN`s on 32x32 cells, and a clean one reports `ok` (AST-01, AC 3) ✅
+Proof: `python3 .claude/skills/pixel-assets/scripts/test_render.py -k fx`
 
-**C4** - a `{"use": ..., "clip": [2, 3, 4, 5], "at": [10, 0]}` op paints exactly the source pixels in x 2..5, y 3..7 at x 10..13, y 0..4 of the destination, and no pixel outside that box changes (AST-01, AC 4)
-Proof: `python3 -m unittest .claude/skills/pixel-assets/scripts/test_render.py -k clip`
+**C4** - a `{"use": ..., "clip": [2, 3, 4, 5], "at": [10, 0]}` op paints exactly the source pixels in x 2..5, y 3..7 at x 10..13, y 0..4 of the destination, and no pixel outside that box changes (AST-01, AC 4) ✅
+Proof: `python3 .claude/skills/pixel-assets/scripts/test_render.py -k clip`
 
-**C5** - `category: "sprite"` specs of 96x96, 64x64 and 160x64 report no size `WARN`; 100x100 reports one (AST-01, AC 5; door 2)
-Proof: `python3 -m unittest .claude/skills/pixel-assets/scripts/test_render.py -k sprite_size`
+**C5** - `category: "sprite"` specs of 96x96, 64x64 and 160x64 report no size `WARN`; 100x100 reports one (AST-01, AC 5; door 2) ✅
+Proof: `python3 .claude/skills/pixel-assets/scripts/test_render.py -k sprite_size`
 
-**C6** - `make art-check` exits `0` and prints `art ok` (AST-01, AC 6; door 3 of game-art)
+**C6** - `make art-check` exits `0` and prints `art ok` (AST-01, AC 6; door 3 of game-art) ✅
 Proof: `make art-check`
 
 **C7** - `hero_anim.py` writes `web/art/sprite/hero/anim/<layer>-<anim>.json` for every layer spec in `web/art/sprite/hero/` × the 5 anims, each `category: "anim"` 192x64; IF a layer is not assigned to a region group in `_poses.json` THEN it exits `1` naming the layer and writes nothing (AST-07, AC 27; door 4)
-Proof: `python3 -m unittest .claude/skills/pixel-assets/scripts/test_render.py -k hero_anim`
+Proof: `python3 .claude/skills/pixel-assets/scripts/test_render.py -k hero_anim`
 
-**C8** - `artSrc`/`nativeSize` for the new kinds: `btn`, `ic`, `medal` → `/art/icon/<kind>-<id>.png` at 16; `prop`, `build`, `mob`, `npc`, `extra` → `/art/sprite/<kind>-<id>.png` at 32, except `build` `server-hut` at 96; the old kinds keep their paths (AST-02, AC 7; door 1)
+**C8** - `artSrc`/`nativeSize` for the new kinds: `btn`, `ic`, `medal` → `/art/icon/<kind>-<id>.png` at 16; `prop`, `build`, `mob`, `npc`, `extra` → `/art/sprite/<kind>-<id>.png` at 32, except `build` `server-hut` at 96; the old kinds keep their paths (AST-02, AC 7; door 1) ✅
 Proof: `cd web && npx vitest run src/components/GameArt.test.tsx -t "new kinds"`
 
 ### S2 - UI, ícones e logo · 22 files · ~228 KB shared with S3/S4 · ~30k

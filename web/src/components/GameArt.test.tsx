@@ -44,6 +44,25 @@ describe("GameArt", () => {
     expect(img.className.split(/\s+/)).toContain("pixelated");
   });
 
+  // assets C8: the kinds added by the asset sheet (door 1); icons are 16, sprites 32, the server hut 96
+  it.each<[ArtKind, string, string, number]>([
+    ["btn", "exit", "/art/icon/btn-exit.png", 16],
+    ["ic", "lock", "/art/icon/ic-lock.png", 16],
+    ["medal", "ouro", "/art/icon/medal-ouro.png", 16],
+    ["prop", "rack", "/art/sprite/prop-rack.png", 32],
+    ["build", "flag", "/art/sprite/build-flag.png", 32],
+    ["build", "server-hut", "/art/sprite/build-server-hut.png", 96],
+    ["mob", "robo", "/art/sprite/mob-robo.png", 32],
+    ["npc", "dev", "/art/sprite/npc-dev.png", 32],
+    ["extra", "bau", "/art/sprite/extra-bau.png", 32],
+  ])("new kinds (%s %s)", (kind, id, src, size) => {
+    render(<GameArt kind={kind} id={id} scale={1} alt="" fallback="" />);
+    const img = document.querySelector("img")!;
+    expect(img.getAttribute("src")).toBe(src);
+    expect(img.getAttribute("width")).toBe(String(size));
+    expect(img.getAttribute("height")).toBe(String(size));
+  });
+
   // C2
   it("fallback replaces the image after an error", () => {
     const { container } = render(<GameArt kind="item" id="hp_potion" scale={2} alt="" fallback="HP+" />);
