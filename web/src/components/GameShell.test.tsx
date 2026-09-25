@@ -21,6 +21,7 @@ describe("GameShell", () => {
   it("404 opens onboarding with suggestion", async () => {
     mockFetch({
       "GET /api/me": json(404, { error: { code: "player_not_found", message: "x" } }),
+      "GET /api/catalog": json(200, CATALOG),
       "GET /api/onboarding": json(200, {
         suggestedDevName: "OCTOCAT",
         classes: ["FRONTEND", "BACKEND", "DEVOPS", "FULLSTACK"],
@@ -84,6 +85,7 @@ describe("GameShell", () => {
   };
   async function createDev() {
     await userEvent.click(await screen.findByRole("button", { name: "BACKEND" }));
+    await userEvent.click(document.querySelector('[data-body="masculino"]') as HTMLButtonElement);
     await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
   }
 
@@ -99,7 +101,9 @@ describe("GameShell", () => {
     ["catalog 500", () => json(500, { error: { code: "internal", message: "x" } })],
     ["catalog network error", () => Promise.reject(new TypeError("Failed to fetch"))],
   ])("catalog failure after onboarding shows server down (%s)", async (_name, failure) => {
-    mockFetch({ ...onboardingRoutes, "GET /api/catalog": failure as () => Response });
+    // onboarding reads the catalog for the body picker; the reload after creating the dev fails
+    let calls = 0;
+    mockFetch({ ...onboardingRoutes, "GET /api/catalog": () => (calls++ === 0 ? json(200, CATALOG) : (failure as () => Response)()) });
     render(<GameShell><p>cena</p></GameShell>);
     await createDev();
     expect(await screen.findByText("SERVIDOR FORA DO AR")).toBeInTheDocument();

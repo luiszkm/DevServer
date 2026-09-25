@@ -95,6 +95,7 @@ func NewRouter(d Deps) *chi.Mux {
 		pr.Post("/api/me/rack/{slot}/remove", h(rackH.Remove))
 		pr.Put("/api/me/appearance", h(avatarH.Update))
 		pr.Post("/api/me/shop/looks/{id}", h(avatarH.Buy))
+		pr.Post("/api/me/body", h(avatarH.ChangeBody))
 	})
 	return r
 }

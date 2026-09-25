@@ -1,0 +1,30 @@
+{
+  "name": "top-xadrez-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Feminine body (same head, hand and laptop position as the traced hero); plaid shirt, av-top-grafite (topColor).",
+  "legend": {"o": "ink", "1": "av-top-grafite.0", "2": "av-top-grafite.1", "3": "av-top-grafite.2", "4": "av-top-grafite.3"},
+  "layers": [
+    {"grid": [
+      "..........ooooooo.......ooo...",
+      ".......ooo2223344o...o44223o..",
+      "......o33322222244o.o44232o...",
+      ".....o333323222224o.o42222o...",
+      ".....o222212222122oo12o2212o..",
+      "....o2333322333233231333323o..",
+      "...o32333222322223331422323o..",
+      "..o332333222333233331333323o..",
+      ".oo332332222333233331333323o..",
+      "o22221222ooo222122221222212o..",
+      "o23332222o.o2332333314233222o.",
+      "o23332222o.o223233231223322o..",
+      "o22332322o.o22323223122oooo...",
+      ".o2332222o.o222222221oo.......",
+      "o2222122o..o222122221o........",
+      ".o232ooo..o2223233321ooo....o.",
+      "..ooo.....o2222222221222oooo2o",
+      "..........o222222222122222222o",
+      "...........oooooooooooooooooo."
+    ], "at": [2, 27]}
+  ]
+}

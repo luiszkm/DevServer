@@ -676,6 +676,9 @@ func TestItem_UnknownOrNotUsable(t *testing.T) {
 	f.start()
 	f.status(f.item("null_shard"), 422, "unknown_item")
 	f.status(f.item("x"), 422, "unknown_item")
+	// Body contract: the redesign token restores nothing, so it is never a battle item, even when held.
+	f.sql(`INSERT INTO player_items (player_id, item_id, quantity) SELECT id, 'redesign_token', 1 FROM players`)
+	f.status(f.item("redesign_token"), 422, "unknown_item")
 }
 
 // C34
@@ -688,7 +691,7 @@ func TestInventory_InEveryPlayer(t *testing.T) {
 		} `json:"player"`
 	}
 	want := []map[string]any{{"item": "sp_potion", "quantity": float64(2)}}
-	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"}, c)
+	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND", "body": "masculino"}, c)
 	if got := apptest.Decode[inv](t, rec).Player.Inventory; got == nil || !reflect.DeepEqual(*got, want) {
 		t.Fatalf("POST /api/players inventory = %v", got)
 	}
@@ -881,7 +884,7 @@ func TestCreatePlayer_StartingItemsFailureRollsBack(t *testing.T) {
 	f := &fixture{t, env, env.Session(1, "u")}
 	f.sql(`CREATE FUNCTION reject_item() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'nope'; END $$`)
 	f.sql(`CREATE TRIGGER reject_item BEFORE INSERT ON player_items FOR EACH ROW EXECUTE FUNCTION reject_item()`)
-	rec := f.do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"})
+	rec := f.do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND", "body": "masculino"})
 	f.status(rec, 500, "internal")
 	if n := env.Count("players"); n != 0 {
 		t.Fatalf("players = %d, want 0 (player insert must roll back with its items)", n)
@@ -914,7 +917,7 @@ func TestCreatePlayer_StartingItemsFromCatalog(t *testing.T) {
 	env := apptest.NewWithCatalog(t, func(c *catalog.Catalog) {
 		c.Combat.StartingItems = []catalog.ItemQuantity{{Item: "hp_potion", Quantity: 3}, {Item: "sp_potion", Quantity: 1}}
 	})
-	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"}, env.Session(1, "u"))
+	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND", "body": "masculino"}, env.Session(1, "u"))
 	got := apptest.Decode[turnJSON](t, rec).Player.Inventory
 	want := []struct {
 		Item     string `json:"item"`

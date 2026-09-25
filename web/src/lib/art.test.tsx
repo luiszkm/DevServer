@@ -327,7 +327,10 @@ describe("catalog art on disk", () => {
   // avatar customization: the fixed layers plus every style layer avatar.json names, all on one 48x64 grid
   it("hero layers per avatar.json, 48x64", () => {
     const { options } = catalog<{ options: { layer?: string }[] }>("avatar.json");
-    const layers = ["body", "bottom", "hand", ...options.flatMap((o) => (o.layer ? [o.layer] : []))];
+    const { options: all } = catalog<{ options: { part: string; layer?: string }[] }>("avatar.json");
+    // body, bottom and every top are drawn per body; the feminine variant ends in -f
+    const feminine = ["body-f", "bottom-f", ...all.filter((o) => o.part === "top" && o.layer).map((o) => `${o.layer}-f`)];
+    const layers = ["body", "bottom", "hand", ...feminine, ...options.flatMap((o) => (o.layer ? [o.layer] : []))];
     expectAssets(layers.map((name) => ({ category: "sprite", name: `hero/${name}`, size: [48, 64] })));
   });
 

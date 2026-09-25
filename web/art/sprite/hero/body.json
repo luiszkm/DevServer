@@ -2,8 +2,8 @@
   "name": "body",
   "category": "sprite",
   "size": [48, 64],
-  "_design": "Traced from the prototype hero (web/public/hero.png); head, face, ear, neck and the hanging fist in the skin ramp (tone), dark iris pixels in av-eyes-castanho (eyes). The skull, arms and neck are also drawn under the hair/clothes so other styles stack.",
-  "legend": {"o": "ink", "1": "skin.0", "2": "skin.1", "3": "skin.2", "4": "skin.3", "e": "av-eyes-castanho.0", "E": "av-eyes-castanho.1"},
+  "_design": "Traced from the prototype hero (web/public/hero.png); head, face, ear, neck and the hanging fist in the skin ramp (tone), dark iris pixels in av-eyes-castanho (eyes), thick eyebrows in av-hair-preto (hairColor). The skull, arms and neck are also drawn under the hair/clothes so other styles stack.",
+  "legend": {"o": "ink", "1": "skin.0", "2": "skin.1", "3": "skin.2", "4": "skin.3", "e": "av-eyes-castanho.0", "E": "av-eyes-castanho.1", "h": "av-hair-preto.0"},
   "layers": [
     {"grid": [
       "...............oooooooo.......",
@@ -18,7 +18,7 @@
       ".........o12333122223222221o..",
       ".........o12333222222222221o..",
       ".........o12332333333333332o..",
-      ".......ooo12112333333333332o..",
+      ".......ooo12112hhhh3333hhh2o..",
       "......o111121222oo23333oo32o..",
       "......o332121223Eo33333oE33o..",
       "......o321121233eo33333oe33o..",

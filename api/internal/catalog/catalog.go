@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"slices"
 	"sort"
 	"sync"
 
@@ -223,10 +224,26 @@ type AvatarOption struct {
 	Fixed    bool     `json:"fixed,omitempty"`
 	GearOnly bool     `json:"gearOnly,omitempty"`
 	Price    *Price   `json:"price,omitempty"`
+	// Bodies lists the body ids that may wear the option; empty means every body.
+	Bodies []string `json:"bodies,omitempty"`
+}
+
+// AvailableTo reports whether a hero of the given body may wear the option.
+func (o AvatarOption) AvailableTo(body string) bool {
+	return len(o.Bodies) == 0 || slices.Contains(o.Bodies, body)
+}
+
+// AvatarBody is a body type of the hero; Defaults overrides Avatar.Defaults for the parts it
+// lists.
+type AvatarBody struct {
+	ID       string            `json:"id"`
+	Name     string            `json:"name"`
+	Defaults map[string]string `json:"defaults,omitempty"`
 }
 
 type Avatar struct {
 	Parts   []AvatarPart   `json:"parts"`
+	Bodies  []AvatarBody   `json:"bodies"`
 	Options []AvatarOption `json:"options"`
 	// Defaults has one free option per part, worn until the player picks another.
 	Defaults map[string]string `json:"defaults"`
@@ -610,6 +627,26 @@ func (c *Catalog) AvatarOption(id string) (AvatarOption, bool) {
 		}
 	}
 	return AvatarOption{}, false
+}
+
+func (c *Catalog) AvatarBody(id string) (AvatarBody, bool) {
+	for _, b := range c.Avatar.Bodies {
+		if b.ID == id {
+			return b, true
+		}
+	}
+	return AvatarBody{}, false
+}
+
+// AvatarDefault is the option a hero of body wears on part until picking another: the body's own
+// default when it lists the part, Avatar.Defaults otherwise.
+func (c *Catalog) AvatarDefault(body, part string) string {
+	if b, ok := c.AvatarBody(body); ok {
+		if id, ok := b.Defaults[part]; ok {
+			return id
+		}
+	}
+	return c.Avatar.Defaults[part]
 }
 
 // AvatarOptionPosition orders option ids as the catalog lists them; unknown ids sort last.

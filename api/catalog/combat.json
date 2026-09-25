@@ -32,7 +32,8 @@
     { "id": "memory_crystal", "name": "CRISTAL DE MEMÓRIA", "glyph": "^^", "rarity": "LENDÁRIO", "description": "Fragmento cristalizado de um vazamento de memória ancestral." },
     { "id": "sp_potion", "name": "POÇÃO DE CACHE", "glyph": "++", "rarity": "COMUM", "description": "Restaura 30 SP no Bug Fight.", "restore": { "stat": "sp", "amount": 30 }, "price": { "currency": "gems", "amount": 15 } },
     { "id": "hp_potion", "name": "POÇÃO DE MEMÓRIA", "glyph": "HP+", "rarity": "COMUM", "description": "Restaura 40 HP no Bug Fight.", "restore": { "stat": "hp", "amount": 40 }, "price": { "currency": "gems", "amount": 12 } },
-    { "id": "boost_deploy", "name": "ACELERADOR DE DEPLOY", "glyph": ">>", "rarity": "COMUM", "description": "Reduz 15 minutos de um deploy em andamento.", "price": { "currency": "gems", "amount": 35 } }
+    { "id": "boost_deploy", "name": "ACELERADOR DE DEPLOY", "glyph": ">>", "rarity": "COMUM", "description": "Reduz 15 minutos de um deploy em andamento.", "price": { "currency": "gems", "amount": 35 } },
+    { "id": "redesign_token", "name": "TOKEN DE REDESIGN", "glyph": "<~>", "rarity": "RARO", "description": "Troca o corpo do seu dev (masculino/feminino). Consumido ao usar no AVATAR.", "price": { "currency": "gems", "amount": 100 } }
   ],
   "rules": {
     "counter": [7, 14],

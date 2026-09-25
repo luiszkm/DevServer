@@ -17,7 +17,7 @@ const catalog = CATALOG;
 const ROSA = ["#6a1a4a", "#9c2a6c", "#d04a98", "#f080c0"];
 
 const EMPTY = { setup: null, bebida: null, vestuario: null, acessorio: null };
-const input = (o: Partial<LookInput> = {}): LookInput => ({ appearance: {}, equipment: EMPTY, skin: "default", ...o });
+const input = (o: Partial<LookInput> = {}): LookInput => ({ body: "masculino", appearance: {}, equipment: EMPTY, skin: "default", ...o });
 const zip = (from: string[], to: string[]) => Object.fromEntries(from.map((h, i) => [h, to[i]]));
 const src = (layer: string) => `/art/sprite/hero/${layer}.png`;
 
@@ -41,7 +41,7 @@ describe("resolveLook", () => {
       catalog,
     );
     expect(look.layers).toEqual([
-      { src: src("body"), swap: { ...zip(TONE, NEGRA), ...zip(EYES, AZUL) } },
+      { src: src("body"), swap: { ...zip(TONE, NEGRA), ...zip(EYES, AZUL), ...zip(HAIR, LOIRO) } },
       { src: src("bottom"), swap: {} },
       { src: src("top-moletom"), swap: zip(TOP, VINHO) },
       { src: src("laptop-basico"), swap: {} },
@@ -75,7 +75,7 @@ describe("resolveLook", () => {
 
   it("worn skin forces its palette over the player's colours", () => {
     const look = resolveLook(input({ skin: "neon", appearance: { tone: "tone_negra", hairColor: "hair_loiro", topColor: "top_vinho" } }), catalog);
-    expect(look.layers[0].swap).toEqual({ ...zip(TONE, NEON), ...zip(EYES, AZUL) });
+    expect(look.layers[0].swap).toEqual({ ...zip(TONE, NEON), ...zip(EYES, AZUL), ...zip(HAIR, ROSA) });
     expect(look.layers[4].swap).toEqual(zip(TONE, NEON));
     expect(look.layers[5].swap).toEqual(zip(HAIR, ROSA));
     expect(look.layers[2].swap).toEqual(zip(TOP, VINHO));
@@ -115,5 +115,31 @@ describe("resolveLook", () => {
     const a = resolveLook(input(), catalog).key;
     expect(resolveLook(input({ appearance: { hair: "hair_espetado" } }), catalog).key).toBe(a);
     expect(resolveLook(input({ appearance: { hairColor: "hair_loiro" } }), catalog).key).not.toBe(a);
+  });
+
+  it("feminino draws its own torso layers and shares head, hand and laptop", () => {
+    const look = resolveLook(input({ body: "feminino" }), catalog);
+    expect(look.layers.map((l) => l.src)).toEqual([
+      src("body-f"), src("bottom-f"), src("top-moletom-f"), src("laptop-basico"), src("hand"), src("hair-longo"),
+    ]);
+    expect(look.parts.hair).toEqual({ option: "hair_longo", by: "default" });
+  });
+
+  it("gear top on feminino uses the feminine variant", () => {
+    const look = resolveLook(input({ body: "feminino", equipment: { ...EMPTY, vestuario: "hoodie_trace" } }), catalog);
+    expect(look.layers[2]).toEqual({ src: src("top-hoodie_trace-f"), swap: {} });
+  });
+
+  it.each([
+    ["beard on feminino", "feminino", { beard: "beard_cheia" }, "beard", "beard_nenhuma"],
+    ["feminine hair on masculino", "masculino", { hair: "hair_rabo" }, "hair", "hair_espetado"],
+  ])("%s falls back to the body's default", (_name, body, appearance, part, fallback) => {
+    const look = resolveLook(input({ body, appearance }), catalog);
+    expect(look.parts[part]).toEqual({ option: fallback, by: "default" });
+  });
+
+  it("a pick for both bodies is kept on feminino", () => {
+    const look = resolveLook(input({ body: "feminino", appearance: { hair: "hair_curto" } }), catalog);
+    expect(look.parts.hair).toEqual({ option: "hair_curto", by: "player" });
   });
 });

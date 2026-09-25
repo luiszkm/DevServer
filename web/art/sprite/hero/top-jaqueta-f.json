@@ -1,0 +1,30 @@
+{
+  "name": "top-jaqueta-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Feminine body (same head, hand and laptop position as the traced hero); fixed brown leather jacket (wood) over a dark roof tee.",
+  "legend": {"o": "ink", "a": "wood.0", "b": "wood.1", "c": "wood.2", "d": "wood.3", "e": "wood.4", "t": "roof.1", "T": "roof.2", "z": "metal.3", "Z": "metal.2"},
+  "layers": [
+    {"grid": [
+      "..........ooooooo.......ooo...",
+      ".......ooobbbeecto.....otbeo..",
+      "......ocecbbbbeeTao...otaea...",
+      ".....oddddccbbbeaao.ootteao...",
+      ".....oddcdcbccbeaaoottoteabo..",
+      "....oddcccbbcdddTatTTTTtacco..",
+      "...ocdddcbbbcbbbbatTtTttacco..",
+      "..ocdddccbbbcccccatTTTTtacco..",
+      ".oocccccbbbbcccccatTTTTtacco..",
+      "obbcccbbbooobccccatTTTttacbo..",
+      "obcccbbbbo.obccccztTTtttacbbo.",
+      "obccccbbbo.obbcccZtTTtttabbo..",
+      "obbcddcbbo.obbcccatTtttoooo...",
+      ".obcccbbbo.obbbbbatttoo.......",
+      "obbbcdcbo..obbbbbatTto........",
+      ".obcbooo..obbbcccatttooo....o.",
+      "..ooo.....obbbbbbatttttboooobo",
+      "..........obbbbbbatttttbabbbbo",
+      "...........oooooooooooooooooo."
+    ], "at": [2, 27]}
+  ]
+}

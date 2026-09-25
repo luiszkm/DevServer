@@ -1,7 +1,7 @@
 import type { AvatarOption, Catalog, Player } from "./types";
 
-/** What decides the hero's look: the picks, the equipped gear and the worn skin. */
-export type LookInput = Pick<Player, "appearance" | "equipment" | "skin">;
+/** What decides the hero's look: the body, the picks, the equipped gear and the worn skin. */
+export type LookInput = Pick<Player, "body" | "appearance" | "equipment" | "skin">;
 
 /** Who set a part: equipped gear, the worn skin, the player's pick, or the catalog default. */
 export type LookSource = "gear" | "skin" | "player" | "default";
@@ -19,13 +19,26 @@ export type Look = {
 
 const layerSrc = (layer: string) => `/art/sprite/hero/${layer}.png`;
 
+// The torso layers are drawn per body; head, hand and everything on them are shared.
+const BODY_SUFFIX: Record<string, string> = { feminino: "-f" };
+
+export function availableFor(option: AvatarOption, body: string): boolean {
+  return !option.bodies || option.bodies.includes(body);
+}
+
+/** The catalog defaults with the body's own defaults on top. */
+export function bodyDefaults(catalog: Catalog, body: string): Record<string, string> {
+  return { ...catalog.avatar.defaults, ...catalog.avatar.bodies.find((b) => b.id === body)?.defaults };
+}
+
 /**
  * Resolves every avatar part, strongest first: gear with a look in the part's slot, the worn
- * skin's palette (colour parts), the player's pick, the catalog default. A pick that is unknown,
- * of another part, or gear-only falls back to the default.
+ * skin's palette (colour parts), the player's pick, the body's default. A pick that is unknown,
+ * of another part, gear-only, or not for this body falls back to the default.
  */
 export function resolveLook(input: LookInput, catalog: Catalog): Look {
-  const { parts, options, defaults } = catalog.avatar;
+  const { parts, options } = catalog.avatar;
+  const defaults = bodyDefaults(catalog, input.body);
   const option = (id?: string) => options.find((o) => o.id === id);
   const skin = catalog.skins.find((s) => s.id === input.skin);
   const resolved: Look["parts"] = {};
@@ -34,7 +47,7 @@ export function resolveLook(input: LookInput, catalog: Catalog): Look {
 
   for (const part of parts) {
     const pick = option(input.appearance[part.id]);
-    let chosen = pick && pick.part === part.id && !pick.gearOnly ? pick : undefined;
+    let chosen = pick && pick.part === part.id && !pick.gearOnly && availableFor(pick, input.body) ? pick : undefined;
     let by: LookSource = chosen ? "player" : "default";
     chosen ??= option(defaults[part.id])!;
 
@@ -51,11 +64,11 @@ export function resolveLook(input: LookInput, catalog: Catalog): Look {
     else styles[part.id] = chosen;
   }
 
-  // The art is painted in each colour part's default ramp; swap it tone by tone.
+  // The art is painted in each colour part's catalog default ramp; swap it tone by tone.
   const swap = (...colorParts: string[]) => {
     const out: Record<string, string> = {};
     for (const id of colorParts) {
-      const base = option(defaults[id])!.ramp!;
+      const base = option(catalog.avatar.defaults[id])!.ramp!;
       base.forEach((hex, i) => {
         if (ramps[id][i] !== hex) out[hex] = ramps[id][i];
       });
@@ -63,14 +76,17 @@ export function resolveLook(input: LookInput, catalog: Catalog): Look {
     return out;
   };
   // A style without a layer (SEM BARBA, SEM ÓCULOS) draws nothing.
-  const style = (part: string, colour?: string): Layer[] => {
+  const suffix = BODY_SUFFIX[input.body] ?? "";
+  const style = (part: string, colour?: string, perBody = false): Layer[] => {
     const o = styles[part];
-    return o.layer ? [{ src: layerSrc(o.layer), swap: o.fixed || !colour ? {} : swap(colour) }] : [];
+    const layer = o.layer && (perBody ? o.layer + suffix : o.layer);
+    return layer ? [{ src: layerSrc(layer), swap: o.fixed || !colour ? {} : swap(colour) }] : [];
   };
   const layers: Layer[] = [
-    { src: layerSrc("body"), swap: swap("tone", "eyes") },
-    { src: layerSrc("bottom"), swap: swap("bottomColor") },
-    ...style("top", "topColor"),
+    // The body carries the eyebrows, painted in the hair ramp so they follow the hair colour.
+    { src: layerSrc(`body${suffix}`), swap: swap("tone", "eyes", "hairColor") },
+    { src: layerSrc(`bottom${suffix}`), swap: swap("bottomColor") },
+    ...style("top", "topColor", true),
     ...style("laptop"),
     { src: layerSrc("hand"), swap: swap("tone") },
     ...style("beard", "hairColor"),

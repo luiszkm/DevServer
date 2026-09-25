@@ -1,4 +1,5 @@
-// Package avatar lets the player dress the hero: pick an option per part and buy priced options.
+// Package avatar lets the player dress the hero: pick an option per part, buy priced options and
+// change body with a redesign token.
 // Every rule runs inside player.WithLocked (AD-004).
 package avatar
 
@@ -40,7 +41,8 @@ func (h *Handlers) mutate(w http.ResponseWriter, r *http.Request, fn mutation) e
 }
 
 // Choose is the pick rule: part must be a catalog part and option one of its options; a gear-only
-// option comes only from equipped gear, and a priced one must have been bought.
+// option comes only from equipped gear, the option must be available to the player's body, and a
+// priced one must have been bought.
 func Choose(cat *catalog.Catalog, p *player.Player, part, option string) error {
 	if _, ok := cat.AvatarPart(part); !ok {
 		return httpx.ErrUnknownPart
@@ -51,6 +53,9 @@ func Choose(cat *catalog.Catalog, p *player.Player, part, option string) error {
 	}
 	if o.GearOnly {
 		return httpx.ErrGearOnly
+	}
+	if !o.AvailableTo(p.Body) {
+		return httpx.ErrWrongBody
 	}
 	if o.Price != nil && !p.OwnsLook(o.ID) {
 		return httpx.ErrNotOwned
@@ -98,6 +103,9 @@ func (h *Handlers) Buy(w http.ResponseWriter, r *http.Request) error {
 		return httpx.ErrNotForSale
 	}
 	return h.mutate(w, r, func(ctx context.Context, tx pgx.Tx, p *player.Player) error {
+		if !o.AvailableTo(p.Body) {
+			return httpx.ErrWrongBody
+		}
 		if p.OwnsLook(o.ID) {
 			return httpx.ErrAlreadyOwned
 		}
@@ -109,5 +117,44 @@ func (h *Handlers) Buy(w http.ResponseWriter, r *http.Request) error {
 		}
 		p.Pick(o.Part, o.ID)
 		return player.LoadLooks(ctx, tx, p)
+	})
+}
+
+// RedesignToken is the item consumed by a change of body.
+const RedesignToken = "redesign_token"
+
+// ChooseBody is the redesign rule: body must be a catalog body other than the player's, and the
+// player must hold a RedesignToken.
+func ChooseBody(cat *catalog.Catalog, p *player.Player, body string) error {
+	if _, ok := cat.AvatarBody(body); !ok {
+		return httpx.ErrUnknownBody
+	}
+	if body == p.Body {
+		return httpx.ErrSameBody
+	}
+	if p.Quantity(RedesignToken) < 1 {
+		return httpx.ErrNoRedesignToken
+	}
+	return nil
+}
+
+// ChangeBody spends one RedesignToken on a new body; the stored picks are kept and fall back on
+// read where the new body cannot wear them.
+func (h *Handlers) ChangeBody(w http.ResponseWriter, r *http.Request) error {
+	var in struct {
+		Body string `json:"body"`
+	}
+	if err := httpx.DecodeJSON(r, &in); err != nil {
+		return err
+	}
+	return h.mutate(w, r, func(ctx context.Context, tx pgx.Tx, p *player.Player) error {
+		if err := ChooseBody(h.Catalog, p, in.Body); err != nil {
+			return err
+		}
+		if err := player.AddItem(ctx, tx, p, RedesignToken, -1); err != nil {
+			return err
+		}
+		p.SetBody(in.Body)
+		return nil
 	})
 }

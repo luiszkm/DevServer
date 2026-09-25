@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import AvatarPage from "@/app/(game)/avatar/page";
-import { resolveLook } from "@/lib/avatar";
+import { availableFor, resolveLook } from "@/lib/avatar";
 import { CONNECTION_FAILED } from "@/lib/gear";
 import type { Player } from "@/lib/types";
 import { CATALOG, json, mockFetch, player, rack } from "@/test/helpers";
@@ -326,7 +326,8 @@ describe("AvatarScene visual editor", () => {
     expect(optionButton("tone_negra").querySelectorAll(".avatar-swatch > span")).toHaveLength(4);
 
     await userEvent.click(partButton("hair"));
-    const hair = CATALOG.avatar.options.filter((o) => o.part === "hair").map((o) => o.id);
+    const hair = CATALOG.avatar.options.filter((o) => o.part === "hair" && availableFor(o, "masculino")).map((o) => o.id);
+    expect(hair).not.toContain("hair_rabo");
     expect(optionIds()).toEqual(hair);
     expect(optionButton("hair_moicano")).toHaveAttribute("data-locked", "true");
     expect(optionButton("hair_moicano")).toHaveTextContent("30g");
@@ -413,6 +414,59 @@ describe("AvatarScene visual editor", () => {
     expect(setPlayer).not.toHaveBeenCalled();
     expect(visual("SALVAR")).toBeEnabled();
     expect(hero().dataset.look).toBe(lookKey(player({ appearance: { ...CATALOG.avatar.defaults, tone: "tone_negra" } })));
+  });
+});
+
+describe("AvatarScene body", () => {
+  const partIds = () => [...document.querySelectorAll<HTMLElement>("[data-part]")].map((b) => b.dataset.part);
+  const bodyRow = () => screen.getByRole("group", { name: "corpo" });
+  const open = async () => userEvent.click(screen.getByRole("tab", { name: "VISUAL" }));
+
+  it("feminino hides the beard and offers the feminine hair styles", async () => {
+    renderAvatar(player({ body: "feminino" }));
+    await open();
+    expect(partIds()).not.toContain("beard");
+    expect(within(bodyRow()).getByText("CORPO: FEMININO")).toBeInTheDocument();
+    await userEvent.click(document.querySelector('[data-part="hair"]') as HTMLButtonElement);
+    const hair = [...document.querySelectorAll<HTMLElement>("[data-option]")].map((b) => b.dataset.option);
+    expect(hair).toEqual(expect.arrayContaining(["hair_rabo", "hair_trancas", "hair_franja", "hair_longo"]));
+    expect(document.querySelector(".avatar-hero")!.getAttribute("data-look")).toContain("/art/sprite/hero/body-f.png");
+  });
+
+  it("masculino shows the beard and not the feminine hair", async () => {
+    renderAvatar();
+    await open();
+    expect(partIds()).toContain("beard");
+    await userEvent.click(document.querySelector('[data-part="hair"]') as HTMLButtonElement);
+    expect(document.querySelector('[data-option="hair_rabo"]')).toBeNull();
+  });
+
+  it("switching body needs a redesign token", async () => {
+    renderAvatar(player({ inventory: [] }));
+    await open();
+    expect(within(bodyRow()).getByRole("button", { name: "TROCAR PARA FEMININO" })).toBeDisabled();
+    expect(within(bodyRow()).getByText("precisa de 1 TOKEN DE REDESIGN — compre na Loja.")).toBeInTheDocument();
+  });
+
+  it("with a token, TROCAR posts the other body", async () => {
+    const changed = player({ body: "feminino", inventory: [] });
+    const f = mockFetch({ "POST /api/me/body": json(200, { player: changed }) });
+    const { setPlayer } = renderAvatar(player({ inventory: [{ item: "redesign_token", quantity: 1 }] }));
+    await open();
+    expect(within(bodyRow()).getByText("tokens de redesign: 1")).toBeInTheDocument();
+    await userEvent.click(within(bodyRow()).getByRole("button", { name: "TROCAR PARA FEMININO" }));
+    expect(JSON.parse(f.fn.mock.calls[0][1]!.body as string)).toEqual({ body: "feminino" });
+    expect(setPlayer).toHaveBeenCalledWith(changed);
+    expect(screen.getByRole("status")).toHaveTextContent("CORPO TROCADO");
+  });
+
+  it("refused switch shows the api message", async () => {
+    mockFetch({ "POST /api/me/body": json(409, { error: { code: "no_redesign_token", message: "compre um TOKEN DE REDESIGN na Loja" } }) });
+    const { setPlayer } = renderAvatar(player({ inventory: [{ item: "redesign_token", quantity: 1 }] }));
+    await open();
+    await userEvent.click(within(bodyRow()).getByRole("button", { name: "TROCAR PARA FEMININO" }));
+    expect(screen.getByRole("status")).toHaveTextContent("compre um TOKEN DE REDESIGN na Loja");
+    expect(setPlayer).not.toHaveBeenCalled();
   });
 });
 

@@ -83,3 +83,21 @@ test("beard follows the hair colour and glasses are drawn over the face", async 
   expect(await pixel(page, [24, 26])).toBe("#8a2c14");
   expect(await pixel(page, [20, 17])).toBe("#121e2a");
 });
+
+test("a feminine dev is drawn with the feminine body and keeps it", async ({ page }) => {
+  await newDev(page, "feminino");
+  await openAvatar(page);
+  // body-f: face (20,22) skin.2, thin brow (20,15) in the hair ramp; top-moletom-f chest (16,34) grafite index 1
+  expect(await pixel(page, [20, 22])).toBe("#f6ba72");
+  expect(await pixel(page, [20, 15])).toBe("#141420");
+  expect(await pixel(page, [16, 34])).toBe("#2c3838");
+  await page.getByRole("tab", { name: "VISUAL" }).click();
+  await expect(page.getByRole("group", { name: "corpo" })).toContainText("CORPO: FEMININO");
+  await expect(page.locator('[data-part="beard"]')).toHaveCount(0);
+
+  await page.reload();
+  await openAvatar(page);
+  expect(await pixel(page, [20, 15])).toBe("#141420");
+  await page.getByRole("tab", { name: "VISUAL" }).click();
+  await expect(page.getByRole("group", { name: "corpo" })).toContainText("CORPO: FEMININO");
+});

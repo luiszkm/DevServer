@@ -293,6 +293,7 @@ test.describe("phone S states", () => {
     await page.goto("/");
     await page.getByRole("link", { name: "ENTRAR COM GITHUB" }).click();
     await page.getByRole("button", { name: "BACKEND" }).click();
+    await page.locator('[data-body="masculino"]').click();
     await page.getByRole("button", { name: "CRIAR DEV" }).click();
     return page.locator(".field-error", { hasText: text });
   }

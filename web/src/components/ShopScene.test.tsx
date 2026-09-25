@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import ShopPage from "@/app/(game)/loja/page";
+import { availableFor } from "@/lib/avatar";
 import type { Player } from "@/lib/types";
 import { CATALOG, GEAR, ITEMS, RECIPES, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
@@ -39,7 +40,7 @@ describe("ShopScene", () => {
     renderShop(player({ gems: 20, inventory: [{ item: "sp_potion", quantity: 2 }] }));
     expect(screen.getByText("LOJA DEVSERVER")).toBeInTheDocument();
     expect(screen.getByText("GEMS: 20")).toBeInTheDocument();
-    expect(cardNames("POÇÕES")).toEqual(["POÇÃO DE CACHE", "POÇÃO DE MEMÓRIA", "ACELERADOR DE DEPLOY"]);
+    expect(cardNames("POÇÕES")).toEqual(["POÇÃO DE CACHE", "POÇÃO DE MEMÓRIA", "ACELERADOR DE DEPLOY", "TOKEN DE REDESIGN"]);
     expect(card("sp_potion")).toHaveTextContent("possui: 2");
     expect(card("sp_potion")).toHaveTextContent("15g");
     expect(card("hp_potion")).toHaveTextContent("possui: 0");
@@ -441,7 +442,8 @@ describe("ShopScene forge", () => {
 });
 
 describe("ShopScene avatar styles", () => {
-  const priced = CATALOG.avatar.options.filter((o) => o.price);
+  // a masculine dev: the feminine-only styles are not on sale for him
+  const priced = CATALOG.avatar.options.filter((o) => o.price && availableFor(o, "masculino"));
 
   it("lists every priced avatar option with its status", () => {
     const p = player({ looks: ["hair_moicano", "hair_azul"], appearance: { ...CATALOG.avatar.defaults, hair: "hair_moicano" } });

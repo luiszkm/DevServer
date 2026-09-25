@@ -137,7 +137,7 @@ func TestMe_RackField(t *testing.T) {
 func TestCreatePlayer_RackDefaults(t *testing.T) {
 	env := apptest.New(t)
 	c := env.Session(1, "user")
-	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"}, c)
+	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND", "body": "masculino"}, c)
 	if rec.Code != http.StatusCreated {
 		t.Fatalf("status %d %s", rec.Code, rec.Body.String())
 	}

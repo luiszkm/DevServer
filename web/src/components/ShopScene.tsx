@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { type ApiResult, post, put } from "@/lib/api";
+import { availableFor } from "@/lib/avatar";
 import {
   CONNECTION_FAILED,
   bonusLong,
@@ -54,7 +55,8 @@ export function ShopScene() {
     isEquipped(player, g.id, g.slot) ? "EQUIPADO" : player.gear.includes(g.id) ? "NO INVENTÁRIO" : g.price ? priceShort(g.price) : "FORJA";
   const skinStatus = (s: Skin) =>
     player.skin === s.id ? "EQUIPADA" : player.skins.includes(s.id) ? "NO GUARDA-ROUPA" : priceShort(s.price);
-  const looks = catalog.avatar.options.filter((o): o is AvatarOption & { price: Price } => !!o.price);
+  // Only the styles this dev's body can wear are for sale here.
+  const looks = catalog.avatar.options.filter((o): o is AvatarOption & { price: Price } => !!o.price && availableFor(o, player.body));
   const partName = (id: string) => catalog.avatar.parts.find((p) => p.id === id)?.name ?? id;
   const lookStatus = (o: AvatarOption & { price: Price }) =>
     player.appearance[o.part] === o.id ? "EM USO" : player.looks.includes(o.id) ? "NO GUARDA-ROUPA" : priceShort(o.price);

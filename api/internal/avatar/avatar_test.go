@@ -22,8 +22,22 @@ import (
 
 type playerJSON struct {
 	Coins, Gems int
+	Body        string
 	Appearance  map[string]string
 	Looks       []string
+	Inventory   []struct {
+		Item     string `json:"item"`
+		Quantity int    `json:"quantity"`
+	}
+}
+
+func (p playerJSON) qty(item string) int {
+	for _, it := range p.Inventory {
+		if it.Item == item {
+			return it.Quantity
+		}
+	}
+	return 0
 }
 
 type fixture struct {
@@ -32,9 +46,11 @@ type fixture struct {
 	c   *http.Cookie
 }
 
-func newFixture(t *testing.T) *fixture {
+func newFixture(t *testing.T) *fixture { return newFixtureBody(t, "masculino") }
+
+func newFixtureBody(t *testing.T, body string) *fixture {
 	env := apptest.New(t)
-	return &fixture{t, env, env.NewPlayer(1, "DEV_01", "BACKEND")}
+	return &fixture{t, env, env.NewPlayerWithBody(1, "DEV_01", "BACKEND", body)}
 }
 
 func (f *fixture) sql(q string, args ...any) {
@@ -89,8 +105,9 @@ func (f *fixture) snapshot() string {
 	f.t.Helper()
 	var s string
 	if err := f.env.Pool.QueryRow(context.Background(), `SELECT
-		(SELECT appearance::text || '|' || gems || '|' || coins FROM players) || '|' ||
-		(SELECT coalesce(string_agg(look_id, ',' ORDER BY look_id), '') FROM player_looks)`).Scan(&s); err != nil {
+		(SELECT appearance::text || '|' || gems || '|' || coins || '|' || body FROM players) || '|' ||
+		(SELECT coalesce(string_agg(look_id, ',' ORDER BY look_id), '') FROM player_looks) || '|' ||
+		(SELECT coalesce(string_agg(item_id || ':' || quantity, ',' ORDER BY item_id), '') FROM player_items)`).Scan(&s); err != nil {
 		f.t.Fatal(err)
 	}
 	return s
@@ -136,33 +153,58 @@ func wantLooks(t *testing.T, got, want []string) {
 	}
 }
 
-// Avatar C5 (own layer): one case per row of the pick rule.
+// Avatar C5 and body contract (own layer): one case per row of the pick rule, in its order
+// unknown_part, unknown_look, gear_only, wrong_body, not_owned.
 func TestChoose_Rows(t *testing.T) {
 	cat := catalog.Default()
-	owner := &player.Player{Looks: []string{"hair_moicano"}}
+	m := func(looks ...string) *player.Player { return &player.Player{Body: "masculino", Looks: looks} }
+	f := func(looks ...string) *player.Player { return &player.Player{Body: "feminino", Looks: looks} }
 	for _, tc := range []struct {
 		name, part, option string
 		p                  *player.Player
 		want               error
 	}{
-		{"unknown part", "hat", "hair_curto", &player.Player{}, httpx.ErrUnknownPart},
-		{"unknown option", "hair", "hair_gone", &player.Player{}, httpx.ErrUnknownLook},
-		{"option of another part", "hair", "hair_preto", &player.Player{}, httpx.ErrUnknownLook},
-		{"gear-only option", "top", "top_hoodie_trace", &player.Player{}, httpx.ErrGearOnly},
-		{"priced option not bought", "hair", "hair_moicano", &player.Player{}, httpx.ErrNotOwned},
-		{"priced option bought", "hair", "hair_moicano", owner, nil},
-		{"free option", "hair", "hair_curto", &player.Player{}, nil},
+		{"unknown part", "hat", "hair_curto", m(), httpx.ErrUnknownPart},
+		{"unknown option", "hair", "hair_gone", m(), httpx.ErrUnknownLook},
+		{"option of another part", "hair", "hair_preto", m(), httpx.ErrUnknownLook},
+		{"option of another part, also of another body", "beard", "hair_rabo", m(), httpx.ErrUnknownLook},
+		{"gear-only option", "top", "top_hoodie_trace", m(), httpx.ErrGearOnly},
+		{"feminino-only option for masculino", "hair", "hair_rabo", m(), httpx.ErrWrongBody},
+		{"masculino-only option for feminino", "beard", "beard_cheia", f(), httpx.ErrWrongBody},
+		{"priced option of another body, not bought", "hair", "hair_trancas", m(), httpx.ErrWrongBody},
+		{"priced option of another body, bought", "beard", "beard_lenhador", f("beard_lenhador"), httpx.ErrWrongBody},
+		{"priced option not bought", "hair", "hair_moicano", m(), httpx.ErrNotOwned},
+		{"priced option of the body not bought", "hair", "hair_trancas", f(), httpx.ErrNotOwned},
+		{"priced option bought", "hair", "hair_moicano", m("hair_moicano"), nil},
+		{"free option", "hair", "hair_curto", m(), nil},
+		{"free option for every body, feminino", "hair", "hair_espetado", f(), nil},
+		{"free option of the body", "hair", "hair_franja", f(), nil},
+		{"layer-less default for every body", "beard", "beard_nenhuma", f(), nil},
 	} {
 		if got := avatar.Choose(cat, tc.p, tc.part, tc.option); !errors.Is(got, tc.want) {
 			t.Errorf("%s: Choose = %v, want %v", tc.name, got, tc.want)
 		}
+	}
+
+	// gear_only comes before wrong_body: no shipped gear-only option is body-bound, so bind one.
+	edited, err := catalog.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i := range edited.Avatar.Options {
+		if edited.Avatar.Options[i].ID == "top_hoodie_trace" {
+			edited.Avatar.Options[i].Bodies = []string{"feminino"}
+		}
+	}
+	if got := avatar.Choose(edited, m(), "top", "top_hoodie_trace"); !errors.Is(got, httpx.ErrGearOnly) {
+		t.Errorf("gear-only option of another body: Choose = %v, want gear_only", got)
 	}
 }
 
 // Avatar C4: a new dev wears every default and owns no look.
 func TestCreatePlayer_AvatarDefaults(t *testing.T) {
 	env := apptest.New(t)
-	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"}, env.Session(1, "u"))
+	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND", "body": "masculino"}, env.Session(1, "u"))
 	if rec.Code != http.StatusCreated {
 		t.Fatalf("create: %d %s", rec.Code, rec.Body.String())
 	}

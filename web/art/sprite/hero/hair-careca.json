@@ -1,12 +1,10 @@
 {
-  "name": "hair-careca",
-  "category": "sprite",
-  "size": [48, 64],
-  "_design": "Bald: only the traced eyebrows, av-hair-preto so hairColor tints them.",
-  "legend": {"1": "av-hair-preto.0"},
-  "layers": [
-    {"grid": [
-      "1111....111"
-    ], "at": [18, 16]}
-  ]
+ "name": "hair-careca",
+ "category": "sprite",
+ "size": [
+  48,
+  64
+ ],
+ "_design": "Bald: an intentionally empty (fully transparent) layer; the eyebrows live in the body layers.",
+ "layers": []
 }

@@ -259,6 +259,8 @@ func TestCatalog_ServesCombat(t *testing.T) {
 		"sp_potion|POÇÃO DE CACHE|++|COMUM|sp 30", "hp_potion|POÇÃO DE MEMÓRIA|HP+|COMUM|hp 40",
 		// shop-inventory-avatar AC 1 adds the deploy booster, which restores nothing in combat.
 		"boost_deploy|ACELERADOR DE DEPLOY|>>|COMUM|",
+		// The body contract adds the redesign token, which restores nothing in combat.
+		"redesign_token|TOKEN DE REDESIGN|<~>|RARO|",
 	}
 	if len(b.Items) != len(items) {
 		t.Fatalf("items = %d", len(b.Items))
@@ -409,7 +411,7 @@ func TestCatalog_ServesShop(t *testing.T) {
 		}
 	}
 
-	prices := map[string]string{"sp_potion": "gems 15", "hp_potion": "gems 12", "boost_deploy": "gems 35"}
+	prices := map[string]string{"sp_potion": "gems 15", "hp_potion": "gems 12", "boost_deploy": "gems 35", "redesign_token": "gems 100"}
 	seen := map[string]bool{}
 	for _, it := range b.Items {
 		want, priced := prices[it.ID]
@@ -421,6 +423,9 @@ func TestCatalog_ServesShop(t *testing.T) {
 		}
 		if it.ID == "boost_deploy" && (it.Name != "ACELERADOR DE DEPLOY" || it.Glyph != ">>" || it.Rarity != "COMUM") {
 			t.Errorf("boost_deploy = %+v", it)
+		}
+		if it.ID == "redesign_token" && (it.Name != "TOKEN DE REDESIGN" || it.Glyph != "<~>" || it.Rarity != "RARO") {
+			t.Errorf("redesign_token = %+v", it)
 		}
 		seen[it.ID] = true
 	}
@@ -730,6 +735,7 @@ func TestCatalog_ServesAvatar(t *testing.T) {
 	var b struct {
 		Avatar struct {
 			Parts    []map[string]string          `json:"parts"`
+			Bodies   []map[string]json.RawMessage `json:"bodies"`
 			Options  []map[string]json.RawMessage `json:"options"`
 			Defaults map[string]string            `json:"defaults"`
 		} `json:"avatar"`
@@ -753,67 +759,89 @@ func TestCatalog_ServesAvatar(t *testing.T) {
 		}
 	}
 
-	// id|part|name|ramp or layer|flags|price, in the contract's order within each part.
+	// Body contract: the two bodies, masculino (the original look) first; only feminino overrides a default.
+	bodies := []string{`{"id":"masculino","name":"MASCULINO"}`, `{"id":"feminino","name":"FEMININO","defaults":{"hair":"hair_longo"}}`}
+	if len(a.Bodies) != len(bodies) {
+		t.Fatalf("bodies = %d, want %d", len(a.Bodies), len(bodies))
+	}
+	for i, raw := range a.Bodies {
+		b, err := json.Marshal(struct {
+			ID       json.RawMessage `json:"id"`
+			Name     json.RawMessage `json:"name"`
+			Defaults json.RawMessage `json:"defaults,omitempty"`
+		}{raw["id"], raw["name"], raw["defaults"]})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(raw) > 3 || string(b) != bodies[i] {
+			t.Errorf("body %d = %v, want %s", i, raw, bodies[i])
+		}
+	}
+
+	// id|part|name|ramp or layer|flags|price|bodies, in the contract's order within each part.
 	options := []string{
-		"tone_clara|tone|CLARA|#b07858,#d8a07c,#f8cfa8,#ffe8cc|-|-",
-		"tone_padrao|tone|PADRÃO|#8a5234,#b8764a,#f6ba72,#ffd8a0|-|-",
-		"tone_morena|tone|MORENA|#6e3e22,#9a6038,#c88a58,#e4b07c|-|-",
-		"tone_parda|tone|PARDA|#5a3018,#80492a,#a8683e,#c88c5c|-|-",
-		"tone_negra|tone|NEGRA|#3a1e10,#5a3220,#7c4a30,#9c6844|-|-",
-		"tone_retinta|tone|RETINTA|#24120a,#3a2014,#553222,#704834|-|-",
-		"eyes_castanho|eyes|CASTANHO|#3a2010,#5c3418,#7e4c26,#a06a3a|-|-",
-		"eyes_preto|eyes|PRETO|#101014,#1c1c24,#2a2a34,#3a3a46|-|-",
-		"eyes_azul|eyes|AZUL|#0c3060,#1450a0,#2a78d0,#62a8f0|-|-",
-		"eyes_verde|eyes|VERDE|#0e4020,#1a6630,#2e8c44,#56b464|-|-",
-		"eyes_mel|eyes|MEL|#6a4210,#946018,#be8424,#e0aa40|-|-",
-		"eyes_cinza|eyes|CINZA|#2e3640,#4a5460,#6c7884,#98a4b0|-|-",
-		"hair_espetado|hair|ESPETADO|hair-espetado|-|-",
-		"hair_curto|hair|CURTO|hair-curto|-|-",
-		"hair_careca|hair|CARECA|hair-careca|-|-",
-		"hair_longo|hair|LONGO|hair-longo|-|-",
-		"hair_cacheado|hair|CACHEADO|hair-cacheado|-|-",
-		"hair_coque|hair|COQUE|hair-coque|-|-",
-		"hair_moicano|hair|MOICANO|hair-moicano|-|gems 30",
-		"hair_topete|hair|TOPETE|hair-topete|-|gems 30",
-		"hair_preto|hairColor|PRETO|#141420,#24242e,#34343e,#4a4a56|-|-",
-		"hair_castanho|hairColor|CASTANHO|#2a160c,#462814,#643c20,#88562e|-|-",
-		"hair_loiro|hairColor|LOIRO|#8a6420,#b88a2c,#e0b44a,#f8dc84|-|-",
-		"hair_ruivo|hairColor|RUIVO|#5a1a0c,#8a2c14,#b8461e,#de6a30|-|-",
-		"hair_grisalho|hairColor|GRISALHO|#4a4e56,#70767e,#9ca2aa,#cfd4da|-|-",
-		"hair_azul|hairColor|AZUL|#0a2a66,#12449c,#2066d0,#4c96f0|-|coins 80",
-		"hair_rosa|hairColor|ROSA|#6a1a4a,#9c2a6c,#d04a98,#f080c0|-|coins 80",
-		"hair_verde|hairColor|VERDE NEON|#1a4a08,#2e7410,#4ea41c,#7cd23a|-|coins 80",
-		"beard_nenhuma|beard|SEM BARBA||-|-",
-		"beard_bigode|beard|BIGODE|beard-bigode|-|-",
-		"beard_cavanhaque|beard|CAVANHAQUE|beard-cavanhaque|-|-",
-		"beard_curta|beard|BARBA CURTA|beard-curta|-|-",
-		"beard_cheia|beard|BARBA CHEIA|beard-cheia|-|-",
-		"beard_lenhador|beard|BARBA LENHADOR|beard-lenhador|-|gems 30",
-		"glasses_nenhum|glasses|SEM ÓCULOS||-|-",
-		"glasses_redondo|glasses|REDONDO|glasses-redondo|fixed|-",
-		"glasses_quadrado|glasses|QUADRADO|glasses-quadrado|fixed|-",
-		"glasses_escuro|glasses|ÓCULOS ESCUROS|glasses-escuro|fixed|-",
-		"glasses_cyber|glasses|VISOR CYBER|glasses-cyber|fixed|gems 40",
-		"top_moletom|top|MOLETOM|top-moletom|-|-",
-		"top_camiseta|top|CAMISETA|top-camiseta|-|-",
-		"top_xadrez|top|CAMISA XADREZ|top-xadrez|-|-",
-		"top_jaqueta|top|JAQUETA DE COURO|top-jaqueta|fixed|coins 150",
-		"top_moletom_gear|top|MOLETOM CONFORTÁVEL|top-moletom_gear|fixed,gearOnly|-",
-		"top_hoodie_trace|top|MOLETOM STACK TRACE|top-hoodie_trace|fixed,gearOnly|-",
-		"top_grafite|topColor|GRAFITE|#202030,#2c3838,#383844,#4c4c5a|-|-",
-		"top_azul|topColor|AZUL|#102040,#1a3464,#284c88,#3c68ac|-|-",
-		"top_vinho|topColor|VINHO|#3a0c18,#5a1426,#7c2036,#9c3048|-|-",
-		"top_verde|topColor|VERDE|#10301a,#1a4a28,#286a3a,#3a8a4e|-|-",
-		"top_mostarda|topColor|MOSTARDA|#5a4210,#80601a,#a88026,#cca238|-|-",
-		"top_branco|topColor|BRANCO|#8a929a,#b0b8c0,#d4dade,#eef2f4|-|-",
-		"bottom_jeans|bottomColor|JEANS|#121e36,#1e364e,#2a4e66,#3e6a86|-|-",
-		"bottom_preto|bottomColor|PRETO|#0e0e14,#18181f,#24242c,#32323c|-|-",
-		"bottom_caqui|bottomColor|CÁQUI|#4a3c22,#6a5832,#8c7646,#ae965e|-|-",
-		"bottom_cinza|bottomColor|CINZA|#2a2e34,#40464e,#5a626a,#7a828a|-|-",
-		"laptop_basico|laptop|NOTEBOOK|laptop-basico|fixed|-",
-		"laptop_preto|laptop|NOTEBOOK PRETO|laptop-preto|fixed|-",
-		"laptop_gamer|laptop|NOTEBOOK GAMER RGB|laptop-gamer|fixed|gems 40",
-		"laptop_macbook|laptop|MACBOOK PRO|laptop-macbook|fixed,gearOnly|-",
+		"tone_clara|tone|CLARA|#b07858,#d8a07c,#f8cfa8,#ffe8cc|-|-|-",
+		"tone_padrao|tone|PADRÃO|#8a5234,#b8764a,#f6ba72,#ffd8a0|-|-|-",
+		"tone_morena|tone|MORENA|#6e3e22,#9a6038,#c88a58,#e4b07c|-|-|-",
+		"tone_parda|tone|PARDA|#5a3018,#80492a,#a8683e,#c88c5c|-|-|-",
+		"tone_negra|tone|NEGRA|#3a1e10,#5a3220,#7c4a30,#9c6844|-|-|-",
+		"tone_retinta|tone|RETINTA|#24120a,#3a2014,#553222,#704834|-|-|-",
+		"eyes_castanho|eyes|CASTANHO|#3a2010,#5c3418,#7e4c26,#a06a3a|-|-|-",
+		"eyes_preto|eyes|PRETO|#101014,#1c1c24,#2a2a34,#3a3a46|-|-|-",
+		"eyes_azul|eyes|AZUL|#0c3060,#1450a0,#2a78d0,#62a8f0|-|-|-",
+		"eyes_verde|eyes|VERDE|#0e4020,#1a6630,#2e8c44,#56b464|-|-|-",
+		"eyes_mel|eyes|MEL|#6a4210,#946018,#be8424,#e0aa40|-|-|-",
+		"eyes_cinza|eyes|CINZA|#2e3640,#4a5460,#6c7884,#98a4b0|-|-|-",
+		"hair_espetado|hair|ESPETADO|hair-espetado|-|-|-",
+		"hair_curto|hair|CURTO|hair-curto|-|-|-",
+		"hair_careca|hair|CARECA|hair-careca|-|-|-",
+		"hair_longo|hair|LONGO|hair-longo|-|-|-",
+		"hair_cacheado|hair|CACHEADO|hair-cacheado|-|-|-",
+		"hair_coque|hair|COQUE|hair-coque|-|-|-",
+		"hair_moicano|hair|MOICANO|hair-moicano|-|gems 30|-",
+		"hair_topete|hair|TOPETE|hair-topete|-|gems 30|-",
+		"hair_rabo|hair|RABO DE CAVALO|hair-rabo|-|-|feminino",
+		"hair_trancas|hair|TRANÇAS|hair-trancas|-|gems 30|feminino",
+		"hair_franja|hair|FRANJA CHANEL|hair-franja|-|-|feminino",
+		"hair_preto|hairColor|PRETO|#141420,#24242e,#34343e,#4a4a56|-|-|-",
+		"hair_castanho|hairColor|CASTANHO|#2a160c,#462814,#643c20,#88562e|-|-|-",
+		"hair_loiro|hairColor|LOIRO|#8a6420,#b88a2c,#e0b44a,#f8dc84|-|-|-",
+		"hair_ruivo|hairColor|RUIVO|#5a1a0c,#8a2c14,#b8461e,#de6a30|-|-|-",
+		"hair_grisalho|hairColor|GRISALHO|#4a4e56,#70767e,#9ca2aa,#cfd4da|-|-|-",
+		"hair_azul|hairColor|AZUL|#0a2a66,#12449c,#2066d0,#4c96f0|-|coins 80|-",
+		"hair_rosa|hairColor|ROSA|#6a1a4a,#9c2a6c,#d04a98,#f080c0|-|coins 80|-",
+		"hair_verde|hairColor|VERDE NEON|#1a4a08,#2e7410,#4ea41c,#7cd23a|-|coins 80|-",
+		"beard_nenhuma|beard|SEM BARBA||-|-|-",
+		"beard_bigode|beard|BIGODE|beard-bigode|-|-|masculino",
+		"beard_cavanhaque|beard|CAVANHAQUE|beard-cavanhaque|-|-|masculino",
+		"beard_curta|beard|BARBA CURTA|beard-curta|-|-|masculino",
+		"beard_cheia|beard|BARBA CHEIA|beard-cheia|-|-|masculino",
+		"beard_lenhador|beard|BARBA LENHADOR|beard-lenhador|-|gems 30|masculino",
+		"glasses_nenhum|glasses|SEM ÓCULOS||-|-|-",
+		"glasses_redondo|glasses|REDONDO|glasses-redondo|fixed|-|-",
+		"glasses_quadrado|glasses|QUADRADO|glasses-quadrado|fixed|-|-",
+		"glasses_escuro|glasses|ÓCULOS ESCUROS|glasses-escuro|fixed|-|-",
+		"glasses_cyber|glasses|VISOR CYBER|glasses-cyber|fixed|gems 40|-",
+		"top_moletom|top|MOLETOM|top-moletom|-|-|-",
+		"top_camiseta|top|CAMISETA|top-camiseta|-|-|-",
+		"top_xadrez|top|CAMISA XADREZ|top-xadrez|-|-|-",
+		"top_jaqueta|top|JAQUETA DE COURO|top-jaqueta|fixed|coins 150|-",
+		"top_moletom_gear|top|MOLETOM CONFORTÁVEL|top-moletom_gear|fixed,gearOnly|-|-",
+		"top_hoodie_trace|top|MOLETOM STACK TRACE|top-hoodie_trace|fixed,gearOnly|-|-",
+		"top_grafite|topColor|GRAFITE|#202030,#2c3838,#383844,#4c4c5a|-|-|-",
+		"top_azul|topColor|AZUL|#102040,#1a3464,#284c88,#3c68ac|-|-|-",
+		"top_vinho|topColor|VINHO|#3a0c18,#5a1426,#7c2036,#9c3048|-|-|-",
+		"top_verde|topColor|VERDE|#10301a,#1a4a28,#286a3a,#3a8a4e|-|-|-",
+		"top_mostarda|topColor|MOSTARDA|#5a4210,#80601a,#a88026,#cca238|-|-|-",
+		"top_branco|topColor|BRANCO|#8a929a,#b0b8c0,#d4dade,#eef2f4|-|-|-",
+		"bottom_jeans|bottomColor|JEANS|#121e36,#1e364e,#2a4e66,#3e6a86|-|-|-",
+		"bottom_preto|bottomColor|PRETO|#0e0e14,#18181f,#24242c,#32323c|-|-|-",
+		"bottom_caqui|bottomColor|CÁQUI|#4a3c22,#6a5832,#8c7646,#ae965e|-|-|-",
+		"bottom_cinza|bottomColor|CINZA|#2a2e34,#40464e,#5a626a,#7a828a|-|-|-",
+		"laptop_basico|laptop|NOTEBOOK|laptop-basico|fixed|-|-",
+		"laptop_preto|laptop|NOTEBOOK PRETO|laptop-preto|fixed|-|-",
+		"laptop_gamer|laptop|NOTEBOOK GAMER RGB|laptop-gamer|fixed|gems 40|-",
+		"laptop_macbook|laptop|MACBOOK PRO|laptop-macbook|fixed,gearOnly|-|-",
 	}
 	if len(a.Options) != len(options) {
 		t.Fatalf("options = %d, want %d", len(a.Options), len(options))
@@ -822,19 +850,20 @@ func TestCatalog_ServesAvatar(t *testing.T) {
 		var id, part, name, layer string
 		var ramp []string
 		var fixed, gearOnly bool
+		var optBodies []string
 		var price *struct {
 			Currency string `json:"currency"`
 			Amount   int    `json:"amount"`
 		}
 		for key, dst := range map[string]any{"id": &id, "part": &part, "name": &name, "layer": &layer, "ramp": &ramp,
-			"fixed": &fixed, "gearOnly": &gearOnly, "price": &price} {
+			"fixed": &fixed, "gearOnly": &gearOnly, "price": &price, "bodies": &optBodies} {
 			if raw, ok := o[key]; ok {
 				if err := json.Unmarshal(raw, dst); err != nil {
 					t.Fatalf("option %d %s: %v", i, key, err)
 				}
 			}
 		}
-		if len(o) > 8 {
+		if len(o) > 9 {
 			t.Errorf("option %s has unexpected keys: %v", id, o)
 		}
 		look := layer
@@ -855,7 +884,11 @@ func TestCatalog_ServesAvatar(t *testing.T) {
 		if price != nil {
 			priceTxt = fmt.Sprintf("%s %d", price.Currency, price.Amount)
 		}
-		if got := strings.Join([]string{id, part, name, look, strings.Join(flags, ","), priceTxt}, "|"); got != options[i] {
+		bodiesTxt := "-"
+		if optBodies != nil {
+			bodiesTxt = strings.Join(optBodies, ",")
+		}
+		if got := strings.Join([]string{id, part, name, look, strings.Join(flags, ","), priceTxt, bodiesTxt}, "|"); got != options[i] {
 			t.Errorf("option %d = %s, want %s", i, got, options[i])
 		}
 	}
@@ -949,6 +982,45 @@ func TestCatalog_AvatarReferencesCatalog(t *testing.T) {
 		}
 	}
 
+	// Body contract: body ids are unique, every option's bodies exist, every bodies[].defaults entry
+	// is a free, pickable option of that part the body can wear, and so is each body's effective
+	// default of every part.
+	bodyIDs := map[string]bool{}
+	for _, b := range c.Avatar.Bodies {
+		if bodyIDs[b.ID] {
+			t.Errorf("body id %s is repeated", b.ID)
+		}
+		bodyIDs[b.ID] = true
+	}
+	if !bodyIDs["masculino"] {
+		t.Error("body masculino (the legacy look, players.body's default) is missing")
+	}
+	for _, o := range c.Avatar.Options {
+		if o.Bodies != nil && len(o.Bodies) == 0 {
+			t.Errorf("option %s has an empty bodies list, want it absent", o.ID)
+		}
+		for _, id := range o.Bodies {
+			if !bodyIDs[id] {
+				t.Errorf("option %s names unknown body %q", o.ID, id)
+			}
+		}
+	}
+	for _, b := range c.Avatar.Bodies {
+		for partID, optID := range b.Defaults {
+			o, ok := c.AvatarOption(optID)
+			if _, okPart := c.AvatarPart(partID); !okPart || !ok || o.Part != partID || o.GearOnly || o.Price != nil || !o.AvailableTo(b.ID) {
+				t.Errorf("body %s default of %s = %q, want a free, pickable option of that part available to %s", b.ID, partID, optID, b.ID)
+			}
+		}
+		for _, p := range c.Avatar.Parts {
+			id := c.AvatarDefault(b.ID, p.ID)
+			o, ok := c.AvatarOption(id)
+			if !ok || o.Part != p.ID || o.GearOnly || o.Price != nil || !o.AvailableTo(b.ID) {
+				t.Errorf("body %s wears %q on %s by default, want a free, pickable option available to it", b.ID, id, p.ID)
+			}
+		}
+	}
+
 	dressed := map[string]bool{}
 	for _, g := range c.Gear {
 		if g.Look == nil {
@@ -999,4 +1071,33 @@ func slot(c *catalog.Catalog, id string) (catalog.GearSlot, bool) {
 		}
 	}
 	return catalog.GearSlot{}, false
+}
+
+// Body contract (own layer): one case per row of option availability and of the per-body default.
+func TestCatalog_AvatarBodyRules(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		bodies []string
+		body   string
+		want   bool
+	}{
+		{"no bodies: every body", nil, "feminino", true},
+		{"listed body", []string{"feminino"}, "feminino", true},
+		{"body not listed", []string{"feminino"}, "masculino", false},
+	} {
+		if got := (catalog.AvatarOption{Bodies: tc.bodies}).AvailableTo(tc.body); got != tc.want {
+			t.Errorf("%s: AvailableTo = %v, want %v", tc.name, got, tc.want)
+		}
+	}
+	c := catalog.Default()
+	for _, tc := range []struct{ name, body, part, want string }{
+		{"body overrides the part", "feminino", "hair", "hair_longo"},
+		{"body does not list the part", "feminino", "beard", "beard_nenhuma"},
+		{"body without overrides", "masculino", "hair", "hair_espetado"},
+		{"unknown body gets the shared default", "outro", "hair", "hair_espetado"},
+	} {
+		if got := c.AvatarDefault(tc.body, tc.part); got != tc.want {
+			t.Errorf("%s: AvatarDefault(%s, %s) = %q, want %q", tc.name, tc.body, tc.part, got, tc.want)
+		}
+	}
 }

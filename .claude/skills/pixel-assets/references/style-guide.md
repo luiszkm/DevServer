@@ -50,10 +50,15 @@ invent hex values.
   48x64 transparent canvas on the **same grid**, so the game stacks them with no offsets.
   Draw order: `body` → `bottom` → `top-<style>` → `laptop-<style>` → `hand` → `beard-<style>`
   (optional) → `hair-<style>` → `glasses-<style>` (optional).
+- Two bodies. The feminine body swaps `body`, `bottom` and every `top-*` for its `-f` variant
+  (`body-f`, `bottom-f`, `top-moletom-f`...). Its head outline and front-hand position are identical to
+  the masculine body, so `hand`, `laptop-*`, `hair-*`, `beard-*` and `glasses-*` are shared by both.
 - Each recolourable layer is painted with its part's **default ramp (the base ramp)**: body
   = `skin` + `av-eyes-castanho` (iris), hand = `skin`, bottom = `denim`, swappable tops =
-  `av-top-grafite`, hair (and eyebrows, which belong to the hair layer) and beards =
-  `av-hair-preto` (beards follow hairColor). Glasses are fixed colours (`ink`, `metal`, `stone`,
+  `av-top-grafite`, hair and beards = `av-hair-preto`
+  (they follow hairColor). The eyebrows live in the body layers (`body` thick, `body-f` thin and
+  arched), painted in `av-hair-preto`, so the game swaps hairColor on the body layer too; hair
+  layers leave the brow pixels clear (`hair-careca` is an empty layer). Glasses are fixed colours (`ink`, `metal`, `stone`,
   `net`, `gem`, `white`).
   The game recolours at runtime by swapping hex→hex from the base ramp to the chosen option
   ramp, index for index.
@@ -64,7 +69,7 @@ invent hex values.
   (`ink`, `wood`, `dirt`, `stone`, `metal`, `red`, `net`, `gold`...), or they would get
   recoloured with the part.
 - `ink` outline, `white` highlights and `code` are never swapped.
-- A layer on its own is not a closed silhouette (the hand, eyebrows, a hair fringe), so the
+- A layer on its own is not a closed silhouette (the hand, a moustache, a hair fringe), so the
   per-sprite outline check may `WARN` on it; judge the outline on a stacked preview (a spec
   that `use`s the layers in draw order, with `recolor` for the options).
 

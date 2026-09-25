@@ -2,7 +2,7 @@
 
 import { type ReactNode, useState } from "react";
 import { type ApiResult, post, put } from "@/lib/api";
-import { resolveLook } from "@/lib/avatar";
+import { availableFor, resolveLook } from "@/lib/avatar";
 import { CONNECTION_FAILED, bonusLong, canPay, insufficient, isEquipped, priceLong, priceShort, quantity, totalBonus } from "@/lib/gear";
 import type { AvatarOption, Player } from "@/lib/types";
 import { GameArt } from "./GameArt";
@@ -200,19 +200,26 @@ export function AvatarScene() {
     );
   }
 
+  function pickable(partId: string) {
+    return catalog.avatar.options.filter((o) => o.part === partId && !o.gearOnly && availableFor(o, player.body));
+  }
+
   function editor() {
-    const options = catalog.avatar.options.filter((o) => o.part === part && !o.gearOnly);
-    const kind = catalog.avatar.parts.find((p) => p.id === part)!.kind;
+    // A part whose only option for this body draws nothing (no beard for feminino) is not offered.
+    const parts = catalog.avatar.parts.filter((p) => pickable(p.id).some((o) => o.layer || o.ramp));
+    const current = parts.find((p) => p.id === part) ?? parts[0];
+    const options = pickable(current.id);
     return (
       <div className="panel avatar-editor" role="region" aria-label="editor visual">
+        {bodyRow()}
         <div className="avatar-parts" role="group" aria-label="partes">
-          {catalog.avatar.parts.map((p) => (
-            <button key={p.id} type="button" className="avatar-part pixel" data-part={p.id} aria-pressed={part === p.id} onClick={() => setPart(p.id)}>
+          {parts.map((p) => (
+            <button key={p.id} type="button" className="avatar-part pixel" data-part={p.id} aria-pressed={current.id === p.id} onClick={() => setPart(p.id)}>
               {p.name}
             </button>
           ))}
         </div>
-        <div className={`avatar-options avatar-options-${kind}`} role="group" aria-label="opções">
+        <div className={`avatar-options avatar-options-${current.kind}`} role="group" aria-label="opções">
           {options.map((o) => (
             <button
               key={o.id}
@@ -221,8 +228,8 @@ export function AvatarScene() {
               data-option={o.id}
               data-locked={locked(o)}
               aria-label={o.name}
-              aria-pressed={preview.appearance[part] === o.id}
-              onClick={() => setDraft((d) => ({ ...d, [part]: o.id }))}
+              aria-pressed={preview.appearance[current.id] === o.id}
+              onClick={() => setDraft((d) => ({ ...d, [current.id]: o.id }))}
             >
               {o.ramp ? (
                 <span className="avatar-swatch" aria-hidden="true">
@@ -231,7 +238,7 @@ export function AvatarScene() {
                   ))}
                 </span>
               ) : (
-                <HeroAvatar look={{ ...preview, appearance: { ...preview.appearance, [part]: o.id } }} scale={1} />
+                <HeroAvatar look={{ ...preview, appearance: { ...preview.appearance, [current.id]: o.id } }} scale={1} />
               )}
               <span className="term avatar-option-name">{o.name}</span>
               {locked(o) && <span className="pixel avatar-option-price">{priceShort(o.price!)}</span>}
@@ -242,14 +249,40 @@ export function AvatarScene() {
     );
   }
 
+  // The body is fixed at creation; each change spends one redesign token.
+  function bodyRow() {
+    const body = catalog.avatar.bodies.find((b) => b.id === player.body);
+    const tokens = quantity(player, "redesign_token");
+    return (
+      <div className="avatar-body" role="group" aria-label="corpo">
+        <span className="pixel">{`CORPO: ${body?.name ?? player.body}`}</span>
+        {catalog.avatar.bodies
+          .filter((b) => b.id !== player.body)
+          .map((b) => (
+            <button
+              key={b.id}
+              type="button"
+              className="btn btn-dark avatar-body-switch"
+              disabled={pending || tokens === 0}
+              onClick={() => run("/api/me/body", "CORPO TROCADO", () => post("/api/me/body", { body: b.id }), () => setDraft({}))}
+            >
+              {`TROCAR PARA ${b.name}`}
+            </button>
+          ))}
+        <span className="term">{tokens ? `tokens de redesign: ${tokens}` : "precisa de 1 TOKEN DE REDESIGN — compre na Loja."}</span>
+      </div>
+    );
+  }
+
   function locked(o: AvatarOption) {
     return !!o.price && !player.looks.includes(o.id);
   }
 
   function visualDetail() {
-    const p = catalog.avatar.parts.find((x) => x.id === part)!;
-    const o = catalog.avatar.options.find((x) => x.id === preview.appearance[part]);
-    const source = resolveLook(preview, catalog).parts[part];
+    const visible = catalog.avatar.parts.filter((x) => pickable(x.id).some((o) => o.layer || o.ramp));
+    const p = visible.find((x) => x.id === part) ?? visible[0];
+    const o = catalog.avatar.options.find((x) => x.id === preview.appearance[p.id]);
+    const source = resolveLook(preview, catalog).parts[p.id];
     const lockedDraft = catalog.avatar.options.filter((x) => draft[x.part] === x.id && locked(x));
     const dirty = Object.entries(draft).some(([k, v]) => player.appearance[k] !== v);
     let note: string | null = null;

@@ -1,0 +1,35 @@
+{
+  "name": "top-moletom-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Feminine body (same head, hand and laptop position as the traced hero); the hoodie with hood and </> fitted to narrower shoulders, av-top-grafite (topColor).",
+  "legend": {"o": "ink", "1": "av-top-grafite.0", "2": "av-top-grafite.1", "3": "av-top-grafite.2", "4": "av-top-grafite.3", "X": "code.0", "g": "code.1", "x": "code.2", "G": "code.3"},
+  "layers": [
+    {"grid": [
+      "......ooo11o..................",
+      ".....oo1111o..................",
+      "....o1111111oo................",
+      "....o11111221ooo..........o...",
+      "....o1111111332ooooooooooo1o..",
+      "....oo111111123211o...o1112o..",
+      ".....o124211111121o...o121o...",
+      ".....o333322111111o...1111oo..",
+      ".....o332321221111oo11o1111o..",
+      "....o3322211233332123333222o..",
+      "...o2333211121111g221X11222o..",
+      "..o2333221112222gG222x2g222o..",
+      ".oo2222211112222x222gg2gx22o..",
+      "o11222111ooo122G2222G212gx1oo.",
+      "o12221111o.o122Xx22gg11Xx211o.",
+      "o12222111o.o1122Xx1x211x211oo.",
+      "o11233211o.o1122211X111oooo...",
+      ".o1222111o.o111111111oo.......",
+      "o1112321oooo111112221o........",
+      ".o121ooo..o1112222211ooo....o.",
+      "..........o1111111111111oooo1o",
+      "..........o111111111111111111o",
+      "..........ooooooooooooooooooo.",
+      "...........................ooo"
+    ], "at": [2, 23]}
+  ]
+}

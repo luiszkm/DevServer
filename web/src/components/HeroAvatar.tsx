@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { resolveLook, type Layer, type LookInput } from "@/lib/avatar";
-import { useGame } from "./GameContext";
+import type { Catalog } from "@/lib/types";
+import { GameContext } from "./GameContext";
 
 const W = 48;
 const H = 64;
@@ -48,11 +49,13 @@ function paint(scratch: CanvasRenderingContext2D, img: HTMLImageElement, layer: 
 }
 
 // Without a scale the size comes from CSS (keep a 3:4 aspect ratio there).
-type Props = { look: LookInput; scale?: number; className?: string };
+// `catalog` is for screens outside the game shell (onboarding); inside it comes from the game.
+type Props = { look: LookInput; scale?: number; className?: string; catalog?: Catalog };
 
 /** The layered 48x64 hero, recoloured per avatar part on a canvas. */
-export function HeroAvatar({ look, scale, className }: Props) {
-  const { catalog } = useGame();
+export function HeroAvatar({ look, scale, className, catalog: given }: Props) {
+  const game = useContext(GameContext);
+  const catalog = (given ?? game?.catalog)!;
   const resolved = useMemo(() => resolveLook(look, catalog), [look, catalog]);
   const ref = useRef<HTMLCanvasElement>(null);
 

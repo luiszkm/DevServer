@@ -69,6 +69,7 @@ export const ITEMS: Catalog["items"] = [
   { id: "sp_potion", name: "POÇÃO DE CACHE", glyph: "++", rarity: "COMUM", description: "30 SP", restore: { stat: "sp", amount: 30 }, price: { currency: "gems", amount: 15 } },
   { id: "hp_potion", name: "POÇÃO DE MEMÓRIA", glyph: "HP+", rarity: "COMUM", description: "40 HP", restore: { stat: "hp", amount: 40 }, price: { currency: "gems", amount: 12 } },
   { id: "boost_deploy", name: "ACELERADOR DE DEPLOY", glyph: ">>", rarity: "COMUM", description: "-15 min", price: { currency: "gems", amount: 35 } },
+  { id: "redesign_token", name: "TOKEN DE REDESIGN", glyph: "<~>", rarity: "RARO", description: "Troca o corpo do seu dev (masculino/feminino). Consumido ao usar no AVATAR.", price: { currency: "gems", amount: 100 } },
 ];
 
 export const GEAR_SLOTS: Catalog["gearSlots"] = [
@@ -168,6 +169,10 @@ export const RECIPES: Catalog["recipes"] = [
 
 // Copied by value from api/catalog/avatar.json (api catalog tests assert the same values).
 export const AVATAR: Catalog["avatar"] = {
+  bodies: [
+    {"id": "masculino", "name": "MASCULINO"},
+    {"id": "feminino", "name": "FEMININO", "defaults": {"hair": "hair_longo"}},
+  ],
   parts: [
     {"id": "tone", "name": "PELE", "kind": "color"},
     {"id": "eyes", "name": "OLHOS", "kind": "color"},
@@ -201,6 +206,9 @@ export const AVATAR: Catalog["avatar"] = {
     {"id": "hair_coque", "part": "hair", "name": "COQUE", "layer": "hair-coque"},
     {"id": "hair_moicano", "part": "hair", "name": "MOICANO", "layer": "hair-moicano", "price": {"currency": "gems", "amount": 30}},
     {"id": "hair_topete", "part": "hair", "name": "TOPETE", "layer": "hair-topete", "price": {"currency": "gems", "amount": 30}},
+    {"id": "hair_rabo", "part": "hair", "name": "RABO DE CAVALO", "layer": "hair-rabo", "bodies": ["feminino"]},
+    {"id": "hair_trancas", "part": "hair", "name": "TRANÇAS", "layer": "hair-trancas", "bodies": ["feminino"], "price": {"currency": "gems", "amount": 30}},
+    {"id": "hair_franja", "part": "hair", "name": "FRANJA CHANEL", "layer": "hair-franja", "bodies": ["feminino"]},
     {"id": "hair_preto", "part": "hairColor", "name": "PRETO", "ramp": ["#141420", "#24242e", "#34343e", "#4a4a56"]},
     {"id": "hair_castanho", "part": "hairColor", "name": "CASTANHO", "ramp": ["#2a160c", "#462814", "#643c20", "#88562e"]},
     {"id": "hair_loiro", "part": "hairColor", "name": "LOIRO", "ramp": ["#8a6420", "#b88a2c", "#e0b44a", "#f8dc84"]},
@@ -210,11 +218,11 @@ export const AVATAR: Catalog["avatar"] = {
     {"id": "hair_rosa", "part": "hairColor", "name": "ROSA", "ramp": ["#6a1a4a", "#9c2a6c", "#d04a98", "#f080c0"], "price": {"currency": "coins", "amount": 80}},
     {"id": "hair_verde", "part": "hairColor", "name": "VERDE NEON", "ramp": ["#1a4a08", "#2e7410", "#4ea41c", "#7cd23a"], "price": {"currency": "coins", "amount": 80}},
     {"id": "beard_nenhuma", "part": "beard", "name": "SEM BARBA"},
-    {"id": "beard_bigode", "part": "beard", "name": "BIGODE", "layer": "beard-bigode"},
-    {"id": "beard_cavanhaque", "part": "beard", "name": "CAVANHAQUE", "layer": "beard-cavanhaque"},
-    {"id": "beard_curta", "part": "beard", "name": "BARBA CURTA", "layer": "beard-curta"},
-    {"id": "beard_cheia", "part": "beard", "name": "BARBA CHEIA", "layer": "beard-cheia"},
-    {"id": "beard_lenhador", "part": "beard", "name": "BARBA LENHADOR", "layer": "beard-lenhador", "price": {"currency": "gems", "amount": 30}},
+    {"id": "beard_bigode", "part": "beard", "name": "BIGODE", "layer": "beard-bigode", "bodies": ["masculino"]},
+    {"id": "beard_cavanhaque", "part": "beard", "name": "CAVANHAQUE", "layer": "beard-cavanhaque", "bodies": ["masculino"]},
+    {"id": "beard_curta", "part": "beard", "name": "BARBA CURTA", "layer": "beard-curta", "bodies": ["masculino"]},
+    {"id": "beard_cheia", "part": "beard", "name": "BARBA CHEIA", "layer": "beard-cheia", "bodies": ["masculino"]},
+    {"id": "beard_lenhador", "part": "beard", "name": "BARBA LENHADOR", "layer": "beard-lenhador", "bodies": ["masculino"], "price": {"currency": "gems", "amount": 30}},
     {"id": "glasses_nenhum", "part": "glasses", "name": "SEM ÓCULOS"},
     {"id": "glasses_redondo", "part": "glasses", "name": "REDONDO", "layer": "glasses-redondo", "fixed": true},
     {"id": "glasses_quadrado", "part": "glasses", "name": "QUADRADO", "layer": "glasses-quadrado", "fixed": true},
@@ -255,7 +263,7 @@ export function player(overrides: Partial<Player> = {}): Player {
   return {
     devName: "DEV_01", class: "BACKEND", level: 1, xp: 0, xpMax: 500, hp: 100, hpMax: 100,
     coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], inventory: [{ item: "sp_potion", quantity: 2 }],
-    gear: [], equipment: { setup: null, bebida: null, vestuario: null, acessorio: null }, skins: ["default"], office: room(), rack: rack(), appearance: { ...AVATAR.defaults }, looks: [], ...overrides,
+    gear: [], equipment: { setup: null, bebida: null, vestuario: null, acessorio: null }, skins: ["default"], office: room(), rack: rack(), body: "masculino", appearance: { ...AVATAR.defaults }, looks: [], ...overrides,
   };
 }
 

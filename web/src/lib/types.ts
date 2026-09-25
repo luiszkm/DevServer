@@ -23,6 +23,8 @@ export type Player = {
   office: Record<string, (string | null)[]>;
   /** Every rack slot, with the installed component id or null. */
   rack: (string | null)[];
+  /** Body type, picked at creation; only a redesign token changes it. */
+  body: string;
   /** Every avatar part, with the chosen option id (catalog defaults fill what was never picked). */
   appearance: Record<string, string>;
   /** Owned priced avatar options, catalog order. */
@@ -130,10 +132,15 @@ export type AvatarOption = {
   fixed?: boolean;
   /** Worn only through gear; never picked. */
   gearOnly?: boolean;
+  /** Bodies that can wear it; absent means every body. */
+  bodies?: string[];
   price?: Price;
 };
 
-export type Avatar = { parts: AvatarPart[]; options: AvatarOption[]; defaults: Record<string, string> };
+/** A body type; `defaults` overrides the avatar defaults for that body. */
+export type AvatarBody = { id: string; name: string; defaults?: Record<string, string> };
+
+export type Avatar = { bodies: AvatarBody[]; parts: AvatarPart[]; options: AvatarOption[]; defaults: Record<string, string> };
 
 /** Furniture bonus: "xp" is % deploy XP, "deploy" is % off deploy time, "spregen" is SP per turn. */
 export type OfficeBonus = { type: "xp" | "deploy" | "spregen"; amount: number };
