@@ -66,6 +66,10 @@ var (
 	ErrUnknownSlot        = &Error{http.StatusUnprocessableEntity, "unknown_slot", "slot do rack desconhecido"}
 	ErrUnknownRecipe      = &Error{http.StatusUnprocessableEntity, "unknown_recipe", "receita desconhecida"}
 	ErrNotEnoughMaterials = &Error{http.StatusConflict, "not_enough_materials", "materiais insuficientes"}
+	ErrUnknownPart        = &Error{http.StatusUnprocessableEntity, "unknown_part", "parte do visual desconhecida"}
+	ErrUnknownLook        = &Error{http.StatusUnprocessableEntity, "unknown_look", "visual desconhecido para esta parte"}
+	ErrLookNotFound       = &Error{http.StatusNotFound, "unknown_look", "visual desconhecido"}
+	ErrGearOnly           = &Error{http.StatusUnprocessableEntity, "gear_only", "este visual vem de um equipamento. equipe-o no inventário"}
 )
 
 type envelope struct {

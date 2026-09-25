@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"reflect"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -279,6 +280,25 @@ func TestCatalog_ServesCombat(t *testing.T) {
 	}
 }
 
+// Skin palettes of the avatar contract: tone, hair color and eyes of each paid skin.
+var palettes = map[string]map[string][]string{
+	"neon": {
+		"tone":      {"#1a6a70", "#2a9aa0", "#5ad2d2", "#a0f4f0"},
+		"hairColor": {"#6a1a4a", "#9c2a6c", "#d04a98", "#f080c0"},
+		"eyes":      {"#0c3060", "#1450a0", "#2a78d0", "#62a8f0"},
+	},
+	"shadow": {
+		"tone":      {"#3a2a5a", "#54407e", "#7058a2", "#9478c4"},
+		"hairColor": {"#0c0818", "#1a1030", "#2a1c48", "#3e2c66"},
+		"eyes":      {"#2e3640", "#4a5460", "#6c7884", "#98a4b0"},
+	},
+	"golden": {
+		"tone":      {"#886018", "#c08c20", "#f0c040", "#fce484"},
+		"hairColor": {"#a08a50", "#c8b070", "#e8d498", "#fff4c8"},
+		"eyes":      {"#6a4210", "#946018", "#be8424", "#e0aa40"},
+	},
+}
+
 // C1
 func TestCatalog_ServesShop(t *testing.T) {
 	env := apptest.New(t)
@@ -298,9 +318,10 @@ func TestCatalog_ServesShop(t *testing.T) {
 			Bonus                                      *bonus
 		} `json:"gear"`
 		Skins []struct {
-			ID, Name, Rarity, Description, Filter string
-			Price                                 *price
-			Bonus                                 *bonus
+			ID, Name, Rarity, Description string
+			Palette                       map[string][]string
+			Price                         *price
+			Bonus                         *bonus
 		} `json:"skins"`
 		Items []struct {
 			ID, Name, Glyph, Rarity string
@@ -373,15 +394,18 @@ func TestCatalog_ServesShop(t *testing.T) {
 		if got != skins[i] || s.Description == "" {
 			t.Errorf("skin %d = %s, want %s", i, got, skins[i])
 		}
+		if _, has := raw.Skins[i]["filter"]; has {
+			t.Errorf("skin %s still has a filter: %s", s.ID, raw.Skins[i]["filter"])
+		}
 		if s.ID == "default" {
-			if s.Filter != "none" {
-				t.Errorf("default filter = %q, want none", s.Filter)
+			if string(raw.Skins[i]["palette"]) != "{}" {
+				t.Errorf("default palette = %s, want {}", raw.Skins[i]["palette"])
 			}
 			if string(raw.Skins[i]["bonus"]) != "null" {
 				t.Errorf("default bonus = %s, want null", raw.Skins[i]["bonus"])
 			}
-		} else if s.Filter == "" || s.Filter == "none" {
-			t.Errorf("skin %s filter = %q, want a CSS filter", s.ID, s.Filter)
+		} else if !reflect.DeepEqual(s.Palette, palettes[s.ID]) {
+			t.Errorf("skin %s palette = %v, want %v", s.ID, s.Palette, palettes[s.ID])
 		}
 	}
 
@@ -697,4 +721,269 @@ func TestCatalog_RecipesReferenceCatalog(t *testing.T) {
 			t.Errorf("gear %s has no price and no recipe", g.ID)
 		}
 	}
+}
+
+// Avatar C1: parts, every option and the defaults by value, as the avatar contract lists them.
+func TestCatalog_ServesAvatar(t *testing.T) {
+	env := apptest.New(t)
+	rec := env.Do(http.MethodGet, "/api/catalog", nil)
+	var b struct {
+		Avatar struct {
+			Parts    []map[string]string          `json:"parts"`
+			Options  []map[string]json.RawMessage `json:"options"`
+			Defaults map[string]string            `json:"defaults"`
+		} `json:"avatar"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &b); err != nil {
+		t.Fatal(err)
+	}
+	a := b.Avatar
+
+	parts := []string{
+		"tone|PELE|color|", "eyes|OLHOS|color|", "hair|CABELO|style|", "hairColor|COR DO CABELO|color|",
+		"top|ROUPA|style|vestuario", "topColor|COR DA ROUPA|color|", "bottomColor|CALÇA|color|", "laptop|NOTEBOOK|style|setup",
+	}
+	if len(a.Parts) != len(parts) {
+		t.Fatalf("parts = %d, want %d", len(a.Parts), len(parts))
+	}
+	for i, p := range a.Parts {
+		if got := p["id"] + "|" + p["name"] + "|" + p["kind"] + "|" + p["gearSlot"]; got != parts[i] {
+			t.Errorf("part %d = %s, want %s", i, got, parts[i])
+		}
+	}
+
+	// id|part|name|ramp or layer|flags|price, in the contract's order within each part.
+	options := []string{
+		"tone_clara|tone|CLARA|#b07858,#d8a07c,#f8cfa8,#ffe8cc|-|-",
+		"tone_padrao|tone|PADRÃO|#8a5234,#b8764a,#f6ba72,#ffd8a0|-|-",
+		"tone_morena|tone|MORENA|#6e3e22,#9a6038,#c88a58,#e4b07c|-|-",
+		"tone_parda|tone|PARDA|#5a3018,#80492a,#a8683e,#c88c5c|-|-",
+		"tone_negra|tone|NEGRA|#3a1e10,#5a3220,#7c4a30,#9c6844|-|-",
+		"tone_retinta|tone|RETINTA|#24120a,#3a2014,#553222,#704834|-|-",
+		"eyes_castanho|eyes|CASTANHO|#3a2010,#5c3418,#7e4c26,#a06a3a|-|-",
+		"eyes_preto|eyes|PRETO|#101014,#1c1c24,#2a2a34,#3a3a46|-|-",
+		"eyes_azul|eyes|AZUL|#0c3060,#1450a0,#2a78d0,#62a8f0|-|-",
+		"eyes_verde|eyes|VERDE|#0e4020,#1a6630,#2e8c44,#56b464|-|-",
+		"eyes_mel|eyes|MEL|#6a4210,#946018,#be8424,#e0aa40|-|-",
+		"eyes_cinza|eyes|CINZA|#2e3640,#4a5460,#6c7884,#98a4b0|-|-",
+		"hair_espetado|hair|ESPETADO|hair-espetado|-|-",
+		"hair_curto|hair|CURTO|hair-curto|-|-",
+		"hair_careca|hair|CARECA|hair-careca|-|-",
+		"hair_longo|hair|LONGO|hair-longo|-|-",
+		"hair_cacheado|hair|CACHEADO|hair-cacheado|-|-",
+		"hair_coque|hair|COQUE|hair-coque|-|-",
+		"hair_moicano|hair|MOICANO|hair-moicano|-|gems 30",
+		"hair_topete|hair|TOPETE|hair-topete|-|gems 30",
+		"hair_preto|hairColor|PRETO|#141420,#24242e,#34343e,#4a4a56|-|-",
+		"hair_castanho|hairColor|CASTANHO|#2a160c,#462814,#643c20,#88562e|-|-",
+		"hair_loiro|hairColor|LOIRO|#8a6420,#b88a2c,#e0b44a,#f8dc84|-|-",
+		"hair_ruivo|hairColor|RUIVO|#5a1a0c,#8a2c14,#b8461e,#de6a30|-|-",
+		"hair_grisalho|hairColor|GRISALHO|#4a4e56,#70767e,#9ca2aa,#cfd4da|-|-",
+		"hair_azul|hairColor|AZUL|#0a2a66,#12449c,#2066d0,#4c96f0|-|coins 80",
+		"hair_rosa|hairColor|ROSA|#6a1a4a,#9c2a6c,#d04a98,#f080c0|-|coins 80",
+		"hair_verde|hairColor|VERDE NEON|#1a4a08,#2e7410,#4ea41c,#7cd23a|-|coins 80",
+		"top_moletom|top|MOLETOM|top-moletom|-|-",
+		"top_camiseta|top|CAMISETA|top-camiseta|-|-",
+		"top_xadrez|top|CAMISA XADREZ|top-xadrez|-|-",
+		"top_jaqueta|top|JAQUETA DE COURO|top-jaqueta|fixed|coins 150",
+		"top_moletom_gear|top|MOLETOM CONFORTÁVEL|top-moletom_gear|fixed,gearOnly|-",
+		"top_hoodie_trace|top|MOLETOM STACK TRACE|top-hoodie_trace|fixed,gearOnly|-",
+		"top_grafite|topColor|GRAFITE|#202030,#2c3838,#383844,#4c4c5a|-|-",
+		"top_azul|topColor|AZUL|#102040,#1a3464,#284c88,#3c68ac|-|-",
+		"top_vinho|topColor|VINHO|#3a0c18,#5a1426,#7c2036,#9c3048|-|-",
+		"top_verde|topColor|VERDE|#10301a,#1a4a28,#286a3a,#3a8a4e|-|-",
+		"top_mostarda|topColor|MOSTARDA|#5a4210,#80601a,#a88026,#cca238|-|-",
+		"top_branco|topColor|BRANCO|#8a929a,#b0b8c0,#d4dade,#eef2f4|-|-",
+		"bottom_jeans|bottomColor|JEANS|#121e36,#1e364e,#2a4e66,#3e6a86|-|-",
+		"bottom_preto|bottomColor|PRETO|#0e0e14,#18181f,#24242c,#32323c|-|-",
+		"bottom_caqui|bottomColor|CÁQUI|#4a3c22,#6a5832,#8c7646,#ae965e|-|-",
+		"bottom_cinza|bottomColor|CINZA|#2a2e34,#40464e,#5a626a,#7a828a|-|-",
+		"laptop_basico|laptop|NOTEBOOK|laptop-basico|fixed|-",
+		"laptop_preto|laptop|NOTEBOOK PRETO|laptop-preto|fixed|-",
+		"laptop_gamer|laptop|NOTEBOOK GAMER RGB|laptop-gamer|fixed|gems 40",
+		"laptop_macbook|laptop|MACBOOK PRO|laptop-macbook|fixed,gearOnly|-",
+	}
+	if len(a.Options) != len(options) {
+		t.Fatalf("options = %d, want %d", len(a.Options), len(options))
+	}
+	for i, o := range a.Options {
+		var id, part, name, layer string
+		var ramp []string
+		var fixed, gearOnly bool
+		var price *struct {
+			Currency string `json:"currency"`
+			Amount   int    `json:"amount"`
+		}
+		for key, dst := range map[string]any{"id": &id, "part": &part, "name": &name, "layer": &layer, "ramp": &ramp,
+			"fixed": &fixed, "gearOnly": &gearOnly, "price": &price} {
+			if raw, ok := o[key]; ok {
+				if err := json.Unmarshal(raw, dst); err != nil {
+					t.Fatalf("option %d %s: %v", i, key, err)
+				}
+			}
+		}
+		if len(o) > 8 {
+			t.Errorf("option %s has unexpected keys: %v", id, o)
+		}
+		look := layer
+		if ramp != nil {
+			look = strings.Join(ramp, ",")
+		}
+		flags := []string{}
+		if fixed {
+			flags = append(flags, "fixed")
+		}
+		if gearOnly {
+			flags = append(flags, "gearOnly")
+		}
+		if len(flags) == 0 {
+			flags = []string{"-"}
+		}
+		priceTxt := "-"
+		if price != nil {
+			priceTxt = fmt.Sprintf("%s %d", price.Currency, price.Amount)
+		}
+		if got := strings.Join([]string{id, part, name, look, strings.Join(flags, ","), priceTxt}, "|"); got != options[i] {
+			t.Errorf("option %d = %s, want %s", i, got, options[i])
+		}
+	}
+
+	defaults := map[string]string{
+		"tone": "tone_padrao", "eyes": "eyes_castanho", "hair": "hair_espetado", "hairColor": "hair_preto",
+		"top": "top_moletom", "topColor": "top_grafite", "bottomColor": "bottom_jeans", "laptop": "laptop_basico",
+	}
+	if !reflect.DeepEqual(a.Defaults, defaults) {
+		t.Errorf("defaults = %v, want %v", a.Defaults, defaults)
+	}
+}
+
+// Avatar C2: the gear that dresses the hero names its look; every other piece has no look key.
+func TestCatalog_ServesGearLooks(t *testing.T) {
+	env := apptest.New(t)
+	var raw struct {
+		Gear []map[string]json.RawMessage `json:"gear"`
+	}
+	if err := json.Unmarshal(env.Do(http.MethodGet, "/api/catalog", nil).Body.Bytes(), &raw); err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{
+		"macbook":      `{"part":"laptop","option":"laptop_macbook"}`,
+		"moletom":      `{"part":"top","option":"top_moletom_gear"}`,
+		"hoodie_trace": `{"part":"top","option":"top_hoodie_trace"}`,
+	}
+	for _, g := range raw.Gear {
+		var id string
+		_ = json.Unmarshal(g["id"], &id)
+		look, has := g["look"]
+		if w, ok := want[id]; ok != has || (has && string(look) != w) {
+			t.Errorf("gear %s look = %s, want %q", id, look, w)
+		}
+	}
+}
+
+var hexColor = regexp.MustCompile(`^#[0-9a-f]{6}$`)
+
+func validRamp(r []string) bool {
+	if len(r) != 4 {
+		return false
+	}
+	for _, h := range r {
+		if !hexColor.MatchString(h) {
+			return false
+		}
+	}
+	return true
+}
+
+// Avatar C3: every reference inside avatar.json and from shop.json lands on a valid part/option.
+func TestCatalog_AvatarReferencesCatalog(t *testing.T) {
+	c, err := catalog.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	seen := map[string]bool{}
+	for _, o := range c.Avatar.Options {
+		if seen[o.ID] {
+			t.Errorf("option id %s is repeated", o.ID)
+		}
+		seen[o.ID] = true
+		part, ok := c.AvatarPart(o.Part)
+		switch {
+		case !ok:
+			t.Errorf("option %s names unknown part %q", o.ID, o.Part)
+		case part.Kind == "color" && (!validRamp(o.Ramp) || o.Layer != ""):
+			t.Errorf("color option %s: ramp %v layer %q, want 4 #rrggbb and no layer", o.ID, o.Ramp, o.Layer)
+		case part.Kind == "style" && (o.Layer == "" || o.Ramp != nil):
+			t.Errorf("style option %s: layer %q ramp %v, want a layer and no ramp", o.ID, o.Layer, o.Ramp)
+		case part.Kind != "color" && part.Kind != "style":
+			t.Errorf("part %s kind = %q, want color or style", part.ID, part.Kind)
+		}
+		if o.GearOnly && o.Price != nil {
+			t.Errorf("gear-only option %s has a price", o.ID)
+		}
+	}
+
+	if len(c.Avatar.Defaults) != len(c.Avatar.Parts) {
+		t.Errorf("defaults = %d, want one per part (%d)", len(c.Avatar.Defaults), len(c.Avatar.Parts))
+	}
+	for _, p := range c.Avatar.Parts {
+		o, ok := c.AvatarOption(c.Avatar.Defaults[p.ID])
+		if !ok || o.Part != p.ID || o.GearOnly || o.Price != nil {
+			t.Errorf("default of %s = %q, want a free, pickable option of that part", p.ID, c.Avatar.Defaults[p.ID])
+		}
+		if _, ok := slot(c, p.GearSlot); p.GearSlot != "" && !ok {
+			t.Errorf("part %s gearSlot %q is not a gear slot", p.ID, p.GearSlot)
+		}
+	}
+
+	dressed := map[string]bool{}
+	for _, g := range c.Gear {
+		if g.Look == nil {
+			continue
+		}
+		part, okPart := c.AvatarPart(g.Look.Part)
+		o, okOpt := c.AvatarOption(g.Look.Option)
+		if !okPart || part.Kind != "style" || part.GearSlot != g.Slot || !okOpt || o.Part != part.ID || !o.GearOnly {
+			t.Errorf("gear %s (slot %s) look %+v, want a gear-only option of a style part on that slot", g.ID, g.Slot, *g.Look)
+		}
+		dressed[g.Look.Option] = true
+	}
+	for _, o := range c.Avatar.Options {
+		if o.GearOnly && !dressed[o.ID] {
+			t.Errorf("gear-only option %s is the look of no gear", o.ID)
+		}
+	}
+
+	for _, s := range c.Skins {
+		if s.Palette == nil {
+			t.Errorf("skin %s has no palette, want {} at least", s.ID)
+		}
+		for partID, ramp := range s.Palette {
+			if p, ok := c.AvatarPart(partID); !ok || p.Kind != "color" || !validRamp(ramp) {
+				t.Errorf("skin %s palette %s = %v, want a color part with 4 #rrggbb", s.ID, partID, ramp)
+			}
+		}
+	}
+}
+
+// Avatar C3: the renderer swaps colors hex to hex, so no two option ramps share a tone.
+func TestCatalog_AvatarRampsAreDistinct(t *testing.T) {
+	owner := map[string]string{}
+	for _, o := range catalog.Default().Avatar.Options {
+		for _, h := range o.Ramp {
+			if prev, ok := owner[h]; ok {
+				t.Errorf("%s is in both %s and %s", h, prev, o.ID)
+			}
+			owner[h] = o.ID
+		}
+	}
+}
+
+func slot(c *catalog.Catalog, id string) (catalog.GearSlot, bool) {
+	for _, s := range c.GearSlots {
+		if s.ID == id {
+			return s, true
+		}
+	}
+	return catalog.GearSlot{}, false
 }

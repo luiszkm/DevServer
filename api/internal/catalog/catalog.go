@@ -118,6 +118,14 @@ type Gear struct {
 	// Price is nil for gear the shop does not sell (made only at the forge).
 	Price *Price `json:"price,omitempty"`
 	Bonus Bonus  `json:"bonus"`
+	// Look is nil for gear that does not change the hero's picture; otherwise the gear-only
+	// avatar option it dresses while equipped.
+	Look *GearLook `json:"look,omitempty"`
+}
+
+type GearLook struct {
+	Part   string `json:"part"`
+	Option string `json:"option"`
 }
 
 type Skin struct {
@@ -125,8 +133,10 @@ type Skin struct {
 	Name        string `json:"name"`
 	Rarity      string `json:"rarity"`
 	Description string `json:"description"`
-	Filter      string `json:"filter"`
-	Price       Price  `json:"price"`
+	// Palette recolors color parts while the skin is worn: part id to a 4-tone ramp, darkest
+	// first. Empty for the default skin.
+	Palette map[string][]string `json:"palette"`
+	Price   Price               `json:"price"`
 	// Bonus is nil for a skin without an attribute bonus.
 	Bonus *Bonus `json:"bonus"`
 }
@@ -193,6 +203,35 @@ type Rack struct {
 	Components []Component `json:"components"`
 }
 
+// AvatarPart is one editable part of the hero; Kind is "color" (options carry a ramp) or "style"
+// (options carry a layer). GearSlot names the gear slot whose look overrides the part.
+type AvatarPart struct {
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Kind     string `json:"kind"`
+	GearSlot string `json:"gearSlot,omitempty"`
+}
+
+// AvatarOption is a choice for one part. Price is nil for a free option; GearOnly options come
+// only from equipped gear and are never picked; Fixed styles ignore the part's color.
+type AvatarOption struct {
+	ID       string   `json:"id"`
+	Part     string   `json:"part"`
+	Name     string   `json:"name"`
+	Ramp     []string `json:"ramp,omitempty"`
+	Layer    string   `json:"layer,omitempty"`
+	Fixed    bool     `json:"fixed,omitempty"`
+	GearOnly bool     `json:"gearOnly,omitempty"`
+	Price    *Price   `json:"price,omitempty"`
+}
+
+type Avatar struct {
+	Parts   []AvatarPart   `json:"parts"`
+	Options []AvatarOption `json:"options"`
+	// Defaults has one free option per part, worn until the player picks another.
+	Defaults map[string]string `json:"defaults"`
+}
+
 type ItemQuantity struct {
 	Item     string `json:"item"`
 	Quantity int    `json:"quantity"`
@@ -244,6 +283,7 @@ type Catalog struct {
 	Office       Office
 	Rack         Rack
 	Recipes      []Recipe
+	Avatar       Avatar
 	body         []byte
 }
 
@@ -354,6 +394,14 @@ func Load() (*Catalog, error) {
 	}
 	c.Recipes = forge.Recipes
 
+	raw, err = data.Files.ReadFile("avatar.json")
+	if err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(raw, &c.Avatar); err != nil {
+		return nil, fmt.Errorf("avatar.json: %w", err)
+	}
+
 	c.body, err = json.Marshal(struct {
 		Version      string        `json:"version"`
 		Regions      []Region      `json:"regions"`
@@ -370,8 +418,9 @@ func Load() (*Catalog, error) {
 		Office       Office        `json:"office"`
 		Rack         Rack          `json:"rack"`
 		Recipes      []Recipe      `json:"recipes"`
+		Avatar       Avatar        `json:"avatar"`
 	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees, c.Enemies, c.Commands, c.Items, c.Combat,
-		c.GearSlots, c.Gear, c.Skins, c.Office, c.Rack, c.Recipes})
+		c.GearSlots, c.Gear, c.Skins, c.Office, c.Rack, c.Recipes, c.Avatar})
 	if err != nil {
 		return nil, err
 	}
@@ -543,6 +592,34 @@ func (c *Catalog) Recipe(id string) (Recipe, bool) {
 		}
 	}
 	return Recipe{}, false
+}
+
+func (c *Catalog) AvatarPart(id string) (AvatarPart, bool) {
+	for _, p := range c.Avatar.Parts {
+		if p.ID == id {
+			return p, true
+		}
+	}
+	return AvatarPart{}, false
+}
+
+func (c *Catalog) AvatarOption(id string) (AvatarOption, bool) {
+	for _, o := range c.Avatar.Options {
+		if o.ID == id {
+			return o, true
+		}
+	}
+	return AvatarOption{}, false
+}
+
+// AvatarOptionPosition orders option ids as the catalog lists them; unknown ids sort last.
+func (c *Catalog) AvatarOptionPosition(id string) int {
+	for i, o := range c.Avatar.Options {
+		if o.ID == id {
+			return i
+		}
+	}
+	return len(c.Avatar.Options)
 }
 
 // SkillBonus sums the bonus of one type ("hp", "sp", "dmg") over the given skill ids.

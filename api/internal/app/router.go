@@ -10,6 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"devserver/api/internal/auth"
+	"devserver/api/internal/avatar"
 	"devserver/api/internal/battle"
 	"devserver/api/internal/catalog"
 	"devserver/api/internal/deploy"
@@ -58,6 +59,7 @@ func NewRouter(d Deps) *chi.Mux {
 	shopH := &shop.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 	officeH := &office.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 	rackH := &rack.Handlers{Pool: d.Pool, Catalog: d.Catalog}
+	avatarH := &avatar.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 
 	r.Get("/api/auth/github/login", h(authH.Login))
 	r.Get("/api/auth/github/callback", h(authH.Callback))
@@ -91,6 +93,8 @@ func NewRouter(d Deps) *chi.Mux {
 		pr.Post("/api/me/office/{zone}/{position}/remove", h(officeH.Remove))
 		pr.Post("/api/me/rack", h(rackH.Buy))
 		pr.Post("/api/me/rack/{slot}/remove", h(rackH.Remove))
+		pr.Put("/api/me/appearance", h(avatarH.Update))
+		pr.Post("/api/me/shop/looks/{id}", h(avatarH.Buy))
 	})
 	return r
 }
