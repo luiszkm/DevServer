@@ -48,10 +48,13 @@ invent hex values.
 - The player avatar is a **48x64 humanoid** built from stacked layers in
   `web/art/sprite/hero/` (PNGs in `web/public/art/sprite/hero/`). Every layer is a full
   48x64 transparent canvas on the **same grid**, so the game stacks them with no offsets.
-  Draw order: `body` → `bottom` → `top-<style>` → `laptop-<style>` → `hand` → `hair-<style>`.
+  Draw order: `body` → `bottom` → `top-<style>` → `laptop-<style>` → `hand` → `beard-<style>`
+  (optional) → `hair-<style>` → `glasses-<style>` (optional).
 - Each recolourable layer is painted with its part's **default ramp (the base ramp)**: body
   = `skin` + `av-eyes-castanho` (iris), hand = `skin`, bottom = `denim`, swappable tops =
-  `av-top-grafite`, hair (and eyebrows, which belong to the hair layer) = `av-hair-preto`.
+  `av-top-grafite`, hair (and eyebrows, which belong to the hair layer) and beards =
+  `av-hair-preto` (beards follow hairColor). Glasses are fixed colours (`ink`, `metal`, `stone`,
+  `net`, `gem`, `white`).
   The game recolours at runtime by swapping hex→hex from the base ramp to the chosen option
   ramp, index for index.
 - `av-*` ramps are the option ramps. Each has the **same tone count as its base ramp**

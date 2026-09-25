@@ -1,0 +1,18 @@
+{
+  "name": "glasses-quadrado",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Square thick ink frames with a metal highlight. Fixed colours.",
+  "legend": {"o": "ink", "M": "metal.2", "N": "metal.3", "w": "white"},
+  "layers": [
+    {"grid": [
+      "...oooooo.oooooo.",
+      "ooooNMMMoooNMMMoo",
+      "...o....o.o....o.",
+      "...o....o.o....o.",
+      "...o....o.o....o.",
+      "...o...wo.o...wo.",
+      "...oooooo.oooooo."
+    ], "at": [14, 15]}
+  ]
+}

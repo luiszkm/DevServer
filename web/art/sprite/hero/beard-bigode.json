@@ -1,0 +1,14 @@
+{
+  "name": "beard-bigode",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Moustache over the mouth line, av-hair-preto (hairColor).",
+  "legend": {"o": "ink", "1": "av-hair-preto.0", "2": "av-hair-preto.1", "3": "av-hair-preto.2"},
+  "layers": [
+    {"grid": [
+      ".ooooo.",
+      "o32221o",
+      "o1ooo1o"
+    ], "at": [21, 22]}
+  ]
+}

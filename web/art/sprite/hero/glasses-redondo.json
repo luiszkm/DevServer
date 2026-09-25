@@ -1,0 +1,17 @@
+{
+  "name": "glasses-redondo",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Round thin metal frames, eyes visible, one white glint. Fixed colours.",
+  "legend": {"m": "metal.1", "M": "metal.2", "w": "white"},
+  "layers": [
+    {"grid": [
+      ".....MM.....MM...",
+      "....M..MM..M..M..",
+      "mmmmw...MMM....mm",
+      "...M....M.M....M.",
+      "....M..M...M..M..",
+      ".....MM.....MM..."
+    ], "at": [14, 16]}
+  ]
+}

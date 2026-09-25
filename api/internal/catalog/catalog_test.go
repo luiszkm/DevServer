@@ -741,6 +741,7 @@ func TestCatalog_ServesAvatar(t *testing.T) {
 
 	parts := []string{
 		"tone|PELE|color|", "eyes|OLHOS|color|", "hair|CABELO|style|", "hairColor|COR DO CABELO|color|",
+		"beard|BARBA|style|", "glasses|ÓCULOS|style|",
 		"top|ROUPA|style|vestuario", "topColor|COR DA ROUPA|color|", "bottomColor|CALÇA|color|", "laptop|NOTEBOOK|style|setup",
 	}
 	if len(a.Parts) != len(parts) {
@@ -782,6 +783,17 @@ func TestCatalog_ServesAvatar(t *testing.T) {
 		"hair_azul|hairColor|AZUL|#0a2a66,#12449c,#2066d0,#4c96f0|-|coins 80",
 		"hair_rosa|hairColor|ROSA|#6a1a4a,#9c2a6c,#d04a98,#f080c0|-|coins 80",
 		"hair_verde|hairColor|VERDE NEON|#1a4a08,#2e7410,#4ea41c,#7cd23a|-|coins 80",
+		"beard_nenhuma|beard|SEM BARBA||-|-",
+		"beard_bigode|beard|BIGODE|beard-bigode|-|-",
+		"beard_cavanhaque|beard|CAVANHAQUE|beard-cavanhaque|-|-",
+		"beard_curta|beard|BARBA CURTA|beard-curta|-|-",
+		"beard_cheia|beard|BARBA CHEIA|beard-cheia|-|-",
+		"beard_lenhador|beard|BARBA LENHADOR|beard-lenhador|-|gems 30",
+		"glasses_nenhum|glasses|SEM ÓCULOS||-|-",
+		"glasses_redondo|glasses|REDONDO|glasses-redondo|fixed|-",
+		"glasses_quadrado|glasses|QUADRADO|glasses-quadrado|fixed|-",
+		"glasses_escuro|glasses|ÓCULOS ESCUROS|glasses-escuro|fixed|-",
+		"glasses_cyber|glasses|VISOR CYBER|glasses-cyber|fixed|gems 40",
 		"top_moletom|top|MOLETOM|top-moletom|-|-",
 		"top_camiseta|top|CAMISETA|top-camiseta|-|-",
 		"top_xadrez|top|CAMISA XADREZ|top-xadrez|-|-",
@@ -850,7 +862,7 @@ func TestCatalog_ServesAvatar(t *testing.T) {
 
 	defaults := map[string]string{
 		"tone": "tone_padrao", "eyes": "eyes_castanho", "hair": "hair_espetado", "hairColor": "hair_preto",
-		"top": "top_moletom", "topColor": "top_grafite", "bottomColor": "bottom_jeans", "laptop": "laptop_basico",
+		"beard": "beard_nenhuma", "glasses": "glasses_nenhum", "top": "top_moletom", "topColor": "top_grafite", "bottomColor": "bottom_jeans", "laptop": "laptop_basico",
 	}
 	if !reflect.DeepEqual(a.Defaults, defaults) {
 		t.Errorf("defaults = %v, want %v", a.Defaults, defaults)
@@ -913,8 +925,9 @@ func TestCatalog_AvatarReferencesCatalog(t *testing.T) {
 			t.Errorf("option %s names unknown part %q", o.ID, o.Part)
 		case part.Kind == "color" && (!validRamp(o.Ramp) || o.Layer != ""):
 			t.Errorf("color option %s: ramp %v layer %q, want 4 #rrggbb and no layer", o.ID, o.Ramp, o.Layer)
-		case part.Kind == "style" && (o.Layer == "" || o.Ramp != nil):
-			t.Errorf("style option %s: layer %q ramp %v, want a layer and no ramp", o.ID, o.Layer, o.Ramp)
+		// A style without a layer draws nothing (SEM BARBA, SEM ÓCULOS); only the part's default may be one.
+		case part.Kind == "style" && (o.Ramp != nil || (o.Layer == "" && c.Avatar.Defaults[o.Part] != o.ID)):
+			t.Errorf("style option %s: layer %q ramp %v, want a layer (or be the part's default) and no ramp", o.ID, o.Layer, o.Ramp)
 		case part.Kind != "color" && part.Kind != "style":
 			t.Errorf("part %s kind = %q, want color or style", part.ID, part.Kind)
 		}

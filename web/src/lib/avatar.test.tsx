@@ -52,6 +52,22 @@ describe("resolveLook", () => {
     expect(look.parts.laptop).toEqual({ option: "laptop_basico", by: "default" });
   });
 
+  it("beard follows the hair colour and sits under the hair; glasses are fixed and drawn last", () => {
+    const look = resolveLook(input({ appearance: { beard: "beard_cheia", glasses: "glasses_redondo", hairColor: "hair_loiro" } }), catalog);
+    expect(look.layers.slice(5)).toEqual([
+      { src: src("beard-cheia"), swap: zip(HAIR, LOIRO) },
+      { src: src("hair-espetado"), swap: zip(HAIR, LOIRO) },
+      { src: src("glasses-redondo"), swap: {} },
+    ]);
+  });
+
+  it("no beard and no glasses draw nothing", () => {
+    const look = resolveLook(input({ appearance: { beard: "beard_nenhuma", glasses: "glasses_nenhum" } }), catalog);
+    expect(look.layers.map((l) => l.src)).not.toContain(src("beard-nenhuma"));
+    expect(look.layers).toHaveLength(6);
+    expect(look.parts.beard).toEqual({ option: "beard_nenhuma", by: "player" });
+  });
+
   it("fixed style ignores the part's colour", () => {
     const look = resolveLook(input({ appearance: { top: "top_jaqueta", topColor: "top_vinho" } }), catalog);
     expect(look.layers[2]).toEqual({ src: src("top-jaqueta"), swap: {} });

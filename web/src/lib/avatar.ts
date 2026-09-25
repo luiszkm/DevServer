@@ -62,14 +62,20 @@ export function resolveLook(input: LookInput, catalog: Catalog): Look {
     }
     return out;
   };
-  const top = styles.top;
+  // A style without a layer (SEM BARBA, SEM ÓCULOS) draws nothing.
+  const style = (part: string, colour?: string): Layer[] => {
+    const o = styles[part];
+    return o.layer ? [{ src: layerSrc(o.layer), swap: o.fixed || !colour ? {} : swap(colour) }] : [];
+  };
   const layers: Layer[] = [
     { src: layerSrc("body"), swap: swap("tone", "eyes") },
     { src: layerSrc("bottom"), swap: swap("bottomColor") },
-    { src: layerSrc(top.layer!), swap: top.fixed ? {} : swap("topColor") },
-    { src: layerSrc(styles.laptop.layer!), swap: {} },
+    ...style("top", "topColor"),
+    ...style("laptop"),
     { src: layerSrc("hand"), swap: swap("tone") },
-    { src: layerSrc(styles.hair.layer!), swap: swap("hairColor") },
+    ...style("beard", "hairColor"),
+    ...style("hair", "hairColor"),
+    ...style("glasses"),
   ];
   const key = layers.map((l) => `${l.src}|${Object.entries(l.swap).map((e) => e.join(">")).join(",")}`).join(";");
   return { layers, parts: resolved, key };

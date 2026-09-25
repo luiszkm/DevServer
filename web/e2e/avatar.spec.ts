@@ -60,3 +60,26 @@ test("equipped hoodie dresses the hero", async ({ page }) => {
   await page.locator('[data-part="top"]').click();
   await expect(page.getByText("em uso: MOLETOM CONFORTÁVEL — remova o item para usar a sua escolha.")).toBeVisible();
 });
+
+test("beard follows the hair colour and glasses are drawn over the face", async ({ page }) => {
+  await newDev(page);
+  await openAvatar(page);
+  await page.getByRole("tab", { name: "VISUAL" }).click();
+  await page.locator('[data-part="beard"]').click();
+  await page.locator('[data-option="beard_cheia"]').click();
+  await page.locator('[data-part="glasses"]').click();
+  await page.locator('[data-option="glasses_escuro"]').click();
+  // beard-cheia (24,26) is hair ramp index 1; glasses-escuro (20,17) is a stone.1 lens
+  await expect.poll(() => pixel(page, [24, 26])).toBe("#24242e");
+  expect(await pixel(page, [20, 17])).toBe("#121e2a");
+  await page.locator('[data-part="hairColor"]').click();
+  await page.locator('[data-option="hair_ruivo"]').click();
+  await expect.poll(() => pixel(page, [24, 26])).toBe("#8a2c14");
+  await page.getByRole("button", { name: "SALVAR" }).click();
+  await expect(page.getByRole("status")).toHaveText("VISUAL SALVO");
+
+  await page.reload();
+  await openAvatar(page);
+  expect(await pixel(page, [24, 26])).toBe("#8a2c14");
+  expect(await pixel(page, [20, 17])).toBe("#121e2a");
+});

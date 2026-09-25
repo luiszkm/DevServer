@@ -1,0 +1,17 @@
+{
+  "name": "beard-curta",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Stubble: sparse dither of the dark hair tones along jaw, chin and upper lip, skin shows through. av-hair-preto (hairColor).",
+  "legend": {"1": "av-hair-preto.0", "2": "av-hair-preto.1"},
+  "layers": [
+    {"grid": [
+      "1...............1",
+      ".1.2.....1.2.1.2.",
+      "................1",
+      "...2...........2.",
+      "....1...1...1...1",
+      ".....1.2.1.2.1..."
+    ], "at": [13, 21]}
+  ]
+}
