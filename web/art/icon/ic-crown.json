@@ -1,0 +1,26 @@
+{
+  "name": "ic-crown",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "Gold crown with three points and jewel pixels (badges row 2).",
+  "layers": [
+    {"grid": [
+      "o......o......o",
+      "yo....oyo....oy",
+      "yyo..oyyyo..oyy",
+      "yyyooyyyyyooyyy",
+      "yyyyyyyyyyyyyyy",
+      "yyyyyyyyyyyyyyy",
+      "YYYYYYYYYYYYYYY"
+    ], "at": [0, 4], "legend": {"o": "ink", "y": "gold.2", "Y": "gold.1"}},
+    {"rect": [0, 8, 15, 1], "color": "gold.3"},
+    {"rect": [3, 9, 1, 1], "color": "red.2"},
+    {"rect": [7, 9, 1, 1], "color": "net.2"},
+    {"rect": [11, 9, 1, 1], "color": "red.2"},
+    {"rect": [7, 6, 1, 1], "color": "gold.4"},
+    {"rect": [0, 4, 15, 1], "color": null},
+    {"rect": [0, 4, 1, 7], "color": null},
+    {"rect": [14, 4, 1, 7], "color": null},
+    {"outline": "ink"}
+  ]
+}

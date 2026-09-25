@@ -1,0 +1,20 @@
+{
+  "name": "ui-btn-dark-press",
+  "category": "ui",
+  "size": [24, 24],
+  "_design": "Dark button, pressed: shadow moves to the top-left. 9-slice, 8px corners: border-image: url(/art/ui/ui-btn-dark-press.png) 8 fill / 24px round",
+  "layers": [
+    {"rect": [2, 0, 20, 24], "color": "ink"},
+    {"rect": [1, 1, 22, 22], "color": "ink"},
+    {"rect": [0, 2, 24, 20], "color": "ink"},
+    {"rect": [3, 1, 18, 22], "color": "ui.4"},
+    {"rect": [2, 2, 20, 20], "color": "ui.4"},
+    {"rect": [1, 3, 22, 18], "color": "ui.4"},
+    {"rect": [3, 2, 18, 20], "color": "ui.1"},
+    {"rect": [2, 3, 20, 18], "color": "ui.1"},
+    {"rect": [3, 3, 18, 18], "color": "ui.2"},
+    {"rect": [3, 3, 18, 2], "color": "ui.1"},
+    {"rect": [3, 3, 1, 18], "color": "ui.1"},
+    {"rect": [3, 20, 18, 1], "color": "ui.3"}
+  ]
+}

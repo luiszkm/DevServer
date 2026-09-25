@@ -1,0 +1,19 @@
+{
+  "name": "ic-chart",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "POWER: rising blue bars on a dark panel (badges row 3).",
+  "layers": [
+    {"rect": [1, 2, 14, 12], "color": "ink"},
+    {"rect": [2, 3, 12, 10], "color": "ui.2"},
+    {"rect": [3, 10, 2, 2], "color": "net.2"},
+    {"rect": [6, 8, 2, 4], "color": "net.2"},
+    {"rect": [9, 6, 2, 6], "color": "net.3"},
+    {"rect": [12, 4, 1, 8], "color": "net.3"},
+    {"rect": [3, 10, 1, 1], "color": "net.4"},
+    {"rect": [6, 8, 1, 1], "color": "net.4"},
+    {"rect": [9, 6, 1, 1], "color": "net.4"},
+    {"rect": [12, 4, 1, 1], "color": "net.4"},
+    {"rect": [2, 12, 12, 1], "color": "ui.5"}
+  ]
+}

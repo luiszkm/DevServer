@@ -386,3 +386,24 @@ describe("DeployScene", () => {
     expect(backend).toHaveAccessibleName("BACKEND");
   });
 });
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("DeployScene assets", () => {
+  // assets C20
+  it("lock icon", async () => {
+    mockFetch({ "GET /api/me/deploys": list([]) });
+    renderScene({ p: player({ level: 1 }) });
+    await within(panel()).findByRole("button", { name: "INICIAR DEPLOY" });
+    const tag = levelButton(2).querySelector(".deploy-locked")!;
+    expect(tag.textContent).toBe("NÍVEL 3");
+    expectIcon(tag.firstElementChild, "/art/icon/ic-lock.png");
+    expect(tag.firstChild).toBe(tag.firstElementChild);
+    expect(levelButton(1).querySelector('img[src="/art/icon/ic-lock.png"]')).toBeNull();
+  });
+});

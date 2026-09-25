@@ -1,0 +1,16 @@
+{
+  "name": "ui-btn-green-press",
+  "category": "ui",
+  "size": [24, 24],
+  "_design": "Green terminal button: code ramp, thick dark bottom edge (the old .btn-green). 9-slice, 8px corners: border-image: url(/art/ui/ui-btn-green-press.png) 8 fill / 24px round",
+  "layers": [
+    {"rect": [2, 0, 20, 24], "color": "ink"},
+    {"rect": [1, 1, 22, 22], "color": "ink"},
+    {"rect": [0, 2, 24, 20], "color": "ink"},
+    {"rect": [2, 1, 20, 22], "color": "code.1"},
+    {"rect": [1, 2, 22, 20], "color": "code.1"},
+    {"rect": [2, 1, 20, 2], "color": "code.0"},
+    {"rect": [1, 2, 1, 20], "color": "code.0"},
+    {"rect": [2, 22, 20, 1], "color": "code.2"}
+  ]
+}

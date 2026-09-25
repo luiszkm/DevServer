@@ -1,0 +1,24 @@
+{
+  "name": "btn-exit",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "EXIT: a wooden door in a steel frame with a white arrow pointing out.",
+  "layers": [
+    {"grid": [
+      "oooooooo........",
+      "ommmmmmo........",
+      "omddddmo........",
+      "omddddmo....o...",
+      "omddddmo....oo..",
+      "omddddmooooogoo.",
+      "omddDdmogggggggo",
+      "omddddmogggggggo",
+      "omddddmooooogoo.",
+      "omddddmo....oo..",
+      "omddddmo....o...",
+      "omddddmo........",
+      "ommmmmmo........",
+      "oooooooo........"
+    ], "at": [0, 1], "legend": {"o": "ink", "m": "metal.2", "d": "wood.3", "D": "gold.2", "g": "white"}}
+  ]
+}

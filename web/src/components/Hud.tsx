@@ -53,7 +53,10 @@ export function Hud({ player, catalog, onLogout }: Props) {
         <span className="pixel hud-value" style={{ color: "var(--cyan)" }}>{player.gems}</span>
       </div>
       <div className="hud-card">
-        <span className="pixel hud-label">SKILL PTS</span>
+        <span className="pixel hud-label">
+          <GameArt kind="ic" id="star" scale={1} alt="" fallback="" className="inline-icon" />
+          SKILL PTS
+        </span>
         <div className="hud-row">
           <span className="pixel hud-value" style={{ color: "var(--purple)" }}>{player.skillPoints}</span>
           {catalog && <ActiveSkillGlyphs skills={player.skills} catalog={catalog} />}
@@ -63,6 +66,7 @@ export function Hud({ player, catalog, onLogout }: Props) {
         <span className="pixel hud-label">{player.devName}</span>
         {onLogout && (
           <button type="button" className="btn btn-dark" onClick={onLogout}>
+            <GameArt kind="btn" id="exit" scale={1} alt="" fallback="" className="inline-icon" />
             SAIR
           </button>
         )}

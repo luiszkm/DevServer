@@ -65,7 +65,10 @@ export function SkillsScene() {
                     <span className="pixel skill-name">{node.name}</span>
                     <span className="term">{node.description}</span>
                   </span>
-                  <span className="pixel skill-state">{state}</span>
+                  <span className="pixel skill-state">
+                    {state === "BLOQ." && <GameArt kind="ic" id="lock" scale={1} alt="" fallback="" className="inline-icon" />}
+                    {state}
+                  </span>
                 </button>
               );
             })}

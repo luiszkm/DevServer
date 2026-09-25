@@ -240,7 +240,7 @@ describe("ShopScene", () => {
       expect(big.getAttribute("width")).toBe("64");
     }
     fireEvent.error(card("hp_potion").querySelector("img")!);
-    expect(card("hp_potion").querySelector("img")).toBeNull();
+    expect(card("hp_potion").querySelector(".shop-glyph img")).toBeNull();
     expect(card("hp_potion").querySelector(".shop-glyph")).toHaveTextContent("HP+");
   });
 
@@ -262,7 +262,7 @@ describe("ShopScene", () => {
       expect(big.getAttribute("width")).toBe("64");
     }
     fireEvent.error(card("macbook").querySelector("img")!);
-    expect(card("macbook").querySelector("img")).toBeNull();
+    expect(card("macbook").querySelector(".shop-glyph img")).toBeNull();
     expect(card("macbook").querySelector(".shop-glyph")).toHaveTextContent("[Mac]");
   });
 });
@@ -483,3 +483,22 @@ describe("ShopScene avatar styles", () => {
   });
 });
 
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("ShopScene assets", () => {
+  // assets C21
+  it("price icon", () => {
+    renderShop(player({ gear: [], equipment: {} }));
+    const gemPrice = card("hp_potion").querySelector(".shop-price")!;
+    expect(gemPrice.textContent).toBe("12g");
+    expectIcon(gemPrice.firstElementChild, "/art/icon/hud-gem.png");
+    const coinPrice = card("cafe").querySelector(".shop-status")!;
+    expect(coinPrice.textContent).toBe("50c");
+    expectIcon(coinPrice.firstElementChild, "/art/icon/hud-coin.png");
+  });
+});

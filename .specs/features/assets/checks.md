@@ -56,16 +56,16 @@ Proof: `cd web && npx vitest run src/components/GameArt.test.tsx -t "new kinds"`
 
 ### S2 - UI, ícones e logo · 22 files · ~228 KB shared with S3/S4 · ~30k
 
-**C9** - each of the 10 ui pieces has `web/art/ui/<name>.json` and a 24x24 PNG in `web/public/art/ui/` (AST-02, AC 7; door 1)
+**C9** - each of the 10 ui pieces has `web/art/ui/<name>.json` and a 24x24 PNG in `web/public/art/ui/` (AST-02, AC 7; door 1) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "chrome piece"`
 
-**C10** - each of the 8 `btn-*` and 15 `ic-*` has spec and a 16x16 PNG in `icon/` (AST-02, AC 7)
+**C10** - each of the 8 `btn-*` and 15 `ic-*` has spec and a 16x16 PNG in `icon/` (AST-02, AC 7) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "button and generic icon"`
 
-**C11** - each of the 6 `medal-*` has spec and a 16x16 PNG in `icon/` (AST-02, AC 7)
+**C11** - each of the 6 `medal-*` has spec and a 16x16 PNG in `icon/` (AST-02, AC 7) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "medal"`
 
-**C12** - `sprite/logo` has spec and a 160x64 PNG (AST-02, AC 7)
+**C12** - `sprite/logo` has spec and a 160x64 PNG (AST-02, AC 7) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "logo"`
 
 **C13** - in the browser, `.panel` and `.hud-card` have computed `border-image-source` containing `/art/ui/ui-panel.png`, `.btn-yellow` `ui-btn-wood.png`, `.btn-dark` `ui-btn-dark.png`, `.btn-green` `ui-btn-green.png`; each has `border-image-slice` `8 fill` and `image-rendering` `pixelated` (AST-02, AC 8; door 6)
@@ -74,43 +74,43 @@ Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "chrome 9-slice"`
 **C14** - with the mouse held down on a `.btn-yellow`, `.btn-dark` and `.btn-green`, computed `border-image-source` contains `ui-btn-wood-press.png`, `ui-btn-dark-press.png`, `ui-btn-green-press.png` respectively (AST-02, AC 9; door 6)
 Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "pressed"`
 
-**C15** - `GameShell` header shows `img` `alt="DevServer"` `src="/art/sprite/logo.png"` `width=160` `height=64` with class `pixelated`, and no text `DEV`/`SERVER` (AST-02, AC 10)
+**C15** - `GameShell` header shows `img` `alt="DevServer"` `src="/art/sprite/logo.png"` `width=160` `height=64` with class `pixelated`, and no text `DEV`/`SERVER` (AST-02, AC 10) ✅
 Proof: `cd web && npx vitest run src/components/GameShell.test.tsx -t "logo"`
 
-**C16** - `LoginScreen` `h1` has accessible name `DevServer` and holds `img` `src="/art/sprite/logo.png"` `width=320` `height=128` (AST-02, AC 10)
+**C16** - `LoginScreen` `h1` has accessible name `DevServer` and holds `img` `src="/art/sprite/logo.png"` `width=320` `height=128` (AST-02, AC 10) ✅
 Proof: `cd web && npx vitest run src/components/LoginScreen.test.tsx -t "logo"`
 
-**C17** - HUD: the `SAIR` button keeps accessible name `SAIR` and holds `img` `src="/art/icon/btn-exit.png"` `alt=""` `width=16`; `SKILL PTS` is preceded by `img` `src="/art/icon/ic-star.png"` `alt=""` `width=16` (AST-03, AC 11)
+**C17** - HUD: the `SAIR` button keeps accessible name `SAIR` and holds `img` `src="/art/icon/btn-exit.png"` `alt=""` `width=16`; `SKILL PTS` is preceded by `img` `src="/art/icon/ic-star.png"` `alt=""` `width=16` (AST-03, AC 11) ✅
 Proof: `cd web && npx vitest run src/components/Hud.test.tsx -t "exit and skill points icons"`
 
-**C18** - SKILLS: a locked node shows `img` `src="/art/icon/ic-lock.png"` `alt=""` `width=16` before `BLOQ.`; an unlockable node shows no lock (AST-03, AC 12)
+**C18** - SKILLS: a locked node shows `img` `src="/art/icon/ic-lock.png"` `alt=""` `width=16` before `BLOQ.`; an unlockable node shows no lock (AST-03, AC 12) ✅
 Proof: `cd web && npx vitest run src/components/SkillsScene.test.tsx -t "lock icon"`
 
-**C19** - MUNDO: a region with `player.level < minLevel` shows `ic-lock` before `REQUER NÍVEL n`; an open region shows none (AST-03, AC 12)
+**C19** - MUNDO: a region with `player.level < minLevel` shows `ic-lock` before `REQUER NÍVEL n`; an open region shows none (AST-03, AC 12) ✅
 Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "lock icon"`
 
-**C20** - DEPLOY: a locked level shows `ic-lock` before `NÍVEL n`; an open level shows none (AST-03, AC 12)
+**C20** - DEPLOY: a locked level shows `ic-lock` before `NÍVEL n`; an open level shows none (AST-03, AC 12) ✅
 Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx -t "lock icon"`
 
-**C21** - LOJA: a coin price card shows `img` `src="/art/icon/hud-coin.png"` `alt=""` `width=16` before the number, a gem price card `hud-gem.png` (AST-03, AC 13)
+**C21** - LOJA: a coin price card shows `img` `src="/art/icon/hud-coin.png"` `alt=""` `width=16` before the number, a gem price card `hud-gem.png` (AST-03, AC 13) ✅
 Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "price icon"`
 
-**C22** - OFFICE: a coins price tag shows `hud-coin`, a gems price tag `hud-gem`, both `alt=""` 16px before the number (AST-03, AC 13)
+**C22** - OFFICE: a coins price tag shows `hud-coin`, a gems price tag `hud-gem`, both `alt=""` 16px before the number (AST-03, AC 13) ✅
 Proof: `cd web && npx vitest run src/components/OfficeScene.test.tsx -t "price icon"`
 
-**C23** - SERVER: a component shop card shows `hud-coin` `alt=""` 16px before its price (AST-03, AC 13)
+**C23** - SERVER: a component shop card shows `hud-coin` `alt=""` 16px before its price (AST-03, AC 13) ✅
 Proof: `cd web && npx vitest run src/components/ServerScene.test.tsx -t "price icon"`
 
-**C24** - OFFICE: for office levels 1..5 the level name is preceded by `img` `src="/art/icon/medal-<m>.png"` `alt=""` `width=32` with `<m>` = `bronze`, `prata`, `ouro`, `azul`, `roxo`, table-driven over the 5 levels (AST-03, AC 14)
+**C24** - OFFICE: for office levels 1..5 the level name is preceded by `img` `src="/art/icon/medal-<m>.png"` `alt=""` `width=32` with `<m>` = `bronze`, `prata`, `ouro`, `azul`, `roxo`, table-driven over the 5 levels (AST-03, AC 14) ✅
 Proof: `cd web && npx vitest run src/components/OfficeScene.test.tsx -t "level medal"`
 
-**C25** - SERVER: POWER is preceded by `ic-chart`, RAM by `ic-database`, UPTIME by `ic-shield`, all `alt=""` 16px (AST-03, AC 15)
+**C25** - SERVER: POWER is preceded by `ic-chart`, RAM by `ic-database`, UPTIME by `ic-shield`, all `alt=""` 16px (AST-03, AC 15) ✅
 Proof: `cd web && npx vitest run src/components/ServerScene.test.tsx -t "stat icons"`
 
-**C26** - Bug Fight: the hero SP line is preceded by `img` `src="/art/icon/ic-sp.png"` `alt=""` `width=16` (AST-03, AC 15)
+**C26** - Bug Fight: the hero SP line is preceded by `img` `src="/art/icon/ic-sp.png"` `alt=""` `width=16` (AST-03, AC 15) ✅
 Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "sp icon"`
 
-**C27** - HUD: after `error` on the `btn-exit` image, the button has no `img`, its text is exactly `SAIR`, and no other element is added to it (AST-03, AC 16)
+**C27** - HUD: after `error` on the `btn-exit` image, the button has no `img`, its text is exactly `SAIR`, and no other element is added to it (AST-03, AC 16) ✅
 Proof: `cd web && npx vitest run src/components/Hud.test.tsx -t "icon fails"`
 
 ### S3 - peças do mundo, efeitos e NPCs · shared files · ~20k

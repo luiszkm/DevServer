@@ -169,3 +169,23 @@ describe("SkillsScene", () => {
     expect(node("f2").querySelector(".skill-glyph")).toHaveTextContent("{}");
   });
 });
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("SkillsScene assets", () => {
+  // assets C18
+  it("lock icon", () => {
+    renderScene(player({ skills: [] }));
+    const locked = node("f2").querySelector(".skill-state")!;
+    expect(locked.textContent).toBe("BLOQ.");
+    expectIcon(locked.firstElementChild, "/art/icon/ic-lock.png");
+    expect(locked.firstChild).toBe(locked.firstElementChild);
+    expect(node("f1").querySelector(".skill-state")!.textContent).toBe("1 PT");
+    expect(node("f1").querySelector('img[src="/art/icon/ic-lock.png"]')).toBeNull();
+  });
+});

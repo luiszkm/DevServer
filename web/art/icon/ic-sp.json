@@ -1,0 +1,12 @@
+{
+  "name": "ic-sp",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "SP: a blue energy bolt (skill points of the battle bar).",
+  "layers": [
+    {"poly": [[9, 1], [3, 9], [7, 9], [5, 15], [12, 6], [8, 6], [10, 1]], "color": "net.3"},
+    {"poly": [[9, 1], [3, 9], [6, 9], [9, 3]], "color": "net.4"},
+    {"poly": [[8, 9], [5, 15], [12, 6], [10, 6]], "color": "net.2"},
+    {"outline": "ink"}
+  ]
+}

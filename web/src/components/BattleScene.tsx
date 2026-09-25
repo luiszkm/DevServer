@@ -212,7 +212,12 @@ export function BattleScene() {
           <div style={{ width: `${((shown.heroHp ?? player.hp) / player.hpMax) * 100}%`, background: "var(--green)" }} />
         </div>
         <span className="term">{`HP ${shown.heroHp ?? player.hp}/${player.hpMax}`}</span>
-        {battle && <span className="term">{`SP ${battle.sp}/${battle.spMax}`}</span>}
+        {battle && (
+          <span className="term">
+            <GameArt kind="ic" id="sp" scale={1} alt="" fallback="" className="inline-icon" />
+            {`SP ${battle.sp}/${battle.spMax}`}
+          </span>
+        )}
       </div>
     </section>
   );

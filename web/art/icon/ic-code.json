@@ -1,0 +1,20 @@
+{
+  "name": "ic-code",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "</> in terminal green on a dark screen with a green bezel (ICONES row 1).",
+  "layers": [
+    {"rect": [1, 2, 14, 12], "color": "ink"},
+    {"rect": [2, 3, 12, 10], "color": "code.0"},
+    {"rect": [2, 3, 12, 1], "color": "code.1"},
+    {"rect": [2, 3, 1, 10], "color": "code.1"},
+    {"rect": [3, 4, 10, 8], "color": "ink.1"},
+    {"grid": [
+      "..L..L.L..",
+      ".G...G..G.",
+      "G...G....G",
+      ".G..G...G.",
+      "..G.G..G.."
+    ], "at": [3, 5], "legend": {"G": "code.3", "L": "code.4"}}
+  ]
+}

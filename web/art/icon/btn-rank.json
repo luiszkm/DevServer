@@ -1,0 +1,9 @@
+{
+  "name": "btn-rank",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "RANK: the gold trophy.",
+  "layers": [
+    {"use": "ic-trophy.json"}
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "ic-file",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "A white document with grey text lines and a folded corner.",
+  "layers": [
+    {"grid": [
+      "ooooooooo...",
+      "owwwwwwwwoo.",
+      "owwwwwwwwcwo",
+      "owwwwwwwwccw",
+      "owkkkkkkwwwo",
+      "owwwwwwwwwwo",
+      "owkkkkkkkkwo",
+      "owwwwwwwwwwo",
+      "owkkkkkkkkwo",
+      "owwwwwwwwwwo",
+      "owkkkkkkwwwo",
+      "owwwwwwwwwco",
+      "occccccccccc",
+      "oooooooooooo"
+    ], "at": [2, 1], "legend": {"o": "ink", "w": "white", "c": "metal.3", "k": "metal.1"}}
+  ]
+}

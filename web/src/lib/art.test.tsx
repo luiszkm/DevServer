@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { inflateSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -45,7 +45,7 @@ function pngPixels(path: string) {
   return { width, height, px };
 }
 
-type Asset = { category: "icon" | "sprite" | "background"; name: string; size: [number, number] };
+type Asset = { category: "icon" | "sprite" | "background" | "ui" | "fx" | "tile"; name: string; size: [number, number] };
 
 function expectAssets(assets: Asset[]) {
   expect(assets.length).toBeGreaterThan(0);
@@ -362,5 +362,98 @@ describe("web mock", () => {
     const full = catalog<{ gear: { id: string; price?: unknown }[] }>("shop.json").gear.filter((g) => !g.price);
     expect(full.map((g) => g.id)).toEqual(["caneca_log", "hoodie_trace", "teclado_race"]);
     expect(GEAR.filter((g) => !g.price)).toEqual(full);
+  });
+});
+
+// assets C9-C12, C28-C29, C37-C38, C40: the asset sheet (web/public/assests_keyart.png). The names are the
+// door 1 literals of .specs/features/assets/checks.md, never read from GameArt; the hero strips follow the
+// hero layers on disk, so a new avatar layer with no strips turns "hero strip" red.
+const sized = (category: Asset["category"], size: [number, number], names: string[]): Asset[] =>
+  names.map((name) => ({ category, name, size }));
+
+function expectOpaque(assets: Asset[]) {
+  for (const { category, name } of assets) {
+    const png = `${ROOT}web/public/art/${category}/${name}.png`;
+    if (!existsSync(png)) continue;
+    const { width, height, px } = pngPixels(png);
+    let transparent = 0;
+    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) if (px(x, y)[3] !== 255) transparent++;
+    expect.soft(transparent, png).toBe(0);
+  }
+}
+
+describe("asset sheet on disk", () => {
+  it("chrome piece, 24x24", () => {
+    expectAssets(sized("ui", [24, 24], [
+      "ui-panel", "ui-panel-wood", "ui-btn-wood", "ui-btn-wood-press", "ui-btn-dark", "ui-btn-dark-press",
+      "ui-btn-green", "ui-btn-green-press", "ui-bubble", "ui-bar",
+    ]));
+  });
+
+  it("button and generic icon, 16x16", () => {
+    const btn = ["build", "deploy", "play", "rank", "start", "settings", "shop", "exit"];
+    const ic = ["code", "cloud", "server", "gear", "trophy", "star", "crown", "laptop", "database", "shield", "lock", "file", "wrench", "chart", "sp"];
+    expect(btn).toHaveLength(8);
+    expect(ic).toHaveLength(15);
+    expectAssets(sized("icon", [16, 16], [...btn.map((b) => `btn-${b}`), ...ic.map((i) => `ic-${i}`)]));
+  });
+
+  it("medal, 16x16", () => {
+    expectAssets(sized("icon", [16, 16], ["bronze", "prata", "ouro", "azul", "roxo", "rubi"].map((m) => `medal-${m}`)));
+  });
+
+  it("logo, 160x64", () => {
+    expectAssets([{ category: "sprite", name: "logo", size: [160, 64] }]);
+  });
+
+  it("world piece sprites", () => {
+    const props = ["laptop", "macbook", "rack", "caixa", "caixa-aberta", "monitor", "roteador", "planta", "caneca", "livros", "bloco-grama", "terminal", "torre", "gema-pedestal", "modem"];
+    const builds = ["rack", "tenda", "antena", "placa-code", "flag", "placa"];
+    const extras = ["placa", "fogueira", "lampada", "banco", "bau", "bau-aberto", "bandeira"];
+    expectAssets([
+      ...sized("sprite", [32, 32], props.map((p) => `prop-${p}`)),
+      { category: "sprite", name: "build-server-hut", size: [96, 96] },
+      ...sized("sprite", [32, 32], builds.map((b) => `build-${b}`)),
+      ...sized("sprite", [32, 32], ["mob-slime", "mob-slime-verde", "mob-monstro", "mob-robo", "npc-dev"]),
+      ...sized("sprite", [32, 32], extras.map((e) => `extra-${e}`)),
+    ]);
+  });
+
+  it("new effect strips, 128x32", () => {
+    expectAssets(sized("fx", [128, 32], ["dust", "sparkle", "teleport", "fire", "loading", "collect"]));
+  });
+
+  it("new scene, 320x180, opaque", () => {
+    const scenes = sized("background", [320, 180], ["dia", "noite", "floresta", "dungeon"].map((n) => `scene-${n}`));
+    expectAssets(scenes);
+    expectOpaque(scenes);
+  });
+
+  it("tileset tiles and decals", () => {
+    const tiles = [
+      ...sized("tile", [32, 32], ["grama-topo", "grama", "grama-borda", "terra", "pedra", "tijolo", "tabua", "parede-madeira", "areia"].map((t) => `tile-${t}`)),
+      ...sized("tile", [128, 32], ["agua", "agua-funda", "cachoeira"].map((t) => `tile-${t}`)),
+    ];
+    expectAssets(tiles);
+    expectOpaque(tiles);
+    expectAssets([
+      ...sized("sprite", [32, 32], ["arbusto", "flor", "arvore", "cerca"].map((t) => `tile-${t}`)),
+      { category: "sprite", name: "tile-arvore-grande", size: [64, 64] },
+    ]);
+  });
+
+  it("hero strip per layer and anim, 192x64", () => {
+    const dir = `${ROOT}web/public/art/sprite/hero`;
+    const layers = readdirSync(dir).filter((f) => f.endsWith(".png")).map((f) => f.replace(/\.png$/, ""));
+    expect(layers.length).toBeGreaterThan(0);
+    for (const layer of layers) {
+      for (const anim of ["idle", "walk", "run", "jump", "interact"]) {
+        const spec = `${ROOT}web/art/sprite/hero/anim/${layer}-${anim}.json`;
+        const png = `${dir}/anim/${layer}-${anim}.png`;
+        expect.soft(existsSync(spec), spec).toBe(true);
+        expect.soft(existsSync(png), png).toBe(true);
+        if (existsSync(png)) expect.soft(pngSize(png), png).toEqual([192, 64]);
+      }
+    }
   });
 });

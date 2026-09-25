@@ -469,3 +469,19 @@ describe("BattleScene turn playback", () => {
     expect(setPlayer).not.toHaveBeenCalled();
   });
 });
+
+describe("BattleScene assets", () => {
+  // assets C26
+  it("sp icon", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ sp: 40 })) });
+    renderScene();
+    const hero = await screen.findByLabelText("dev em combate");
+    const sp = within(hero).getByText("SP 40/50");
+    const img = sp.firstElementChild!;
+    expect(img.tagName).toBe("IMG");
+    expect(img.getAttribute("src")).toBe("/art/icon/ic-sp.png");
+    expect(img.getAttribute("alt")).toBe("");
+    expect(img.getAttribute("width")).toBe("16");
+    expect(sp.firstChild).toBe(img);
+  });
+});

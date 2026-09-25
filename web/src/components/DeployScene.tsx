@@ -194,7 +194,12 @@ export function DeployScene() {
                       <span className="pixel">{`NV.${l.level}`}</span>
                       <span className="term">{formatMinutes(l.minutes)}</span>
                       <span className="term deploy-reward">{rewardText(l)}</span>
-                      {locked && <span className="pixel deploy-locked">{`NÍVEL ${l.minLevel}`}</span>}
+                      {locked && (
+                        <span className="pixel deploy-locked">
+                          <GameArt kind="ic" id="lock" scale={1} alt="" fallback="" className="inline-icon" />
+                          {`NÍVEL ${l.minLevel}`}
+                        </span>
+                      )}
                     </button>
                   );
                 })}

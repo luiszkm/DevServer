@@ -1,12 +1,13 @@
+import { Logo } from "./Logo";
+
 const KNOWN_ERRORS = ["github", "state"];
 
 export function LoginScreen({ error }: { error?: string }) {
   return (
     <main className="center-screen">
       <div className="panel login-panel">
-        <h1 className="pixel logo">
-          <span style={{ color: "var(--green)" }}>DEV</span>
-          <span style={{ color: "var(--cyan)" }}>SERVER</span>
+        <h1 className="logo">
+          <Logo scale={2} />
         </h1>
         {error && KNOWN_ERRORS.includes(error) && (
           <p role="alert" className="pixel alert">

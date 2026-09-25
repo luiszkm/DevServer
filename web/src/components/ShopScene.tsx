@@ -15,7 +15,7 @@ import {
   quantity,
 } from "@/lib/gear";
 import type { AvatarOption, Gear, Item, Player, Price, Recipe, Skin } from "@/lib/types";
-import { GameArt } from "./GameArt";
+import { GameArt, PriceArt } from "./GameArt";
 import { useGame } from "./GameContext";
 import { HeroAvatar } from "./HeroAvatar";
 
@@ -51,15 +51,21 @@ export function ShopScene() {
   }
 
   const slotName = (id: string) => catalog.gearSlots.find((s) => s.id === id)?.name ?? id;
+  const price = (p: Price) => (
+    <>
+      <PriceArt currency={p.currency} />
+      {priceShort(p)}
+    </>
+  );
   const gearStatus = (g: Gear) =>
-    isEquipped(player, g.id, g.slot) ? "EQUIPADO" : player.gear.includes(g.id) ? "NO INVENTÁRIO" : g.price ? priceShort(g.price) : "FORJA";
+    isEquipped(player, g.id, g.slot) ? "EQUIPADO" : player.gear.includes(g.id) ? "NO INVENTÁRIO" : g.price ? price(g.price) : "FORJA";
   const skinStatus = (s: Skin) =>
-    player.skin === s.id ? "EQUIPADA" : player.skins.includes(s.id) ? "NO GUARDA-ROUPA" : priceShort(s.price);
+    player.skin === s.id ? "EQUIPADA" : player.skins.includes(s.id) ? "NO GUARDA-ROUPA" : price(s.price);
   // Only the styles this dev's body can wear are for sale here.
   const looks = catalog.avatar.options.filter((o): o is AvatarOption & { price: Price } => !!o.price && availableFor(o, player.body));
   const partName = (id: string) => catalog.avatar.parts.find((p) => p.id === id)?.name ?? id;
   const lookStatus = (o: AvatarOption & { price: Price }) =>
-    player.appearance[o.part] === o.id ? "EM USO" : player.looks.includes(o.id) ? "NO GUARDA-ROUPA" : priceShort(o.price);
+    player.appearance[o.part] === o.id ? "EM USO" : player.looks.includes(o.id) ? "NO GUARDA-ROUPA" : price(o.price);
   const picked = (kind: Selection["kind"], id: string) => sel.kind === kind && sel.id === id;
   const output = (r: Recipe) =>
     r.output.kind === "gear" ? catalog.gear.find((g) => g.id === r.output.id) : catalog.items.find((i) => i.id === r.output.id);
@@ -95,7 +101,7 @@ export function ShopScene() {
                   <span className="pixel shop-card-name">{it.name}</span>
                   <span className="term">{`possui: ${quantity(player, it.id)}`}</span>
                 </span>
-                <span className="pixel shop-price">{priceShort(it.price)}</span>
+                <span className="pixel shop-price">{price(it.price)}</span>
               </button>
             ))}
           </div>

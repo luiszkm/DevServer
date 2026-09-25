@@ -85,6 +85,7 @@ export function WorldScene() {
                 disabled={!open || pending}
                 onClick={() => travel(r.id)}
               >
+                {!open && <GameArt kind="ic" id="lock" scale={1} alt="" fallback="" className="inline-icon" />}
                 {open ? "VIAJAR ATÉ AQUI" : `REQUER NÍVEL ${r.minLevel}`}
               </button>
             </article>

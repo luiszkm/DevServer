@@ -138,3 +138,18 @@ describe("GameShell", () => {
     expect(chip.getAttribute("alt")).toBe("MARKUP SEMÂNTICO");
   });
 });
+
+describe("GameShell assets", () => {
+  // assets C15
+  it("logo", async () => {
+    mockFetch({ "GET /api/catalog": json(200, CATALOG), "GET /api/me": json(200, { player: player() }) });
+    render(<GameShell><p>cena</p></GameShell>);
+    const logo = await screen.findByRole("img", { name: "DevServer" });
+    expect(logo.getAttribute("src")).toBe("/art/sprite/logo.png");
+    expect(logo.getAttribute("width")).toBe("160");
+    expect(logo.getAttribute("height")).toBe("64");
+    expect(logo.className.split(/\s+/)).toContain("pixelated");
+    expect(logo.closest("header")).not.toBeNull();
+    expect(logo.closest("header")!.textContent).not.toMatch(/DEV|SERVER/);
+  });
+});

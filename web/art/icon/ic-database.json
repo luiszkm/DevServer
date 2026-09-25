@@ -1,0 +1,21 @@
+{
+  "name": "ic-database",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "RAM: a blue database of three stacked disks, lit top.",
+  "layers": [
+    {"ellipse": [8, 12, 5, 2], "color": "net.1"},
+    {"rect": [3, 10, 11, 2], "color": "net.1"},
+    {"ellipse": [8, 10, 5, 2], "color": "net.2"},
+    {"ellipse": [8, 8, 5, 2], "color": "net.1"},
+    {"rect": [3, 6, 11, 2], "color": "net.1"},
+    {"ellipse": [8, 6, 5, 2], "color": "net.2"},
+    {"ellipse": [8, 4, 5, 2], "color": "net.1"},
+    {"rect": [3, 3, 11, 1], "color": "net.1"},
+    {"ellipse": [8, 3, 5, 2], "color": "net.3"},
+    {"rect": [5, 2, 5, 1], "color": "net.4"},
+    {"rect": [3, 5, 1, 7], "color": "net.2"},
+    {"rect": [12, 6, 1, 6], "color": "net.0"},
+    {"outline": "ink"}
+  ]
+}

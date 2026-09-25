@@ -1,0 +1,23 @@
+{
+  "name": "ui-btn-wood-press",
+  "category": "ui",
+  "size": [24, 24],
+  "_design": "Wooden sign of the key art: plank seam, grain, steel nails. 9-slice, 8px corners: border-image: url(/art/ui/ui-btn-wood-press.png) 8 fill / 24px round",
+  "layers": [
+    {"rect": [2, 0, 20, 24], "color": "ink"},
+    {"rect": [1, 1, 22, 22], "color": "ink"},
+    {"rect": [0, 2, 24, 20], "color": "ink"},
+    {"rect": [2, 1, 20, 22], "color": "wood.2"},
+    {"rect": [1, 2, 22, 20], "color": "wood.2"},
+    {"rect": [2, 1, 20, 1], "color": "wood.1"},
+    {"rect": [1, 2, 1, 20], "color": "wood.1"},
+    {"rect": [2, 22, 20, 1], "color": "wood.3"},
+    {"rect": [22, 2, 1, 20], "color": "wood.3"},
+    {"rect": [2, 11, 20, 1], "color": "wood.0"},
+    {"rect": [2, 12, 20, 1], "color": "wood.2"},
+    {"rect": [5, 5, 4, 1], "color": "wood.2"},
+    {"rect": [13, 8, 5, 1], "color": "wood.2"},
+    {"rect": [7, 16, 6, 1], "color": "wood.2"},
+    {"rect": [15, 19, 3, 1], "color": "wood.2"}
+  ]
+}

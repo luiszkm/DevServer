@@ -100,3 +100,32 @@ describe("Hud", () => {
     expect(img).toHaveClass("pixelated");
   });
 });
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("Hud assets", () => {
+  // assets C17
+  it("exit and skill points icons", () => {
+    render(<Hud player={player()} onLogout={vi.fn()} />);
+    const sair = screen.getByRole("button", { name: "SAIR" });
+    expectIcon(sair.querySelector("img"), "/art/icon/btn-exit.png");
+    const label = screen.getByText("SKILL PTS");
+    expectIcon(label.firstElementChild, "/art/icon/ic-star.png");
+    expect(label.firstChild).toBe(label.firstElementChild);
+  });
+
+  // assets C27
+  it("icon fails", () => {
+    render(<Hud player={player()} onLogout={vi.fn()} />);
+    const sair = screen.getByRole("button", { name: "SAIR" });
+    fireEvent.error(sair.querySelector("img")!);
+    expect(sair.querySelector("img")).toBeNull();
+    expect(sair.textContent).toBe("SAIR");
+    expect(sair.children).toHaveLength(0);
+  });
+});

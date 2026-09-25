@@ -1,0 +1,9 @@
+{
+  "name": "medal-azul",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "Medal azul: the rosette in the net ramp.",
+  "layers": [
+    {"use": "_medal.json", "recolor": {"gold": "net"}}
+  ]
+}

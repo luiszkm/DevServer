@@ -25,6 +25,11 @@ export function nativeSize(kind: ArtKind, id: string) {
 
 type Props = { kind: ArtKind; id: string; scale: number; alt: string; fallback: string; className?: string };
 
+/** The HUD coin or gem at 1x, before a price's number; the number stays text. */
+export function PriceArt({ currency }: { currency: "coins" | "gems" }) {
+  return <GameArt kind="hud" id={currency === "gems" ? "gem" : "coin"} scale={1} alt="" fallback="" className="inline-icon" />;
+}
+
 /**
  * Game art at a whole-number scale (door 2); the catalog `glyph` stands in when the PNG fails to load,
  * and an empty `fallback` leaves nothing behind (the text next to the icon carries the meaning).

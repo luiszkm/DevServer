@@ -1,0 +1,24 @@
+{
+  "name": "ic-lock",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "LOCK: a steel padlock, dark keyhole.",
+  "layers": [
+    {"grid": [
+      "....oooooo....",
+      "...ommmmmmo...",
+      "..omo....omo..",
+      "..omo....omo..",
+      "..omo....omo..",
+      "oooooooooooooo",
+      "ogggggggggggGo",
+      "ogggggoogggggo",
+      "ogggggoogggggo",
+      "ogggggooggggGo",
+      "oggggggggggGGo",
+      "oGGGGGGGGGGGGo",
+      "oooooooooooooo"
+    ], "at": [1, 2], "legend": {"o": "ink", "m": "metal.3", "g": "metal.2", "G": "metal.1"}},
+    {"rect": [2, 8, 1, 3], "color": "metal.3"}
+  ]
+}

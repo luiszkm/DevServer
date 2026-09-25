@@ -297,3 +297,33 @@ describe("ServerScene", () => {
     expect(scene.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/server.png)");
   });
 });
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("ServerScene assets", () => {
+  // assets C23
+  it("price icon", () => {
+    renderServer(player({ rack: rack() }));
+    const price = card("cpu").querySelector(".server-card-price")!;
+    expect(price.textContent).toBe("80C");
+    expectIcon(price.firstElementChild, "/art/icon/hud-coin.png");
+  });
+
+  // assets C25
+  it.each([
+    ["power", "POWER", "ic-chart"],
+    ["ram", "RAM", "ic-database"],
+    ["uptime", "UPTIME", "ic-shield"],
+  ])("stat icons (%s)", (id, name, icon) => {
+    renderServer(player({ rack: rack() }));
+    const label = document.querySelector(`[data-stat="${id}"] .server-stat-name`)!;
+    expect(label.textContent).toBe(name);
+    expectIcon(label.firstElementChild, `/art/icon/${icon}.png`);
+    expect(label.firstChild).toBe(label.firstElementChild);
+  });
+});

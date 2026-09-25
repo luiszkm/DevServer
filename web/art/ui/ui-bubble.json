@@ -1,0 +1,18 @@
+{
+  "name": "ui-bubble",
+  "category": "ui",
+  "size": [24, 24],
+  "_design": "NPC speech bubble: white, ink edge, tail in the bottom-left corner. 9-slice, 8px corners: border-image: url(/art/ui/ui-bubble.png) 8 fill / 24px round",
+  "layers": [
+    {"rect": [2, 0, 20, 19], "color": "ink"},
+    {"rect": [1, 1, 22, 17], "color": "ink"},
+    {"rect": [0, 2, 24, 15], "color": "ink"},
+    {"rect": [2, 1, 20, 17], "color": "white"},
+    {"rect": [1, 2, 22, 15], "color": "white"},
+    {"rect": [2, 16, 20, 1], "color": "cloud.1"},
+    {"rect": [22, 2, 1, 15], "color": "cloud.1"},
+    {"rect": [3, 17, 18, 1], "color": "cloud.1"},
+    {"poly": [[3, 17], [3, 23], [8, 17]], "color": "ink"},
+    {"poly": [[4, 17], [4, 21], [7, 17]], "color": "white"}
+  ]
+}

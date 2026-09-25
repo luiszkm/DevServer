@@ -1,0 +1,9 @@
+{
+  "name": "medal-roxo",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "Medal roxo: the rosette in the slime ramp.",
+  "layers": [
+    {"use": "_medal.json", "recolor": {"gold": "slime"}}
+  ]
+}

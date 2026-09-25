@@ -1,0 +1,9 @@
+{
+  "name": "medal-prata",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "Medal prata: the rosette in the metal ramp.",
+  "layers": [
+    {"use": "_medal.json", "recolor": {"gold": "metal"}}
+  ]
+}

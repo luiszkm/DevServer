@@ -1,0 +1,22 @@
+{
+  "name": "btn-build",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "BUILD: a terminal window with a >_ prompt (the wooden BUILD button).",
+  "layers": [
+    {"rect": [1, 2, 14, 12], "color": "ink"},
+    {"rect": [2, 3, 12, 10], "color": "metal.2"},
+    {"rect": [2, 3, 12, 2], "color": "metal.3"},
+    {"rect": [3, 3, 1, 1], "color": "red.3"},
+    {"rect": [5, 3, 1, 1], "color": "gold.2"},
+    {"rect": [7, 3, 1, 1], "color": "code.3"},
+    {"rect": [3, 5, 10, 7], "color": "ink.1"},
+    {"rect": [12, 5, 1, 7], "color": "ink"},
+    {"grid": [
+      "L....",
+      ".G...",
+      "G.GGG"
+    ], "at": [4, 7], "legend": {"G": "code.3", "L": "code.4"}},
+    {"rect": [2, 12, 12, 1], "color": "metal.1"}
+  ]
+}

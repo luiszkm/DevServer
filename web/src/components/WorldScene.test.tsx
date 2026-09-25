@@ -150,3 +150,22 @@ describe("WorldScene", () => {
     expect(marker("floresta").style.filter).toBe("");
   });
 });
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("WorldScene assets", () => {
+  // assets C19
+  it("lock icon", () => {
+    renderWorld(player({ level: 1, region: "vila" }));
+    const locked = button("CAVERNA DOS BUGS");
+    expect(locked).toHaveTextContent("REQUER NÍVEL 5");
+    expectIcon(locked.firstElementChild, "/art/icon/ic-lock.png");
+    expect(locked.firstChild).toBe(locked.firstElementChild);
+    expect(button("FLORESTA DE LOGS").querySelector('img[src="/art/icon/ic-lock.png"]')).toBeNull();
+  });
+});
