@@ -19,7 +19,7 @@ its spec and re-rendering.
 | Field | Meaning |
 | --- | --- |
 | `name` | Output file name (defaults to the spec file name). |
-| `category` | `icon`, `sprite`, `background` or `ui`. Picks the output folder and the checks. |
+| `category` | `icon`, `sprite`, `background`, `ui` or `fx`. Picks the output folder and the checks. |
 | `size` | `[w, h]` in art pixels (1 art pixel = 1 PNG pixel; CSS does the zoom). |
 | `legend` | Default char → color map for every `grid` op. `null` means transparent. |
 | `recolor` | Ramp → ramp swap applied to every color in this spec, e.g. `{"slime": "red"}`. |

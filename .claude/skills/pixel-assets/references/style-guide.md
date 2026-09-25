@@ -75,6 +75,26 @@ invent hex values.
 - **Never bake text into an image.** Labels are HTML in the pixel font (`.pixel`), so they
   stay translatable, accessible and crisp.
 
+### fx: battle effects
+
+- One 128x32 PNG = a horizontal strip of **4 frames, each 32x32**; frame `i` occupies
+  x = `32*i` .. `32*i+31`. Frames read left to right as **start → peak → fade → almost gone**,
+  and every frame must differ from the others.
+- Keep each frame's content inside its own 32x32 cell with a **1px clear margin**: nothing on
+  the cell's border row/column, nothing bleeding into the neighbour frame (the renderer
+  warns about both, and about identical or empty frames).
+- Transparent background, like sprites. The ink outline is optional: effects are light and
+  energy, so the edge is the darkest tone of the effect's own ramp (`gold.1`, `code.0`,
+  `net.0`...) or nothing. An `{"outline": ...}` op runs over the whole strip, so put it right
+  after the frames it should touch and before the others.
+- One ramp per effect, keyed to its source: generic hit = `gold` + `white`, enemy hit = `red`
+  + `gold`, frontend = `code`, backend = `net`, infra = `gold`, weakness/scan = `slime` +
+  `gem`, heal = `code`, defense = `net`.
+- The peak frame fills most of the cell; the last frame is a few pixels or specks.
+- Shown at 3x (a 96x96 box) as a CSS sprite: `background: url(/art/fx/slash.png) 0 0 / 384px
+  96px; image-rendering: pixelated; animation: fx 400ms steps(4) forwards;` with
+  `@keyframes fx { to { background-position: -384px 0; } }`.
+
 ## Displaying assets
 
 - Put `className="pixelated"` on the `<img>` (it already exists in `globals.css`).

@@ -6,6 +6,9 @@
     # render one spec and write a 4x contact sheet you can open to look at the result
     python3 render.py web/art/enemy/slime.json --out web/public/art --preview /tmp/sheet.png
 
+    # battle effects: a 128x32 strip of 4 frames, rendered like any other category
+    python3 render.py web/art/fx --out web/public/art --preview /tmp/fx.png
+
     # check PNGs that were not produced from a spec (hand-edited, imported)
     python3 render.py --check web/public/art/icon/coin.png --category icon
 
@@ -33,9 +36,12 @@ SIZES = {
     "sprite": {(32, 32), (32, 48), (48, 48), (64, 64)},
     "background": {(320, 180), (480, 180), (640, 180)},
     "ui": {(24, 24), (48, 24), (48, 48)},
+    "fx": {(128, 32)},
 }
-TRANSPARENT_CATEGORIES = {"icon", "sprite", "ui"}
+TRANSPARENT_CATEGORIES = {"icon", "sprite", "ui", "fx"}
 OUTLINED_CATEGORIES = {"icon", "sprite"}
+# fx sheets are horizontal strips of square frames (start -> peak -> fade -> almost gone).
+FX_CELL = 32
 
 BAYER4 = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
 
@@ -360,7 +366,32 @@ def check(rows, category, palette, label):
                         break
         if edge and inked / edge < 0.9:
             warnings.append(f"outline is {inked * 100 // edge}% ink; the key art outlines every foreground shape in 'ink'")
+    if category == "fx":
+        warnings += check_fx_frames(rows)
     return errors, warnings
+
+
+def check_fx_frames(rows):
+    """Each frame must stay inside its own cell with a 1px clear margin and differ from the others."""
+    h, w = len(rows), len(rows[0])
+    if h != FX_CELL or w % FX_CELL:
+        return [f"fx strip must be N frames of {FX_CELL}x{FX_CELL} side by side"]
+    warnings, frames = [], []
+    for i in range(w // FX_CELL):
+        ox = i * FX_CELL
+        cell = [tuple(row[ox:ox + FX_CELL]) for row in rows]
+        frames.append(tuple(cell))
+        edge = [(x, y) for y in range(FX_CELL) for x in range(FX_CELL)
+                if (x in (0, FX_CELL - 1) or y in (0, FX_CELL - 1)) and cell[y][x][3]]
+        if edge:
+            warnings.append(f"frame {i}: {len(edge)} pixels on the 1px cell margin (content bleeds into the next frame)")
+        if not any(px[3] for row in cell for px in row):
+            warnings.append(f"frame {i} is empty")
+    for i in range(len(frames)):
+        for j in range(i + 1, len(frames)):
+            if frames[i] == frames[j]:
+                warnings.append(f"frames {i} and {j} are identical; every frame of an effect should change")
+    return warnings
 
 
 def contact_sheet(images, path):
@@ -414,7 +445,7 @@ def main():
     ap.add_argument("--scale", type=int, default=1, help="integer upscale baked into the PNG (default 1: let CSS scale)")
     ap.add_argument("--preview", help="also write a zoomed contact sheet of everything rendered")
     ap.add_argument("--check", action="store_true", help="only check existing PNGs")
-    ap.add_argument("--category", help="category for --check (icon, sprite, background, ui)")
+    ap.add_argument("--category", help="category for --check (icon, sprite, background, ui, fx)")
     args = ap.parse_args()
     palette = load_palette()
     failed, rendered = False, []
