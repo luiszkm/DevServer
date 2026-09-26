@@ -300,8 +300,9 @@ describe("AvatarScene", () => {
     expect(detail().querySelector(".avatar-detail-glyph")?.textContent).toBe("SKN");
     expect(detail().querySelector(".avatar-detail-glyph img")).toBeNull();
 
+    // the setup slot's label also carries ic-gear (assets-apply C13): the fallback is about the gear's own box
     fireEvent.error(setup);
-    expect(slot("setup").querySelector("img")).toBeNull();
+    expect(slot("setup").querySelector(".avatar-slot-glyph img")).toBeNull();
     expect(slot("setup").querySelector(".avatar-slot-glyph")).toHaveTextContent("[Mac]");
   });
 });
@@ -485,5 +486,48 @@ describe("AvatarScene hero anim", () => {
     renderAvatar();
     const hero = document.querySelector(".avatar-preview canvas") as HTMLCanvasElement;
     expect(hero.dataset.anim).toBe("idle");
+  });
+});
+
+describe("AvatarScene applied assets", () => {
+  // assets-apply C11
+  it("wood header", () => {
+    renderAvatar();
+    expect(document.querySelector(".avatar-bag-head")).toHaveClass("panel-wood");
+  });
+
+  // assets-apply C12
+  it("button icon on the VISUAL tab", () => {
+    renderAvatar();
+    const visual = tab("VISUAL");
+    const img = visual.firstElementChild!;
+    expect(img.getAttribute("src")).toBe("/art/icon/btn-settings.png");
+    expect(img.getAttribute("alt")).toBe("");
+    expect(visual.firstChild).toBe(img);
+  });
+
+  // assets-apply C13
+  it("generic icon on the CONFIGURAÇÃO slot", () => {
+    renderAvatar();
+    const label = document.querySelector('[data-slot="setup"] .avatar-slot-label')!;
+    const img = label.firstElementChild!;
+    expect(img.getAttribute("src")).toBe("/art/icon/ic-gear.png");
+    expect(img.getAttribute("width")).toBe("16");
+    expect(label.firstChild).toBe(img);
+  });
+
+  // assets-apply C15: the detail rarity carries the medal
+  it.each([
+    ["EQUIP", "cafe", "medal-bronze"], ["EQUIP", "macbook", "medal-ouro"], ["EQUIP", "monitor", "medal-rubi"], ["SKINS", "default", null],
+  ])("rarity medal (%s %s)", async (bag, id, medal) => {
+    renderAvatar(player({ gear: ["cafe", "macbook", "monitor"], equipment: {}, skins: ["default"] }));
+    await userEvent.click(tab(bag));
+    await userEvent.click(cell(id));
+    const rarity = detail().querySelector(".avatar-detail-rarity")!;
+    const img = rarity.querySelector("img");
+    if (medal) {
+      expect(img!.getAttribute("src")).toBe(`/art/icon/${medal}.png`);
+      expect(rarity.firstChild).toBe(img);
+    } else expect(img).toBeNull();
   });
 });

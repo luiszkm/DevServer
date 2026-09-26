@@ -70,6 +70,10 @@ button { font-family: inherit; }
 }
 .btn:hover:not(:disabled) { filter: brightness(1.15); }
 .btn:disabled { cursor: default; }
+/* assets-apply: wooden sign panels for scene headers, and the recessed bar track */
+.panel.panel-wood { border-image-source: url(/art/ui/ui-panel-wood.png); color: #fbf6ea; text-shadow: 2px 2px 0 var(--edge); }
+.office-zone { background-repeat: repeat; background-size: 64px 64px; image-rendering: pixelated; }
+.battle-log-title { font-size: 9px; color: var(--muted); }
 .btn-green { background: none; color: var(--edge); box-shadow: none; border-image: url(/art/ui/ui-btn-green.png) 8 fill / 24px round; image-rendering: pixelated; }
 .btn-green:active { border-image-source: url(/art/ui/ui-btn-green-press.png); }
 .btn-green:disabled { opacity: .6; }
@@ -89,7 +93,7 @@ button { font-family: inherit; }
 .hud-label { font-size: 9px; color: var(--muted); }
 .hud-value { font-size: 12px; }
 .hud-row { display: flex; align-items: center; gap: 9px; }
-.bar { flex: 1; height: 14px; background: var(--edge); border: 2px solid #24384b; padding: 2px; }
+.bar { flex: 1; height: 14px; background: var(--edge); border: 2px solid #24384b; padding: 2px; border-image: url(/art/ui/ui-bar.png) 8 fill / 8px round; image-rendering: pixelated; }
 .bar > div { height: 100%; }
 
 .center-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }

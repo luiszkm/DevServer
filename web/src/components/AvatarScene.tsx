@@ -5,7 +5,7 @@ import { type ApiResult, post, put } from "@/lib/api";
 import { availableFor, resolveLook } from "@/lib/avatar";
 import { CONNECTION_FAILED, bonusLong, canPay, insufficient, isEquipped, priceLong, priceShort, quantity, totalBonus } from "@/lib/gear";
 import type { AvatarOption, Player } from "@/lib/types";
-import { GameArt } from "./GameArt";
+import { GameArt, RarityArt } from "./GameArt";
 import { useGame } from "./GameContext";
 import { HeroAvatar } from "./HeroAvatar";
 
@@ -83,7 +83,7 @@ export function AvatarScene() {
   return (
     <section className="scene avatar" aria-label="AVATAR" style={{ backgroundImage: "url(/art/background/scene-floresta.png)" }}>
       <div className="avatar-bag">
-        <div className="panel avatar-bag-head">
+        <div className="panel panel-wood avatar-bag-head">
           <span className="pixel">INVENTÁRIO</span>
           <span className="term">{hint}</span>
         </div>
@@ -91,6 +91,7 @@ export function AvatarScene() {
         <div className="avatar-tabs" role="tablist" aria-label="abas da mochila">
           {BAGS.map((b) => (
             <button key={b.id} type="button" role="tab" aria-selected={bag === b.id} className="avatar-tab pixel" onClick={() => openBag(b.id)}>
+              {b.id === "visual" && <GameArt kind="btn" id="settings" scale={1} alt="" fallback="" className="inline-icon" />}
               {b.label}
             </button>
           ))}
@@ -170,7 +171,10 @@ export function AvatarScene() {
         <span className="pixel avatar-slot-glyph">
           {g ? <GameArt kind="gear" id={g.id} scale={2} alt="" fallback={g.glyph} /> : "[ ]"}
         </span>
-        <span className="term avatar-slot-label">{g ? g.name : name}</span>
+        <span className="term avatar-slot-label">
+          {slot === "setup" && <GameArt kind="ic" id="gear" scale={1} alt="" fallback="" className="inline-icon" />}
+          {g ? g.name : name}
+        </span>
       </button>
     );
   }
@@ -393,7 +397,10 @@ function DetailHead({ icon, name, rarity }: { icon: ReactNode; name: string; rar
     <div className="avatar-detail-head">
       <span className="pixel avatar-detail-glyph">{icon}</span>
       <span className="pixel avatar-detail-name">{name}</span>
-      <span className="term">{rarity}</span>
+      <span className="term avatar-detail-rarity">
+        <RarityArt rarity={rarity} />
+        {rarity}
+      </span>
     </div>
   );
 }

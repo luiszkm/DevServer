@@ -15,7 +15,7 @@ import {
   quantity,
 } from "@/lib/gear";
 import type { AvatarOption, Gear, Item, Player, Price, Recipe, Skin } from "@/lib/types";
-import { GameArt, PriceArt } from "./GameArt";
+import { GameArt, PriceArt, RarityArt } from "./GameArt";
 import { useGame } from "./GameContext";
 import { HeroAvatar } from "./HeroAvatar";
 
@@ -82,7 +82,7 @@ export function ShopScene() {
         <p className="pixel shop-bubble">FORJE GEAR COM OS DROPS DO BUG FIGHT!</p>
       </div>
       <div className="shop-main">
-        <div className="panel shop-head">
+        <div className="panel panel-wood shop-head">
           <span className="pixel">LOJA DEVSERVER</span>
           <span className="pixel shop-gems">{`GEMS: ${player.gems}`}</span>
         </div>
@@ -222,14 +222,17 @@ export function ShopScene() {
           <span className="pixel shop-detail-glyph">
             <GameArt kind="item" id={it.id} scale={4} alt="" fallback={it.glyph} />
           </span>
-          <span className="pixel shop-rarity">{it.rarity}</span>
+          <span className="pixel shop-rarity">
+            <RarityArt rarity={it.rarity} />
+            {it.rarity}
+          </span>
           <span className="pixel shop-detail-name">{it.name}</span>
           <span className="term shop-desc">{it.description}</span>
           <span className="term">{`você possui: ${quantity(player, it.id)} · custo: ${priceLong(it.price)}`}</span>
           <div className="shop-spacer" />
           <button type="button" className={`btn ${afford ? "btn-green" : "btn-locked"}`} disabled={pending || !afford}
             onClick={() => run(`/api/me/shop/items/${it.id}`, `+1 ${it.name}`)}>
-            {afford ? "COMPRAR" : insufficient(it.price)}
+            <ActionLabel label={afford ? "COMPRAR" : insufficient(it.price)} />
           </button>
         </>
       );
@@ -253,7 +256,10 @@ export function ShopScene() {
           <span className="pixel shop-detail-glyph">
             <GameArt kind="gear" id={g.id} scale={4} alt="" fallback={g.glyph} />
           </span>
-          <span className="pixel shop-rarity">{`${g.rarity} · ${slotName(g.slot)}`}</span>
+          <span className="pixel shop-rarity">
+            <RarityArt rarity={g.rarity} />
+            {`${g.rarity} · ${slotName(g.slot)}`}
+          </span>
           <span className="pixel shop-detail-name">{g.name}</span>
           <span className="term shop-desc">{g.description}</span>
           <span className="term shop-bonus">{`bônus: ${bonusLong(g.bonus)}`}</span>
@@ -267,7 +273,7 @@ export function ShopScene() {
           <div className="shop-spacer" />
           <button type="button" className={`btn ${!equipped && (owned || afford) ? "btn-green" : "btn-locked"}`}
             disabled={pending || equipped || (!owned && !afford)} onClick={action}>
-            {label}
+            <ActionLabel label={label} />
           </button>
         </>
       );
@@ -290,7 +296,10 @@ export function ShopScene() {
         <span className="pixel shop-detail-glyph">
           <GameArt kind={r.output.kind} id={out.id} scale={4} alt="" fallback={out.glyph} />
         </span>
-        <span className="pixel shop-rarity">{out.rarity}</span>
+        <span className="pixel shop-rarity">
+          <RarityArt rarity={out.rarity} />
+          {out.rarity}
+        </span>
         <span className="pixel shop-detail-name">{out.name}</span>
         <span className="term shop-desc">{out.description}</span>
         {gear && <span className="term shop-bonus">{`bônus: ${bonusLong(gear.bonus)}`}</span>}
@@ -303,7 +312,7 @@ export function ShopScene() {
         <div className="shop-spacer" />
         <button type="button" className={`btn ${st.ready ? "btn-green" : "btn-locked"}`} disabled={pending || !st.ready}
           onClick={() => run(`/api/me/forge/${r.id}`, gear ? "ITEM FORJADO E EQUIPADO" : `+1 ${out.name}`)}>
-          {label}
+          <ActionLabel label={label} />
         </button>
       </>
     );
@@ -332,7 +341,7 @@ export function ShopScene() {
         <div className="shop-spacer" />
         <button type="button" className={`btn ${!worn && (owned || afford) ? "btn-green" : "btn-locked"}`}
           disabled={pending || worn || (!owned && !afford)} onClick={action}>
-          {label}
+          <ActionLabel label={label} />
         </button>
       </>
     );
@@ -349,7 +358,10 @@ export function ShopScene() {
     return (
       <>
         <HeroAvatar look={{ ...player, skin: s.id }} scale={2} className="shop-detail-sprite" />
-        <span className="pixel shop-rarity">{s.rarity}</span>
+        <span className="pixel shop-rarity">
+          <RarityArt rarity={s.rarity} />
+          {s.rarity}
+        </span>
         <span className="pixel shop-detail-name">{s.name}</span>
         <span className="term shop-desc">{s.description}</span>
         <span className="term shop-bonus">{`bônus: ${bonusLong(s.bonus)}`}</span>
@@ -357,9 +369,20 @@ export function ShopScene() {
         <div className="shop-spacer" />
         <button type="button" className={`btn ${!worn && (owned || afford) ? "btn-green" : "btn-locked"}`}
           disabled={pending || worn || (!owned && !afford)} onClick={action}>
-          {label}
+          <ActionLabel label={label} />
         </button>
       </>
     );
   }
+}
+
+// A buy button carries the shop cart, a forge button the terminal (assets-apply assumptions: button icons).
+function ActionLabel({ label }: { label: string }) {
+  const icon = label.startsWith("COMPRAR") ? "shop" : label.startsWith("FORJAR") ? "build" : null;
+  return (
+    <>
+      {icon && <GameArt kind="btn" id={icon} scale={1} alt="" fallback="" className="inline-icon" />}
+      {label}
+    </>
+  );
 }

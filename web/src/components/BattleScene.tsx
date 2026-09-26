@@ -156,7 +156,7 @@ export function BattleScene() {
       aria-label="BUG FIGHT"
       style={battle ? { backgroundImage: `url(/art/background/battle-${battle.region}.png)` } : undefined}
     >
-      <div className="panel battle-head">
+      <div className="panel panel-wood battle-head">
         <span className="pixel">{battle ? `ENCONTRO · ${regionName(battle.region)}` : "ENCONTRO ENCERRADO"}</span>
       </div>
       <div className="battle-body">
@@ -173,11 +173,16 @@ export function BattleScene() {
           )}
           {!active && (
             <button type="button" className="btn btn-green" onClick={start}>
+              <GameArt kind="btn" id="play" scale={1} alt="" fallback="" className="inline-icon" />
               NOVO ENCONTRO
             </button>
           )}
         </div>
         <div className="battle-side">
+          <span className="pixel battle-log-title">
+            <GameArt kind="ic" id="file" scale={1} alt="" fallback="" className="inline-icon" />
+            LOG DE COMBATE
+          </span>
           <div className="panel battle-log" role="log" aria-label="log de combate">
             {log.map((line, i) => (
               <div key={i} className="term">
@@ -249,7 +254,12 @@ export function BattleScene() {
           <div style={{ width: `${pct}%`, background: "var(--purple)" }} />
         </div>
         <span className="term">{`HP ${hp}/${battle.enemyHpMax} · fraqueza: ${enemy.weakness}`}</span>
-        {battle.status === "won" && <span className="pixel battle-won">RESOLVIDO</span>}
+        {battle.status === "won" && (
+          <span className="pixel battle-won">
+            <GameArt kind="ic" id="trophy" scale={1} alt="" fallback="" className="inline-icon" />
+            RESOLVIDO
+          </span>
+        )}
       </div>
     );
   }

@@ -89,7 +89,10 @@ export function ServerScene() {
 
       <div className="server-body">
         <div className="panel server-rack" role="region" aria-label="RACK LOCALHOST-01">
-          <span className="pixel server-title">RACK LOCALHOST-01</span>
+          <span className="pixel server-title">
+            <GameArt kind="ic" id="wrench" scale={1} alt="" fallback="" className="inline-icon" />
+            RACK LOCALHOST-01
+          </span>
           {rack.map((id, i) => {
             const k = id ? byId(id) : undefined;
             return (

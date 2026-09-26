@@ -13,6 +13,9 @@ type Filter = "all" | string;
 // Office level 1..5 -> the medal before its name (plan assumptions: office medal).
 const MEDALS = ["bronze", "prata", "ouro", "azul", "roxo"];
 
+// Each zone is tiled with its asset-sheet tile, repeated at 2x (assets-apply C17).
+const ZONE_TILE: Record<string, string> = { parede: "tile-parede-madeira", piso: "tile-tabua" };
+
 export function OfficeScene() {
   const { player, catalog, setPlayer } = useGame();
   const { zones, furniture } = catalog.office;
@@ -64,7 +67,7 @@ export function OfficeScene() {
   return (
     <section className="scene office" aria-label="OFFICE">
       <div className="office-left">
-        <div className="panel office-head">
+        <div className="panel panel-wood office-head">
           <span className="pixel">CATÁLOGO</span>
           <span className="term">escolha e clique num espaço da sala</span>
         </div>
@@ -125,7 +128,7 @@ export function OfficeScene() {
           </div>
           <div className="office-room" role="region" aria-label="sala" style={{ backgroundImage: "url(/art/background/office.png)" }}>
             {zones.map((z) => (
-              <div key={z.id} className="office-zone" role="group" aria-label={z.name}>
+              <div key={z.id} className="office-zone" role="group" aria-label={z.name} style={{ backgroundImage: `url(/art/tile/${ZONE_TILE[z.id]}.png)` }}>
                 <span className="pixel office-zone-name">{z.name}</span>
                 <div className="office-cells">
                   {(player.office[z.id] ?? Array.from({ length: z.cells }, () => null)).map((id, i) => {

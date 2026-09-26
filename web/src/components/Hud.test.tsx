@@ -144,3 +144,16 @@ describe("Hud loading", () => {
     expectLoadingFx(screen.getByText("CARREGANDO..."));
   });
 });
+
+describe("Hud applied assets", () => {
+  // assets-apply C12
+  it("button icon: rank before LEVEL", () => {
+    render(<Hud player={player({ level: 3 })} />);
+    const title = screen.getByText("LEVEL 3");
+    const img = title.firstElementChild!;
+    expect(img.getAttribute("src")).toBe("/art/icon/btn-rank.png");
+    expect(img.getAttribute("alt")).toBe("");
+    expect(img.getAttribute("width")).toBe("16");
+    expect(title.firstChild).toBe(img);
+  });
+});

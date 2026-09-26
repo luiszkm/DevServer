@@ -491,3 +491,31 @@ describe("DeployScene hero anim", () => {
     expect(hero().dataset.anim).toBe("idle");
   });
 });
+
+function expectFirstIcon(el: Element | null | undefined, src: string) {
+  const img = el?.firstElementChild;
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe("16");
+  expect(el!.firstChild).toBe(img);
+}
+
+describe("DeployScene applied assets", () => {
+  // assets-apply C11
+  it("wood header", async () => {
+    mockFetch({ "GET /api/me/deploys": list([]) });
+    renderScene();
+    expect(document.querySelector(".deploy-head")).toHaveClass("panel-wood");
+  });
+
+  // assets-apply C12 / C13
+  it("button icon on INICIAR DEPLOY and generic icon on the panel title", async () => {
+    mockFetch({ "GET /api/me/deploys": list([]) });
+    renderScene();
+    const go = await within(panel()).findByRole("button", { name: "INICIAR DEPLOY" });
+    expectFirstIcon(go, "/art/icon/btn-deploy.png");
+    expectFirstIcon(panel().querySelector(".deploy-title"), "/art/icon/ic-laptop.png");
+    expect(panel().querySelector(".deploy-title")!.textContent).toBe("BACKEND");
+  });
+});

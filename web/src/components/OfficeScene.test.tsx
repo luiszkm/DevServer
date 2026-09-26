@@ -379,3 +379,19 @@ describe("OfficeScene assets", () => {
     expect(level.firstChild).toBe(level.firstElementChild);
   });
 });
+
+describe("OfficeScene applied assets", () => {
+  // assets-apply C11
+  it("wood header", () => {
+    renderOffice();
+    expect(document.querySelector(".office-head")).toHaveClass("panel-wood");
+  });
+
+  // assets-apply C17
+  it("tiled zones", () => {
+    renderOffice();
+    const zone = (name: string) => screen.getByRole("group", { name }) as HTMLElement;
+    expect(zone("PAREDE").style.backgroundImage.replace(/"/g, "")).toBe("url(/art/tile/tile-parede-madeira.png)");
+    expect(zone("PISO").style.backgroundImage.replace(/"/g, "")).toBe("url(/art/tile/tile-tabua.png)");
+  });
+});

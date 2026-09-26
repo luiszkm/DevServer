@@ -25,6 +25,15 @@ export function nativeSize(kind: ArtKind, id: string) {
 
 type Props = { kind: ArtKind; id: string; scale: number; alt: string; fallback: string; className?: string };
 
+// Rarity -> the medal before it (assets-apply assumptions); PADRÃO and anything else get none.
+const RARITY_MEDAL: Record<string, string> = { COMUM: "bronze", INCOMUM: "prata", RARO: "ouro", "LENDÁRIO": "rubi" };
+
+/** The medal for a rarity label ("RARO" or "RARO · SLOT"), or nothing. */
+export function RarityArt({ rarity }: { rarity: string }) {
+  const medal = RARITY_MEDAL[rarity.split(" ")[0]];
+  return medal ? <GameArt kind="medal" id={medal} scale={1} alt="" fallback="" className="inline-icon" /> : null;
+}
+
 /** The HUD coin or gem at 1x, before a price's number; the number stays text. */
 export function PriceArt({ currency }: { currency: "coins" | "gems" }) {
   return <GameArt kind="hud" id={currency === "gems" ? "gem" : "coin"} scale={1} alt="" fallback="" className="inline-icon" />;

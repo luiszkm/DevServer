@@ -27,7 +27,10 @@ export function Hud({ player, catalog, onLogout }: Props) {
   return (
     <footer className="hud" aria-label="HUD">
       <div className="hud-card hud-grow">
-        <span className="pixel hud-title">{`LEVEL ${player.level}`}</span>
+        <span className="pixel hud-title">
+          <GameArt kind="btn" id="rank" scale={1} alt="" fallback="" className="inline-icon" />
+          {`LEVEL ${player.level}`}
+        </span>
         <div className="hud-row">
           <GameArt kind="hud" id="xp" scale={2} alt="" fallback="" />
           <span className="chip chip-green">XP</span>

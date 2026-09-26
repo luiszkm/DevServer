@@ -71,3 +71,43 @@ test("loading loops", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   expect((await read()).name).toBe("none");
 });
+
+// assets-apply C10
+test("wood and bar chrome", async ({ page }) => {
+  await probe(page, "panel panel-wood");
+  const wood = await page.locator('[data-probe="panel panel-wood"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { source: s.borderImageSource, slice: s.borderImageSlice };
+  });
+  expect(wood.source).toContain("/art/ui/ui-panel-wood.png");
+  expect(wood.slice).toBe("8 fill");
+  await page.evaluate(() => {
+    const el = document.createElement("div");
+    el.className = "bar";
+    el.setAttribute("data-probe", "bar");
+    document.body.appendChild(el);
+  });
+  expect(await page.locator('[data-probe="bar"]').evaluate((el) => getComputedStyle(el).borderImageSource)).toContain("/art/ui/ui-bar.png");
+});
+
+// assets-apply C17
+test("tiled office zones", async ({ page }) => {
+  await probe(page, "office-zone");
+  const s = await page.locator('[data-probe="office-zone"]').evaluate((el) => {
+    const c = getComputedStyle(el);
+    return { size: c.backgroundSize, repeat: c.backgroundRepeat };
+  });
+  expect(s).toEqual({ size: "64px 64px", repeat: "repeat" });
+});
+
+// assets-apply C22
+test("fire loops", async ({ page }) => {
+  await probe(page, "fx-fire", "span");
+  const read = () => page.locator('[data-probe="fx-fire"]').evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { count: s.animationIterationCount, name: s.animationName };
+  });
+  expect((await read()).count).toBe("infinite");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  expect((await read()).name).toBe("none");
+});

@@ -198,3 +198,27 @@ describe("SkillsScene scene", () => {
     expect(section.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/scene-noite.png)");
   });
 });
+
+function expectFirstIcon(el: Element | null | undefined, src: string) {
+  const img = el?.firstElementChild;
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe("16");
+  expect(el!.firstChild).toBe(img);
+}
+
+describe("SkillsScene applied assets", () => {
+  // assets-apply C11
+  it("wood header", () => {
+    renderScene();
+    expect(document.querySelector(".skills-head")).toHaveClass("panel-wood");
+  });
+
+  // assets-apply C13
+  it.each([["FRONTEND", "ic-code"], ["BACKEND", "ic-server"], ["INFRA", "ic-cloud"]])("generic icon on tree %s", (name, icon) => {
+    renderScene();
+    const title = screen.getByText(name, { selector: ".skills-tree-name" });
+    expectFirstIcon(title, `/art/icon/${icon}.png`);
+  });
+});

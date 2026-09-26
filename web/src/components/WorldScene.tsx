@@ -21,6 +21,9 @@ const POSITIONS: Record<string, { x: string; y: string }> = {
 // A region above the player's level shows its marker greyed out (plan assumptions: marker states).
 const LOCKED = "grayscale(1) brightness(.6)";
 
+// Boss and endgame regions wear the crown on their tag (assets-apply assumptions).
+const CROWNED = ["CHEFE", "ENDGAME"];
+
 export function WorldScene() {
   const { player, catalog, setPlayer } = useGame();
   const [pending, setPending] = useState(false);
@@ -84,7 +87,10 @@ export function WorldScene() {
           return (
             <article key={r.id} className="panel region-card" aria-label={r.name}>
               <div className="region-head">
-                <span className="pixel chip chip-green">{r.tag}</span>
+                <span className="pixel chip chip-green">
+                  {CROWNED.includes(r.tag) && <GameArt kind="ic" id="crown" scale={1} alt="" fallback="" className="inline-icon" />}
+                  {r.tag}
+                </span>
                 <span className="term">{`NÍVEL ${r.minLevel}+`}</span>
               </div>
               <span className="pixel region-name">{r.name}</span>
@@ -95,7 +101,7 @@ export function WorldScene() {
                 disabled={!open || pending}
                 onClick={() => travel(r.id)}
               >
-                {!open && <GameArt kind="ic" id="lock" scale={1} alt="" fallback="" className="inline-icon" />}
+                <GameArt kind={open ? "btn" : "ic"} id={open ? "start" : "lock"} scale={1} alt="" fallback="" className="inline-icon" />
                 {open ? "VIAJAR ATÉ AQUI" : `REQUER NÍVEL ${r.minLevel}`}
               </button>
             </article>

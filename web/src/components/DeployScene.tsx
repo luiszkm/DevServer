@@ -123,7 +123,7 @@ export function DeployScene() {
 
   return (
     <section className="scene deploy" aria-label="DEPLOY" style={{ backgroundImage: "url(/art/background/scene-dia.png)" }}>
-      <div className="panel deploy-head">
+      <div className="panel panel-wood deploy-head">
         <span className="pixel">PIPELINES DE DEPLOY</span>
         <span className="term">cada tipo roda em paralelo · tempo real por nível</span>
       </div>
@@ -156,7 +156,10 @@ export function DeployScene() {
 
       <div className="deploy-body">
         <div className="panel deploy-panel" aria-label="painel de deploy" role="region">
-          <span className="pixel">{typeName(selType)}</span>
+          <span className="pixel deploy-title">
+            <GameArt kind="ic" id="laptop" scale={1} alt="" fallback="" className="inline-icon" />
+            {typeName(selType)}
+          </span>
           {claimed > 0 && (
             <div className="deploy-claimed" key={claimed}>
               <GameArt kind="extra" id="bau-aberto" scale={2} alt="" fallback="" />
@@ -221,6 +224,7 @@ export function DeployScene() {
                 })}
               </div>
               <button type="button" className="btn btn-green" disabled={pending} onClick={start}>
+                <GameArt kind="btn" id="deploy" scale={1} alt="" fallback="" className="inline-icon" />
                 INICIAR DEPLOY
               </button>
             </>

@@ -524,3 +524,49 @@ describe("ShopScene scene", () => {
     expect(section.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/scene-dungeon.png)");
   });
 });
+
+describe("ShopScene applied assets", () => {
+  const firstIcon = (el: Element | null | undefined) => {
+    const img = el?.firstElementChild;
+    expect(el!.firstChild).toBe(img);
+    expect(img!.getAttribute("alt")).toBe("");
+    expect(img!.getAttribute("width")).toBe("16");
+    return img!.getAttribute("src");
+  };
+
+  // assets-apply C11
+  it("wood header", () => {
+    renderShop();
+    expect(document.querySelector(".shop-head")).toHaveClass("panel-wood");
+  });
+
+  // assets-apply C12: btn-shop on every COMPRAR button, btn-build on FORJAR
+  it("button icon on COMPRAR, COMPRAR E EQUIPAR, COMPRAR E USAR", async () => {
+    renderShop(player({ gems: 999, coins: 999, gear: [], equipment: {}, looks: [], skins: ["default"] }));
+    await userEvent.click(card("hp_potion"));
+    expect(firstIcon(detailButton("COMPRAR"))).toBe("/art/icon/btn-shop.png");
+    await userEvent.click(card("cafe"));
+    expect(firstIcon(detailButton("COMPRAR E EQUIPAR"))).toBe("/art/icon/btn-shop.png");
+    const look = CATALOG.avatar.options.find((o) => o.price && availableFor(o, "masculino"))!;
+    await userEvent.click(card(look.id));
+    expect(firstIcon(detailButton("COMPRAR E USAR"))).toBe("/art/icon/btn-shop.png");
+  });
+
+  it("button icon on FORJAR", async () => {
+    renderShop(player({ inventory: RECIPES[0].ingredients.map((m) => ({ item: m.item, quantity: m.quantity })), coins: 9999, gems: 9999 }));
+    await userEvent.click(recipe(RECIPES[0].id));
+    const forge = within(detail()).getByRole("button", { name: /^FORJAR/ });
+    expect(firstIcon(forge)).toBe("/art/icon/btn-build.png");
+  });
+
+  // assets-apply C14: rarity medals, table over the 5 rarities
+  it.each([
+    ["cafe", "medal-bronze"], ["fone", "medal-prata"], ["macbook", "medal-ouro"], ["monitor", "medal-rubi"], ["default", null],
+  ])("rarity medal (%s)", async (id, medal) => {
+    renderShop(player({ gear: [], equipment: {} }));
+    await userEvent.click(card(id));
+    const chip = detail().querySelector(".shop-rarity")!;
+    if (medal) expect(firstIcon(chip)).toBe(`/art/icon/${medal}.png`);
+    else expect(chip.querySelector("img")).toBeNull();
+  });
+});

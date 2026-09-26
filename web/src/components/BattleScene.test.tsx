@@ -547,3 +547,38 @@ describe("BattleScene enemy by id", () => {
   });
 });
 
+function expectFirstIcon(el: Element | null | undefined, src: string) {
+  const img = el?.firstElementChild;
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe("16");
+  expect(el!.firstChild).toBe(img);
+}
+
+describe("BattleScene applied assets", () => {
+  // assets-apply C11
+  it("wood header", async () => {
+    mockFetch({ "POST /api/me/battle": startWith() });
+    renderScene();
+    await screen.findByLabelText("inimigo");
+    expect(document.querySelector(".battle-head")).toHaveClass("panel-wood");
+  });
+
+  // assets-apply C12
+  it("button icon on NOVO ENCONTRO", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ status: "won", enemyHp: 0 })) });
+    renderScene();
+    expectFirstIcon(await screen.findByRole("button", { name: "NOVO ENCONTRO" }), "/art/icon/btn-play.png");
+  });
+
+  // assets-apply C13
+  it("generic icon on the log header and the RESOLVIDO seal", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ status: "won", enemyHp: 0 })) });
+    renderScene();
+    await screen.findByRole("button", { name: "NOVO ENCONTRO" });
+    expectFirstIcon(document.querySelector(".battle-log-title"), "/art/icon/ic-file.png");
+    const seal = screen.getByText("RESOLVIDO");
+    expectFirstIcon(seal, "/art/icon/ic-trophy.png");
+  });
+});

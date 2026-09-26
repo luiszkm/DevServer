@@ -8,6 +8,9 @@ import { useGame } from "./GameContext";
 
 type NodeState = "ATIVA" | "1 PT" | "BLOQ.";
 
+// Icon before each tree name (assets-apply assumptions).
+const TREE_ICON: Record<string, string> = { frontend: "code", backend: "server", infra: "cloud" };
+
 export function SkillsScene() {
   const { player, catalog, setPlayer } = useGame();
   const [message, setMessage] = useState("> gaste pontos para desbloquear a primeira camada de cada trilha.");
@@ -33,7 +36,7 @@ export function SkillsScene() {
 
   return (
     <section className="scene skills" aria-label="SKILLS" style={{ backgroundImage: "url(/art/background/scene-noite.png)" }}>
-      <div className="panel skills-head">
+      <div className="panel panel-wood skills-head">
         <span className="pixel">ÁRVORE DE HABILIDADES</span>
         <span className="term">{`bônus ativo: +${bonus("hp")} HP · +${bonus("sp")} SP · +${bonus("dmg")}% dano`}</span>
         <span className="pixel skills-points">{`PONTOS: ${player.skillPoints}`}</span>
@@ -41,7 +44,10 @@ export function SkillsScene() {
       <div className="skills-trees">
         {catalog.skillTrees.map((tree) => (
           <div key={tree.id} className="panel skills-tree" role="group" aria-label={tree.name}>
-            <div className="pixel skills-tree-name">{tree.name}</div>
+            <div className="pixel skills-tree-name">
+              {TREE_ICON[tree.id] && <GameArt kind="ic" id={TREE_ICON[tree.id]} scale={1} alt="" fallback="" className="inline-icon" />}
+              {tree.name}
+            </div>
             {tree.nodes.map((node, i) => {
               const state: NodeState = player.skills.includes(node.id)
                 ? "ATIVA"

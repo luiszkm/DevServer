@@ -43,10 +43,10 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "enemy"`
 **C10** - In the browser, `.panel-wood` has computed `border-image-source` containing `/art/ui/ui-panel-wood.png` with slice `8 fill`, and `.bar` has `border-image-source` containing `/art/ui/ui-bar.png` (APL-03, AC 8, 9)
 Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "wood and bar"`
 
-**C11** - The six scene headers carry the class `panel-wood`: `.deploy-head`, `.battle-head`, `.skills-head`, `.shop-head`, `.office-head`, `.avatar-bag-head` (APL-03, AC 8)
+**C11** - The six scene headers carry the class `panel-wood`: `.deploy-head`, `.battle-head`, `.skills-head`, `.shop-head`, `.office-head`, `.avatar-bag-head` (APL-03, AC 8) ✅
 Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx src/components/BattleScene.test.tsx src/components/SkillsScene.test.tsx src/components/ShopScene.test.tsx src/components/OfficeScene.test.tsx src/components/AvatarScene.test.tsx -t "wood header"`
 
-**C12** - Button icons are 16px, `alt=""`, first child of their button, and the button keeps its accessible name:
+**C12** - Button icons are 16px, `alt=""`, first child of their button, and the button keeps its accessible name: ✅
 - `btn-deploy` on INICIAR DEPLOY
 - `btn-start` on VIAJAR ATÉ AQUI
 - `btn-shop` on COMPRAR, COMPRAR E EQUIPAR and COMPRAR E USAR
@@ -57,7 +57,7 @@ Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx src/compone
 (APL-03, AC 10)
 Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx src/components/WorldScene.test.tsx src/components/ShopScene.test.tsx src/components/BattleScene.test.tsx src/components/AvatarScene.test.tsx src/components/Hud.test.tsx -t "button icon"`
 
-**C13** - Generic icons are 16px, `alt=""`, and first child of their element:
+**C13** - Generic icons are 16px, `alt=""`, and first child of their element: ✅
 - `ic-code`, `ic-server`, `ic-cloud` before the tree names FRONTEND, BACKEND, INFRA
 - `ic-gear` on the CONFIGURAÇÃO slot of the AVATAR
 - `ic-laptop` on the deploy panel title
@@ -68,10 +68,10 @@ Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx src/compone
 (APL-03, AC 11)
 Proof: `cd web && npx vitest run src/components/SkillsScene.test.tsx src/components/AvatarScene.test.tsx src/components/DeployScene.test.tsx src/components/BattleScene.test.tsx src/components/ServerScene.test.tsx src/components/WorldScene.test.tsx -t "generic icon"`
 
-**C14** - Rarity medals, table-driven over the 5 rarities: COMUM → `medal-bronze`, INCOMUM → `medal-prata`, RARO → `medal-ouro`, LENDÁRIO → `medal-rubi`, PADRÃO → no `img`. The medal is 16px, `alt=""`, and the first child of the rarity chip in the LOJA detail (APL-03, AC 12)
+**C14** - Rarity medals, table-driven over the 5 rarities: COMUM → `medal-bronze`, INCOMUM → `medal-prata`, RARO → `medal-ouro`, LENDÁRIO → `medal-rubi`, PADRÃO → no `img`. The medal is 16px, `alt=""`, and the first child of the rarity chip in the LOJA detail (APL-03, AC 12) ✅
 Proof: `cd web && npx vitest run src/components/ShopScene.test.tsx -t "rarity medal"`
 
-**C15** - The AVATAR detail rarity shows the same medal (table over COMUM, RARO, LENDÁRIO, PADRÃO) (APL-03, AC 12)
+**C15** - The AVATAR detail rarity shows the same medal (table over COMUM, RARO, LENDÁRIO, PADRÃO) (APL-03, AC 12) ✅
 Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "rarity medal"`
 
 ### S3 - cenários montados · ~40 specs + OfficeScene · ~15k

@@ -220,3 +220,31 @@ describe("WorldScene hero anim", () => {
     expect(hero().dataset.anim).toBe("walk");
   });
 });
+
+function expectFirstIcon(el: Element | null | undefined, src: string) {
+  const img = el?.firstElementChild;
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe("16");
+  expect(el!.firstChild).toBe(img);
+}
+
+describe("WorldScene applied assets", () => {
+  // assets-apply C12
+  it("button icon on VIAJAR ATÉ AQUI", () => {
+    renderWorld(player({ level: 1, region: "vila" }));
+    expectFirstIcon(button("FLORESTA DE LOGS"), "/art/icon/btn-start.png");
+    expect(button("CAVERNA DOS BUGS").querySelector('img[src="/art/icon/btn-start.png"]')).toBeNull();
+  });
+
+  // assets-apply C13: the crown marks the CHEFE and ENDGAME tags only
+  it.each([
+    ["torre", true], ["nuvem", true], ["vila", false], ["floresta", false], ["mercado", false], ["caverna", false],
+  ])("generic icon: crown on tag of %s = %s", (id, crowned) => {
+    renderWorld(player({ level: 1, region: "vila" }));
+    const chip = screen.getByText(REGIONS.find((r) => r.id === id)!.tag, { selector: ".chip" });
+    if (crowned) expectFirstIcon(chip, "/art/icon/ic-crown.png");
+    else expect(chip.querySelector("img")).toBeNull();
+  });
+});

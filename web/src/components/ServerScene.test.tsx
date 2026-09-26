@@ -338,3 +338,21 @@ describe("ServerScene robot", () => {
     expect(robot.getAttribute("width")).toBe("64");
   });
 });
+
+function expectFirstIcon(el: Element | null | undefined, src: string) {
+  const img = el?.firstElementChild;
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe("16");
+  expect(el!.firstChild).toBe(img);
+}
+
+describe("ServerScene applied assets", () => {
+  // assets-apply C13
+  it("generic icon on the RACK title", () => {
+    renderServer(player({ rack: rack() }));
+    const title = screen.getByText("RACK LOCALHOST-01", { selector: ".server-title" });
+    expectFirstIcon(title, "/art/icon/ic-wrench.png");
+  });
+});
