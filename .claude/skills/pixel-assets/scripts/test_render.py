@@ -80,6 +80,26 @@ class TileTest(unittest.TestCase):
         _, warnings = render.check(rows_of({"category": "tile", "size": [32, 32], "layers": [{"fill": "grass.2"}]}), "tile", PALETTE, "t")
         self.assertEqual(warnings, [])
 
+    def test_tile_single_cell_skips_strip_rules_even_when_empty_or_odd_sized(self):
+        # the strip rules only run on tiles wider than one 32px cell
+        empty = rows_of({"category": "tile", "size": [32, 32], "layers": []})
+        errors, warnings = render.check(empty, "tile", PALETTE, "t")
+        self.assertEqual(len(errors), 1)
+        self.assertEqual(warnings, [])
+        small = rows_of({"category": "tile", "size": [16, 16], "layers": [{"fill": "grass.2"}]})
+        _, warnings = render.check(small, "tile", PALETTE, "t")
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("not a standard tile size", warnings[0])
+
+    def test_tile_strip_with_an_empty_frame_warns_it(self):
+        spec = {"category": "tile", "size": [128, 32], "layers": [{"fill": "net.1"}] +
+                [{"rect": [32 * i + 4 + 3 * i, 8, 4, 1], "color": "net.3"} for i in range(4)] +
+                [{"rect": [64, 0, 32, 32], "color": None}]}
+        errors, warnings = render.check(rows_of(spec), "tile", PALETTE, "t")
+        self.assertEqual(len(errors), 1)
+        self.assertIn("transparent", errors[0])
+        self.assertEqual(warnings, ["frame 2 is empty"])
+
 
 class AnimStripTest(unittest.TestCase):
     def check(self, frames):
