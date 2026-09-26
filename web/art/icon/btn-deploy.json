@@ -1,0 +1,9 @@
+{
+  "name": "btn-deploy",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "DEPLOY: the deploy cloud.",
+  "layers": [
+    {"use": "ic-cloud.json"}
+  ]
+}

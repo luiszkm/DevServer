@@ -1,0 +1,9 @@
+{
+  "name": "enemy-monstro",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "Bug Fight art of the monstro enemy: the asset sheet mob, unchanged.",
+  "layers": [
+    {"use": "mob-monstro.json"}
+  ]
+}

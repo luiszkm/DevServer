@@ -1,0 +1,21 @@
+{
+  "name": "ic-server",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "A dark server rack front with blue and green LEDs (badges row 1).",
+  "layers": [
+    {"rect": [3, 1, 10, 14], "color": "ink"},
+    {"rect": [4, 2, 8, 12], "color": "stone.2"},
+    {"rect": [4, 2, 1, 12], "color": "stone.3"},
+    {"rect": [5, 3, 6, 3], "color": "stone.1"},
+    {"rect": [5, 7, 6, 3], "color": "stone.1"},
+    {"rect": [5, 11, 6, 2], "color": "stone.1"},
+    {"rect": [6, 4, 1, 1], "color": "net.3"},
+    {"rect": [8, 4, 1, 1], "color": "code.3"},
+    {"rect": [6, 8, 1, 1], "color": "net.3"},
+    {"rect": [8, 8, 1, 1], "color": "net.3"},
+    {"rect": [6, 12, 1, 1], "color": "code.3"},
+    {"rect": [9, 4, 2, 1], "color": "ink.2"},
+    {"rect": [9, 8, 2, 1], "color": "ink.2"}
+  ]
+}

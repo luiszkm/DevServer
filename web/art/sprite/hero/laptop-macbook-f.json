@@ -1,0 +1,28 @@
+{
+  "name": "laptop-macbook-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Feminine body traced from web/public/female_keyart.png; slim silver laptop (metal + white) at her laptop's place, single-pixel deck, no logo.",
+  "legend": {"o": "ink", "n": "metal.2", "M": "metal.3", "N": "white"},
+  "layers": [
+    {"grid": [
+      "......o.............",
+      "...........ooooooooo",
+      "..........onNNNNNNNo",
+      "..........oMMMMMMMMo",
+      ".........onMMMMMMMMo",
+      ".........onNMMMMMMMo",
+      ".........oMMMMMMMMMo",
+      ".........oMMMMMMMNMo",
+      "........onNMMMMMMMMo",
+      "........oMMMMMMMMMMo",
+      "........oMMMMMMMMMMo",
+      "........oMMMMMMMMMMo",
+      "o..oooo.oMMMMMMMMMMo",
+      "nMMnnnnoMMMMMMMMMMMo",
+      "oooooooooooooooooooo",
+      ".o....onnooo..oMnoo.",
+      ".......oo......oo..."
+    ], "at": [27, 27]}
+  ]
+}

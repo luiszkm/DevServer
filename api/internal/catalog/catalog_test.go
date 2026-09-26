@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"reflect"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -180,7 +181,7 @@ func TestCatalog_ServesCombat(t *testing.T) {
 	env := apptest.New(t)
 	var b struct {
 		Enemies []struct {
-			Region, Name, Weakness, Drop, Glyph string
+			ID, Region, Name, Weakness, Drop, Glyph string
 			Level, HP, SP                       int
 		} `json:"enemies"`
 		Commands []struct {
@@ -213,19 +214,34 @@ func TestCatalog_ServesCombat(t *testing.T) {
 	if err := json.Unmarshal(env.Do(http.MethodGet, "/api/catalog", nil).Body.Bytes(), &b); err != nil {
 		t.Fatal(err)
 	}
+	// assets-apply C1: every enemy has a unique id; the six original ones keep id = region (door 3)
 	enemies := []string{
-		"vila|NULL SLIME|3|60|50|null-check|null_shard",
-		"floresta|LOG WISP|5|70|55|referência circular|log_essence",
-		"mercado|PACOTE MALICIOSO|7|85|60|versão não travada|corrupt_dep",
-		"caverna|EXCEÇÃO SELVAGEM|10|110|70|catch ausente|wild_trace",
-		"torre|RACE CONDITION|15|160|85|mutex ausente|race_core",
-		"nuvem|MEMORY LEAK ANCESTRAL|22|220|100|garbage collector|memory_crystal",
+		"vila|vila|NULL SLIME|3|60|50|null-check|null_shard",
+		"slime|vila|SLIME DE CACHE|2|45|40|cache invalidado|null_shard",
+		"floresta|floresta|LOG WISP|5|70|55|referência circular|log_essence",
+		"slime_verde|floresta|SLIME DE LOG|4|55|45|log rotacionado|log_essence",
+		"mercado|mercado|PACOTE MALICIOSO|7|85|60|versão não travada|corrupt_dep",
+		"caverna|caverna|EXCEÇÃO SELVAGEM|10|110|70|catch ausente|wild_trace",
+		"monstro|caverna|BUG DE PRODUÇÃO|9|100|65|hotfix|wild_trace",
+		"torre|torre|RACE CONDITION|15|160|85|mutex ausente|race_core",
+		"nuvem|nuvem|MEMORY LEAK ANCESTRAL|22|220|100|garbage collector|memory_crystal",
 	}
-	if len(b.Enemies) != 6 {
+	if len(b.Enemies) != 9 {
 		t.Fatalf("enemies = %d", len(b.Enemies))
 	}
+	glyphs := map[string]string{"slime": "(o.o)", "slime_verde": "(-.-)", "monstro": "{>_<}"}
+	for _, e := range b.Enemies {
+		if want, ok := glyphs[e.ID]; ok && e.Glyph != want {
+			t.Errorf("enemy %s glyph = %q, want %q", e.ID, e.Glyph, want)
+		}
+	}
+	ids := map[string]bool{}
 	for i, e := range b.Enemies {
-		if got := fmt.Sprintf("%s|%s|%d|%d|%d|%s|%s", e.Region, e.Name, e.Level, e.HP, e.SP, e.Weakness, e.Drop); got != enemies[i] || e.Glyph == "" {
+		if ids[e.ID] {
+			t.Errorf("enemy id %q repeated", e.ID)
+		}
+		ids[e.ID] = true
+		if got := fmt.Sprintf("%s|%s|%s|%d|%d|%d|%s|%s", e.ID, e.Region, e.Name, e.Level, e.HP, e.SP, e.Weakness, e.Drop); got != enemies[i] || e.Glyph == "" {
 			t.Errorf("enemy %d = %s (glyph %q), want %s", i, got, e.Glyph, enemies[i])
 		}
 	}
@@ -258,6 +274,8 @@ func TestCatalog_ServesCombat(t *testing.T) {
 		"sp_potion|POÇÃO DE CACHE|++|COMUM|sp 30", "hp_potion|POÇÃO DE MEMÓRIA|HP+|COMUM|hp 40",
 		// shop-inventory-avatar AC 1 adds the deploy booster, which restores nothing in combat.
 		"boost_deploy|ACELERADOR DE DEPLOY|>>|COMUM|",
+		// The body contract adds the redesign token, which restores nothing in combat.
+		"redesign_token|TOKEN DE REDESIGN|<~>|RARO|",
 	}
 	if len(b.Items) != len(items) {
 		t.Fatalf("items = %d", len(b.Items))
@@ -279,6 +297,25 @@ func TestCatalog_ServesCombat(t *testing.T) {
 	}
 }
 
+// Skin palettes of the avatar contract: tone, hair color and eyes of each paid skin.
+var palettes = map[string]map[string][]string{
+	"neon": {
+		"tone":      {"#1a6a70", "#2a9aa0", "#5ad2d2", "#a0f4f0"},
+		"hairColor": {"#6a1a4a", "#9c2a6c", "#d04a98", "#f080c0"},
+		"eyes":      {"#0c3060", "#1450a0", "#2a78d0", "#62a8f0"},
+	},
+	"shadow": {
+		"tone":      {"#3a2a5a", "#54407e", "#7058a2", "#9478c4"},
+		"hairColor": {"#0c0818", "#1a1030", "#2a1c48", "#3e2c66"},
+		"eyes":      {"#2e3640", "#4a5460", "#6c7884", "#98a4b0"},
+	},
+	"golden": {
+		"tone":      {"#886018", "#c08c20", "#f0c040", "#fce484"},
+		"hairColor": {"#a08a50", "#c8b070", "#e8d498", "#fff4c8"},
+		"eyes":      {"#6a4210", "#946018", "#be8424", "#e0aa40"},
+	},
+}
+
 // C1
 func TestCatalog_ServesShop(t *testing.T) {
 	env := apptest.New(t)
@@ -298,9 +335,10 @@ func TestCatalog_ServesShop(t *testing.T) {
 			Bonus                                      *bonus
 		} `json:"gear"`
 		Skins []struct {
-			ID, Name, Rarity, Description, Filter string
-			Price                                 *price
-			Bonus                                 *bonus
+			ID, Name, Rarity, Description string
+			Palette                       map[string][]string
+			Price                         *price
+			Bonus                         *bonus
 		} `json:"skins"`
 		Items []struct {
 			ID, Name, Glyph, Rarity string
@@ -336,10 +374,11 @@ func TestCatalog_ServesShop(t *testing.T) {
 		"cadeira|CADEIRA ERGONÔMICA|vestuario|RARO|gems 150|hp 30",
 		"fone|FONE COM CANCELAMENTO|acessorio|INCOMUM|gems 90|dmg 6",
 	}
-	if len(b.Gear) != len(gear) {
-		t.Fatalf("gear = %d, want 6", len(b.Gear))
+	// The forge's craft-only gear follows these six (forge C2).
+	if len(b.Gear) < len(gear) {
+		t.Fatalf("gear = %d, want at least 6", len(b.Gear))
 	}
-	for i, g := range b.Gear {
+	for i, g := range b.Gear[:len(gear)] {
 		if g.Price == nil || g.Bonus == nil {
 			t.Errorf("gear %s lacks price or bonus", g.ID)
 			continue
@@ -372,19 +411,22 @@ func TestCatalog_ServesShop(t *testing.T) {
 		if got != skins[i] || s.Description == "" {
 			t.Errorf("skin %d = %s, want %s", i, got, skins[i])
 		}
+		if _, has := raw.Skins[i]["filter"]; has {
+			t.Errorf("skin %s still has a filter: %s", s.ID, raw.Skins[i]["filter"])
+		}
 		if s.ID == "default" {
-			if s.Filter != "none" {
-				t.Errorf("default filter = %q, want none", s.Filter)
+			if string(raw.Skins[i]["palette"]) != "{}" {
+				t.Errorf("default palette = %s, want {}", raw.Skins[i]["palette"])
 			}
 			if string(raw.Skins[i]["bonus"]) != "null" {
 				t.Errorf("default bonus = %s, want null", raw.Skins[i]["bonus"])
 			}
-		} else if s.Filter == "" || s.Filter == "none" {
-			t.Errorf("skin %s filter = %q, want a CSS filter", s.ID, s.Filter)
+		} else if !reflect.DeepEqual(s.Palette, palettes[s.ID]) {
+			t.Errorf("skin %s palette = %v, want %v", s.ID, s.Palette, palettes[s.ID])
 		}
 	}
 
-	prices := map[string]string{"sp_potion": "gems 15", "hp_potion": "gems 12", "boost_deploy": "gems 35"}
+	prices := map[string]string{"sp_potion": "gems 15", "hp_potion": "gems 12", "boost_deploy": "gems 35", "redesign_token": "gems 100"}
 	seen := map[string]bool{}
 	for _, it := range b.Items {
 		want, priced := prices[it.ID]
@@ -396,6 +438,9 @@ func TestCatalog_ServesShop(t *testing.T) {
 		}
 		if it.ID == "boost_deploy" && (it.Name != "ACELERADOR DE DEPLOY" || it.Glyph != ">>" || it.Rarity != "COMUM") {
 			t.Errorf("boost_deploy = %+v", it)
+		}
+		if it.ID == "redesign_token" && (it.Name != "TOKEN DE REDESIGN" || it.Glyph != "<~>" || it.Rarity != "RARO") {
+			t.Errorf("redesign_token = %+v", it)
 		}
 		seen[it.ID] = true
 	}
@@ -531,5 +576,544 @@ func TestCatalog_ServesRack(t *testing.T) {
 	if !reflect.DeepEqual(b.Rack, w) {
 		got, _ := json.Marshal(b.Rack)
 		t.Fatalf("rack = %s", got)
+	}
+}
+
+type forgePrice struct {
+	Currency string `json:"currency"`
+	Amount   int    `json:"amount"`
+}
+
+// C1 (forge)
+func TestCatalog_ServesForge(t *testing.T) {
+	env := apptest.New(t)
+	rec := env.Do(http.MethodGet, "/api/catalog", nil)
+	var b struct {
+		Recipes []struct {
+			ID     string `json:"id"`
+			Output struct {
+				Kind string `json:"kind"`
+				ID   string `json:"id"`
+			} `json:"output"`
+			Ingredients []struct {
+				Item     string `json:"item"`
+				Quantity int    `json:"quantity"`
+			} `json:"ingredients"`
+			Price *forgePrice `json:"price"`
+		} `json:"recipes"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &b); err != nil {
+		t.Fatal(err)
+	}
+	var raw struct {
+		Recipes []map[string]json.RawMessage `json:"recipes"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &raw); err != nil {
+		t.Fatal(err)
+	}
+	want := []string{
+		"forja_cache|item sp_potion|null_shard 2|-",
+		"forja_memoria|item hp_potion|log_essence 2|-",
+		"forja_acelerador|item boost_deploy|corrupt_dep 1,wild_trace 1|coins 20",
+		"forja_caneca|gear caneca_log|log_essence 3,null_shard 2|coins 40",
+		"forja_hoodie|gear hoodie_trace|wild_trace 3,corrupt_dep 2|coins 80",
+		"forja_teclado|gear teclado_race|race_core 2,memory_crystal 1,wild_trace 3|coins 150",
+	}
+	if len(b.Recipes) != len(want) {
+		t.Fatalf("recipes = %d, want %d", len(b.Recipes), len(want))
+	}
+	for i, r := range b.Recipes {
+		ings := []string{}
+		for _, in := range r.Ingredients {
+			ings = append(ings, fmt.Sprintf("%s %d", in.Item, in.Quantity))
+		}
+		price := "-"
+		if r.Price != nil {
+			price = fmt.Sprintf("%s %d", r.Price.Currency, r.Price.Amount)
+		}
+		got := fmt.Sprintf("%s|%s %s|%s|%s", r.ID, r.Output.Kind, r.Output.ID, strings.Join(ings, ","), price)
+		if got != want[i] {
+			t.Errorf("recipe %d = %s, want %s", i, got, want[i])
+		}
+		if _, has := raw.Recipes[i]["price"]; has != (r.Price != nil) || (price == "-") == has {
+			t.Errorf("recipe %s: price key present = %v, want %v", r.ID, has, price != "-")
+		}
+	}
+}
+
+// C2 (forge)
+func TestCatalog_ServesForgeGear(t *testing.T) {
+	env := apptest.New(t)
+	rec := env.Do(http.MethodGet, "/api/catalog", nil)
+	var b struct {
+		Gear []struct {
+			ID, Name, Glyph, Slot, Rarity, Description string
+			Price                                      *forgePrice
+			Bonus                                      *struct {
+				Type   string `json:"type"`
+				Amount int    `json:"amount"`
+			}
+		} `json:"gear"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &b); err != nil {
+		t.Fatal(err)
+	}
+	var raw struct {
+		Gear []map[string]json.RawMessage `json:"gear"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &raw); err != nil {
+		t.Fatal(err)
+	}
+	want := []string{
+		"macbook|price gems 120",
+		"monitor|price gems 200",
+		"cafe|price coins 50",
+		"moletom|price coins 70",
+		"cadeira|price gems 150",
+		"fone|price gems 90",
+		"caneca_log|CANECA DE LOGS|[u]|bebida|INCOMUM|Café coado no filtro de stack trace.|sp 16",
+		"hoodie_trace|MOLETOM STACK TRACE|{#}|vestuario|RARO|Cada linha do erro costurada à mão.|hp 36",
+		"teclado_race|TECLADO RACE CONDITION|[kbd]|acessorio|LENDÁRIO|As teclas chegam antes de você apertar.|dmg 12",
+	}
+	if len(b.Gear) != len(want) {
+		t.Fatalf("gear = %d, want %d", len(b.Gear), len(want))
+	}
+	for i, g := range b.Gear {
+		_, hasPrice := raw.Gear[i]["price"]
+		var got string
+		if i < 6 {
+			if g.Price == nil {
+				t.Errorf("gear %s lacks price", g.ID)
+				continue
+			}
+			got = fmt.Sprintf("%s|price %s %d", g.ID, g.Price.Currency, g.Price.Amount)
+		} else {
+			if hasPrice {
+				t.Errorf("gear %s has a price key: %s", g.ID, raw.Gear[i]["price"])
+			}
+			if g.Bonus == nil {
+				t.Errorf("gear %s lacks bonus", g.ID)
+				continue
+			}
+			got = fmt.Sprintf("%s|%s|%s|%s|%s|%s|%s %d", g.ID, g.Name, g.Glyph, g.Slot, g.Rarity, g.Description, g.Bonus.Type, g.Bonus.Amount)
+		}
+		if got != want[i] {
+			t.Errorf("gear %d = %s, want %s", i, got, want[i])
+		}
+	}
+}
+
+// C3 (forge)
+func TestCatalog_RecipesReferenceCatalog(t *testing.T) {
+	c, err := catalog.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	made := map[string]bool{}
+	for _, r := range c.Recipes {
+		switch r.Output.Kind {
+		case "item":
+			if _, ok := c.Item(r.Output.ID); !ok {
+				t.Errorf("recipe %s makes unknown item %q", r.ID, r.Output.ID)
+			}
+		case "gear":
+			if _, ok := c.GearItem(r.Output.ID); !ok {
+				t.Errorf("recipe %s makes unknown gear %q", r.ID, r.Output.ID)
+			}
+			made[r.Output.ID] = true
+		default:
+			t.Errorf("recipe %s output kind = %q, want item or gear", r.ID, r.Output.Kind)
+		}
+		if len(r.Ingredients) == 0 {
+			t.Errorf("recipe %s has no ingredients", r.ID)
+		}
+		for _, in := range r.Ingredients {
+			if _, ok := c.Item(in.Item); !ok {
+				t.Errorf("recipe %s uses unknown item %q", r.ID, in.Item)
+			}
+			if in.Quantity < 1 {
+				t.Errorf("recipe %s uses %d of %s, want at least 1", r.ID, in.Quantity, in.Item)
+			}
+		}
+	}
+	for _, g := range c.Gear {
+		if g.Price == nil && !made[g.ID] {
+			t.Errorf("gear %s has no price and no recipe", g.ID)
+		}
+	}
+}
+
+// Avatar C1: parts, every option and the defaults by value, as the avatar contract lists them.
+func TestCatalog_ServesAvatar(t *testing.T) {
+	env := apptest.New(t)
+	rec := env.Do(http.MethodGet, "/api/catalog", nil)
+	var b struct {
+		Avatar struct {
+			Parts    []map[string]string          `json:"parts"`
+			Bodies   []map[string]json.RawMessage `json:"bodies"`
+			Options  []map[string]json.RawMessage `json:"options"`
+			Defaults map[string]string            `json:"defaults"`
+		} `json:"avatar"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &b); err != nil {
+		t.Fatal(err)
+	}
+	a := b.Avatar
+
+	parts := []string{
+		"tone|PELE|color|", "eyes|OLHOS|color|", "hair|CABELO|style|", "hairColor|COR DO CABELO|color|",
+		"beard|BARBA|style|", "glasses|ÓCULOS|style|",
+		"top|ROUPA|style|vestuario", "topColor|COR DA ROUPA|color|", "bottomColor|CALÇA|color|", "laptop|NOTEBOOK|style|setup",
+	}
+	if len(a.Parts) != len(parts) {
+		t.Fatalf("parts = %d, want %d", len(a.Parts), len(parts))
+	}
+	for i, p := range a.Parts {
+		if got := p["id"] + "|" + p["name"] + "|" + p["kind"] + "|" + p["gearSlot"]; got != parts[i] {
+			t.Errorf("part %d = %s, want %s", i, got, parts[i])
+		}
+	}
+
+	// Body contract: the two bodies, masculino (the original look) first; only feminino overrides a default.
+	bodies := []string{`{"id":"masculino","name":"MASCULINO"}`, `{"id":"feminino","name":"FEMININO","defaults":{"bottomColor":"bottom_preto","eyes":"eyes_cinza","hair":"hair_rabo","hairColor":"hair_castanho"}}`}
+	if len(a.Bodies) != len(bodies) {
+		t.Fatalf("bodies = %d, want %d", len(a.Bodies), len(bodies))
+	}
+	for i, raw := range a.Bodies {
+		b, err := json.Marshal(struct {
+			ID       json.RawMessage `json:"id"`
+			Name     json.RawMessage `json:"name"`
+			Defaults json.RawMessage `json:"defaults,omitempty"`
+		}{raw["id"], raw["name"], raw["defaults"]})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(raw) > 3 || string(b) != bodies[i] {
+			t.Errorf("body %d = %v, want %s", i, raw, bodies[i])
+		}
+	}
+
+	// id|part|name|ramp or layer|flags|price|bodies, in the contract's order within each part.
+	options := []string{
+		"tone_clara|tone|CLARA|#b07858,#d8a07c,#f8cfa8,#ffe8cc|-|-|-",
+		"tone_padrao|tone|PADRÃO|#8a5234,#b8764a,#f6ba72,#ffd8a0|-|-|-",
+		"tone_morena|tone|MORENA|#6e3e22,#9a6038,#c88a58,#e4b07c|-|-|-",
+		"tone_parda|tone|PARDA|#5a3018,#80492a,#a8683e,#c88c5c|-|-|-",
+		"tone_negra|tone|NEGRA|#3a1e10,#5a3220,#7c4a30,#9c6844|-|-|-",
+		"tone_retinta|tone|RETINTA|#24120a,#3a2014,#553222,#704834|-|-|-",
+		"eyes_castanho|eyes|CASTANHO|#3a2010,#5c3418,#7e4c26,#a06a3a|-|-|-",
+		"eyes_preto|eyes|PRETO|#101014,#1c1c24,#2a2a34,#3a3a46|-|-|-",
+		"eyes_azul|eyes|AZUL|#0c3060,#1450a0,#2a78d0,#62a8f0|-|-|-",
+		"eyes_verde|eyes|VERDE|#0e4020,#1a6630,#2e8c44,#56b464|-|-|-",
+		"eyes_mel|eyes|MEL|#6a4210,#946018,#be8424,#e0aa40|-|-|-",
+		"eyes_cinza|eyes|CINZA|#2e3640,#4a5460,#6c7884,#98a4b0|-|-|-",
+		"hair_espetado|hair|ESPETADO|hair-espetado|-|-|-",
+		"hair_curto|hair|CURTO|hair-curto|-|-|-",
+		"hair_careca|hair|CARECA|hair-careca|-|-|-",
+		"hair_longo|hair|LONGO|hair-longo|-|-|-",
+		"hair_cacheado|hair|CACHEADO|hair-cacheado|-|-|-",
+		"hair_coque|hair|COQUE|hair-coque|-|-|-",
+		"hair_moicano|hair|MOICANO|hair-moicano|-|gems 30|-",
+		"hair_topete|hair|TOPETE|hair-topete|-|gems 30|-",
+		"hair_rabo|hair|RABO DE CAVALO|hair-rabo|-|-|feminino",
+		"hair_trancas|hair|TRANÇAS|hair-trancas|-|gems 30|feminino",
+		"hair_franja|hair|FRANJA CHANEL|hair-franja|-|-|feminino",
+		"hair_preto|hairColor|PRETO|#141420,#24242e,#34343e,#4a4a56|-|-|-",
+		"hair_castanho|hairColor|CASTANHO|#2a160c,#462814,#643c20,#88562e|-|-|-",
+		"hair_loiro|hairColor|LOIRO|#8a6420,#b88a2c,#e0b44a,#f8dc84|-|-|-",
+		"hair_ruivo|hairColor|RUIVO|#5a1a0c,#8a2c14,#b8461e,#de6a30|-|-|-",
+		"hair_grisalho|hairColor|GRISALHO|#4a4e56,#70767e,#9ca2aa,#cfd4da|-|-|-",
+		"hair_azul|hairColor|AZUL|#0a2a66,#12449c,#2066d0,#4c96f0|-|coins 80|-",
+		"hair_rosa|hairColor|ROSA|#6a1a4a,#9c2a6c,#d04a98,#f080c0|-|coins 80|-",
+		"hair_verde|hairColor|VERDE NEON|#1a4a08,#2e7410,#4ea41c,#7cd23a|-|coins 80|-",
+		"beard_nenhuma|beard|SEM BARBA||-|-|-",
+		"beard_bigode|beard|BIGODE|beard-bigode|-|-|masculino",
+		"beard_cavanhaque|beard|CAVANHAQUE|beard-cavanhaque|-|-|masculino",
+		"beard_curta|beard|BARBA CURTA|beard-curta|-|-|masculino",
+		"beard_cheia|beard|BARBA CHEIA|beard-cheia|-|-|masculino",
+		"beard_lenhador|beard|BARBA LENHADOR|beard-lenhador|-|gems 30|masculino",
+		"glasses_nenhum|glasses|SEM ÓCULOS||-|-|-",
+		"glasses_redondo|glasses|REDONDO|glasses-redondo|fixed|-|-",
+		"glasses_quadrado|glasses|QUADRADO|glasses-quadrado|fixed|-|-",
+		"glasses_escuro|glasses|ÓCULOS ESCUROS|glasses-escuro|fixed|-|-",
+		"glasses_cyber|glasses|VISOR CYBER|glasses-cyber|fixed|gems 40|-",
+		"top_moletom|top|MOLETOM|top-moletom|-|-|-",
+		"top_camiseta|top|CAMISETA|top-camiseta|-|-|-",
+		"top_xadrez|top|CAMISA XADREZ|top-xadrez|-|-|-",
+		"top_jaqueta|top|JAQUETA DE COURO|top-jaqueta|fixed|coins 150|-",
+		"top_moletom_gear|top|MOLETOM CONFORTÁVEL|top-moletom_gear|fixed,gearOnly|-|-",
+		"top_hoodie_trace|top|MOLETOM STACK TRACE|top-hoodie_trace|fixed,gearOnly|-|-",
+		"top_grafite|topColor|GRAFITE|#202030,#2c3838,#383844,#4c4c5a|-|-|-",
+		"top_azul|topColor|AZUL|#102040,#1a3464,#284c88,#3c68ac|-|-|-",
+		"top_vinho|topColor|VINHO|#3a0c18,#5a1426,#7c2036,#9c3048|-|-|-",
+		"top_verde|topColor|VERDE|#10301a,#1a4a28,#286a3a,#3a8a4e|-|-|-",
+		"top_mostarda|topColor|MOSTARDA|#5a4210,#80601a,#a88026,#cca238|-|-|-",
+		"top_branco|topColor|BRANCO|#8a929a,#b0b8c0,#d4dade,#eef2f4|-|-|-",
+		"bottom_jeans|bottomColor|JEANS|#121e36,#1e364e,#2a4e66,#3e6a86|-|-|-",
+		"bottom_preto|bottomColor|PRETO|#0e0e14,#18181f,#24242c,#32323c|-|-|-",
+		"bottom_caqui|bottomColor|CÁQUI|#4a3c22,#6a5832,#8c7646,#ae965e|-|-|-",
+		"bottom_cinza|bottomColor|CINZA|#2a2e34,#40464e,#5a626a,#7a828a|-|-|-",
+		"laptop_basico|laptop|NOTEBOOK|laptop-basico|fixed|-|-",
+		"laptop_preto|laptop|NOTEBOOK PRETO|laptop-preto|fixed|-|-",
+		"laptop_gamer|laptop|NOTEBOOK GAMER RGB|laptop-gamer|fixed|gems 40|-",
+		"laptop_macbook|laptop|MACBOOK PRO|laptop-macbook|fixed,gearOnly|-|-",
+	}
+	if len(a.Options) != len(options) {
+		t.Fatalf("options = %d, want %d", len(a.Options), len(options))
+	}
+	for i, o := range a.Options {
+		var id, part, name, layer string
+		var ramp []string
+		var fixed, gearOnly bool
+		var optBodies []string
+		var price *struct {
+			Currency string `json:"currency"`
+			Amount   int    `json:"amount"`
+		}
+		for key, dst := range map[string]any{"id": &id, "part": &part, "name": &name, "layer": &layer, "ramp": &ramp,
+			"fixed": &fixed, "gearOnly": &gearOnly, "price": &price, "bodies": &optBodies} {
+			if raw, ok := o[key]; ok {
+				if err := json.Unmarshal(raw, dst); err != nil {
+					t.Fatalf("option %d %s: %v", i, key, err)
+				}
+			}
+		}
+		if len(o) > 9 {
+			t.Errorf("option %s has unexpected keys: %v", id, o)
+		}
+		look := layer
+		if ramp != nil {
+			look = strings.Join(ramp, ",")
+		}
+		flags := []string{}
+		if fixed {
+			flags = append(flags, "fixed")
+		}
+		if gearOnly {
+			flags = append(flags, "gearOnly")
+		}
+		if len(flags) == 0 {
+			flags = []string{"-"}
+		}
+		priceTxt := "-"
+		if price != nil {
+			priceTxt = fmt.Sprintf("%s %d", price.Currency, price.Amount)
+		}
+		bodiesTxt := "-"
+		if optBodies != nil {
+			bodiesTxt = strings.Join(optBodies, ",")
+		}
+		if got := strings.Join([]string{id, part, name, look, strings.Join(flags, ","), priceTxt, bodiesTxt}, "|"); got != options[i] {
+			t.Errorf("option %d = %s, want %s", i, got, options[i])
+		}
+	}
+
+	defaults := map[string]string{
+		"tone": "tone_padrao", "eyes": "eyes_castanho", "hair": "hair_espetado", "hairColor": "hair_preto",
+		"beard": "beard_nenhuma", "glasses": "glasses_nenhum", "top": "top_moletom", "topColor": "top_grafite", "bottomColor": "bottom_jeans", "laptop": "laptop_basico",
+	}
+	if !reflect.DeepEqual(a.Defaults, defaults) {
+		t.Errorf("defaults = %v, want %v", a.Defaults, defaults)
+	}
+}
+
+// Avatar C2: the gear that dresses the hero names its look; every other piece has no look key.
+func TestCatalog_ServesGearLooks(t *testing.T) {
+	env := apptest.New(t)
+	var raw struct {
+		Gear []map[string]json.RawMessage `json:"gear"`
+	}
+	if err := json.Unmarshal(env.Do(http.MethodGet, "/api/catalog", nil).Body.Bytes(), &raw); err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{
+		"macbook":      `{"part":"laptop","option":"laptop_macbook"}`,
+		"moletom":      `{"part":"top","option":"top_moletom_gear"}`,
+		"hoodie_trace": `{"part":"top","option":"top_hoodie_trace"}`,
+	}
+	for _, g := range raw.Gear {
+		var id string
+		_ = json.Unmarshal(g["id"], &id)
+		look, has := g["look"]
+		if w, ok := want[id]; ok != has || (has && string(look) != w) {
+			t.Errorf("gear %s look = %s, want %q", id, look, w)
+		}
+	}
+}
+
+var hexColor = regexp.MustCompile(`^#[0-9a-f]{6}$`)
+
+func validRamp(r []string) bool {
+	if len(r) != 4 {
+		return false
+	}
+	for _, h := range r {
+		if !hexColor.MatchString(h) {
+			return false
+		}
+	}
+	return true
+}
+
+// Avatar C3: every reference inside avatar.json and from shop.json lands on a valid part/option.
+func TestCatalog_AvatarReferencesCatalog(t *testing.T) {
+	c, err := catalog.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	seen := map[string]bool{}
+	for _, o := range c.Avatar.Options {
+		if seen[o.ID] {
+			t.Errorf("option id %s is repeated", o.ID)
+		}
+		seen[o.ID] = true
+		part, ok := c.AvatarPart(o.Part)
+		switch {
+		case !ok:
+			t.Errorf("option %s names unknown part %q", o.ID, o.Part)
+		case part.Kind == "color" && (!validRamp(o.Ramp) || o.Layer != ""):
+			t.Errorf("color option %s: ramp %v layer %q, want 4 #rrggbb and no layer", o.ID, o.Ramp, o.Layer)
+		// A style without a layer draws nothing (SEM BARBA, SEM ÓCULOS); only the part's default may be one.
+		case part.Kind == "style" && (o.Ramp != nil || (o.Layer == "" && c.Avatar.Defaults[o.Part] != o.ID)):
+			t.Errorf("style option %s: layer %q ramp %v, want a layer (or be the part's default) and no ramp", o.ID, o.Layer, o.Ramp)
+		case part.Kind != "color" && part.Kind != "style":
+			t.Errorf("part %s kind = %q, want color or style", part.ID, part.Kind)
+		}
+		if o.GearOnly && o.Price != nil {
+			t.Errorf("gear-only option %s has a price", o.ID)
+		}
+	}
+
+	if len(c.Avatar.Defaults) != len(c.Avatar.Parts) {
+		t.Errorf("defaults = %d, want one per part (%d)", len(c.Avatar.Defaults), len(c.Avatar.Parts))
+	}
+	for _, p := range c.Avatar.Parts {
+		o, ok := c.AvatarOption(c.Avatar.Defaults[p.ID])
+		if !ok || o.Part != p.ID || o.GearOnly || o.Price != nil {
+			t.Errorf("default of %s = %q, want a free, pickable option of that part", p.ID, c.Avatar.Defaults[p.ID])
+		}
+		if _, ok := slot(c, p.GearSlot); p.GearSlot != "" && !ok {
+			t.Errorf("part %s gearSlot %q is not a gear slot", p.ID, p.GearSlot)
+		}
+	}
+
+	// Body contract: body ids are unique, every option's bodies exist, every bodies[].defaults entry
+	// is a free, pickable option of that part the body can wear, and so is each body's effective
+	// default of every part.
+	bodyIDs := map[string]bool{}
+	for _, b := range c.Avatar.Bodies {
+		if bodyIDs[b.ID] {
+			t.Errorf("body id %s is repeated", b.ID)
+		}
+		bodyIDs[b.ID] = true
+	}
+	if !bodyIDs["masculino"] {
+		t.Error("body masculino (the legacy look, players.body's default) is missing")
+	}
+	for _, o := range c.Avatar.Options {
+		if o.Bodies != nil && len(o.Bodies) == 0 {
+			t.Errorf("option %s has an empty bodies list, want it absent", o.ID)
+		}
+		for _, id := range o.Bodies {
+			if !bodyIDs[id] {
+				t.Errorf("option %s names unknown body %q", o.ID, id)
+			}
+		}
+	}
+	for _, b := range c.Avatar.Bodies {
+		for partID, optID := range b.Defaults {
+			o, ok := c.AvatarOption(optID)
+			if _, okPart := c.AvatarPart(partID); !okPart || !ok || o.Part != partID || o.GearOnly || o.Price != nil || !o.AvailableTo(b.ID) {
+				t.Errorf("body %s default of %s = %q, want a free, pickable option of that part available to %s", b.ID, partID, optID, b.ID)
+			}
+		}
+		for _, p := range c.Avatar.Parts {
+			id := c.AvatarDefault(b.ID, p.ID)
+			o, ok := c.AvatarOption(id)
+			if !ok || o.Part != p.ID || o.GearOnly || o.Price != nil || !o.AvailableTo(b.ID) {
+				t.Errorf("body %s wears %q on %s by default, want a free, pickable option available to it", b.ID, id, p.ID)
+			}
+		}
+	}
+
+	dressed := map[string]bool{}
+	for _, g := range c.Gear {
+		if g.Look == nil {
+			continue
+		}
+		part, okPart := c.AvatarPart(g.Look.Part)
+		o, okOpt := c.AvatarOption(g.Look.Option)
+		if !okPart || part.Kind != "style" || part.GearSlot != g.Slot || !okOpt || o.Part != part.ID || !o.GearOnly {
+			t.Errorf("gear %s (slot %s) look %+v, want a gear-only option of a style part on that slot", g.ID, g.Slot, *g.Look)
+		}
+		dressed[g.Look.Option] = true
+	}
+	for _, o := range c.Avatar.Options {
+		if o.GearOnly && !dressed[o.ID] {
+			t.Errorf("gear-only option %s is the look of no gear", o.ID)
+		}
+	}
+
+	for _, s := range c.Skins {
+		if s.Palette == nil {
+			t.Errorf("skin %s has no palette, want {} at least", s.ID)
+		}
+		for partID, ramp := range s.Palette {
+			if p, ok := c.AvatarPart(partID); !ok || p.Kind != "color" || !validRamp(ramp) {
+				t.Errorf("skin %s palette %s = %v, want a color part with 4 #rrggbb", s.ID, partID, ramp)
+			}
+		}
+	}
+}
+
+// Avatar C3: the renderer swaps colors hex to hex, so no two option ramps share a tone.
+func TestCatalog_AvatarRampsAreDistinct(t *testing.T) {
+	owner := map[string]string{}
+	for _, o := range catalog.Default().Avatar.Options {
+		for _, h := range o.Ramp {
+			if prev, ok := owner[h]; ok {
+				t.Errorf("%s is in both %s and %s", h, prev, o.ID)
+			}
+			owner[h] = o.ID
+		}
+	}
+}
+
+func slot(c *catalog.Catalog, id string) (catalog.GearSlot, bool) {
+	for _, s := range c.GearSlots {
+		if s.ID == id {
+			return s, true
+		}
+	}
+	return catalog.GearSlot{}, false
+}
+
+// Body contract (own layer): one case per row of option availability and of the per-body default.
+func TestCatalog_AvatarBodyRules(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		bodies []string
+		body   string
+		want   bool
+	}{
+		{"no bodies: every body", nil, "feminino", true},
+		{"listed body", []string{"feminino"}, "feminino", true},
+		{"body not listed", []string{"feminino"}, "masculino", false},
+	} {
+		if got := (catalog.AvatarOption{Bodies: tc.bodies}).AvailableTo(tc.body); got != tc.want {
+			t.Errorf("%s: AvailableTo = %v, want %v", tc.name, got, tc.want)
+		}
+	}
+	c := catalog.Default()
+	for _, tc := range []struct{ name, body, part, want string }{
+		{"body overrides the part", "feminino", "hair", "hair_rabo"},
+		{"body overrides a colour part", "feminino", "bottomColor", "bottom_preto"},
+		{"body does not list the part", "feminino", "beard", "beard_nenhuma"},
+		{"body without overrides", "masculino", "hair", "hair_espetado"},
+		{"unknown body gets the shared default", "outro", "hair", "hair_espetado"},
+	} {
+		if got := c.AvatarDefault(tc.body, tc.part); got != tc.want {
+			t.Errorf("%s: AvatarDefault(%s, %s) = %q, want %q", tc.name, tc.body, tc.part, got, tc.want)
+		}
 	}
 }

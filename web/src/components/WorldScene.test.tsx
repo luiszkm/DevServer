@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import type { Catalog, Player } from "@/lib/types";
@@ -132,8 +132,9 @@ describe("WorldScene", () => {
     const map = container.querySelector(".world-map") as HTMLElement;
     expect(map.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/world.png)");
 
+    // The current marker also carries the flag (assets C34): the fallback is about the region's own icon.
     fireEvent.error(marker("vila").querySelector("img")!);
-    expect(marker("vila").querySelector("img")).toBeNull();
+    expect(marker("vila").querySelector('img[src^="/art/icon/region-"]')).toBeNull();
     expect(marker("vila")).toHaveTextContent(/^HUB$/);
     expect(marker("floresta").querySelector("img")).not.toBeNull();
   });
@@ -148,5 +149,115 @@ describe("WorldScene", () => {
     }
     expect(marker("floresta")).toHaveClass("here");
     expect(marker("floresta").style.filter).toBe("");
+  });
+});
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("WorldScene assets", () => {
+  // assets C19
+  it("lock icon", () => {
+    renderWorld(player({ level: 1, region: "vila" }));
+    const locked = button("CAVERNA DOS BUGS");
+    expect(locked).toHaveTextContent("REQUER NÍVEL 5");
+    expectIcon(locked.firstElementChild, "/art/icon/ic-lock.png");
+    expect(locked.firstChild).toBe(locked.firstElementChild);
+    expect(button("FLORESTA DE LOGS").querySelector('img[src="/art/icon/ic-lock.png"]')).toBeNull();
+  });
+});
+
+describe("WorldScene world pieces", () => {
+  // assets C34
+  it("flag on the current marker only", () => {
+    renderWorld(player({ region: "floresta" }));
+    const flags = document.querySelectorAll('img[src="/art/sprite/build-flag.png"]');
+    expect(flags).toHaveLength(1);
+    expect(flags[0].closest(".node-marker.here")).toBe(marker("floresta"));
+    expect(flags[0].getAttribute("alt")).toBe("");
+    expect(flags[0].getAttribute("width")).toBe("32");
+  });
+
+  // assets C35
+  it("teleport after a 200 travel", async () => {
+    mockFetch({ "POST /api/me/travel": json(200, { player: player({ region: "floresta" }) }) });
+    renderWorld(player({ region: "vila" }));
+    await userEvent.click(button("FLORESTA DE LOGS"));
+    await waitFor(() => expect(document.querySelector('[data-fx="teleport"]')).not.toBeNull());
+    const fx = document.querySelector('[data-fx="teleport"]') as HTMLElement;
+    expect(fx.closest("[data-region]")!.getAttribute("data-region")).toBe("floresta");
+    expect(fx.getAttribute("data-fx")).toBe("teleport");
+    expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/teleport.png)");
+  });
+
+  it("teleport only on success (travel error)", async () => {
+    mockFetch({ "POST /api/me/travel": json(422, { error: { code: "level_too_low", message: "nível insuficiente para esta região" } }) });
+    renderWorld(player({ region: "vila" }));
+    await userEvent.click(button("FLORESTA DE LOGS"));
+    expect(await screen.findByText("nível insuficiente para esta região")).toBeInTheDocument();
+    expect(document.querySelector('[data-fx="teleport"]')).toBeNull();
+  });
+});
+
+describe("WorldScene hero anim", () => {
+  // assets C48
+  const hero = () => document.querySelector("[data-region] canvas") as HTMLCanvasElement;
+  it("hero anim: idle beside the current marker", () => {
+    renderWorld(player({ region: "floresta" }));
+    expect(document.querySelectorAll("[data-region] canvas")).toHaveLength(1);
+    expect(hero().closest("[data-region]")!.getAttribute("data-region")).toBe("floresta");
+    expect(hero().dataset.anim).toBe("idle");
+  });
+
+  it("hero anim: walk while the travel is pending", async () => {
+    mockFetch({ "POST /api/me/travel": () => new Promise<Response>(() => {}) });
+    renderWorld(player({ region: "vila" }));
+    await userEvent.click(button("FLORESTA DE LOGS"));
+    expect(hero().dataset.anim).toBe("walk");
+  });
+});
+
+function expectFirstIcon(el: Element | null | undefined, src: string) {
+  const img = el?.firstElementChild;
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe("16");
+  expect(el!.firstChild).toBe(img);
+}
+
+describe("WorldScene applied assets", () => {
+  // assets-apply C12
+  it("button icon on VIAJAR ATÉ AQUI", () => {
+    renderWorld(player({ level: 1, region: "vila" }));
+    expectFirstIcon(button("FLORESTA DE LOGS"), "/art/icon/btn-start.png");
+    expect(button("FLORESTA DE LOGS")).toHaveAccessibleName("VIAJAR ATÉ AQUI");
+    expect(button("CAVERNA DOS BUGS").querySelector('img[src="/art/icon/btn-start.png"]')).toBeNull();
+  });
+
+  // assets-apply C13: the crown marks the CHEFE and ENDGAME tags only
+  it.each([
+    ["torre", true], ["nuvem", true], ["vila", false], ["floresta", false], ["mercado", false], ["caverna", false],
+  ])("generic icon: crown on tag of %s = %s", (id, crowned) => {
+    renderWorld(player({ level: 1, region: "vila" }));
+    const chip = screen.getByText(REGIONS.find((r) => r.id === id)!.tag, { selector: ".chip" });
+    if (crowned) expectFirstIcon(chip, "/art/icon/ic-crown.png");
+    else expect(chip.querySelector("img")).toBeNull();
+  });
+});
+
+describe("WorldScene campfire", () => {
+  // assets-apply C21
+  it("campfire strip over the map fire", () => {
+    renderWorld(player());
+    const fires = document.querySelectorAll("span.fx-fire");
+    expect(fires).toHaveLength(1);
+    const fire = fires[0] as HTMLElement;
+    expect(fire.getAttribute("aria-hidden")).toBe("true");
+    expect(fire.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/fire.png)");
   });
 });

@@ -1,0 +1,27 @@
+{
+  "name": "dust",
+  "category": "fx",
+  "size": [128, 32],
+  "_design": "POEIRA: grey-white dust puffs kick up, spread sideways and thin out.",
+  "layers": [
+    {"ellipse": [14, 24, 3, 2], "color": "cloud.1"},
+    {"ellipse": [18, 24, 3, 2], "color": "cloud.1"},
+    {"ellipse": [16, 22, 4, 3], "color": "cloud.1"},
+    {"ellipse": [13, 23, 1, 1], "color": "cloud.3"},
+    {"ellipse": [15, 21, 2, 1], "color": "cloud.3"},
+    {"ellipse": [43, 23, 5, 4], "color": "cloud.1"},
+    {"ellipse": [53, 23, 5, 4], "color": "cloud.1"},
+    {"ellipse": [48, 20, 6, 5], "color": "cloud.1"},
+    {"ellipse": [42, 22, 3, 2], "color": "cloud.3"},
+    {"ellipse": [47, 19, 4, 3], "color": "cloud.3"},
+    {"ellipse": [72, 22, 4, 3], "color": "cloud.0"},
+    {"ellipse": [88, 22, 4, 3], "color": "cloud.0"},
+    {"ellipse": [80, 18, 5, 4], "color": "cloud.0"},
+    {"ellipse": [71, 21, 2, 1], "color": "cloud.3"},
+    {"ellipse": [79, 17, 3, 2], "color": "cloud.3"},
+    {"rect": [102, 24, 1, 1], "color": "cloud.0"},
+    {"rect": [122, 23, 1, 1], "color": "cloud.0"},
+    {"rect": [110, 16, 2, 1], "color": "cloud.1"},
+    {"rect": [116, 18, 1, 1], "color": "cloud.0"}
+  ]
+}

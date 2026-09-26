@@ -6,6 +6,7 @@ import type { Catalog, Player } from "@/lib/types";
 import { GameContext } from "./GameContext";
 import { Hud } from "./Hud";
 import { LoginScreen } from "./LoginScreen";
+import { Logo } from "./Logo";
 import { Onboarding } from "./Onboarding";
 import { ServerDown } from "./ServerDown";
 import { Tabs } from "./Tabs";
@@ -96,9 +97,8 @@ export function GameShell({ children }: { children: React.ReactNode }) {
 function Frame({ children }: { children: React.ReactNode }) {
   return (
     <div className="page">
-      <header className="pixel logo">
-        <span style={{ color: "var(--green)" }}>DEV</span>
-        <span style={{ color: "var(--cyan)" }}>SERVER</span>
+      <header className="logo">
+        <Logo scale={1} />
       </header>
       <Tabs />
       <div className="frame">{children}</div>

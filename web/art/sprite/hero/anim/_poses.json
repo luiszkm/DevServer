@@ -1,0 +1,454 @@
+{
+  "_about": "Hero animation rig (assets door 4). Each strip frame repaints the static layer's regions with per-frame offsets; scripts/hero_anim.py writes one strip spec per layer x anim. Offsets only move a region down or sideways relative to the one below it (head dy >= torso dy >= legs dy) so no gap opens at a cut.",
+  "cell": [
+    48,
+    64
+  ],
+  "bodies": {
+    "m": {
+      "head": [
+        0,
+        0,
+        48,
+        24
+      ],
+      "torso": [
+        0,
+        24,
+        48,
+        22
+      ],
+      "legL": [
+        0,
+        46,
+        20,
+        18
+      ],
+      "legR": [
+        20,
+        46,
+        28,
+        18
+      ]
+    },
+    "f": {
+      "head": [
+        0,
+        0,
+        48,
+        24
+      ],
+      "torso": [
+        0,
+        24,
+        48,
+        22
+      ],
+      "legL": [
+        0,
+        46,
+        24,
+        18
+      ],
+      "legR": [
+        24,
+        46,
+        24,
+        18
+      ]
+    }
+  },
+  "assign": {
+    "f": [
+      "*-f"
+    ],
+    "m": [
+      "body",
+      "bottom",
+      "hand",
+      "top-*",
+      "laptop-*",
+      "hair-*",
+      "beard-*",
+      "glasses-*"
+    ]
+  },
+  "order": [
+    "legL",
+    "legR",
+    "torso",
+    "head"
+  ],
+  "anims": {
+    "idle": [
+      {
+        "head": [
+          0,
+          0
+        ],
+        "torso": [
+          0,
+          0
+        ],
+        "legL": [
+          0,
+          0
+        ],
+        "legR": [
+          0,
+          0
+        ]
+      },
+      {
+        "head": [
+          0,
+          1
+        ],
+        "torso": [
+          0,
+          0
+        ],
+        "legL": [
+          0,
+          0
+        ],
+        "legR": [
+          0,
+          0
+        ]
+      },
+      {
+        "head": [
+          0,
+          2
+        ],
+        "torso": [
+          0,
+          1
+        ],
+        "legL": [
+          0,
+          0
+        ],
+        "legR": [
+          0,
+          0
+        ]
+      },
+      {
+        "head": [
+          0,
+          1
+        ],
+        "torso": [
+          0,
+          1
+        ],
+        "legL": [
+          0,
+          0
+        ],
+        "legR": [
+          0,
+          0
+        ]
+      }
+    ],
+    "walk": [
+      {
+        "head": [
+          0,
+          1
+        ],
+        "torso": [
+          0,
+          1
+        ],
+        "legL": [
+          -1,
+          0
+        ],
+        "legR": [
+          1,
+          0
+        ]
+      },
+      {
+        "head": [
+          0,
+          0
+        ],
+        "torso": [
+          0,
+          0
+        ],
+        "legL": [
+          0,
+          -1
+        ],
+        "legR": [
+          0,
+          0
+        ]
+      },
+      {
+        "head": [
+          0,
+          1
+        ],
+        "torso": [
+          0,
+          1
+        ],
+        "legL": [
+          1,
+          0
+        ],
+        "legR": [
+          -1,
+          0
+        ]
+      },
+      {
+        "head": [
+          0,
+          0
+        ],
+        "torso": [
+          0,
+          0
+        ],
+        "legL": [
+          0,
+          0
+        ],
+        "legR": [
+          0,
+          -1
+        ]
+      }
+    ],
+    "run": [
+      {
+        "head": [
+          0,
+          1
+        ],
+        "torso": [
+          0,
+          1
+        ],
+        "legL": [
+          -2,
+          0
+        ],
+        "legR": [
+          2,
+          -1
+        ]
+      },
+      {
+        "head": [
+          0,
+          0
+        ],
+        "torso": [
+          0,
+          0
+        ],
+        "legL": [
+          0,
+          -2
+        ],
+        "legR": [
+          0,
+          0
+        ]
+      },
+      {
+        "head": [
+          0,
+          1
+        ],
+        "torso": [
+          0,
+          1
+        ],
+        "legL": [
+          2,
+          -1
+        ],
+        "legR": [
+          -2,
+          0
+        ]
+      },
+      {
+        "head": [
+          0,
+          0
+        ],
+        "torso": [
+          0,
+          0
+        ],
+        "legL": [
+          0,
+          0
+        ],
+        "legR": [
+          0,
+          -2
+        ]
+      }
+    ],
+    "jump": [
+      {
+        "head": [
+          0,
+          2
+        ],
+        "torso": [
+          0,
+          1
+        ],
+        "legL": [
+          0,
+          0
+        ],
+        "legR": [
+          0,
+          0
+        ]
+      },
+      {
+        "head": [
+          0,
+          0
+        ],
+        "torso": [
+          0,
+          0
+        ],
+        "legL": [
+          0,
+          -2
+        ],
+        "legR": [
+          0,
+          -1
+        ]
+      },
+      {
+        "head": [
+          0,
+          1
+        ],
+        "torso": [
+          0,
+          0
+        ],
+        "legL": [
+          0,
+          -3
+        ],
+        "legR": [
+          0,
+          -3
+        ]
+      },
+      {
+        "head": [
+          1,
+          1
+        ],
+        "torso": [
+          0,
+          1
+        ],
+        "legL": [
+          0,
+          -1
+        ],
+        "legR": [
+          0,
+          -1
+        ]
+      }
+    ],
+    "interact": [
+      {
+        "head": [
+          0,
+          1
+        ],
+        "torso": [
+          0,
+          0
+        ],
+        "legL": [
+          0,
+          0
+        ],
+        "legR": [
+          0,
+          0
+        ]
+      },
+      {
+        "head": [
+          0,
+          2
+        ],
+        "torso": [
+          0,
+          1
+        ],
+        "legL": [
+          0,
+          0
+        ],
+        "legR": [
+          0,
+          0
+        ]
+      },
+      {
+        "head": [
+          1,
+          1
+        ],
+        "torso": [
+          0,
+          0
+        ],
+        "legL": [
+          0,
+          0
+        ],
+        "legR": [
+          0,
+          0
+        ]
+      },
+      {
+        "head": [
+          0,
+          2
+        ],
+        "torso": [
+          0,
+          0
+        ],
+        "legL": [
+          0,
+          0
+        ],
+        "legR": [
+          0,
+          0
+        ]
+      }
+    ]
+  }
+}

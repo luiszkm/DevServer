@@ -1,0 +1,29 @@
+{
+  "name": "tile-tijolo",
+  "category": "tile",
+  "size": [32, 32],
+  "_design": "Dark bricks: staggered purple-grey bricks on dark mortar.",
+  "layers": [
+    {"fill": "soil.1"},
+    {"rect": [0, 0, 15, 7], "color": "roof.2"},
+    {"rect": [16, 0, 15, 7], "color": "roof.2"},
+    {"rect": [0, 16, 15, 7], "color": "roof.2"},
+    {"rect": [16, 16, 15, 7], "color": "roof.2"},
+    {"rect": [-8, 8, 15, 7], "color": "roof.2"},
+    {"rect": [8, 8, 15, 7], "color": "roof.2"},
+    {"rect": [24, 8, 15, 7], "color": "roof.2"},
+    {"rect": [-8, 24, 15, 7], "color": "roof.2"},
+    {"rect": [8, 24, 15, 7], "color": "roof.2"},
+    {"rect": [24, 24, 15, 7], "color": "roof.2"},
+    {"rect": [0, 0, 15, 1], "color": "roof.3"},
+    {"rect": [16, 0, 15, 1], "color": "roof.3"},
+    {"rect": [0, 16, 15, 1], "color": "roof.3"},
+    {"rect": [16, 16, 15, 1], "color": "roof.3"},
+    {"rect": [-8, 8, 15, 1], "color": "roof.3"},
+    {"rect": [8, 8, 15, 1], "color": "roof.3"},
+    {"rect": [24, 8, 15, 1], "color": "roof.3"},
+    {"rect": [-8, 24, 15, 1], "color": "roof.3"},
+    {"rect": [8, 24, 15, 1], "color": "roof.3"},
+    {"rect": [24, 24, 15, 1], "color": "roof.3"}
+  ]
+}

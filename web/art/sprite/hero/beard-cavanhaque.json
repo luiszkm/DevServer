@@ -1,0 +1,20 @@
+{
+  "name": "beard-cavanhaque",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Goatee: moustache plus a chin tuft, av-hair-preto (hairColor).",
+  "legend": {"o": "ink", "1": "av-hair-preto.0", "2": "av-hair-preto.1", "3": "av-hair-preto.2"},
+  "layers": [
+    {"grid": [
+      ".ooooo.",
+      "o32221o",
+      "o1ooo1o",
+      "o33331o",
+      "o33221o",
+      "o32221o",
+      "o12121o",
+      ".o111o.",
+      "..ooo.."
+    ], "at": [21, 22]}
+  ]
+}

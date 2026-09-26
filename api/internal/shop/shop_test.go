@@ -188,7 +188,7 @@ func TestMe_ShopFields(t *testing.T) {
 // C3
 func TestCreatePlayer_ShopDefaults(t *testing.T) {
 	env := apptest.New(t)
-	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"}, env.Session(1, "u"))
+	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND", "body": "masculino"}, env.Session(1, "u"))
 	if rec.Code != http.StatusCreated {
 		t.Fatalf("create: %d %s", rec.Code, rec.Body.String())
 	}
@@ -226,6 +226,12 @@ func TestBuyItem_PaysAndAdds(t *testing.T) {
 	got = f.do("/api/me/shop/items/boost_deploy")
 	if got.Gems != 0 || got.qty("boost_deploy") != 1 || got.Coins != 100 {
 		t.Fatalf("boost_deploy: gems %d coins %d qty %d, want 0, 100 and 1", got.Gems, got.Coins, got.qty("boost_deploy"))
+	}
+	// Body contract: the redesign token is sold like any other item.
+	f.balance(100, 100)
+	got = f.do("/api/me/shop/items/redesign_token")
+	if got.Gems != 0 || got.qty("redesign_token") != 1 || got.Coins != 100 {
+		t.Fatalf("redesign_token: gems %d coins %d qty %d, want 0, 100 and 1", got.Gems, got.Coins, got.qty("redesign_token"))
 	}
 }
 

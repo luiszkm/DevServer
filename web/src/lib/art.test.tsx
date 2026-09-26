@@ -1,5 +1,6 @@
 // @vitest-environment node
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { inflateSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -45,7 +46,7 @@ function pngPixels(path: string) {
   return { width, height, px };
 }
 
-type Asset = { category: "icon" | "sprite" | "background"; name: string; size: [number, number] };
+type Asset = { category: "icon" | "sprite" | "background" | "ui" | "fx" | "tile"; name: string; size: [number, number] };
 
 function expectAssets(assets: Asset[]) {
   expect(assets.length).toBeGreaterThan(0);
@@ -58,7 +59,7 @@ function expectAssets(assets: Asset[]) {
   }
 }
 
-type Combat = { enemies: { region: string }[]; items: { id: string }[] };
+type Combat = { enemies: { id: string; region: string }[]; items: { id: string }[] };
 type Regions = { id: string }[];
 type Shop = { gear: { id: string }[] };
 type Skills = { trees: { nodes: { id: string }[] }[] };
@@ -82,7 +83,8 @@ describe("catalog art on disk", () => {
   // C4
   it("enemy sprites per combat.json enemies", () => {
     expectAssets(
-      combat.enemies.map((e) => ({ category: "sprite", name: `enemy-${e.region}`, size: ENEMY_SIZE[e.region] ?? [32, 32] })),
+      // assets-apply C9: enemy art is addressed by the enemy id; the three mobs are 32x32
+      combat.enemies.map((e) => ({ category: "sprite", name: `enemy-${e.id}`, size: ENEMY_SIZE[e.id] ?? [32, 32] })),
     );
   });
 
@@ -323,4 +325,241 @@ describe("catalog art on disk", () => {
   it("scene background for the map, the room and the machine hall, 320x180", () => {
     expectAssets(["world", "office", "server"].map((name) => ({ category: "background", name, size: [320, 180] })));
   });
+
+  // avatar customization: the fixed layers plus every style layer avatar.json names, all on one 48x64 grid
+  it("hero layers per avatar.json, 48x64", () => {
+    const { options } = catalog<{ options: { layer?: string }[] }>("avatar.json");
+    const { options: all } = catalog<{ options: { part: string; layer?: string }[] }>("avatar.json");
+    // the feminine body has its own "-f" drawing of every layer but beards (masculine only)
+    const feminine = ["body", "bottom", "hand", ...all.filter((o) => o.layer && o.part !== "beard").map((o) => o.layer!)].map((l) => `${l}-f`);
+    const layers = ["body", "bottom", "hand", ...feminine, ...options.flatMap((o) => (o.layer ? [o.layer] : []))];
+    expectAssets(layers.map((name) => ({ category: "sprite", name: `hero/${name}`, size: [48, 64] })));
+  });
+
+  // avatar customization: the game swaps colours hex to hex, so every ramp must be a palette ramp
+  it("avatar ramps in the palette", () => {
+    const { options } = catalog<{ options: { id: string; ramp?: string[] }[] }>("avatar.json");
+    const skins = catalog<{ skins: { id: string; palette: Record<string, string[]> }[] }>("shop.json").skins;
+    const ramps = Object.values(PALETTE).filter(Array.isArray).map((r) => (r as string[]).map((h) => h.toLowerCase()).join());
+    const used = [...options.flatMap((o) => (o.ramp ? [[o.id, o.ramp] as const] : [])), ...skins.flatMap((s) => Object.entries(s.palette).map(([k, r]) => [`${s.id}.${k}`, r] as const))];
+    expect(used.length).toBeGreaterThan(0);
+    for (const [id, ramp] of used) expect.soft(ramps, id).toContain(ramp.map((h) => h.toLowerCase()).join());
+  });
 });
+
+// avatar customization: the web mock copies avatar.json by value.
+describe("web mock avatar", () => {
+  it("web mock matches avatar catalog", async () => {
+    const { AVATAR } = await import("@/test/helpers");
+    expect(AVATAR).toEqual(catalog("avatar.json"));
+  });
+});
+
+// forge C29: the web mock copies the forge recipes and the craft-only pieces by value.
+describe("web mock", () => {
+  it("web mock matches forge catalog", async () => {
+    const { RECIPES, GEAR } = await import("@/test/helpers");
+    const forge = catalog<{ recipes: unknown[] }>("forge.json");
+    expect(RECIPES).toEqual(forge.recipes);
+    const full = catalog<{ gear: { id: string; price?: unknown }[] }>("shop.json").gear.filter((g) => !g.price);
+    expect(full.map((g) => g.id)).toEqual(["caneca_log", "hoodie_trace", "teclado_race"]);
+    expect(GEAR.filter((g) => !g.price)).toEqual(full);
+  });
+});
+
+// assets C9-C12, C28-C29, C37-C38, C40: the asset sheet (web/public/assests_keyart.png). The names are the
+// door 1 literals of .specs/features/assets/checks.md, never read from GameArt; the hero strips follow the
+// hero layers on disk, so a new avatar layer with no strips turns "hero strip" red.
+const sized = (category: Asset["category"], size: [number, number], names: string[]): Asset[] =>
+  names.map((name) => ({ category, name, size }));
+
+function expectOpaque(assets: Asset[]) {
+  for (const { category, name } of assets) {
+    const png = `${ROOT}web/public/art/${category}/${name}.png`;
+    if (!existsSync(png)) continue;
+    const { width, height, px } = pngPixels(png);
+    let transparent = 0;
+    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) if (px(x, y)[3] !== 255) transparent++;
+    expect.soft(transparent, png).toBe(0);
+  }
+}
+
+describe("asset sheet on disk", () => {
+  it("chrome piece, 24x24", () => {
+    expectAssets(sized("ui", [24, 24], [
+      "ui-panel", "ui-panel-wood", "ui-btn-wood", "ui-btn-wood-press", "ui-btn-dark", "ui-btn-dark-press",
+      "ui-btn-green", "ui-btn-green-press", "ui-bubble", "ui-bar",
+    ]));
+  });
+
+  it("button and generic icon, 16x16", () => {
+    const btn = ["build", "deploy", "play", "rank", "start", "settings", "shop", "exit"];
+    const ic = ["code", "cloud", "server", "gear", "trophy", "star", "crown", "laptop", "database", "shield", "lock", "file", "wrench", "chart", "sp"];
+    expect(btn).toHaveLength(8);
+    expect(ic).toHaveLength(15);
+    expectAssets(sized("icon", [16, 16], [...btn.map((b) => `btn-${b}`), ...ic.map((i) => `ic-${i}`)]));
+  });
+
+  it("medal, 16x16", () => {
+    expectAssets(sized("icon", [16, 16], ["bronze", "prata", "ouro", "azul", "roxo", "rubi"].map((m) => `medal-${m}`)));
+  });
+
+  it("logo, 160x64", () => {
+    expectAssets([{ category: "sprite", name: "logo", size: [160, 64] }]);
+  });
+
+  it("world piece sprites", () => {
+    const props = ["laptop", "macbook", "rack", "caixa", "caixa-aberta", "monitor", "roteador", "planta", "caneca", "livros", "bloco-grama", "terminal", "torre", "gema-pedestal", "modem"];
+    const builds = ["rack", "tenda", "antena", "placa-code", "flag", "placa"];
+    const extras = ["placa", "fogueira", "lampada", "banco", "bau", "bau-aberto", "bandeira"];
+    expectAssets([
+      ...sized("sprite", [32, 32], props.map((p) => `prop-${p}`)),
+      { category: "sprite", name: "build-server-hut", size: [96, 96] },
+      ...sized("sprite", [32, 32], builds.map((b) => `build-${b}`)),
+      ...sized("sprite", [32, 32], ["mob-slime", "mob-slime-verde", "mob-monstro", "mob-robo", "npc-dev"]),
+      ...sized("sprite", [32, 32], extras.map((e) => `extra-${e}`)),
+    ]);
+  });
+
+  it("new effect strips, 128x32", () => {
+    expectAssets(sized("fx", [128, 32], ["dust", "sparkle", "teleport", "fire", "loading", "collect"]));
+  });
+
+  it("new scene, 320x180, opaque", () => {
+    const scenes = sized("background", [320, 180], ["dia", "noite", "floresta", "dungeon"].map((n) => `scene-${n}`));
+    expectAssets(scenes);
+    expectOpaque(scenes);
+  });
+
+  it("tileset tiles and decals", () => {
+    const tiles = [
+      ...sized("tile", [32, 32], ["grama-topo", "grama", "grama-borda", "terra", "pedra", "tijolo", "tabua", "parede-madeira", "areia"].map((t) => `tile-${t}`)),
+      ...sized("tile", [128, 32], ["agua", "agua-funda", "cachoeira"].map((t) => `tile-${t}`)),
+    ];
+    expectAssets(tiles);
+    expectOpaque(tiles);
+    expectAssets([
+      ...sized("sprite", [32, 32], ["arbusto", "flor", "arvore", "cerca"].map((t) => `tile-${t}`)),
+      { category: "sprite", name: "tile-arvore-grande", size: [64, 64] },
+    ]);
+  });
+
+  it("hero strip per layer and anim, 192x64", () => {
+    const dir = `${ROOT}web/public/art/sprite/hero`;
+    const layers = readdirSync(dir).filter((f) => f.endsWith(".png")).map((f) => f.replace(/\.png$/, ""));
+    expect(layers.length).toBeGreaterThan(0);
+    for (const layer of layers) {
+      for (const anim of ["idle", "walk", "run", "jump", "interact"]) {
+        const spec = `${ROOT}web/art/sprite/hero/anim/${layer}-${anim}.json`;
+        const png = `${dir}/anim/${layer}-${anim}.png`;
+        expect.soft(existsSync(spec), spec).toBe(true);
+        expect.soft(existsSync(png), png).toBe(true);
+        if (existsSync(png)) expect.soft(pngSize(png), png).toEqual([192, 64]);
+      }
+    }
+  });
+});
+
+// assets-apply C16, C23, C24: every library asset has a consumer.
+// door 1 of `assets`, literal (the same names the "asset sheet on disk" tests check)
+const LIBRARY = {
+  ui: ["ui-panel", "ui-panel-wood", "ui-btn-wood", "ui-btn-wood-press", "ui-btn-dark", "ui-btn-dark-press", "ui-btn-green", "ui-btn-green-press", "ui-bubble", "ui-bar"],
+  icon: [
+    ...["build", "deploy", "play", "rank", "start", "settings", "shop", "exit"].map((k) => `btn-${k}`),
+    ...["code", "cloud", "server", "gear", "trophy", "star", "crown", "laptop", "database", "shield", "lock", "file", "wrench", "chart", "sp"].map((k) => `ic-${k}`),
+    ...["bronze", "prata", "ouro", "azul", "roxo", "rubi"].map((k) => `medal-${k}`),
+  ],
+  sprite: [
+    "logo",
+    ...["laptop", "macbook", "rack", "caixa", "caixa-aberta", "monitor", "roteador", "planta", "caneca", "livros", "bloco-grama", "terminal", "torre", "gema-pedestal", "modem"].map((k) => `prop-${k}`),
+    ...["server-hut", "rack", "tenda", "antena", "placa-code", "flag", "placa"].map((k) => `build-${k}`),
+    "mob-slime", "mob-slime-verde", "mob-monstro", "mob-robo", "npc-dev",
+    ...["placa", "fogueira", "lampada", "banco", "bau", "bau-aberto", "bandeira"].map((k) => `extra-${k}`),
+    ...["arbusto", "flor", "arvore", "arvore-grande", "cerca"].map((k) => `tile-${k}`),
+  ],
+  fx: ["dust", "sparkle", "teleport", "fire", "loading", "collect"],
+  background: ["dia", "noite", "floresta", "dungeon"].map((k) => `scene-${k}`),
+  tile: ["grama-topo", "grama", "grama-borda", "terra", "pedra", "tijolo", "tabua", "parede-madeira", "areia", "agua", "agua-funda", "cachoeira"].map((k) => `tile-${k}`),
+};
+
+/** Spec names reached from `roots` by following `use` (paths relative to each spec). */
+function reachedFrom(roots: string[]): Set<string> {
+  const seen = new Set<string>();
+  const walk = (path: string) => {
+    if (seen.has(path) || !existsSync(path)) return;
+    seen.add(path);
+    const spec = JSON.parse(readFileSync(path, "utf8")) as { layers?: { use?: string }[] };
+    for (const op of spec.layers ?? []) if (op.use) walk(resolve(dirname(path), op.use));
+  };
+  roots.forEach(walk);
+  return new Set([...seen].map((p) => p.split("/").pop()!.replace(/\.json$/, "")));
+}
+
+/**
+ * The assets nothing consumes. A name is consumed when it is reached by `use` from a consumed spec, or
+ * a source file quotes its PNG path or its full name next to "/art/", or quotes both its kind and its
+ * key (`kind="ic" id="lock"`, `{ power: "chart" }` beside `kind="ic"`), or, for an effect, its id beside
+ * `FxOnce` or `/art/fx/`.
+ */
+export function orphans(names: { folder: string; name: string }[], sources: string[], reached: Set<string>): string[] {
+  const quoted = (src: string, word: string) => src.includes(`"${word}"`);
+  return names
+    .filter(({ folder, name }) => {
+      if (reached.has(name)) return false;
+      return !sources.some((src) => {
+        if (src.includes(`/art/${folder}/${name}.png`)) return true;
+        if (quoted(src, name) && src.includes("/art/")) return true;
+        if (folder === "fx") return quoted(src, name) && (src.includes("FxOnce") || src.includes("/art/fx/"));
+        const dash = name.indexOf("-");
+        if (dash < 0) return false;
+        return quoted(src, name.slice(0, dash)) && quoted(src, name.slice(dash + 1));
+      });
+    })
+    .map(({ name }) => name);
+}
+
+function files(dir: string, keep: (f: string) => boolean): string[] {
+  return readdirSync(dir).flatMap((f) => {
+    const p = join(dir, f);
+    return statSync(p).isDirectory() ? files(p, keep) : keep(p) ? [p] : [];
+  });
+}
+
+describe("library consumers", () => {
+  const backgrounds = files(`${ROOT}web/art/background`, (f) => f.endsWith(".json"));
+  const enemies = catalog<Combat>("combat.json").enemies.map((e) => `${ROOT}web/art/sprite/enemy-${e.id}.json`);
+
+  // assets-apply C16
+  it("scene pieces are reached from the backgrounds", () => {
+    const reached = reachedFrom(backgrounds);
+    const pieces = [
+      ...LIBRARY.sprite.filter((n) => /^(prop|build|extra|tile)-/.test(n) && !["build-flag", "extra-bau", "extra-bau-aberto"].includes(n)),
+      ...LIBRARY.tile,
+    ];
+    expect(pieces.length).toBe(15 + 6 + 5 + 5 + 12);
+    for (const n of pieces) expect.soft(reached.has(n), n).toBe(true);
+  });
+
+  // assets-apply C23
+  it("no orphan in the library", () => {
+    const sources = [
+      ...files(`${ROOT}web/src`, (f) => /\.(tsx?|css)$/.test(f) && !/\.test\.tsx?$/.test(f) && !f.includes("/test/")),
+    ].map((f) => readFileSync(f, "utf8"));
+    const reached = reachedFrom([...backgrounds, ...enemies]);
+    const names = Object.entries(LIBRARY).flatMap(([folder, list]) => list.map((name) => ({ folder, name })));
+    expect(names.length).toBe(101);
+    expect(orphans(names, sources, reached)).toEqual([]);
+  });
+
+  // assets-apply C24
+  it("orphan detector flags what nothing references", () => {
+    const x = [{ folder: "sprite", name: "prop-x" }];
+    expect(orphans(x, [], new Set())).toEqual(["prop-x"]);
+    expect(orphans(x, ['<GameArt kind="prop" id="y" />'], new Set())).toEqual(["prop-x"]);
+    expect(orphans(x, ['<GameArt kind="prop" id="x" />'], new Set())).toEqual([]);
+    expect(orphans(x, [], new Set(["prop-x"]))).toEqual([]);
+    expect(orphans([{ folder: "fx", name: "boom" }], ['<FxOnce id="boom" />'], new Set())).toEqual([]);
+    expect(orphans([{ folder: "tile", name: "tile-z" }], ['const T = "tile-z"; url(/art/tile/'], new Set())).toEqual([]);
+  });
+});
+

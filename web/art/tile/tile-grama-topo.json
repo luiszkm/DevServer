@@ -1,0 +1,23 @@
+{
+  "name": "tile-grama-topo",
+  "category": "tile",
+  "size": [32, 32],
+  "_design": "Grass top over dirt: the ground edge, grass dripping into the soil.",
+  "layers": [
+    {"fill": "dirt.1"},
+    {"scatter": [0, 0, 32, 32], "colors": ["dirt.0", "soil.3", "dirt.2"], "density": 0.12, "seed": 41},
+    {"rect": [0, 0, 32, 10], "color": "grass.2"},
+    {"rect": [0, 0, 32, 2], "color": "grass.3"},
+    {"rect": [2, 10, 3, 3], "color": "grass.2"},
+    {"rect": [9, 10, 3, 5], "color": "grass.2"},
+    {"rect": [15, 10, 3, 2], "color": "grass.2"},
+    {"rect": [21, 10, 3, 4], "color": "grass.2"},
+    {"rect": [27, 10, 3, 3], "color": "grass.2"},
+    {"rect": [3, 13, 1, 1], "color": "grass.1"},
+    {"rect": [10, 15, 1, 1], "color": "grass.1"},
+    {"rect": [16, 12, 1, 1], "color": "grass.1"},
+    {"rect": [22, 14, 1, 1], "color": "grass.1"},
+    {"rect": [28, 13, 1, 1], "color": "grass.1"},
+    {"scatter": [0, 2, 32, 8], "colors": ["grass.1", "leaf.3"], "density": 0.2, "seed": 43, "on": "grass.2"}
+  ]
+}

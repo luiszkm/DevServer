@@ -1,0 +1,16 @@
+{
+  "name": "extra-placa",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A single wooden arrow sign on a post (EXTRAS: placa).",
+  "layers": [
+    {"rect": [14, 4, 4, 25], "color": "wood.2"},
+    {"rect": [14, 4, 1, 25], "color": "wood.3"},
+    {"poly": [[3, 8], [22, 8], [25, 11], [22, 14], [3, 14]], "color": "wood.3"},
+    {"rect": [3, 8, 19, 1], "color": "wood.4"},
+    {"rect": [3, 13, 19, 1], "color": "wood.1"},
+    {"rect": [16, 11, 1, 1], "color": "metal.2"},
+    {"rect": [12, 28, 8, 2], "color": "stone.2"},
+    {"outline": "ink"}
+  ]
+}

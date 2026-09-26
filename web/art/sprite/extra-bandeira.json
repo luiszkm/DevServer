@@ -1,0 +1,21 @@
+{
+  "name": "extra-bandeira",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A tall pole with the green </> banner (EXTRAS: bandeira).",
+  "layers": [
+    {"rect": [8, 3, 2, 25], "color": "metal.2"},
+    {"rect": [8, 3, 1, 25], "color": "metal.3"},
+    {"ellipse": [9, 2, 1, 1], "color": "metal.3"},
+    {"rect": [10, 4, 14, 10], "color": "code.0"},
+    {"rect": [10, 4, 14, 1], "color": "code.1"},
+    {"rect": [10, 13, 14, 1], "color": "leaf.0"},
+    {"grid": [
+      ".G..G.G.",
+      "G...G..G",
+      ".G.G..G."
+    ], "legend": {"G": "code.3"}, "at": [13, 7]},
+    {"rect": [7, 28, 4, 2], "color": "stone.2"},
+    {"outline": "ink"}
+  ]
+}

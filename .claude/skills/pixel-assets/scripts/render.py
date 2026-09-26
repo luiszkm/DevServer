@@ -6,6 +6,12 @@
     # render one spec and write a 4x contact sheet you can open to look at the result
     python3 render.py web/art/enemy/slime.json --out web/public/art --preview /tmp/sheet.png
 
+    # battle effects: a 128x32 strip of 4 frames, rendered like any other category
+    python3 render.py web/art/fx --out web/public/art --preview /tmp/fx.png
+
+    # hero animation strips (category "anim", 4 frames of 48x64) land next to the hero layers
+    python3 render.py web/art/sprite/hero/anim --out web/public/art
+
     # check PNGs that were not produced from a spec (hand-edited, imported)
     python3 render.py --check web/public/art/icon/coin.png --category icon
 
@@ -30,12 +36,22 @@ PALETTE_PATH = os.path.join(HERE, "..", "references", "palette.json")
 # because a boss or a panorama can legitimately break the grid.
 SIZES = {
     "icon": {(16, 16), (24, 24)},
-    "sprite": {(32, 32), (32, 48), (48, 48), (64, 64)},
+    "sprite": {(32, 32), (32, 48), (48, 48), (48, 64), (64, 64), (96, 96), (160, 64)},
     "background": {(320, 180), (480, 180), (640, 180)},
     "ui": {(24, 24), (48, 24), (48, 48)},
+    "fx": {(128, 32)},
+    "tile": {(32, 32), (128, 32)},
+    "anim": {(192, 64)},
 }
-TRANSPARENT_CATEGORIES = {"icon", "sprite", "ui"}
+TRANSPARENT_CATEGORIES = {"icon", "sprite", "ui", "fx", "anim"}
+OPAQUE_CATEGORIES = {"background", "tile"}
 OUTLINED_CATEGORIES = {"icon", "sprite"}
+# Strips are horizontal rows of equal frames: fx (start -> peak -> fade -> almost gone), the hero's
+# animation frames, and animated tiles. Tiles fill their cell edge to edge, so they skip the margin rule.
+STRIP_CELLS = {"fx": (32, 32), "anim": (48, 64), "tile": (32, 32)}
+MARGINLESS = {"tile"}
+# Categories whose PNG lands in another category's folder: hero strips sit beside the hero layers.
+OUT_FOLDER = {"anim": "sprite"}
 
 BAYER4 = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
 
@@ -255,8 +271,11 @@ def op_use(c, op, ctx):
     sub = render_spec(path, c.palette, ctx["stack"], recolor)
     x0, y0 = op.get("at", [0, 0])
     flip = op.get("flip") == "h"
-    for y, row in enumerate(sub.px):
-        cols = row[::-1] if flip else row
+    # `clip` keeps only one box of the source; `at` is where that box's top-left lands.
+    cx, cy, cw, ch = op.get("clip", [0, 0, sub.w, sub.h])
+    for y, row in enumerate(sub.px[cy:cy + ch]):
+        cols = row[cx:cx + cw]
+        cols = cols[::-1] if flip else cols
         for x, color in enumerate(cols):
             if color is not None:
                 c.put(x0 + x, y0 + y, color)
@@ -342,8 +361,8 @@ def check(rows, category, palette, label):
     if off:
         sample = ", ".join(f"#{r:02x}{g:02x}{b:02x}" for r, g, b in sorted(off)[:5])
         errors.append(f"{len(off)} colors outside the palette: {sample}")
-    if category == "background" and transparent:
-        errors.append(f"background has {transparent} transparent pixels; it must be fully opaque")
+    if category in OPAQUE_CATEGORIES and transparent:
+        errors.append(f"{category} has {transparent} transparent pixels; it must be fully opaque")
     if category in TRANSPARENT_CATEGORIES and rows[0][0][3] != 0:
         warnings.append("top-left pixel is opaque; sprites, icons and UI pieces should sit on transparency")
     if category in OUTLINED_CATEGORIES:
@@ -360,7 +379,32 @@ def check(rows, category, palette, label):
                         break
         if edge and inked / edge < 0.9:
             warnings.append(f"outline is {inked * 100 // edge}% ink; the key art outlines every foreground shape in 'ink'")
+    if category in STRIP_CELLS and (category != "tile" or w > STRIP_CELLS["tile"][0]):
+        warnings += check_strip_frames(rows, *STRIP_CELLS[category], margin=category not in MARGINLESS)
     return errors, warnings
+
+
+def check_strip_frames(rows, cell_w, cell_h, margin=True):
+    """Each frame must stay inside its own cell with a 1px clear margin and differ from the others."""
+    h, w = len(rows), len(rows[0])
+    if h != cell_h or w % cell_w:
+        return [f"strip must be N frames of {cell_w}x{cell_h} side by side"]
+    warnings, frames = [], []
+    for i in range(w // cell_w):
+        ox = i * cell_w
+        cell = [tuple(row[ox:ox + cell_w]) for row in rows]
+        frames.append(tuple(cell))
+        edge = margin and [(x, y) for y in range(cell_h) for x in range(cell_w)
+                           if (x in (0, cell_w - 1) or y in (0, cell_h - 1)) and cell[y][x][3]]
+        if edge:
+            warnings.append(f"frame {i}: {len(edge)} pixels on the 1px cell margin (content bleeds into the next frame)")
+        if not any(px[3] for row in cell for px in row):
+            warnings.append(f"frame {i} is empty")
+    for i in range(len(frames)):
+        for j in range(i + 1, len(frames)):
+            if frames[i] == frames[j]:
+                warnings.append(f"frames {i} and {j} are identical; every frame of a strip should change")
+    return warnings
 
 
 def contact_sheet(images, path):
@@ -396,6 +440,15 @@ def contact_sheet(images, path):
     png.write(path, sheet)
 
 
+def category_subdir(path, category):
+    """Folders between the spec's '<category>/' ancestor and the spec: web/art/sprite/hero/body.json -> 'hero'."""
+    parts = os.path.normpath(os.path.abspath(path)).split(os.sep)[:-1]
+    if category not in parts:
+        return ""
+    i = len(parts) - 1 - parts[::-1].index(category)
+    return os.path.join(*parts[i + 1:]) if parts[i + 1:] else ""
+
+
 def collect(paths):
     specs = []
     for p in paths:
@@ -410,11 +463,11 @@ def collect(paths):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("paths", nargs="+", help="spec files or directories (or PNGs with --check)")
-    ap.add_argument("--out", help="output root; each spec lands at <out>/<category>/<name>.png")
+    ap.add_argument("--out", help="output root; each spec lands at <out>/<category>/[<subfolders>/]<name>.png")
     ap.add_argument("--scale", type=int, default=1, help="integer upscale baked into the PNG (default 1: let CSS scale)")
     ap.add_argument("--preview", help="also write a zoomed contact sheet of everything rendered")
     ap.add_argument("--check", action="store_true", help="only check existing PNGs")
-    ap.add_argument("--category", help="category for --check (icon, sprite, background, ui)")
+    ap.add_argument("--category", help="category for --check (icon, sprite, background, ui, fx, tile, anim)")
     args = ap.parse_args()
     palette = load_palette()
     failed, rendered = False, []
@@ -439,7 +492,8 @@ def main():
             spec = canvas.spec
             cat = spec.get("category", "sprite")
             name = spec.get("name") or os.path.splitext(os.path.basename(path))[0]
-            out = os.path.join(args.out, cat, f"{name}.png")
+            folder = OUT_FOLDER.get(cat, cat)
+            out = os.path.join(args.out, folder, category_subdir(path, folder), f"{name}.png")
             os.makedirs(os.path.dirname(out), exist_ok=True)
             errors, warnings = check(to_rows(canvas), cat, palette, path)
             png.write(out, to_rows(canvas, args.scale))

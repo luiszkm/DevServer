@@ -1,0 +1,25 @@
+{
+  "name": "btn-shop",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "SHOP: a steel shopping cart with a grid basket and two wheels.",
+  "layers": [
+    {"grid": [
+      "oo..............",
+      "ohoo............",
+      ".oho............",
+      "..ohooooooooooo.",
+      "..ohwwwwwwwwwwho",
+      "..ohwhwhwhwhwho.",
+      "...ohwwwwwwwwho.",
+      "...ohwhwhwhwho..",
+      "....ohhhhhhhho..",
+      "....ohooooooo...",
+      "....ohhhhhhhhho.",
+      ".....oooooooooo.",
+      "......ooo..ooo..",
+      "......oko..oko..",
+      "......ooo..ooo.."
+    ], "at": [0, 1], "legend": {"o": "ink", "h": "metal.3", "w": "metal.1", "k": "metal.2"}}
+  ]
+}

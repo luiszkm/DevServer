@@ -16,6 +16,7 @@ type Rand interface {
 
 // State is the fight as stored in `battles`.
 type State struct {
+	Enemy      string `json:"enemy"`
 	Region     string `json:"region"`
 	EnemyHP    int    `json:"enemyHp"`
 	EnemyHPMax int    `json:"enemyHpMax"`

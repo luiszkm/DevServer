@@ -1,0 +1,26 @@
+{
+  "name": "prop-caneca",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "Grey mug of coffee with a </> print and a handle (PROPS row 2).",
+  "layers": [
+    {"rect": [8, 9, 14, 17], "color": "metal.3"},
+    {"rect": [8, 9, 14, 2], "color": "stone.1"},
+    {"rect": [9, 10, 12, 1], "color": "soil.3"},
+    {"rect": [19, 11, 3, 15], "color": "metal.2"},
+    {"rect": [22, 13, 4, 2], "color": "metal.3"},
+    {"rect": [24, 13, 2, 9], "color": "metal.3"},
+    {"rect": [22, 20, 4, 2], "color": "metal.3"},
+    {"grid": [
+      "..G....G..",
+      ".G..G...G.",
+      "G...G....G",
+      ".G.G....G.",
+      "..GG...G.."
+    ], "legend": {"G": "stone.2"}, "at": [10, 15]},
+    {"rect": [8, 25, 14, 1], "color": "metal.2"},
+    {"rect": [9, 12, 1, 12], "color": "white"},
+    {"outline": "ink"},
+    {"rect": [23, 15, 1, 5], "color": null}
+  ]
+}

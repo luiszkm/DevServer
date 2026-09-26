@@ -1,0 +1,37 @@
+{
+ "name": "item-redesign_token",
+ "category": "icon",
+ "size": [16, 16],
+ "_design": "TOKEN DE REDESIGN: a rare purple token (slime ramp, the coin's shape and top-left light) stamped with two swap arrows in white: the dev's body switches sides.",
+ "legend": {"o": "ink", "d": "slime.0", "m": "slime.1", "b": "slime.2", "l": "slime.3", "w": "slime.4"},
+ "layers": [
+  {"grid": [
+    "....oooo",
+    "..oollll",
+    ".olllbbb",
+    ".olbbbbb",
+    "olbbmmmm",
+    "olbmbbbb",
+    "olbmbbbb",
+    "olbmbbbb",
+    "olbmbbbb",
+    "olbmbbbb",
+    "olbbmmmm",
+    ".odbbbbb",
+    ".oddbbbb",
+    "..oodddd",
+    "....oooo"
+   ], "mirror": "odd", "at": [0, 0]},
+  {"rect": [3, 3, 1, 2], "color": "slime.4"},
+  {"rect": [4, 2, 2, 1], "color": "slime.4"},
+  {"grid": [
+    "......w..",
+    ".wwwwwwwd",
+    "......wd.",
+    ".........",
+    "..w......",
+    ".wwwwwwwd",
+    "..wd....."
+   ], "legend": {"w": "white", "d": "slime.0"}, "at": [3, 4]}
+ ]
+}

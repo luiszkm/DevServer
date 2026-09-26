@@ -1,0 +1,23 @@
+{
+  "name": "build-antena",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A server box with a satellite dish on its roof (ESTRUTURAS row 2).",
+  "layers": [
+    {"rect": [5, 14, 22, 14], "color": "metal.2"},
+    {"rect": [5, 14, 22, 2], "color": "metal.3"},
+    {"rect": [7, 18, 12, 3], "color": "stone.1"},
+    {"rect": [7, 23, 12, 3], "color": "stone.1"},
+    {"rect": [8, 19, 1, 1], "color": "net.3"},
+    {"rect": [10, 19, 1, 1], "color": "code.3"},
+    {"rect": [8, 24, 1, 1], "color": "net.3"},
+    {"rect": [21, 18, 4, 7], "color": "stone.1"},
+    {"rect": [22, 20, 1, 1], "color": "gold.2"},
+    {"line": [22, 13, 22, 9], "color": "metal.2"},
+    {"ellipse": [23, 6, 5, 4], "color": "metal.3"},
+    {"ellipse": [24, 7, 4, 3], "color": "metal.2"},
+    {"line": [20, 4, 26, 9], "color": "metal.1"},
+    {"rect": [23, 6, 1, 1], "color": "red.3"},
+    {"outline": "ink"}
+  ]
+}

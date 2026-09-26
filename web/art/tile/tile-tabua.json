@@ -1,0 +1,25 @@
+{
+  "name": "tile-tabua",
+  "category": "tile",
+  "size": [32, 32],
+  "_design": "Wood planks: horizontal boards with grain and knots.",
+  "layers": [
+    {"fill": "wood.1"},
+    {"rect": [0, 1, 32, 6], "color": "wood.3"},
+    {"rect": [0, 9, 32, 6], "color": "wood.3"},
+    {"rect": [0, 17, 32, 6], "color": "wood.3"},
+    {"rect": [0, 25, 32, 6], "color": "wood.3"},
+    {"rect": [0, 1, 32, 1], "color": "wood.4"},
+    {"rect": [0, 9, 32, 1], "color": "wood.4"},
+    {"rect": [0, 17, 32, 1], "color": "wood.4"},
+    {"rect": [0, 25, 32, 1], "color": "wood.4"},
+    {"rect": [4, 3, 5, 1], "color": "wood.2"},
+    {"rect": [20, 11, 5, 1], "color": "wood.2"},
+    {"rect": [10, 19, 5, 1], "color": "wood.2"},
+    {"rect": [24, 27, 5, 1], "color": "wood.2"},
+    {"rect": [14, 4, 1, 1], "color": "wood.1"},
+    {"rect": [6, 12, 1, 1], "color": "wood.1"},
+    {"rect": [28, 20, 1, 1], "color": "wood.1"},
+    {"rect": [16, 28, 1, 1], "color": "wood.1"}
+  ]
+}

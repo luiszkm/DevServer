@@ -19,13 +19,15 @@
 | AD-013 | `player.Bonus` também soma os móveis do escritório nos tipos `xp`, `deploy` e `spregen`; `deploy` é limitado por `office.maxDeployCut` (40); o deploy congela duração e XP com bônus no início | estende AD-012 sem segunda regra; congelar no início segue o snapshot de recompensa de `deploy_jobs` (decisão do usuário) | active | 2026-09-23 |
 | AD-014 | `player.Bonus` também soma os stats do rack (POWER → `dmg`, RAM → `sp`, UPTIME → `coins`): stat = `min(max, base + Σ efeitos)`, bônus = `floor((stat − base) / step)`, tudo no catálogo `rack`; tipo novo `coins` = % sobre as coins do deploy, congelado no início como a XP | estende AD-013 sem segunda regra; decisão do usuário (stats viram bônus) | active | 2026-09-24 |
 | AD-015 | UI pt-BR com identidade visual do protótipo; layout desktop 1200px a partir de 1200px de largura, abaixo disso uma coluna com menu hambúrguer (max-width: 1199px) | jogar pelo celular em retrato (decisão do usuário: reflow + menu hambúrguer); substitui a parte de layout de AD-007 | active | 2026-09-24 |
+| AD-016 | Forja: receitas são catálogo (`api/catalog/forge.json`, servidas como `recipes`) aplicadas em `shop`; `Gear.price` ausente = gear só da forja, `BuyGear` responde `422 not_for_sale`; gear forjado sai equipado pela mesma regra `equip` | drops tinham só descarte; uma regra de equipar e uma de preço opcional, como `Item.price` (decisão do usuário: itens + gear exclusivo, seção na LOJA) | active | 2026-09-24 |
+| AD-017 | Uma região pode ter vários inimigos (`combat.json` `enemies[].id`, os seis originais com `id` = região); `battle.Start` sorteia com `Deps.Rand.IntN(n)` só quando `n > 1`, na ordem do catálogo, e a batalha guarda `battles.enemy`; batalha ativa retoma o mesmo inimigo | mobs novos como inimigos de verdade (decisão do usuário); estende AD-011 sem mudar a ordem de sorteio das regiões de um inimigo | active | 2026-09-26 |
 
 ## Handoff
 
-**Feature**: game-menu
-**Where**: C1–C33 fechados; Verifier round 6 PASS (rounds 1-5 FAIL só em arte e precisão dos checks; definição de material decidida pelo usuário)
+**Feature**: assets-apply
+**Where**: C1–C27 fechados; Verifier round 2 PASS (round 1 FAIL: asserções faltando em C12/C13 - FORJAR E EQUIPAR, btn-settings 16px, ic-gear alt)
 **In progress**: nenhum
-**Next step**: push e PR de `feat/office`, `feat/server-room`, `feat/game-art`, `feat/responsive` e `feat/game-menu` quando o usuário pedir
+**Next step**: push e PR de `feat/assets` e `feat/assets-apply` quando o usuário pedir
 **Blockers**: none
 **Uncommitted**: none
-**Branch**: feat/game-menu (sobre feat/responsive)
+**Branch**: feat/assets-apply (sobre feat/assets)

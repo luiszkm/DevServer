@@ -1,0 +1,19 @@
+{
+  "name": "tile-arvore-grande",
+  "category": "sprite",
+  "size": [64, 64],
+  "_design": "Big tree decal: a wide canopy over a thick trunk on a grass mound (TILESET big tree).",
+  "layers": [
+    {"ellipse": [32, 54, 26, 7], "color": "grass.1"},
+    {"ellipse": [31, 52, 24, 6], "color": "grass.2"},
+    {"scatter": [8, 47, 48, 12], "colors": ["grass.3", "leaf.3"], "density": 0.15, "seed": 52, "on": "grass.2"},
+    {"poly": [[27, 30], [37, 30], [39, 50], [44, 54], [20, 54], [25, 50]], "color": "wood.2"},
+    {"line": [29, 32, 28, 52], "color": "wood.3"},
+    {"line": [35, 34, 37, 52], "color": "wood.1"},
+    {"ellipse": [32, 22, 24, 18], "color": "leaf.1"},
+    {"ellipse": [30, 19, 21, 15], "color": "leaf.2"},
+    {"ellipse": [24, 13, 9, 6], "color": "leaf.3"},
+    {"scatter": [9, 5, 46, 34], "colors": ["leaf.3", "leaf.1"], "density": 0.12, "seed": 53, "on": "leaf.2"},
+    {"outline": "ink"}
+  ]
+}

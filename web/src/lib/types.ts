@@ -23,6 +23,12 @@ export type Player = {
   office: Record<string, (string | null)[]>;
   /** Every rack slot, with the installed component id or null. */
   rack: (string | null)[];
+  /** Body type, picked at creation; only a redesign token changes it. */
+  body: string;
+  /** Every avatar part, with the chosen option id (catalog defaults fill what was never picked). */
+  appearance: Record<string, string>;
+  /** Owned priced avatar options, catalog order. */
+  looks: string[];
 };
 
 export type Region = {
@@ -54,7 +60,7 @@ export type SkillNode = {
 
 export type SkillTree = { id: string; name: string; nodes: SkillNode[] };
 
-export type Enemy = { region: string; name: string; level: number; hp: number; sp: number; weakness: string; drop: string; glyph: string };
+export type Enemy = { id: string; region: string; name: string; level: number; hp: number; sp: number; weakness: string; drop: string; glyph: string };
 
 export type Command = {
   id: string;
@@ -94,8 +100,11 @@ export type Gear = {
   slot: string;
   rarity: string;
   description: string;
-  price: Price;
+  /** Absent for gear the shop does not sell (made only at the forge). */
+  price?: Price;
   bonus: Bonus;
+  /** The avatar option this gear puts on the hero while equipped. */
+  look?: { part: string; option: string };
 };
 
 export type Skin = {
@@ -103,10 +112,35 @@ export type Skin = {
   name: string;
   rarity: string;
   description: string;
-  filter: string;
+  /** Ramps (4 tones, darkest first) this skin forces on avatar colour parts while worn. */
+  palette: Record<string, string[]>;
   price: Price;
   bonus: Bonus | null;
 };
+
+export type AvatarPart = { id: string; name: string; kind: "color" | "style"; gearSlot?: string };
+
+export type AvatarOption = {
+  id: string;
+  part: string;
+  name: string;
+  /** Colour options: 4 tones, darkest first. */
+  ramp?: string[];
+  /** Style options: the PNG at /art/sprite/hero/<layer>.png. */
+  layer?: string;
+  /** A style with its own colours; the part's colour does not apply. */
+  fixed?: boolean;
+  /** Worn only through gear; never picked. */
+  gearOnly?: boolean;
+  /** Bodies that can wear it; absent means every body. */
+  bodies?: string[];
+  price?: Price;
+};
+
+/** A body type; `defaults` overrides the avatar defaults for that body. */
+export type AvatarBody = { id: string; name: string; defaults?: Record<string, string> };
+
+export type Avatar = { bodies: AvatarBody[]; parts: AvatarPart[]; options: AvatarOption[]; defaults: Record<string, string> };
 
 /** Furniture bonus: "xp" is % deploy XP, "deploy" is % off deploy time, "spregen" is SP per turn. */
 export type OfficeBonus = { type: "xp" | "deploy" | "spregen"; amount: number };
@@ -158,6 +192,14 @@ export type RackComponent = {
 
 export type Rack = { slots: number; stats: RackStat[]; components: RackComponent[] };
 
+/** A forge recipe: its ingredients, plus an optional price, make one unit of its output. */
+export type Recipe = {
+  id: string;
+  output: { kind: "item" | "gear"; id: string };
+  ingredients: { item: string; quantity: number }[];
+  price?: Price;
+};
+
 export type Catalog = {
   version: string;
   regions: Region[];
@@ -171,11 +213,15 @@ export type Catalog = {
   gearSlots: GearSlot[];
   gear: Gear[];
   skins: Skin[];
+  avatar: Avatar;
   office: Office;
   rack: Rack;
+  recipes: Recipe[];
 };
 
 export type Battle = {
+  /** The catalog id of the enemy this battle drew (assets-apply door 2). */
+  enemy: string;
   region: string;
   enemyHp: number;
   enemyHpMax: number;

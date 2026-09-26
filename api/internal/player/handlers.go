@@ -46,6 +46,7 @@ func (h *Handlers) Create(w http.ResponseWriter, r *http.Request) error {
 	var in struct {
 		DevName string `json:"devName"`
 		Class   string `json:"class"`
+		Body    string `json:"body"`
 	}
 	if err := httpx.DecodeJSON(r, &in); err != nil {
 		return err
@@ -64,8 +65,11 @@ func (h *Handlers) Create(w http.ResponseWriter, r *http.Request) error {
 	if !validClass(in.Class) {
 		return httpx.ErrInvalidClass
 	}
+	if _, ok := h.Catalog.AvatarBody(in.Body); !ok {
+		return httpx.ErrUnknownBody
+	}
 
-	p := newPlayer(id.GithubUserID, name, in.Class)
+	p := newPlayer(id.GithubUserID, name, in.Class, in.Body)
 	err := h.insert(ctx, p)
 	var pgErr *pgconn.PgError
 	if errors.As(err, &pgErr) && pgErr.Code == "23505" {
@@ -90,10 +94,10 @@ func (h *Handlers) insert(ctx context.Context, p *Player) error {
 	}
 	defer tx.Rollback(ctx)
 	if err := tx.QueryRow(ctx, `INSERT INTO players (github_user_id, dev_name, class, level, xp, xp_max,
-		hp, hp_max, coins, gems, skill_points, region, skin)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id`,
+		hp, hp_max, coins, gems, skill_points, region, skin, body)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id`,
 		p.GithubUserID, p.DevName, p.Class, p.Level, p.XP, p.XPMax, p.HP, p.HPMax,
-		p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin).Scan(&p.ID); err != nil {
+		p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin, p.Body).Scan(&p.ID); err != nil {
 		return err
 	}
 	for _, it := range h.Catalog.Combat.StartingItems {

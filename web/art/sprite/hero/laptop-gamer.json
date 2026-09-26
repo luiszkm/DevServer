@@ -1,0 +1,26 @@
+{
+  "name": "laptop-gamer",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Gamer laptop: black shell, red logo, RGB strips in code/net/slime/red. Fixed.",
+  "legend": {"o": "ink", "m": "ink.1", "n": "ink.2", "M": "roof.1", "r": "red.2", "R": "red.3", "g": "code.3", "b": "net.3", "p": "slime.3"},
+  "layers": [
+    {"grid": [
+      "............ooooo..",
+      "...........oMMMMMo.",
+      "...........oMnnnnno",
+      "..........oMnmmmmmo",
+      "..........oMnmmmmmo",
+      ".........oMnmmmmRmo",
+      ".........oMnmmmrRro",
+      ".........oMnmmrmmmr",
+      ".........oMnmmmmmmo",
+      ".........oMnmmmmmmo",
+      ".........oMnmmmmmmo",
+      ".oooooooooMnmmmmmmo",
+      "ommmmmmmmmmnmmmmmmo",
+      "oggbbpprrggbbpprrgo",
+      "oooooooooooooooooo."
+    ], "at": [24, 28]}
+  ]
+}

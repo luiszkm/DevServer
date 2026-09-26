@@ -1,0 +1,14 @@
+{
+  "name": "ui-bar",
+  "category": "ui",
+  "size": [24, 24],
+  "_design": "Recessed bar track (HP/XP bars): ink edge, dark well lit on the bottom-right. 9-slice, 8px corners: border-image: url(/art/ui/ui-bar.png) 8 fill / 24px round",
+  "layers": [
+    {"rect": [1, 0, 22, 24], "color": "ink"},
+    {"rect": [0, 1, 24, 22], "color": "ink"},
+    {"rect": [1, 1, 22, 22], "color": "ui.1"},
+    {"rect": [1, 1, 22, 1], "color": "ui.0"},
+    {"rect": [1, 22, 22, 1], "color": "ui.4"},
+    {"rect": [22, 1, 1, 22], "color": "ui.4"}
+  ]
+}

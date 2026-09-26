@@ -1,0 +1,25 @@
+{
+  "name": "tile-cerca",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "Fence decal: three posts and two rails with nails.",
+  "layers": [
+    {"rect": [1, 12, 30, 4], "color": "wood.3"},
+    {"rect": [1, 12, 30, 1], "color": "wood.4"},
+    {"rect": [1, 21, 30, 4], "color": "wood.3"},
+    {"rect": [1, 21, 30, 1], "color": "wood.4"},
+    {"rect": [3, 7, 5, 22], "color": "wood.2"},
+    {"rect": [3, 7, 1, 22], "color": "wood.3"},
+    {"rect": [5, 14, 1, 1], "color": "metal.2"},
+    {"rect": [5, 23, 1, 1], "color": "metal.2"},
+    {"rect": [14, 7, 5, 22], "color": "wood.2"},
+    {"rect": [14, 7, 1, 22], "color": "wood.3"},
+    {"rect": [16, 14, 1, 1], "color": "metal.2"},
+    {"rect": [16, 23, 1, 1], "color": "metal.2"},
+    {"rect": [25, 7, 5, 22], "color": "wood.2"},
+    {"rect": [25, 7, 1, 22], "color": "wood.3"},
+    {"rect": [27, 14, 1, 1], "color": "metal.2"},
+    {"rect": [27, 23, 1, 1], "color": "metal.2"},
+    {"outline": "ink"}
+  ]
+}

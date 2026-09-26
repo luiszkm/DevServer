@@ -1,5 +1,6 @@
 import type { Catalog, Player } from "@/lib/types";
 import { GameArt } from "./GameArt";
+import { LoadingFx } from "./LoadingFx";
 
 type Props = { player?: Player; catalog?: Catalog; onLogout?: () => void };
 
@@ -16,14 +17,20 @@ export function Hud({ player, catalog, onLogout }: Props) {
   if (!player) {
     return (
       <footer className="hud" aria-label="HUD">
-        <div className="hud-card hud-loading">CARREGANDO...</div>
+        <div className="hud-card hud-loading">
+          <LoadingFx />
+          CARREGANDO...
+        </div>
       </footer>
     );
   }
   return (
     <footer className="hud" aria-label="HUD">
       <div className="hud-card hud-grow">
-        <span className="pixel hud-title">{`LEVEL ${player.level}`}</span>
+        <span className="pixel hud-title">
+          <GameArt kind="btn" id="rank" scale={1} alt="" fallback="" className="inline-icon" />
+          {`LEVEL ${player.level}`}
+        </span>
         <div className="hud-row">
           <GameArt kind="hud" id="xp" scale={2} alt="" fallback="" />
           <span className="chip chip-green">XP</span>
@@ -53,7 +60,10 @@ export function Hud({ player, catalog, onLogout }: Props) {
         <span className="pixel hud-value" style={{ color: "var(--cyan)" }}>{player.gems}</span>
       </div>
       <div className="hud-card">
-        <span className="pixel hud-label">SKILL PTS</span>
+        <span className="pixel hud-label">
+          <GameArt kind="ic" id="star" scale={1} alt="" fallback="" className="inline-icon" />
+          SKILL PTS
+        </span>
         <div className="hud-row">
           <span className="pixel hud-value" style={{ color: "var(--purple)" }}>{player.skillPoints}</span>
           {catalog && <ActiveSkillGlyphs skills={player.skills} catalog={catalog} />}
@@ -63,6 +73,7 @@ export function Hud({ player, catalog, onLogout }: Props) {
         <span className="pixel hud-label">{player.devName}</span>
         {onLogout && (
           <button type="button" className="btn btn-dark" onClick={onLogout}>
+            <GameArt kind="btn" id="exit" scale={1} alt="" fallback="" className="inline-icon" />
             SAIR
           </button>
         )}

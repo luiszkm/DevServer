@@ -1,0 +1,25 @@
+{
+  "name": "mob-slime",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "The purple slime of the key art, two little horns (INIMIGOS: slime).",
+  "layers": [
+    {"ellipse": [15, 21, 12, 10], "color": "slime.1"},
+    {"ellipse": [15, 20, 11, 9], "color": "slime.2"},
+    {"ellipse": [13, 18, 8, 6], "color": "slime.3"},
+    {"ellipse": [9, 15, 2, 1], "color": "slime.4"},
+    {"rect": [8, 13, 1, 1], "color": "white"},
+    {"rect": [0, 29, 32, 3], "color": null},
+    {"rect": [5, 28, 21, 1], "color": "slime.0"},
+    {"grid": [
+      "oo....oo",
+      "ow....ow",
+      "oo....oo",
+      "........",
+      "..oooo.."
+    ], "legend": {"o": "ink", "w": "white"}, "at": [11, 19]},
+    {"poly": [[6, 13], [8, 7], [11, 12]], "color": "slime.2"},
+    {"poly": [[20, 12], [24, 7], [25, 13]], "color": "slime.2"},
+    {"outline": "ink"}
+  ]
+}

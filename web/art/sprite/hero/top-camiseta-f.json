@@ -1,0 +1,30 @@
+{
+  "name": "top-camiseta-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Feminine body traced from web/public/female_keyart.png; T-shirt on her traced hoodie body, short sleeves, av-top-grafite (topColor).",
+  "legend": {"o": "ink", "1": "av-top-grafite.0", "2": "av-top-grafite.1", "3": "av-top-grafite.2", "4": "av-top-grafite.3"},
+  "layers": [
+    {"grid": [
+      "........ooooooooo.......oooo...",
+      ".ooooooo111111112o.....o1111o..",
+      "o2111111111121112oo..ooo11111o.",
+      "o11112o111211211122oo221111111o",
+      "o11121o11112122111122111121111o",
+      "o112ooo11111111122221242211111o",
+      ".o2222222221111121121114112222o",
+      "..ooooo2221111111122112211oooo.",
+      "......o2111111121112111121o....",
+      "......o1111111112112121111o....",
+      "......o1111111111121111121o....",
+      "......o1111111111112211111o....",
+      "......o2211111111111111ooo.....",
+      "......o1111111111111111o.o.....",
+      "......o11231o1111111121oo1o....",
+      "......o1231o2o111111111111o....",
+      "......o11oo.o1111111111111o....",
+      "......o11o...oo221oooooooo.....",
+      ".......oo......ooo............."
+    ], "at": [4, 28]}
+  ]
+}

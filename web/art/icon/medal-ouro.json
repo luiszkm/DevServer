@@ -1,0 +1,9 @@
+{
+  "name": "medal-ouro",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "Medal ouro: the rosette in the gold ramp.",
+  "layers": [
+    {"use": "_medal.json"}
+  ]
+}

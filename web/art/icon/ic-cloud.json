@@ -1,0 +1,20 @@
+{
+  "name": "ic-cloud",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "The white deploy cloud, lit from the top-left, blue-grey underside.",
+  "layers": [
+    {"ellipse": [5, 9, 2, 2], "color": "cloud.3"},
+    {"ellipse": [8, 7, 3, 3], "color": "cloud.3"},
+    {"ellipse": [11, 9, 2, 2], "color": "cloud.3"},
+    {"rect": [4, 9, 9, 3], "color": "cloud.3"},
+    {"rect": [4, 11, 9, 1], "color": "cloud.1"},
+    {"rect": [11, 10, 3, 1], "color": "cloud.1"},
+    {"rect": [10, 11, 3, 1], "color": "cloud.0"},
+    {"rect": [12, 10, 1, 1], "color": "cloud.0"},
+    {"rect": [7, 5, 2, 1], "color": "white"},
+    {"rect": [6, 6, 1, 1], "color": "white"},
+    {"rect": [4, 8, 1, 1], "color": "white"},
+    {"outline": "ink"}
+  ]
+}

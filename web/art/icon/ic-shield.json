@@ -1,0 +1,30 @@
+{
+  "name": "ic-shield",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "UPTIME: the blue shield of the badges row, split light/dark down the middle.",
+  "layers": [
+    {"grid": [
+      "oooooooo",
+      "onnnnnnn",
+      "onNNNNNN",
+      "onNNNNNN",
+      "onNNNNNN",
+      "onNNNNNN",
+      "onNNNNNN",
+      ".onNNNNN",
+      ".onNNNNN",
+      "..onNNNN",
+      "...onNNN",
+      "....onNN",
+      ".....ooN",
+      ".......o"
+    ], "at": [0, 1], "mirror": "odd", "legend": {"o": "ink", "n": "net.3", "N": "net.2"}},
+    {"rect": [8, 3, 6, 9], "color": "net.1"},
+    {"rect": [8, 12, 1, 1], "color": "net.1"},
+    {"line": [8, 3, 8, 13], "color": "net.4"},
+    {"rect": [2, 2, 1, 5], "color": "net.4"},
+    {"outline": "ink"},
+    {"rect": [0, 0, 16, 1], "color": null}
+  ]
+}

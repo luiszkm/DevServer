@@ -1,24 +1,30 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import BugFightPage from "@/app/(game)/bug-fight/page";
+import { resolveLook } from "@/lib/avatar";
 import type { Battle, BattleEvent, Catalog, Player } from "@/lib/types";
 import { CATALOG, ENEMIES, COMMANDS, REGIONS, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 import { BattleScene } from "./BattleScene";
 
+// A battle's enemy defaults to its region's original enemy, whose id is the region (assets-apply door 3).
 const battle = (o: Partial<Battle> = {}): Battle => ({
-  region: "vila", enemyHp: 60, enemyHpMax: 60, sp: 50, spMax: 50, weakness: false, status: "active", ...o,
+  enemy: o.region ?? "vila", region: "vila", enemyHp: 60, enemyHpMax: 60, sp: 50, spMax: 50, weakness: false, status: "active", ...o,
 });
+
+// Stubs the OS "reduce motion" setting the scene reads to decide between playback and an instant turn.
+const motion = (reduce: boolean) =>
+  vi.stubGlobal("matchMedia", (q: string) => ({ matches: reduce && q === "(prefers-reduced-motion: reduce)", media: q }));
 
 function renderScene(opts: { p?: Player; catalog?: Catalog; setPlayer?: (p: Player) => void } = {}) {
   const setPlayer = opts.setPlayer ?? vi.fn();
-  render(
+  const view = render(
     <GameContext.Provider value={{ player: opts.p ?? player(), catalog: opts.catalog ?? CATALOG, setPlayer }}>
       <BattleScene />
     </GameContext.Provider>,
   );
-  return { setPlayer };
+  return { setPlayer, unmount: view.unmount };
 }
 
 const startWith = (b: Battle | null = battle(), p: Player = player()) => json(200, { battle: b, player: p });
@@ -30,15 +36,18 @@ const logText = () => screen.getByRole("log").textContent;
 // Every region's enemy (api/catalog/combat.json), for the art checks that walk all six.
 const ALL_ENEMIES: Catalog["enemies"] = [
   ...ENEMIES,
-  { region: "mercado", name: "PACOTE MALICIOSO", level: 7, hp: 85, sp: 60, weakness: "versão não travada", drop: "corrupt_dep", glyph: "[!pkg]" },
-  { region: "caverna", name: "EXCEÇÃO SELVAGEM", level: 10, hp: 110, sp: 70, weakness: "catch ausente", drop: "wild_trace", glyph: "{!!}" },
-  { region: "torre", name: "RACE CONDITION", level: 15, hp: 160, sp: 85, weakness: "mutex ausente", drop: "race_core", glyph: "//=//" },
-  { region: "nuvem", name: "MEMORY LEAK ANCESTRAL", level: 22, hp: 220, sp: 100, weakness: "garbage collector", drop: "memory_crystal", glyph: "^^^^" },
+  { id: "mercado", region: "mercado", name: "PACOTE MALICIOSO", level: 7, hp: 85, sp: 60, weakness: "versão não travada", drop: "corrupt_dep", glyph: "[!pkg]" },
+  { id: "caverna", region: "caverna", name: "EXCEÇÃO SELVAGEM", level: 10, hp: 110, sp: 70, weakness: "catch ausente", drop: "wild_trace", glyph: "{!!}" },
+  { id: "torre", region: "torre", name: "RACE CONDITION", level: 15, hp: 160, sp: 85, weakness: "mutex ausente", drop: "race_core", glyph: "//=//" },
+  { id: "nuvem", region: "nuvem", name: "MEMORY LEAK ANCESTRAL", level: 22, hp: 220, sp: 100, weakness: "garbage collector", drop: "memory_crystal", glyph: "^^^^" },
 ];
 const EVERY_ENEMY: Catalog = { ...CATALOG, enemies: ALL_ENEMIES };
 const sprite = () => document.querySelector(".battle-sprite") as HTMLElement;
 
 describe("BattleScene", () => {
+  // These prove what a turn leaves behind; with reduced motion the turn lands at once. Playback has its own describe.
+  beforeEach(() => motion(true));
+
   // C41
   it("starts and shows the enemy", async () => {
     const f = mockFetch({ "POST /api/me/battle": startWith() });
@@ -260,17 +269,14 @@ describe("BattleScene", () => {
   });
 
   // shop-inventory-avatar C44
-  it.each([
-    ["neon", "hue-rotate(140deg) saturate(1.8) brightness(1.1)"],
-    ["default", "none"],
-  ])("hero sprite wears skin (%s)", async (skin, filter) => {
+  it.each(["neon", "default"])("hero sprite wears skin (%s)", async (skin) => {
     const p = player({ skin, skins: ["default", "neon"] });
     mockFetch({ "POST /api/me/battle": startWith(battle(), p) });
     renderScene({ p });
-    const hero = await screen.findByLabelText("dev em combate");
-    const img = within(hero).getByRole("img");
-    expect(img.getAttribute("src")).toBe("/hero.png");
-    expect(img.style.filter).toBe(filter);
+    const hero = await screen.findByLabelText("herói na arena");
+    const img = within(hero).getByRole("img", { name: "herói" });
+    expect(img.dataset.look).toBe(resolveLook(p, CATALOG).key);
+    expect(img.dataset.look!.includes(">")).toBe(skin !== "default");
   });
 
   // shop-inventory-avatar C49
@@ -348,5 +354,244 @@ describe("BattleScene", () => {
     expect(potion("hp_potion").querySelector("img")).toBeNull();
     expect(potion("hp_potion")).toHaveTextContent("HP+");
     expect(potion("sp_potion").querySelector("img")).not.toBeNull();
+  });
+});
+
+describe("BattleScene turn playback", () => {
+  beforeEach(() => motion(false));
+  afterEach(() => vi.useRealTimers());
+
+  const lines = () => Array.from(screen.getByRole("log").children).map((c) => c.textContent);
+  const heroActor = () => screen.getByLabelText("herói na arena");
+  const enemyActor = () => sprite().parentElement!;
+  const fx = () => document.querySelector<HTMLElement>(".battle-fx");
+  const float = () => document.querySelector<HTMLElement>(".battle-float");
+
+  async function fightOneTurn(events: BattleEvent[], after: Battle | null, p = player({ hp: 100, hpMax: 100 })) {
+    const setPlayer = vi.fn();
+    const next = player({ hp: 91, hpMax: 100 });
+    mockFetch({ "POST /api/me/battle": startWith(battle(), p), "POST /api/me/battle/commands": turn(after, events, next) });
+    const view = renderScene({ p, setPlayer });
+    await screen.findByLabelText("inimigo");
+    setPlayer.mockClear();
+    // Faked only now: RTL's findBy* polls with real timers.
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    fireEvent.click(command("fix"));
+    await act(() => vi.advanceTimersByTimeAsync(0));
+    return { ...view, setPlayer, next };
+  }
+
+  // assets C47: the beat on stage picks the hero's animation
+  const heroAnim = () => within(heroActor()).getByRole("img", { name: "herói" }).dataset.anim;
+  it.each<[string, BattleEvent[], string]>([
+    ["lunge", [{ type: "damage", command: "fix", amount: 20 }], "run"],
+    ["cast", [{ type: "heal", amount: 10 }], "interact"],
+    ["hit", [{ type: "counter", amount: 9 }], "idle"],
+    ["fall", [{ type: "defeat" }], "idle"],
+    ["flee", [{ type: "fled" }], "idle"],
+  ])("hero anim on beat %s", async (_beat, events, anim) => {
+    await fightOneTurn(events, battle({ enemyHp: 40 }));
+    expect(heroAnim()).toBe(anim);
+  });
+
+  it("hero anim with no beat is idle", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle()) });
+    renderScene();
+    await screen.findByLabelText("inimigo");
+    expect(heroAnim()).toBe("idle");
+  });
+
+  it("hero anim when the battle is won is jump", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ status: "won", enemyHp: 0 })) });
+    renderScene();
+    await screen.findByLabelText("inimigo");
+    expect(heroAnim()).toBe("jump");
+  });
+
+  // assets-apply C19: dust at the hero's feet while it runs in, never on a cast
+  it("dust on the lunge beat", async () => {
+    await fightOneTurn([{ type: "damage", command: "fix", amount: 20 }], battle({ enemyHp: 40 }));
+    const dust = heroActor().querySelector('[data-fx="dust"]') as HTMLElement;
+    expect(dust).not.toBeNull();
+    expect(dust.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/dust.png)");
+  });
+
+  it("dust never on a cast beat", async () => {
+    await fightOneTurn([{ type: "heal", amount: 10 }], battle({ enemyHp: 40 }));
+    expect(heroActor().querySelector('[data-fx="dust"]')).toBeNull();
+  });
+
+  it("plays the turn one event at a time", async () => {
+    const { setPlayer, next } = await fightOneTurn(
+      [{ type: "damage", command: "f1", amount: 20 }, { type: "counter", amount: 9 }],
+      battle({ enemyHp: 40, sp: 40 }),
+    );
+    // beat 1: the dev's hit
+    expect(lines().at(-1)).toBe("> </> MARKUP: 20 de dano");
+    expect(heroActor()).toHaveClass("anim-lunge");
+    expect(enemyActor()).toHaveClass("anim-hit");
+    expect(fx()!.dataset.fx).toBe("code");
+    expect(fx()!.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/code.png)");
+    expect(within(enemyActor()).getByText("-20")).toBeInTheDocument();
+    expect(screen.getByLabelText("inimigo")).toHaveTextContent("HP 40/60");
+    expect(screen.getByLabelText("dev em combate")).toHaveTextContent("HP 100/100");
+    for (const b of document.querySelectorAll<HTMLButtonElement>("[data-command], [data-item]")) expect(b).toBeDisabled();
+    expect(setPlayer).not.toHaveBeenCalled();
+
+    // beat 2: the counter
+    act(() => vi.advanceTimersByTime(600));
+    expect(lines().at(-1)).toBe("< NULL SLIME devolve um stack trace: -9 HP");
+    expect(heroActor()).toHaveClass("anim-hit");
+    expect(enemyActor()).toHaveClass("anim-lunge");
+    expect(fx()!.dataset.fx).toBe("impact");
+    expect(within(heroActor()).getByText("-9")).toBeInTheDocument();
+    expect(screen.getByLabelText("dev em combate")).toHaveTextContent("HP 91/100");
+    expect(command("fix")).toBeDisabled();
+    expect(setPlayer).not.toHaveBeenCalled();
+
+    // end: the server's state lands and the stage is quiet
+    act(() => vi.advanceTimersByTime(600));
+    expect(setPlayer).toHaveBeenCalledWith(next);
+    expect(screen.getByLabelText("dev em combate")).toHaveTextContent("SP 40/50");
+    expect(command("fix")).toBeEnabled();
+    expect(fx()).toBeNull();
+    expect(float()).toBeNull();
+    expect(heroActor().className).not.toMatch(/anim-/);
+  });
+
+  it("crit shakes the stage", async () => {
+    await fightOneTurn([{ type: "damage", command: "fix", amount: 36, weakness: true }], battle({ enemyHp: 24 }));
+    expect(document.querySelector(".battle-stage")).toHaveClass("is-shake");
+    expect(float()).toHaveTextContent("-36 CRÍTICO!");
+    expect(float()).toHaveClass("tone-crit");
+  });
+
+  it("victory leaves the enemy down and RESOLVIDO after the last beat", async () => {
+    const { setPlayer } = await fightOneTurn(
+      [{ type: "damage", command: "fix", amount: 20 }, { type: "victory" }, { type: "reward", xp: 90, coins: 40, gems: 1, levelsGained: 0 }, { type: "drop", item: "null_shard" }],
+      battle({ enemyHp: 0, status: "won" }),
+    );
+    act(() => vi.advanceTimersByTime(600));
+    expect(enemyActor()).toHaveClass("anim-defeat");
+    expect(enemyActor()).toHaveClass("is-down");
+    expect(screen.queryByText("RESOLVIDO")).toBeNull();
+    act(() => vi.advanceTimersByTime(700));
+    expect(within(heroActor()).getByText("+90 XP")).toBeInTheDocument();
+    act(() => vi.advanceTimersByTime(450));
+    expect(within(enemyActor()).getByText("+1")).toBeInTheDocument();
+    expect(float()!.querySelector("img")).toHaveAttribute("src", "/art/icon/item-null_shard.png");
+    expect(lines().at(-1)).toBe("+1 FRAGMENTO NULL · dropou!");
+    act(() => vi.advanceTimersByTime(450));
+    expect(screen.getByText("RESOLVIDO")).toBeInTheDocument();
+    expect(enemyActor()).toHaveClass("is-down");
+    expect(setPlayer).toHaveBeenCalledTimes(1);
+  });
+
+  it("reduced motion lands the turn at once", async () => {
+    motion(true);
+    const { setPlayer, next } = await fightOneTurn(
+      [{ type: "damage", command: "fix", amount: 20 }, { type: "counter", amount: 9 }],
+      battle({ enemyHp: 40 }),
+    );
+    expect(lines().slice(-2)).toEqual(["> FIX: 20 de dano", "< NULL SLIME devolve um stack trace: -9 HP"]);
+    expect(setPlayer).toHaveBeenCalledWith(next);
+    expect(fx()).toBeNull();
+    expect(heroActor().className).not.toMatch(/anim-/);
+    expect(command("fix")).toBeEnabled();
+  });
+
+  it("unmount mid-turn drops the rest of the playback", async () => {
+    const { setPlayer, unmount } = await fightOneTurn(
+      [{ type: "damage", command: "fix", amount: 20 }, { type: "counter", amount: 9 }],
+      battle({ enemyHp: 40 }),
+    );
+    unmount();
+    act(() => vi.advanceTimersByTime(5000));
+    expect(setPlayer).not.toHaveBeenCalled();
+  });
+});
+
+describe("BattleScene assets", () => {
+  // assets C26
+  it("sp icon", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ sp: 40 })) });
+    renderScene();
+    const hero = await screen.findByLabelText("dev em combate");
+    const sp = within(hero).getByText("SP 40/50");
+    const img = sp.firstElementChild!;
+    expect(img.tagName).toBe("IMG");
+    expect(img.getAttribute("src")).toBe("/art/icon/ic-sp.png");
+    expect(img.getAttribute("alt")).toBe("");
+    expect(img.getAttribute("width")).toBe("16");
+    expect(sp.firstChild).toBe(img);
+  });
+});
+
+function expectLoadingFx(text: HTMLElement) {
+  const fx = text.querySelector("span.fx-loading") as HTMLElement;
+  expect(fx).not.toBeNull();
+  expect(fx.getAttribute("aria-hidden")).toBe("true");
+  expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/loading.png)");
+}
+
+describe("BattleScene loading", () => {
+  // assets C30
+  it("loading fx", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
+    renderScene();
+    expectLoadingFx(screen.getByText("CARREGANDO..."));
+  });
+});
+
+describe("BattleScene enemy by id", () => {
+  // assets-apply C8: the battle's enemy comes from battle.enemy, not from the region
+  const SLIME: Catalog["enemies"][number] = { id: "slime", region: "vila", name: "SLIME DE CACHE", level: 2, hp: 45, sp: 40, weakness: "cache invalidado", drop: "null_shard", glyph: "(o.o)" };
+  it("enemy by id: slime in vila", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ enemy: "slime", region: "vila", enemyHp: 45, enemyHpMax: 45 })) });
+    renderScene({ catalog: { ...CATALOG, enemies: [...CATALOG.enemies, SLIME] } });
+    const enemy = await screen.findByLabelText("inimigo");
+    expect(enemy).toHaveTextContent("SLIME DE CACHE");
+    expect(enemy).toHaveTextContent("fraqueza: cache invalidado");
+    expect(enemy).not.toHaveTextContent("NULL SLIME");
+    const img = sprite().querySelector("img")!;
+    expect(img.getAttribute("src")).toBe("/art/sprite/enemy-slime.png");
+    expect(img.getAttribute("alt")).toBe("SLIME DE CACHE");
+    expect(img.getAttribute("width")).toBe("128");
+  });
+});
+
+function expectFirstIcon(el: Element | null | undefined, src: string) {
+  const img = el?.firstElementChild;
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe("16");
+  expect(el!.firstChild).toBe(img);
+}
+
+describe("BattleScene applied assets", () => {
+  // assets-apply C11
+  it("wood header", async () => {
+    mockFetch({ "POST /api/me/battle": startWith() });
+    renderScene();
+    await screen.findByLabelText("inimigo");
+    expect(document.querySelector(".battle-head")).toHaveClass("panel-wood");
+  });
+
+  // assets-apply C12
+  it("button icon on NOVO ENCONTRO", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ status: "won", enemyHp: 0 })) });
+    renderScene();
+    expectFirstIcon(await screen.findByRole("button", { name: "NOVO ENCONTRO" }), "/art/icon/btn-play.png");
+  });
+
+  // assets-apply C13
+  it("generic icon on the log header and the RESOLVIDO seal", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ status: "won", enemyHp: 0 })) });
+    renderScene();
+    await screen.findByRole("button", { name: "NOVO ENCONTRO" });
+    expectFirstIcon(document.querySelector(".battle-log-title"), "/art/icon/ic-file.png");
+    const seal = screen.getByText("RESOLVIDO");
+    expectFirstIcon(seal, "/art/icon/ic-trophy.png");
   });
 });

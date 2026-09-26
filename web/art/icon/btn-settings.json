@@ -1,0 +1,9 @@
+{
+  "name": "btn-settings",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "SETTINGS: the steel cog.",
+  "layers": [
+    {"use": "ic-gear.json"}
+  ]
+}

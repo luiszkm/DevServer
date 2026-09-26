@@ -1,0 +1,9 @@
+{
+  "name": "medal-rubi",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "Medal rubi: the rosette in the red ramp.",
+  "layers": [
+    {"use": "_medal.json", "recolor": {"gold": "red"}}
+  ]
+}

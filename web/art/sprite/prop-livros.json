@@ -1,0 +1,23 @@
+{
+  "name": "prop-livros",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A stack of three books: green, blue and red spines (PROPS row 3).",
+  "layers": [
+    {"rect": [6, 20, 22, 6], "color": "red.2"},
+    {"rect": [6, 20, 22, 1], "color": "red.3"},
+    {"rect": [8, 21, 18, 3], "color": "cloud.2"},
+    {"rect": [6, 25, 22, 1], "color": "red.1"},
+    {"rect": [4, 14, 22, 6], "color": "net.1"},
+    {"rect": [4, 14, 22, 1], "color": "net.2"},
+    {"rect": [6, 15, 18, 3], "color": "cloud.3"},
+    {"rect": [4, 19, 22, 1], "color": "net.0"},
+    {"rect": [8, 8, 18, 6], "color": "code.1"},
+    {"rect": [8, 8, 18, 1], "color": "code.2"},
+    {"rect": [10, 9, 14, 3], "color": "cloud.2"},
+    {"rect": [8, 13, 18, 1], "color": "code.0"},
+    {"rect": [20, 16, 3, 1], "color": "gold.2"},
+    {"rect": [21, 22, 3, 1], "color": "gold.2"},
+    {"outline": "ink"}
+  ]
+}

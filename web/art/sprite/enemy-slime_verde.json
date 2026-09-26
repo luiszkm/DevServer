@@ -1,0 +1,9 @@
+{
+  "name": "enemy-slime_verde",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "Bug Fight art of the slime_verde enemy: the asset sheet mob, unchanged.",
+  "layers": [
+    {"use": "mob-slime-verde.json"}
+  ]
+}

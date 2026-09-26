@@ -1,0 +1,33 @@
+{
+  "name": "prop-rack",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A dark server rack with four units, blue and green LEDs (PROPS row 1).",
+  "layers": [
+    {"rect": [8, 4, 16, 25], "color": "stone.2"},
+    {"rect": [8, 4, 16, 1], "color": "stone.3"},
+    {"rect": [8, 4, 1, 25], "color": "stone.3"},
+    {"rect": [23, 5, 1, 24], "color": "stone.1"},
+    {"rect": [10, 6, 12, 3], "color": "stone.1"},
+    {"rect": [11, 7, 1, 1], "color": "net.3"},
+    {"rect": [13, 7, 1, 1], "color": "net.3"},
+    {"rect": [17, 7, 4, 1], "color": "ink.2"},
+    {"rect": [11, 7, 1, 1], "color": "net.1"},
+    {"rect": [10, 11, 12, 3], "color": "stone.1"},
+    {"rect": [11, 12, 1, 1], "color": "net.3"},
+    {"rect": [13, 12, 1, 1], "color": "code.3"},
+    {"rect": [17, 12, 4, 1], "color": "ink.2"},
+    {"rect": [11, 12, 1, 1], "color": "net.1"},
+    {"rect": [10, 16, 12, 3], "color": "stone.1"},
+    {"rect": [11, 17, 1, 1], "color": "net.3"},
+    {"rect": [13, 17, 1, 1], "color": "net.3"},
+    {"rect": [17, 17, 4, 1], "color": "ink.2"},
+    {"rect": [11, 17, 1, 1], "color": "net.1"},
+    {"rect": [10, 21, 12, 3], "color": "stone.1"},
+    {"rect": [11, 22, 1, 1], "color": "net.3"},
+    {"rect": [13, 22, 1, 1], "color": "code.3"},
+    {"rect": [17, 22, 4, 1], "color": "ink.2"},
+    {"rect": [11, 22, 1, 1], "color": "net.1"},
+    {"outline": "ink"}
+  ]
+}

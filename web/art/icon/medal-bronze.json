@@ -1,0 +1,9 @@
+{
+  "name": "medal-bronze",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "Medal bronze: the rosette in the bronze ramp.",
+  "layers": [
+    {"use": "_medal.json", "recolor": {"gold": "bronze"}}
+  ]
+}

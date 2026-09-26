@@ -173,10 +173,16 @@ func (e *Env) Session(githubUserID int64, login string) *http.Cookie {
 	return &http.Cookie{Name: auth.SessionCookie, Value: token}
 }
 
-// NewPlayer creates a session and a player through the api, failing the test on anything but 201.
+// NewPlayer creates a session and a masculino player through the api, failing the test on
+// anything but 201.
 func (e *Env) NewPlayer(githubUserID int64, devName, class string) *http.Cookie {
+	return e.NewPlayerWithBody(githubUserID, devName, class, "masculino")
+}
+
+// NewPlayerWithBody is NewPlayer for a player of the given body.
+func (e *Env) NewPlayerWithBody(githubUserID int64, devName, class, body string) *http.Cookie {
 	c := e.Session(githubUserID, "user")
-	rec := e.Do(http.MethodPost, "/api/players", map[string]string{"devName": devName, "class": class}, c)
+	rec := e.Do(http.MethodPost, "/api/players", map[string]string{"devName": devName, "class": class, "body": body}, c)
 	if rec.Code != http.StatusCreated {
 		e.T.Fatalf("create player %s: status %d body %s", devName, rec.Code, rec.Body.String())
 	}
@@ -215,6 +221,7 @@ type PlayerBody struct {
 	Player struct {
 		DevName     string `json:"devName"`
 		Class       string `json:"class"`
+		Body        string `json:"body"`
 		Level       int    `json:"level"`
 		XP          int    `json:"xp"`
 		XPMax       int    `json:"xpMax"`

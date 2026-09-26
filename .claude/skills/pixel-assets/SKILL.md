@@ -1,6 +1,6 @@
 ---
 name: pixel-assets
-description: "Generate DevServer game art (sprites, enemies, item/HUD icons, scene backgrounds, UI panels) as pixel art in the style of web/public/keyart.png, drawn from JSON specs by a stdlib-only Python renderer that locks every pixel to the key art's palette and checks outline, size and transparency. Use whenever the user wants a new or changed game image: \"gera um sprite\", \"cria o inimigo\", \"ícone da poção\", \"fundo da cena\", \"asset\", \"arte do jogo\", \"pixel art\", replace an emoji/glyph with a picture, add an enemy/item that needs art, or make art match the key art, even if they never say 'asset'. Do NOT use for CSS-only styling, editing keyart.png itself, or non-game images (diagrams, charts, screenshots)."
+description: "Generate DevServer game art (sprites, enemies, item/HUD icons, scene backgrounds, UI panels, battle hit effects) as pixel art in the style of web/public/keyart.png, drawn from JSON specs by a stdlib-only Python renderer that locks every pixel to the key art's palette and checks outline, size and transparency. Use whenever the user wants a new or changed game image: \"gera um sprite\", \"cria o inimigo\", \"ícone da poção\", \"fundo da cena\", \"asset\", \"arte do jogo\", \"pixel art\", replace an emoji/glyph with a picture, add an enemy/item that needs art, or make art match the key art, even if they never say 'asset'. Do NOT use for CSS-only styling, editing keyart.png itself, or non-game images (diagrams, charts, screenshots)."
 ---
 
 # pixel-assets
@@ -25,7 +25,8 @@ Paths below are relative to this skill's folder unless they start with `web/`.
    display size and neighbours, and whether several variants are needed (one per enemy,
    per region, per item).
 4. **Start from the closest example** in `examples/` (`coin` icon, `slime` sprite,
-   `slime-red` recolor variant, `panel` 9-slice UI, `meadow` background). The op list is in
+   `slime-red` recolor variant, `panel` 9-slice UI, `meadow` background; for an `fx`
+   4-frame effect strip, start from `web/art/fx/slash.json`). The op list is in
    `references/spec-format.md`.
 
 ## Drawing loop
@@ -61,6 +62,8 @@ Only when the user asks for it (making the art and using it are separate asks):
 
 - `<img src="/art/<category>/<name>.png" className="pixelated" alt="..." />`, scaled by a
   whole number (32px sprite → 128px). See "Displaying assets" in the style guide.
+- `fx` strips are not `<img>`s: they are a CSS background stepped with `steps(4)`; see
+  "fx: battle effects" in the style guide.
 - It's a normal code change: follow the test policy in `AGENTS.md`. Existing tests may
   assert the old glyph or markup (e.g. `BattleScene.test.tsx`); update them to what the
   spec says, not to whatever the new markup happens to render.

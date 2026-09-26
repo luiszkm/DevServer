@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"slices"
 	"sort"
 	"sync"
 
@@ -57,6 +58,7 @@ type SkillTree struct {
 }
 
 type Enemy struct {
+	ID       string `json:"id"`
 	Region   string `json:"region"`
 	Name     string `json:"name"`
 	Level    int    `json:"level"`
@@ -115,8 +117,17 @@ type Gear struct {
 	Slot        string `json:"slot"`
 	Rarity      string `json:"rarity"`
 	Description string `json:"description"`
-	Price       Price  `json:"price"`
-	Bonus       Bonus  `json:"bonus"`
+	// Price is nil for gear the shop does not sell (made only at the forge).
+	Price *Price `json:"price,omitempty"`
+	Bonus Bonus  `json:"bonus"`
+	// Look is nil for gear that does not change the hero's picture; otherwise the gear-only
+	// avatar option it dresses while equipped.
+	Look *GearLook `json:"look,omitempty"`
+}
+
+type GearLook struct {
+	Part   string `json:"part"`
+	Option string `json:"option"`
 }
 
 type Skin struct {
@@ -124,8 +135,10 @@ type Skin struct {
 	Name        string `json:"name"`
 	Rarity      string `json:"rarity"`
 	Description string `json:"description"`
-	Filter      string `json:"filter"`
-	Price       Price  `json:"price"`
+	// Palette recolors color parts while the skin is worn: part id to a 4-tone ramp, darkest
+	// first. Empty for the default skin.
+	Palette map[string][]string `json:"palette"`
+	Price   Price               `json:"price"`
 	// Bonus is nil for a skin without an attribute bonus.
 	Bonus *Bonus `json:"bonus"`
 }
@@ -192,9 +205,69 @@ type Rack struct {
 	Components []Component `json:"components"`
 }
 
+// AvatarPart is one editable part of the hero; Kind is "color" (options carry a ramp) or "style"
+// (options carry a layer). GearSlot names the gear slot whose look overrides the part.
+type AvatarPart struct {
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Kind     string `json:"kind"`
+	GearSlot string `json:"gearSlot,omitempty"`
+}
+
+// AvatarOption is a choice for one part. Price is nil for a free option; GearOnly options come
+// only from equipped gear and are never picked; Fixed styles ignore the part's color.
+type AvatarOption struct {
+	ID       string   `json:"id"`
+	Part     string   `json:"part"`
+	Name     string   `json:"name"`
+	Ramp     []string `json:"ramp,omitempty"`
+	Layer    string   `json:"layer,omitempty"`
+	Fixed    bool     `json:"fixed,omitempty"`
+	GearOnly bool     `json:"gearOnly,omitempty"`
+	Price    *Price   `json:"price,omitempty"`
+	// Bodies lists the body ids that may wear the option; empty means every body.
+	Bodies []string `json:"bodies,omitempty"`
+}
+
+// AvailableTo reports whether a hero of the given body may wear the option.
+func (o AvatarOption) AvailableTo(body string) bool {
+	return len(o.Bodies) == 0 || slices.Contains(o.Bodies, body)
+}
+
+// AvatarBody is a body type of the hero; Defaults overrides Avatar.Defaults for the parts it
+// lists.
+type AvatarBody struct {
+	ID       string            `json:"id"`
+	Name     string            `json:"name"`
+	Defaults map[string]string `json:"defaults,omitempty"`
+}
+
+type Avatar struct {
+	Parts   []AvatarPart   `json:"parts"`
+	Bodies  []AvatarBody   `json:"bodies"`
+	Options []AvatarOption `json:"options"`
+	// Defaults has one free option per part, worn until the player picks another.
+	Defaults map[string]string `json:"defaults"`
+}
+
 type ItemQuantity struct {
 	Item     string `json:"item"`
 	Quantity int    `json:"quantity"`
+}
+
+// RecipeOutput is what a forge recipe makes; Kind is "item" or "gear".
+type RecipeOutput struct {
+	Kind string `json:"kind"`
+	ID   string `json:"id"`
+}
+
+// Recipe turns its ingredients, plus an optional price, into one unit of its output.
+type Recipe struct {
+	ID          string         `json:"id"`
+	Output      RecipeOutput   `json:"output"`
+	Ingredients []ItemQuantity `json:"ingredients"`
+	// Price is nil for a recipe that costs only its ingredients.
+	Price *Price `json:"price,omitempty"`
 }
 
 type CombatRules struct {
@@ -227,6 +300,8 @@ type Catalog struct {
 	Skins        []Skin
 	Office       Office
 	Rack         Rack
+	Recipes      []Recipe
+	Avatar       Avatar
 	body         []byte
 }
 
@@ -325,6 +400,26 @@ func Load() (*Catalog, error) {
 		return nil, fmt.Errorf("rack.json: %w", err)
 	}
 
+	raw, err = data.Files.ReadFile("forge.json")
+	if err != nil {
+		return nil, err
+	}
+	var forge struct {
+		Recipes []Recipe `json:"recipes"`
+	}
+	if err := json.Unmarshal(raw, &forge); err != nil {
+		return nil, fmt.Errorf("forge.json: %w", err)
+	}
+	c.Recipes = forge.Recipes
+
+	raw, err = data.Files.ReadFile("avatar.json")
+	if err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(raw, &c.Avatar); err != nil {
+		return nil, fmt.Errorf("avatar.json: %w", err)
+	}
+
 	c.body, err = json.Marshal(struct {
 		Version      string        `json:"version"`
 		Regions      []Region      `json:"regions"`
@@ -340,8 +435,10 @@ func Load() (*Catalog, error) {
 		Skins        []Skin        `json:"skins"`
 		Office       Office        `json:"office"`
 		Rack         Rack          `json:"rack"`
+		Recipes      []Recipe      `json:"recipes"`
+		Avatar       Avatar        `json:"avatar"`
 	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees, c.Enemies, c.Commands, c.Items, c.Combat,
-		c.GearSlots, c.Gear, c.Skins, c.Office, c.Rack})
+		c.GearSlots, c.Gear, c.Skins, c.Office, c.Rack, c.Recipes, c.Avatar})
 	if err != nil {
 		return nil, err
 	}
@@ -404,13 +501,25 @@ func (c *Catalog) SkillPosition(id string) int {
 	return pos
 }
 
-func (c *Catalog) Enemy(region string) (Enemy, bool) {
+// Enemy finds an enemy by its catalog id (assets-apply door 1).
+func (c *Catalog) Enemy(id string) (Enemy, bool) {
 	for _, e := range c.Enemies {
-		if e.Region == region {
+		if e.ID == id {
 			return e, true
 		}
 	}
 	return Enemy{}, false
+}
+
+// EnemiesIn lists a region's enemies in catalog order; the battle start draws one of them.
+func (c *Catalog) EnemiesIn(region string) []Enemy {
+	var out []Enemy
+	for _, e := range c.Enemies {
+		if e.Region == region {
+			out = append(out, e)
+		}
+	}
+	return out
 }
 
 func (c *Catalog) Command(id string) (Command, bool) {
@@ -504,6 +613,63 @@ func (c *Catalog) ComponentItem(id string) (Component, bool) {
 		}
 	}
 	return Component{}, false
+}
+
+func (c *Catalog) Recipe(id string) (Recipe, bool) {
+	for _, r := range c.Recipes {
+		if r.ID == id {
+			return r, true
+		}
+	}
+	return Recipe{}, false
+}
+
+func (c *Catalog) AvatarPart(id string) (AvatarPart, bool) {
+	for _, p := range c.Avatar.Parts {
+		if p.ID == id {
+			return p, true
+		}
+	}
+	return AvatarPart{}, false
+}
+
+func (c *Catalog) AvatarOption(id string) (AvatarOption, bool) {
+	for _, o := range c.Avatar.Options {
+		if o.ID == id {
+			return o, true
+		}
+	}
+	return AvatarOption{}, false
+}
+
+func (c *Catalog) AvatarBody(id string) (AvatarBody, bool) {
+	for _, b := range c.Avatar.Bodies {
+		if b.ID == id {
+			return b, true
+		}
+	}
+	return AvatarBody{}, false
+}
+
+// AvatarDefault is the option a hero of body wears on part until picking another: the body's own
+// default when it lists the part, Avatar.Defaults otherwise.
+func (c *Catalog) AvatarDefault(body, part string) string {
+	if b, ok := c.AvatarBody(body); ok {
+		if id, ok := b.Defaults[part]; ok {
+			return id
+		}
+	}
+	return c.Avatar.Defaults[part]
+}
+
+// AvatarOptionPosition orders option ids as the catalog lists them; unknown ids sort last.
+func (c *Catalog) AvatarOptionPosition(id string) int {
+	for i, o := range c.Avatar.Options {
+		if o.ID == id {
+			return i
+		}
+	}
+	return len(c.Avatar.Options)
 }
 
 // SkillBonus sums the bonus of one type ("hp", "sp", "dmg") over the given skill ids.

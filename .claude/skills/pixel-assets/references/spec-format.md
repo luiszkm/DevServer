@@ -2,7 +2,8 @@
 
 A spec is one JSON file that `scripts/render.py` turns into one PNG. Specs are the source
 of truth: they live in `web/art/<category>/<name>.json`, the PNGs in
-`web/public/art/<category>/<name>.png` are build output, and you change a PNG by changing
+`web/public/art/<category>/<name>.png` are build output (subfolders under the category
+folder are kept: `web/art/sprite/hero/body.json` → `web/public/art/sprite/hero/body.png`), and you change a PNG by changing
 its spec and re-rendering.
 
 ```json
@@ -19,7 +20,7 @@ its spec and re-rendering.
 | Field | Meaning |
 | --- | --- |
 | `name` | Output file name (defaults to the spec file name). |
-| `category` | `icon`, `sprite`, `background` or `ui`. Picks the output folder and the checks. |
+| `category` | `icon`, `sprite`, `background`, `ui`, `fx`, `tile` or `anim`. Picks the output folder and the checks (`anim` strips land in `sprite/`, beside the hero layers they animate). |
 | `size` | `[w, h]` in art pixels (1 art pixel = 1 PNG pixel; CSS does the zoom). |
 | `legend` | Default char → color map for every `grid` op. `null` means transparent. |
 | `recolor` | Ramp → ramp swap applied to every color in this spec, e.g. `{"slime": "red"}`. |
@@ -44,7 +45,7 @@ Coordinates are integers, origin top-left. Boxes are `[x, y, w, h]`.
 | `{"bands": [x,y,w,h], "colors": [k...], "dither": n}` | Top-to-bottom flat bands with `n` rows of ordered dithering above each seam. | Skies, the only gradient the style allows. |
 | `{"ridge": [x,y,w,h], "mode": "blocks"\|"round", "color": k, "heights": [lo,hi], "widths": [a,b], "radii": [a,b], "seed": s, "lights": {"color": k, "density": d}}` | A jagged skyline filled down to the box bottom. `blocks` = city buildings (`widths`), `round` = tree canopies/hills (`radii`). `lights` sprinkles lit windows (blocks). Round mode leaves gaps between bumps; paint something under it. | Parallax layers of backgrounds. |
 | `{"scatter": [x,y,w,h], "colors": [k...], "density": d, "seed": s, "on": k}` | Random pixels; with `on`, only over pixels already of that color. | Grass/soil texture, stars, sparkles. |
-| `{"use": "other.json", "at": [x,y], "flip": "h", "recolor": {...}}` | Paints another spec (path relative to this file) onto this one. | Placing props in a scene, variants of an enemy. |
+| `{"use": "other.json", "at": [x,y], "flip": "h", "recolor": {...}, "clip": [x,y,w,h]}` | Paints another spec (path relative to this file) onto this one. With `clip`, only that box of the source is painted, its top-left at `at`. | Placing props in a scene, variants of an enemy, moving one region of a hero layer per animation frame. |
 | `{"outline": k}` | Adds a 1px outline on every transparent pixel touching an opaque one. Put it after the shape is complete. | Sprites and icons built from ellipses/rects. |
 
 Seeds make `ridge` and `scatter` deterministic: same spec, same PNG. Change the seed to
@@ -61,6 +62,8 @@ python3 $S/render.py web/art/sprite/slime.json --out web/public/art \
         --preview /tmp/preview.png                                      # one, plus a 4x sheet
 python3 $S/render.py --check some.png --category icon                   # check a PNG not built from a spec
 python3 $S/sample_colors.py web/public/keyart.png 1245,755,45,60        # pull tones from the key art
+python3 $S/hero_anim.py && python3 $S/render.py web/art/sprite/hero/anim --out web/public/art
+                                                                        # hero strips: regenerate after a new hero layer or a rig change
 ```
 
 `ok` = passes; `WARN` = style rule bent (fix it or say why); `ERROR` = off-palette color,

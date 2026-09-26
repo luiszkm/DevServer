@@ -31,7 +31,8 @@ invent hex values.
 
 ### sprite: characters, enemies, props
 
-- Sizes: 32x32 (enemy, prop), 32x48 (humanoid), 48x48 / 64x64 (boss, big prop).
+- Sizes: 32x32 (enemy, prop, NPC, extra), 32x48 (humanoid), 48x64 (the layered hero), 48x48 / 64x64
+  (boss, big prop), 96x96 (building).
 - Chibi proportions, like the hero: head about 40% of the height, big simple eyes (2x2 or
   2x3 ink with one white pixel), short legs.
 - The silhouette must read at 1x. Test it: squint at the preview. If you can't tell what it
@@ -41,6 +42,38 @@ invent hex values.
   corrupted-data blobs, a "null pointer" ghost. Tie the design to the enemy's name.
 - Variants (colour, level) are a `use` with `recolor`, not a copied grid.
 - Draw facing right. Flip in CSS (`transform: scaleX(-1)`) or with `flip: "h"`.
+
+### hero layers
+
+- The player avatar is a **48x64 humanoid** built from stacked layers in
+  `web/art/sprite/hero/` (PNGs in `web/public/art/sprite/hero/`). Every layer is a full
+  48x64 transparent canvas on the **same grid**, so the game stacks them with no offsets.
+  Draw order: `body` → `bottom` → `top-<style>` → `laptop-<style>` → `hand` → `beard-<style>`
+  (optional) → `hair-<style>` → `glasses-<style>` (optional).
+- Two bodies. The masculine body is traced from `web/public/keyart.png`, the feminine body from
+  `web/public/female_keyart.png`. On the feminine body EVERY layer uses its `-f` variant (`body-f`,
+  `bottom-f`, `top-*-f`, `hand-f`, `laptop-*-f`, `hair-*-f`, `glasses-*-f`); `beard-*` is masculine only.
+  Her head sits 4px right of his and her laptop is the frontal one of her key art, so masculine hair,
+  glasses and laptops are re-fitted, not reused.
+- Each recolourable layer is painted with its part's **default ramp (the base ramp)**: body
+  = `skin` + `av-eyes-castanho` (iris), hand = `skin`, bottom = `denim`, swappable tops =
+  `av-top-grafite`, hair and beards = `av-hair-preto`
+  (they follow hairColor). The eyebrows live in the body layers (`body` thick, `body-f` thin and
+  arched), painted in `av-hair-preto`, so the game swaps hairColor on the body layer too; hair
+  layers leave the brow pixels clear (`hair-careca` is an empty layer). Glasses are fixed colours (`ink`, `metal`, `stone`,
+  `net`, `gem`, `white`).
+  The game recolours at runtime by swapping hex→hex from the base ramp to the chosen option
+  ramp, index for index.
+- `av-*` ramps are the option ramps. Each has the **same tone count as its base ramp**
+  (4), darkest first, and every hex is unique across the palette so the swap is unambiguous.
+- **Never mix a base ramp colour into a fixed element**: shoes, the `</>` logo, laptops and
+  fixed tops (`top-jaqueta`, `top-moletom_gear`, `top-hoodie_trace`) use other ramps
+  (`ink`, `wood`, `dirt`, `stone`, `metal`, `red`, `net`, `gold`...), or they would get
+  recoloured with the part.
+- `ink` outline, `white` highlights and `code` are never swapped.
+- A layer on its own is not a closed silhouette (the hand, a moustache, a hair fringe), so the
+  per-sprite outline check may `WARN` on it; judge the outline on a stacked preview (a spec
+  that `use`s the layers in draw order, with `recolor` for the options).
 
 ### icon: items, currency, HUD, skills
 
@@ -74,6 +107,58 @@ invent hex values.
   `wood.0` plank seams, `metal.2` nail pixels).
 - **Never bake text into an image.** Labels are HTML in the pixel font (`.pixel`), so they
   stay translatable, accessible and crisp.
+
+### fx: battle effects
+
+- One 128x32 PNG = a horizontal strip of **4 frames, each 32x32**; frame `i` occupies
+  x = `32*i` .. `32*i+31`. Frames read left to right as **start → peak → fade → almost gone**,
+  and every frame must differ from the others.
+- Keep each frame's content inside its own 32x32 cell with a **1px clear margin**: nothing on
+  the cell's border row/column, nothing bleeding into the neighbour frame (the renderer
+  warns about both, and about identical or empty frames).
+- Transparent background, like sprites. The ink outline is optional: effects are light and
+  energy, so the edge is the darkest tone of the effect's own ramp (`gold.1`, `code.0`,
+  `net.0`...) or nothing. An `{"outline": ...}` op runs over the whole strip, so put it right
+  after the frames it should touch and before the others.
+- One ramp per effect, keyed to its source: generic hit = `gold` + `white`, enemy hit = `red`
+  + `gold`, frontend = `code`, backend = `net`, infra = `gold`, weakness/scan = `slime` +
+  `gem`, heal = `code`, defense = `net`.
+- The peak frame fills most of the cell; the last frame is a few pixels or specks.
+- Shown at 3x (a 96x96 box) as a CSS sprite: `background: url(/art/fx/slash.png) 0 0 / 384px
+  96px; image-rendering: pixelated; animation: fx 400ms steps(4) forwards;` with
+  `@keyframes fx { to { background-position: -384px 0; } }`.
+
+### tile: tileset
+
+- Ground tiles are **32x32 and fully opaque** (`tile/tile-<name>`), drawn so the same tile
+  repeats seamlessly next to itself: check the preview with the tile placed 3x3.
+- Animated tiles (water, waterfall) are a 128x32 strip of 4 frames, like `fx`, with no margin rule
+  (a tile fills its cell edge to edge) and every frame different.
+- Decals that sit on top of the ground (bush, flower, trees, fence) are transparent sprites named
+  `sprite/tile-<name>`, outlined like any sprite.
+- Top-down light: highlight the top edge of a block, shade its bottom, as in the key art's tileset.
+
+### anim: hero animation strips
+
+- One 192x64 PNG = **4 frames of 48x64**, frame `i` at x = `48*i`, on the same grid as the static
+  hero layer, per layer per anim: `sprite/hero/anim/<layer>-<anim>.png`, anims `idle`, `walk`,
+  `run`, `jump`, `interact`.
+- The renderer warns about a frame touching its 1px cell margin, an empty frame and two identical
+  frames, like `fx`.
+- Strips are generated, never hand-drawn: `scripts/hero_anim.py` cuts each static layer into the rig's
+  regions (`head`, `torso`, `legL`, `legR` in `web/art/sprite/hero/anim/_poses.json`) and repaints them
+  with each frame's offsets (`use` + `clip`), so the game's hex recolour keeps working. A new layer needs
+  a body in the rig's `assign` table (the script exits 1 otherwise), then a regenerate and render.
+- Offsets only move a region down or sideways relative to the one below it (head dy >= torso dy >= legs
+  dy), so no gap opens at a cut. The hair already sits 1px from the top, so nothing rises: `jump` is
+  crouch/tuck poses and the game lifts the canvas on the airborne frames.
+- Expected `WARN`s: the empty `hair-careca*` strips ("frame N is empty") and "identical frames" on a
+  layer that lives in one region when that region's offset repeats (a hair layer in `walk`).
+
+### logo
+
+- `sprite/logo` (160x64) is the one image allowed to carry text: it is a logotype (WCAG 1.4.5
+  exception), shown with `alt="DevServer"`. Taglines and every other label stay HTML.
 
 ## Displaying assets
 

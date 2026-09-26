@@ -1,0 +1,20 @@
+{
+  "name": "tile-parede-madeira",
+  "category": "tile",
+  "size": [32, 32],
+  "_design": "Wooden wall: two vertical boards with a crossbeam and nails.",
+  "layers": [
+    {"fill": "wood.0"},
+    {"rect": [1, 0, 14, 32], "color": "wood.2"},
+    {"rect": [17, 0, 14, 32], "color": "wood.2"},
+    {"rect": [1, 0, 1, 32], "color": "wood.3"},
+    {"rect": [17, 0, 1, 32], "color": "wood.3"},
+    {"rect": [14, 0, 1, 32], "color": "wood.1"},
+    {"rect": [30, 0, 1, 32], "color": "wood.1"},
+    {"rect": [0, 15, 32, 2], "color": "wood.1"},
+    {"rect": [4, 13, 1, 1], "color": "metal.2"},
+    {"rect": [20, 13, 1, 1], "color": "metal.2"},
+    {"rect": [4, 18, 1, 1], "color": "metal.2"},
+    {"rect": [20, 18, 1, 1], "color": "metal.2"}
+  ]
+}

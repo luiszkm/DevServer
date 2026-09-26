@@ -1,0 +1,27 @@
+{
+  "name": "build-tenda",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A canvas tent with a dark doorway and the </> flag on top (ESTRUTURAS row 2).",
+  "layers": [
+    {"poly": [[16, 10], [29, 27], [3, 27]], "color": "cloud.2"},
+    {"poly": [[16, 10], [29, 27], [16, 27]], "color": "dirt.3"},
+    {"poly": [[16, 16], [20, 27], [12, 27]], "color": "soil.2"},
+    {"line": [16, 10, 3, 27], "color": "white"},
+    {"line": [16, 11, 16, 27], "color": "dirt.2"},
+    {"rect": [2, 27, 28, 1], "color": "dirt.2"},
+    {"rect": [15, 2, 2, 8], "color": "metal.2"},
+    {"rect": [15, 2, 1, 8], "color": "metal.3"},
+    {"ellipse": [16, 1, 1, 1], "color": "metal.3"},
+    {"rect": [17, 3, 12, 9], "color": "code.0"},
+    {"rect": [17, 3, 12, 1], "color": "code.1"},
+    {"rect": [17, 11, 12, 1], "color": "leaf.0"},
+    {"grid": [
+      ".G..G.G.",
+      "G...G..G",
+      ".G.G..G."
+    ], "legend": {"G": "code.3"}, "at": [19, 6]},
+    {"rect": [14, 10, 4, 2], "color": "stone.2"},
+    {"outline": "ink"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "extra-lampada",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A street lamp with a warm lit lantern (EXTRAS: lâmpada).",
+  "layers": [
+    {"rect": [15, 11, 2, 16], "color": "metal.1"},
+    {"rect": [15, 11, 1, 16], "color": "metal.2"},
+    {"rect": [12, 26, 8, 3], "color": "metal.1"},
+    {"rect": [12, 26, 8, 1], "color": "metal.2"},
+    {"rect": [11, 4, 10, 8], "color": "ink.2"},
+    {"rect": [12, 5, 8, 6], "color": "lamp.2"},
+    {"rect": [13, 5, 3, 3], "color": "lamp.3"},
+    {"rect": [10, 3, 12, 1], "color": "metal.1"},
+    {"rect": [14, 1, 4, 2], "color": "metal.1"},
+    {"outline": "ink"}
+  ]
+}

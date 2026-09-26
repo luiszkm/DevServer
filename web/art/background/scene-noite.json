@@ -1,0 +1,17 @@
+{
+  "name": "scene-noite",
+  "category": "background",
+  "size": [320, 180],
+  "_design": "CENÁRIO NOITE (skills): deep night sky with stars and a full moon over a dark city with warm lit windows.",
+  "layers": [
+    {"bands": [0, 0, 320, 180], "colors": ["ink.1", "denim.0", "denim.1", "sky.0"], "dither": 3},
+    {"scatter": [0, 0, 320, 110], "colors": ["white", "net.4", "cloud.1"], "density": 0.004, "seed": 21},
+    {"ellipse": [268, 34, 11, 11], "color": "cloud.3"},
+    {"ellipse": [266, 32, 9, 9], "color": "white"},
+    {"rect": [271, 37, 1, 1], "color": "cloud.1"},
+    {"rect": [263, 30, 1, 1], "color": "cloud.2"},
+    {"ridge": [0, 80, 320, 100], "mode": "blocks", "color": "denim.0", "heights": [40, 95], "widths": [10, 24], "seed": 6, "lights": {"color": "net.2", "density": 0.05}},
+    {"ridge": [0, 115, 320, 65], "mode": "blocks", "color": "roof.0", "heights": [25, 60], "widths": [12, 28], "seed": 12, "lights": {"color": "lamp.2", "density": 0.06}},
+    {"ridge": [0, 150, 320, 30], "mode": "blocks", "color": "ink.1", "heights": [10, 28], "widths": [16, 30], "seed": 3, "lights": {"color": "net.3", "density": 0.06}}
+  ]
+}

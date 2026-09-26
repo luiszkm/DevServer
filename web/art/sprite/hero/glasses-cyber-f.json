@@ -1,0 +1,17 @@
+{
+  "name": "glasses-cyber-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "The glasses-cyber design with the lenses on her eyes. Fixed colours.",
+  "legend": {"o": "ink", "M": "metal.2", "n": "net.1", "b": "net.2", "B": "net.3", "g": "gem.3", "G": "gem.4"},
+  "layers": [
+    {"grid": [
+      "....oooooooooooooo.",
+      "...onGGgnnnnnnnnnno",
+      "MMonBBBBBBBBBBBBBno",
+      "..onnnnnnnnnnnnnnno",
+      "...obbbbbbbbbbbbbo.",
+      "....ooooooooooooo.."
+    ], "at": [16, 16]}
+  ]
+}

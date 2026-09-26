@@ -297,3 +297,62 @@ describe("ServerScene", () => {
     expect(scene.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/server.png)");
   });
 });
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("ServerScene assets", () => {
+  // assets C23
+  it("price icon", () => {
+    renderServer(player({ rack: rack() }));
+    const price = card("cpu").querySelector(".server-card-price")!;
+    expect(price.textContent).toBe("80C");
+    expectIcon(price.firstElementChild, "/art/icon/hud-coin.png");
+    expect(price.firstChild).toBe(price.firstElementChild);
+  });
+
+  // assets C25
+  it.each([
+    ["power", "POWER", "ic-chart"],
+    ["ram", "RAM", "ic-database"],
+    ["uptime", "UPTIME", "ic-shield"],
+  ])("stat icons (%s)", (id, name, icon) => {
+    renderServer(player({ rack: rack() }));
+    const label = document.querySelector(`[data-stat="${id}"] .server-stat-name`)!;
+    expect(label.textContent).toBe(name);
+    expectIcon(label.firstElementChild, `/art/icon/${icon}.png`);
+    expect(label.firstChild).toBe(label.firstElementChild);
+  });
+});
+
+describe("ServerScene robot", () => {
+  // assets C36
+  it("robot beside the terminal", () => {
+    renderServer(player({ rack: rack() }));
+    const robot = screen.getByRole("img", { name: "robô" });
+    expect(robot.getAttribute("src")).toBe("/art/sprite/mob-robo.png");
+    expect(robot.getAttribute("width")).toBe("64");
+  });
+});
+
+function expectFirstIcon(el: Element | null | undefined, src: string) {
+  const img = el?.firstElementChild;
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe("16");
+  expect(el!.firstChild).toBe(img);
+}
+
+describe("ServerScene applied assets", () => {
+  // assets-apply C13
+  it("generic icon on the RACK title", () => {
+    renderServer(player({ rack: rack() }));
+    const title = screen.getByText("RACK LOCALHOST-01", { selector: ".server-title" });
+    expectFirstIcon(title, "/art/icon/ic-wrench.png");
+  });
+});

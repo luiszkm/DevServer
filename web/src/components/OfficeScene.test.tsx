@@ -328,7 +328,7 @@ describe("OfficeScene", () => {
     expect(cell("piso", 1).querySelector(".office-cell-glyph")?.textContent).toBe("?");
 
     fireEvent.error(card("mesa").querySelector("img")!);
-    expect(card("mesa").querySelector("img")).toBeNull();
+    expect(card("mesa").querySelector(".office-glyph img")).toBeNull();
     expect(card("mesa").querySelector(".office-glyph")).toHaveTextContent("[==]");
   });
 
@@ -338,5 +338,60 @@ describe("OfficeScene", () => {
     const room = screen.getByRole("region", { name: "sala" });
     expect(room).toHaveClass("office-room");
     expect(room.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/office.png)");
+  });
+});
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("OfficeScene assets", () => {
+  // assets C22
+  it("price icon", () => {
+    renderOffice(player({ office: room() }));
+    const coins = card("mesa").querySelector(".office-tag")!;
+    expect(coins.textContent).toBe("60C");
+    expectIcon(coins.firstElementChild, "/art/icon/hud-coin.png");
+    expect(coins.firstChild).toBe(coins.firstElementChild);
+    const gems = card("janela").querySelector(".office-tag")!;
+    expect(gems.textContent).toBe("60G");
+    expectIcon(gems.firstElementChild, "/art/icon/hud-gem.png");
+    expect(gems.firstChild).toBe(gems.firstElementChild);
+  });
+
+  // assets C24: comfort 0 / 30 / 75 / 120 / 190 reach levels 1..5 (janela = 15, setup2 = 14)
+  const windows = (n: number) => Object.fromEntries(Array.from({ length: n }, (_, i) => [i, "janela"]));
+  const setups = (n: number) => Object.fromEntries(Array.from({ length: n }, (_, i) => [i, "setup2"]));
+  it.each([
+    [room(), "CANTINHO", "bronze"],
+    [room({ parede: windows(2) }), "HOME OFFICE", "prata"],
+    [room({ parede: windows(5) }), "ESTÚDIO", "ouro"],
+    [room({ parede: windows(8) }), "LAB DEV", "azul"],
+    [room({ parede: windows(8), piso: setups(5) }), "SEDE DEVSERVE", "roxo"],
+  ])("level medal (%#)", (office, name, medal) => {
+    renderOffice(player({ office }));
+    const level = document.querySelector(".office-level")!;
+    expect(level.textContent).toBe(name);
+    expectIcon(level.firstElementChild, `/art/icon/medal-${medal}.png`, 32);
+    expect(level.firstChild).toBe(level.firstElementChild);
+  });
+});
+
+describe("OfficeScene applied assets", () => {
+  // assets-apply C11
+  it("wood header", () => {
+    renderOffice();
+    expect(document.querySelector(".office-head")).toHaveClass("panel-wood");
+  });
+
+  // assets-apply C17
+  it("tiled zones", () => {
+    renderOffice();
+    const zone = (name: string) => screen.getByRole("group", { name }) as HTMLElement;
+    expect(zone("PAREDE").style.backgroundImage.replace(/"/g, "")).toBe("url(/art/tile/tile-parede-madeira.png)");
+    expect(zone("PISO").style.backgroundImage.replace(/"/g, "")).toBe("url(/art/tile/tile-tabua.png)");
   });
 });

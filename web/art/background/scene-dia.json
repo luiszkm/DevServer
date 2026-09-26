@@ -1,0 +1,32 @@
+{
+  "name": "scene-dia",
+  "category": "background",
+  "size": [320, 180],
+  "_design": "CENÁRIO DIA (deploy): bright blue sky with white clouds over a layered blue city skyline; calm middle band.",
+  "layers": [
+    {"bands": [0, 0, 320, 180], "colors": ["sky.1", "sky.2", "sky.3"], "dither": 3},
+    {"ellipse": [40, 30, 8, 4], "color": "cloud.3"},
+    {"ellipse": [48, 27, 7, 5], "color": "cloud.3"},
+    {"ellipse": [56, 30, 7, 4], "color": "cloud.3"},
+    {"ellipse": [47, 25, 4, 2], "color": "white"},
+    {"rect": [34, 32, 29, 2], "color": "cloud.1"},
+    {"ellipse": [150, 22, 8, 4], "color": "cloud.3"},
+    {"ellipse": [158, 19, 7, 5], "color": "cloud.3"},
+    {"ellipse": [166, 22, 7, 4], "color": "cloud.3"},
+    {"ellipse": [157, 17, 4, 2], "color": "white"},
+    {"rect": [144, 24, 29, 2], "color": "cloud.1"},
+    {"ellipse": [250, 40, 8, 4], "color": "cloud.3"},
+    {"ellipse": [258, 37, 7, 5], "color": "cloud.3"},
+    {"ellipse": [266, 40, 7, 4], "color": "cloud.3"},
+    {"ellipse": [257, 35, 4, 2], "color": "white"},
+    {"rect": [244, 42, 29, 2], "color": "cloud.1"},
+    {"ellipse": [300, 18, 8, 4], "color": "cloud.3"},
+    {"ellipse": [308, 15, 7, 5], "color": "cloud.3"},
+    {"ellipse": [316, 18, 7, 4], "color": "cloud.3"},
+    {"ellipse": [307, 13, 4, 2], "color": "white"},
+    {"rect": [294, 20, 29, 2], "color": "cloud.1"},
+    {"ridge": [0, 90, 320, 90], "mode": "blocks", "color": "sky.2", "heights": [30, 80], "widths": [10, 22], "seed": 5, "lights": {"color": "sky.4", "density": 0.05}},
+    {"ridge": [0, 120, 320, 60], "mode": "blocks", "color": "sky.1", "heights": [20, 55], "widths": [12, 26], "seed": 9, "lights": {"color": "sky.3", "density": 0.07}},
+    {"ridge": [0, 150, 320, 30], "mode": "blocks", "color": "sky.0", "heights": [12, 30], "widths": [14, 30], "seed": 2, "lights": {"color": "net.3", "density": 0.05}}
+  ]
+}

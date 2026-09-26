@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { api, post } from "@/lib/api";
-import type { Player } from "@/lib/types";
+import { bodyDefaults } from "@/lib/avatar";
+import type { Catalog, Player } from "@/lib/types";
+import { HeroAvatar } from "./HeroAvatar";
+import { LoadingFx } from "./LoadingFx";
 
 type OnboardingData = { suggestedDevName: string; classes: string[] };
 
@@ -10,17 +13,25 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
   const [data, setData] = useState<OnboardingData | null>(null);
   const [devName, setDevName] = useState("");
   const [cls, setCls] = useState<string | null>(null);
+  // The body is chosen once here; later only a redesign token changes it.
+  const [catalog, setCatalog] = useState<Catalog | null>(null);
+  const [body, setBody] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [nameTaken, setNameTaken] = useState(false);
   const [sending, setSending] = useState(false);
 
   useEffect(() => {
-    api<OnboardingData>("/api/onboarding")
-      .then((r) => {
+    Promise.all([api<OnboardingData>("/api/onboarding"), api<Catalog>("/api/catalog")])
+      .then(([r, c]) => {
         if (!r.ok) {
           setError(r.error?.message ?? "erro ao carregar");
           return;
         }
+        if (!c.ok) {
+          setError("erro ao carregar");
+          return;
+        }
+        setCatalog(c.data);
         setData(r.data);
         setDevName(r.data.suggestedDevName);
       })
@@ -29,12 +40,12 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!cls) return;
+    if (!cls || !body) return;
     setSending(true);
     setError(null);
     setNameTaken(false);
     try {
-      const r = await post<{ player: Player }>("/api/players", { devName, class: cls });
+      const r = await post<{ player: Player }>("/api/players", { devName, class: cls, body });
       if (r.ok) {
         onCreated(r.data.player);
         return;
@@ -52,7 +63,12 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
     <main className="center-screen">
       <form className="panel onboarding" onSubmit={submit}>
         <h1 className="pixel">CRIE SEU DEV</h1>
-        {!data && !error && <p className="term">CARREGANDO...</p>}
+        {!data && !error && (
+          <p className="term">
+            <LoadingFx />
+            CARREGANDO...
+          </p>
+        )}
         {data && (
           <>
             <label className="field">
@@ -79,7 +95,21 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
                 </button>
               ))}
             </fieldset>
-            <button type="submit" className="btn btn-green" disabled={!cls || sending}>
+            <fieldset className="bodies">
+              <legend className="pixel field-label">CORPO</legend>
+              {catalog!.avatar.bodies.map((b) => (
+                <button key={b.id} type="button" className="btn body-btn" data-body={b.id} aria-pressed={body === b.id} onClick={() => setBody(b.id)}>
+                  <HeroAvatar
+                    catalog={catalog!}
+                    look={{ body: b.id, appearance: bodyDefaults(catalog!, b.id), equipment: {}, skin: "default" }}
+                    scale={2}
+                  />
+                  <span className="pixel">{b.name}</span>
+                </button>
+              ))}
+              <span className="term bodies-hint">só troca depois com um TOKEN DE REDESIGN da Loja.</span>
+            </fieldset>
+            <button type="submit" className="btn btn-green" disabled={!cls || !body || sending}>
               CRIAR DEV
             </button>
           </>

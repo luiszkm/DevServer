@@ -1,0 +1,32 @@
+{
+  "name": "bottom-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Feminine body traced from web/public/female_keyart.png; cargo pants repainted index-for-index into denim (bottomColor; bottom_preto shows them as drawn), fixed grey/white sneakers in ink/stone/metal/white. Legs trimmed 2 rows to fit the grid.",
+  "legend": {"o": "ink", "1": "denim.0", "2": "denim.1", "3": "denim.2", "4": "denim.3", "k": "ink.1", "v": "stone.1", "q": "stone.2", "Q": "stone.3", "M": "metal.2", "N": "metal.3", "w": "white"},
+  "layers": [
+    {"grid": [
+      "...ooo.oooooooooooooooooo......",
+      "..o111.111111111111111111o.....",
+      "..o11...11111111111111111o.....",
+      "..o1.....1111111111111111o.o...",
+      ".ooo....44444332223322ooooo1o..",
+      "...o1..1344444444344432o...o...",
+      "....oo13444444444344443o.......",
+      ".....o334444443o1o34444oo......",
+      "....o244434444oo233444o41o.....",
+      "...oo1ooo4444o1oo3344422o......",
+      "..o124444443o.ooo2344434o......",
+      ".o122o2o44431o.o1233333oo......",
+      ".o34444433321o..o33334444o.....",
+      ".oo344444321o..oo233444331o....",
+      "okooooovqqvko..okvvqqvoooko....",
+      ".oovNNQovvvko...oovvoovMNqo....",
+      "okvQNQMqoooo.....oookqqMMMqoo..",
+      ".oqNNNQqko.......okvqQvqNNNQvo.",
+      "oqqqqqqvvo.......ovvvvqqqQQQqko",
+      "oNwwwwwNMo.......oMNNNNNwwwwMko",
+      ".oooooooo.........oooooooooooo."
+    ], "at": [9, 42]}
+  ]
+}

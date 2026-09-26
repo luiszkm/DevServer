@@ -1,0 +1,21 @@
+{
+  "name": "prop-monitor",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "Monitor with code on a wooden desk slab (PROPS row 2).",
+  "layers": [
+    {"rect": [6, 4, 20, 15], "color": "metal.2"},
+    {"rect": [7, 5, 18, 12], "color": "ink.1"},
+    {"rect": [6, 4, 20, 1], "color": "metal.3"},
+    {"line": [9, 14, 13, 9], "color": "net.2"},
+    {"line": [14, 13, 18, 8], "color": "code.3"},
+    {"rect": [19, 10, 4, 1], "color": "net.3"},
+    {"rect": [9, 7, 3, 1], "color": "code.2"},
+    {"rect": [14, 19, 4, 3], "color": "metal.1"},
+    {"rect": [11, 22, 10, 1], "color": "metal.2"},
+    {"rect": [3, 23, 26, 4], "color": "wood.3"},
+    {"rect": [3, 23, 26, 1], "color": "wood.4"},
+    {"rect": [3, 26, 26, 1], "color": "wood.1"},
+    {"outline": "ink"}
+  ]
+}

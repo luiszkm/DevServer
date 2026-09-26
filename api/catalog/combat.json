@@ -1,11 +1,14 @@
 {
   "enemies": [
-    { "region": "vila", "name": "NULL SLIME", "level": 3, "hp": 60, "sp": 50, "weakness": "null-check", "drop": "null_shard", "glyph": "(0x0)" },
-    { "region": "floresta", "name": "LOG WISP", "level": 5, "hp": 70, "sp": 55, "weakness": "referência circular", "drop": "log_essence", "glyph": "(~.~)" },
-    { "region": "mercado", "name": "PACOTE MALICIOSO", "level": 7, "hp": 85, "sp": 60, "weakness": "versão não travada", "drop": "corrupt_dep", "glyph": "[!pkg]" },
-    { "region": "caverna", "name": "EXCEÇÃO SELVAGEM", "level": 10, "hp": 110, "sp": 70, "weakness": "catch ausente", "drop": "wild_trace", "glyph": "{!!}" },
-    { "region": "torre", "name": "RACE CONDITION", "level": 15, "hp": 160, "sp": 85, "weakness": "mutex ausente", "drop": "race_core", "glyph": "//=//" },
-    { "region": "nuvem", "name": "MEMORY LEAK ANCESTRAL", "level": 22, "hp": 220, "sp": 100, "weakness": "garbage collector", "drop": "memory_crystal", "glyph": "^^^^" }
+    { "id": "vila", "region": "vila", "name": "NULL SLIME", "level": 3, "hp": 60, "sp": 50, "weakness": "null-check", "drop": "null_shard", "glyph": "(0x0)" },
+    { "id": "slime", "region": "vila", "name": "SLIME DE CACHE", "level": 2, "hp": 45, "sp": 40, "weakness": "cache invalidado", "drop": "null_shard", "glyph": "(o.o)" },
+    { "id": "floresta", "region": "floresta", "name": "LOG WISP", "level": 5, "hp": 70, "sp": 55, "weakness": "referência circular", "drop": "log_essence", "glyph": "(~.~)" },
+    { "id": "slime_verde", "region": "floresta", "name": "SLIME DE LOG", "level": 4, "hp": 55, "sp": 45, "weakness": "log rotacionado", "drop": "log_essence", "glyph": "(-.-)" },
+    { "id": "mercado", "region": "mercado", "name": "PACOTE MALICIOSO", "level": 7, "hp": 85, "sp": 60, "weakness": "versão não travada", "drop": "corrupt_dep", "glyph": "[!pkg]" },
+    { "id": "caverna", "region": "caverna", "name": "EXCEÇÃO SELVAGEM", "level": 10, "hp": 110, "sp": 70, "weakness": "catch ausente", "drop": "wild_trace", "glyph": "{!!}" },
+    { "id": "monstro", "region": "caverna", "name": "BUG DE PRODUÇÃO", "level": 9, "hp": 100, "sp": 65, "weakness": "hotfix", "drop": "wild_trace", "glyph": "{>_<}" },
+    { "id": "torre", "region": "torre", "name": "RACE CONDITION", "level": 15, "hp": 160, "sp": 85, "weakness": "mutex ausente", "drop": "race_core", "glyph": "//=//" },
+    { "id": "nuvem", "region": "nuvem", "name": "MEMORY LEAK ANCESTRAL", "level": 22, "hp": 220, "sp": 100, "weakness": "garbage collector", "drop": "memory_crystal", "glyph": "^^^^" }
   ],
   "commands": [
     { "id": "fix", "label": "FIX", "hint": "corrige o bug · 14-20 dano", "cost": 10, "damage": [14, 20] },
@@ -32,7 +35,8 @@
     { "id": "memory_crystal", "name": "CRISTAL DE MEMÓRIA", "glyph": "^^", "rarity": "LENDÁRIO", "description": "Fragmento cristalizado de um vazamento de memória ancestral." },
     { "id": "sp_potion", "name": "POÇÃO DE CACHE", "glyph": "++", "rarity": "COMUM", "description": "Restaura 30 SP no Bug Fight.", "restore": { "stat": "sp", "amount": 30 }, "price": { "currency": "gems", "amount": 15 } },
     { "id": "hp_potion", "name": "POÇÃO DE MEMÓRIA", "glyph": "HP+", "rarity": "COMUM", "description": "Restaura 40 HP no Bug Fight.", "restore": { "stat": "hp", "amount": 40 }, "price": { "currency": "gems", "amount": 12 } },
-    { "id": "boost_deploy", "name": "ACELERADOR DE DEPLOY", "glyph": ">>", "rarity": "COMUM", "description": "Reduz 15 minutos de um deploy em andamento.", "price": { "currency": "gems", "amount": 35 } }
+    { "id": "boost_deploy", "name": "ACELERADOR DE DEPLOY", "glyph": ">>", "rarity": "COMUM", "description": "Reduz 15 minutos de um deploy em andamento.", "price": { "currency": "gems", "amount": 35 } },
+    { "id": "redesign_token", "name": "TOKEN DE REDESIGN", "glyph": "<~>", "rarity": "RARO", "description": "Troca o corpo do seu dev (masculino/feminino). Consumido ao usar no AVATAR.", "price": { "currency": "gems", "amount": 100 } }
   ],
   "rules": {
     "counter": [7, 14],

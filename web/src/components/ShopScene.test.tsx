@@ -2,13 +2,14 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import ShopPage from "@/app/(game)/loja/page";
+import { availableFor } from "@/lib/avatar";
 import type { Player } from "@/lib/types";
-import { CATALOG, GEAR, ITEMS, json, mockFetch, player } from "@/test/helpers";
+import { CATALOG, GEAR, ITEMS, RECIPES, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 
-function renderShop(p: Player = player(), setPlayer = vi.fn()) {
+function renderShop(p: Player = player(), setPlayer = vi.fn(), catalog = CATALOG) {
   render(
-    <GameContext.Provider value={{ player: p, catalog: CATALOG, setPlayer }}>
+    <GameContext.Provider value={{ player: p, catalog, setPlayer }}>
       <ShopPage />
     </GameContext.Provider>,
   );
@@ -39,7 +40,7 @@ describe("ShopScene", () => {
     renderShop(player({ gems: 20, inventory: [{ item: "sp_potion", quantity: 2 }] }));
     expect(screen.getByText("LOJA DEVSERVER")).toBeInTheDocument();
     expect(screen.getByText("GEMS: 20")).toBeInTheDocument();
-    expect(cardNames("POÇÕES")).toEqual(["POÇÃO DE CACHE", "POÇÃO DE MEMÓRIA", "ACELERADOR DE DEPLOY"]);
+    expect(cardNames("POÇÕES")).toEqual(["POÇÃO DE CACHE", "POÇÃO DE MEMÓRIA", "ACELERADOR DE DEPLOY", "TOKEN DE REDESIGN"]);
     expect(card("sp_potion")).toHaveTextContent("possui: 2");
     expect(card("sp_potion")).toHaveTextContent("15g");
     expect(card("hp_potion")).toHaveTextContent("possui: 0");
@@ -48,6 +49,7 @@ describe("ShopScene", () => {
     expect(card("boost_deploy")).toHaveTextContent("35g");
     expect(cardNames("EQUIPAMENTOS DO DEV")).toEqual([
       "MACBOOK PRO", "MONITOR ULTRAWIDE", "CAFÉ EXPRESSO", "MOLETOM CONFORTÁVEL", "CADEIRA ERGONÔMICA", "FONE COM CANCELAMENTO",
+      "CANECA DE LOGS", "MOLETOM STACK TRACE", "TECLADO RACE CONDITION",
     ]);
     expect(cardNames("SKINS DO AVATAR")).toEqual(["DEV PADRÃO", "DEV NEON", "DEV SOMBRIO", "DEV DOURADO"]);
     expect(screen.queryByText("EM BREVE")).not.toBeInTheDocument();
@@ -238,7 +240,7 @@ describe("ShopScene", () => {
       expect(big.getAttribute("width")).toBe("64");
     }
     fireEvent.error(card("hp_potion").querySelector("img")!);
-    expect(card("hp_potion").querySelector("img")).toBeNull();
+    expect(card("hp_potion").querySelector(".shop-glyph img")).toBeNull();
     expect(card("hp_potion").querySelector(".shop-glyph")).toHaveTextContent("HP+");
   });
 
@@ -260,7 +262,329 @@ describe("ShopScene", () => {
       expect(big.getAttribute("width")).toBe("64");
     }
     fireEvent.error(card("macbook").querySelector("img")!);
-    expect(card("macbook").querySelector("img")).toBeNull();
+    expect(card("macbook").querySelector(".shop-glyph img")).toBeNull();
     expect(card("macbook").querySelector(".shop-glyph")).toHaveTextContent("[Mac]");
+  });
+});
+
+const recipe = (id: string) => document.querySelector(`[data-recipe="${id}"]`) as HTMLButtonElement;
+const inv = (...pairs: [string, number][]) => pairs.map(([item, quantity]) => ({ item, quantity }));
+const TECLADO_MATS = inv(["race_core", 2], ["memory_crystal", 1], ["wild_trace", 3]);
+
+describe("ShopScene forge", () => {
+  // forge C19
+  it("forge section", () => {
+    renderShop();
+    const forge = section("FORJA");
+    expect(section("SKINS DO AVATAR").compareDocumentPosition(forge) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(within(forge).getByText("FORJA", { selector: ".shop-section-title" })).toBeInTheDocument();
+    expect(cardNames("FORJA")).toEqual([
+      "POÇÃO DE CACHE", "POÇÃO DE MEMÓRIA", "ACELERADOR DE DEPLOY", "CANECA DE LOGS", "MOLETOM STACK TRACE", "TECLADO RACE CONDITION",
+    ]);
+    const art: [string, string][] = [
+      ["forja_cache", "/art/icon/item-sp_potion.png"],
+      ["forja_memoria", "/art/icon/item-hp_potion.png"],
+      ["forja_acelerador", "/art/icon/item-boost_deploy.png"],
+      ["forja_caneca", "/art/icon/gear-caneca_log.png"],
+      ["forja_hoodie", "/art/icon/gear-hoodie_trace.png"],
+      ["forja_teclado", "/art/icon/gear-teclado_race.png"],
+    ];
+    for (const [id, src] of art) {
+      expect(within(forge).getByRole("button", { name: new RegExp(recipe(id).querySelector(".shop-card-name")!.textContent!) })).toBe(recipe(id));
+      expect(recipe(id).querySelector("img")!.getAttribute("src")).toBe(src);
+    }
+  });
+
+  // forge C20
+  it.each([
+    ["gear owned, with materials", player({ coins: 500, gear: ["teclado_race"], inventory: TECLADO_MATS }), "forja_teclado", "JÁ POSSUI"],
+    ["materials and balance", player({ coins: 150, inventory: TECLADO_MATS }), "forja_teclado", "PRONTO"],
+    ["materials, no price", player({ coins: 0, inventory: inv(["null_shard", 2]) }), "forja_cache", "PRONTO"],
+    ["one material short", player({ coins: 500, inventory: inv(["race_core", 2], ["wild_trace", 3]) }), "forja_teclado", "FALTAM MATERIAIS"],
+    ["materials without balance", player({ coins: 149, inventory: TECLADO_MATS }), "forja_teclado", "FALTAM MATERIAIS"],
+  ])("forge card status (%s)", (_name, p, id, status) => {
+    renderShop(p);
+    expect(recipe(id).querySelector(".shop-status")).toHaveTextContent(new RegExp(`^${status}$`));
+  });
+
+  // forge C20 (a new dev has no drops)
+  it("forge card status (new dev)", () => {
+    renderShop(player());
+    for (const r of RECIPES) expect(recipe(r.id).querySelector(".shop-status")).toHaveTextContent(/^FALTAM MATERIAIS$/);
+  });
+
+  // forge C21
+  it("forge detail", async () => {
+    renderShop(player({ coins: 500, inventory: inv(["race_core", 1], ["wild_trace", 3]) }));
+    await userEvent.click(recipe("forja_teclado"));
+    expect(within(detail()).getByText("LENDÁRIO")).toBeInTheDocument();
+    expect(within(detail()).getByText("TECLADO RACE CONDITION")).toBeInTheDocument();
+    expect(within(detail()).getByText("As teclas chegam antes de você apertar.")).toBeInTheDocument();
+    expect(within(detail()).getByText("bônus: +12% de dano")).toBeInTheDocument();
+    const lines = within(within(detail()).getByRole("list", { name: "materiais" })).getAllByRole("listitem").map((li) => li.textContent);
+    expect(lines).toEqual(["NÚCLEO DE CONCORRÊNCIA 1/2", "CRISTAL DE MEMÓRIA 0/1", "STACK TRACE SELVAGEM 3/3"]);
+    expect(within(detail()).getByText("custo: 150 COINS")).toBeInTheDocument();
+    expect(detail().querySelector("img")!.getAttribute("src")).toBe("/art/icon/gear-teclado_race.png");
+
+    await userEvent.click(recipe("forja_cache"));
+    expect(within(detail()).getByText("POÇÃO DE CACHE")).toBeInTheDocument();
+    const cache = within(within(detail()).getByRole("list", { name: "materiais" })).getAllByRole("listitem").map((li) => li.textContent);
+    expect(cache).toEqual(["FRAGMENTO NULL 0/2"]);
+    expect(detail().textContent).not.toContain("custo:");
+    expect(detail().textContent).not.toContain("bônus:");
+  });
+
+  // forge C22
+  it.each([
+    ["item can forge", player({ inventory: inv(["null_shard", 2]) }), "forja_cache", "FORJAR", true],
+    ["gear can forge", player({ coins: 150, inventory: TECLADO_MATS }), "forja_teclado", "FORJAR E EQUIPAR", true],
+    ["gear owned", player({ coins: 150, gear: ["teclado_race"], inventory: TECLADO_MATS }), "forja_teclado", "JÁ POSSUI", false],
+    ["no material, no balance", player({ coins: 0, inventory: [] }), "forja_teclado", "FALTAM MATERIAIS", false],
+    ["materials, 19 coins", player({ coins: 19, inventory: inv(["corrupt_dep", 1], ["wild_trace", 1]) }), "forja_acelerador", "COINS INSUFICIENTES", false],
+  ])("forge button (%s)", async (_name, p, id, label, enabled) => {
+    renderShop(p);
+    await userEvent.click(recipe(id));
+    const buttons = within(detail()).getAllByRole("button");
+    expect(buttons.map((b) => b.textContent)).toEqual([label]);
+    if (enabled) expect(buttons[0]).toBeEnabled();
+    else expect(buttons[0]).toBeDisabled();
+  });
+
+  // forge C32 (added after verification round 1): JÁ POSSUI wins over missing materials and balance
+  it.each([
+    ["owned, no materials, no balance", player({ coins: 0, gear: ["teclado_race"], inventory: [] })],
+    ["owned, materials, 149 coins", player({ coins: 149, gear: ["teclado_race"], inventory: TECLADO_MATS })],
+  ])("forge owned priority (%s)", async (_name, p) => {
+    renderShop(p);
+    expect(recipe("forja_teclado").querySelector(".shop-status")).toHaveTextContent(/^JÁ POSSUI$/);
+    await userEvent.click(recipe("forja_teclado"));
+    const buttons = within(detail()).getAllByRole("button");
+    expect(buttons.map((b) => b.textContent)).toEqual(["JÁ POSSUI"]);
+    expect(buttons[0]).toBeDisabled();
+  });
+
+  // forge C22 (gems price)
+  it("forge button (gems price)", async () => {
+    const gemsCatalog = {
+      ...CATALOG,
+      recipes: RECIPES.map((r) => (r.id === "forja_acelerador" ? { ...r, price: { currency: "gems" as const, amount: 5 } } : r)),
+    };
+    renderShop(player({ gems: 4, coins: 999, inventory: inv(["corrupt_dep", 1], ["wild_trace", 1]) }), vi.fn(), gemsCatalog);
+    await userEvent.click(recipe("forja_acelerador"));
+    expect(detailButton("GEMS INSUFICIENTES")).toBeDisabled();
+    expect(within(detail()).getByText("custo: 5 GEMS")).toBeInTheDocument();
+  });
+
+  // forge C23
+  it.each([
+    ["forja_cache", player({ inventory: inv(["null_shard", 2]) }), "FORJAR", "+1 POÇÃO DE CACHE"],
+    ["forja_caneca", player({ coins: 40, inventory: inv(["log_essence", 3], ["null_shard", 2]) }), "FORJAR E EQUIPAR", "ITEM FORJADO E EQUIPADO"],
+  ])("forge success (%s)", async (id, p, label, toast) => {
+    const updated = player({ devName: "UPDATED" });
+    const route = `POST /api/me/forge/${id}`;
+    const f = mockFetch({ [route]: json(200, { player: updated }) });
+    const { setPlayer } = renderShop(p);
+    await userEvent.click(recipe(id));
+    await userEvent.click(detailButton(label));
+    expect(await screen.findByRole("status")).toHaveTextContent(new RegExp(`^${toast.replace("+", "\\+")}$`));
+    expect(f.calls(route)).toBe(1);
+    expect(f.fn).toHaveBeenCalledTimes(1);
+    expect(setPlayer).toHaveBeenCalledWith(updated);
+  });
+
+  // forge C24
+  it.each([
+    ["409 with message", () => json(409, { error: { code: "not_enough_materials", message: "materiais insuficientes" } }), "materiais insuficientes"],
+    ["500 without body", () => new Response(null, { status: 500 }), "falha na conexão. tente de novo."],
+    ["network", () => Promise.reject(new TypeError("Failed to fetch")), "falha na conexão. tente de novo."],
+  ])("forge errors (%s)", async (_name, failure, text) => {
+    mockFetch({ "POST /api/me/forge/forja_cache": failure as () => Response });
+    const { setPlayer } = renderShop(player({ inventory: inv(["null_shard", 2]) }));
+    await userEvent.click(recipe("forja_cache"));
+    await userEvent.click(detailButton("FORJAR"));
+    expect(await screen.findByRole("status")).toHaveTextContent(text);
+    expect(setPlayer).not.toHaveBeenCalled();
+  });
+
+  // forge C25
+  it("forge pending", async () => {
+    const f = mockFetch({ "POST /api/me/forge/forja_cache": () => new Promise<Response>(() => {}) });
+    renderShop(player({ inventory: inv(["null_shard", 4]) }));
+    await userEvent.click(recipe("forja_cache"));
+    await userEvent.click(detailButton("FORJAR"));
+    expect(detailButton("FORJAR")).toBeDisabled();
+    await userEvent.click(detailButton("FORJAR"));
+    expect(f.fn).toHaveBeenCalledTimes(1);
+  });
+
+  // forge C26
+  it("craft-only gear", async () => {
+    const f = mockFetch({ "POST /api/me/gear/teclado_race/equip": json(200, { player: player() }) });
+    renderShop(player({ gems: 9999, coins: 9999 }));
+    expect(card("teclado_race").querySelector(".shop-status")).toHaveTextContent(/^FORJA$/);
+    await userEvent.click(card("teclado_race"));
+    expect(within(detail()).getByText("custo: só na forja")).toBeInTheDocument();
+    expect(detailButton("SÓ NA FORJA")).toBeDisabled();
+    await userEvent.click(detailButton("SÓ NA FORJA"));
+    expect(f.fn).not.toHaveBeenCalled();
+  });
+
+  // forge C26 (owned)
+  it("craft-only gear (owned)", async () => {
+    const f = mockFetch({ "POST /api/me/gear/teclado_race/equip": json(200, { player: player() }) });
+    renderShop(player({ gear: ["teclado_race"] }));
+    expect(card("teclado_race").querySelector(".shop-status")).toHaveTextContent(/^NO INVENTÁRIO$/);
+    await userEvent.click(card("teclado_race"));
+    await userEvent.click(detailButton("EQUIPAR"));
+    expect(await screen.findByRole("status")).toHaveTextContent("ITEM EQUIPADO");
+    expect(f.calls("POST /api/me/gear/teclado_race/equip")).toBe(1);
+  });
+});
+
+describe("ShopScene avatar styles", () => {
+  // a masculine dev: the feminine-only styles are not on sale for him
+  const priced = CATALOG.avatar.options.filter((o) => o.price && availableFor(o, "masculino"));
+
+  it("lists every priced avatar option with its status", () => {
+    const p = player({ looks: ["hair_moicano", "hair_azul"], appearance: { ...CATALOG.avatar.defaults, hair: "hair_moicano" } });
+    renderShop(p);
+    expect(cardNames("ESTILOS DO AVATAR")).toEqual(priced.map((o) => o.name));
+    const status = (id: string) => card(id).querySelector(".shop-status")?.textContent;
+    expect(status("hair_moicano")).toBe("EM USO");
+    expect(status("hair_azul")).toBe("NO GUARDA-ROUPA");
+    expect(status("hair_topete")).toBe("30g");
+    expect(status("top_jaqueta")).toBe("150c");
+    // the card shows the player's own hero wearing the option
+    expect(card("hair_topete").querySelector("canvas")!.dataset.look).toContain("/art/sprite/hero/hair-topete.png");
+  });
+
+  it.each([
+    [player({ gems: 30 }), "hair_topete", "COMPRAR E USAR", "POST /api/me/shop/looks/hair_topete", "TOPETE COMPRADO"],
+    [player({ looks: ["hair_topete"] }), "hair_topete", "USAR", "PUT /api/me/appearance", "VISUAL SALVO"],
+  ])("style actions (%#)", async (p, id, label, route, toast) => {
+    const updated = player({ devName: "UPDATED" });
+    const f = mockFetch({ [route]: json(200, { player: updated }) });
+    const { setPlayer } = renderShop(p);
+    await userEvent.click(card(id));
+    await userEvent.click(detailButton(label));
+    expect(await screen.findByRole("status")).toHaveTextContent(toast);
+    expect(f.calls(route)).toBe(1);
+    if (route.startsWith("PUT")) expect(JSON.parse(f.fn.mock.calls[0][1]!.body as string)).toEqual({ appearance: { hair: "hair_topete" } });
+    expect(setPlayer).toHaveBeenCalledWith(updated);
+  });
+
+  it.each([
+    [player({ gems: 29 }), "GEMS INSUFICIENTES"],
+    [player({ looks: ["hair_topete"], appearance: { ...CATALOG.avatar.defaults, hair: "hair_topete" } }), "EM USO"],
+  ])("style button off (%#)", async (p, label) => {
+    renderShop(p);
+    await userEvent.click(card("hair_topete"));
+    expect(detailButton(label)).toBeDisabled();
+  });
+});
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("ShopScene assets", () => {
+  // assets C21
+  it("price icon", () => {
+    renderShop(player({ gear: [], equipment: {} }));
+    const gemPrice = card("hp_potion").querySelector(".shop-price")!;
+    expect(gemPrice.textContent).toBe("12g");
+    expectIcon(gemPrice.firstElementChild, "/art/icon/hud-gem.png");
+    expect(gemPrice.firstChild).toBe(gemPrice.firstElementChild);
+    const coinPrice = card("cafe").querySelector(".shop-status")!;
+    expect(coinPrice.textContent).toBe("50c");
+    expectIcon(coinPrice.firstElementChild, "/art/icon/hud-coin.png");
+    expect(coinPrice.firstChild).toBe(coinPrice.firstElementChild);
+  });
+});
+
+describe("ShopScene npc", () => {
+  // assets C36
+  it("npc with the tip bubble", () => {
+    renderShop();
+    const npc = screen.getByRole("img", { name: "lojista" });
+    expect(npc.getAttribute("src")).toBe("/art/sprite/npc-dev.png");
+    expect(npc.getAttribute("width")).toBe("64");
+    expect(screen.getByText("FORJE GEAR COM OS DROPS DO BUG FIGHT!")).toBeInTheDocument();
+  });
+});
+
+describe("ShopScene scene", () => {
+  // assets C39
+  it("scene background", () => {
+    renderShop();
+  const section = document.querySelector("section.scene") as HTMLElement;
+    expect(section.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/scene-dungeon.png)");
+  });
+});
+
+describe("ShopScene applied assets", () => {
+  const firstIcon = (el: Element | null | undefined) => {
+    const img = el?.firstElementChild;
+    expect(el!.firstChild).toBe(img);
+    expect(img!.getAttribute("alt")).toBe("");
+    expect(img!.getAttribute("width")).toBe("16");
+    return img!.getAttribute("src");
+  };
+
+  // assets-apply C11
+  it("wood header", () => {
+    renderShop();
+    expect(document.querySelector(".shop-head")).toHaveClass("panel-wood");
+  });
+
+  // assets-apply C12: btn-shop on every COMPRAR button, btn-build on FORJAR
+  it("button icon on COMPRAR, COMPRAR E EQUIPAR, COMPRAR E USAR", async () => {
+    renderShop(player({ gems: 999, coins: 999, gear: [], equipment: {}, looks: [], skins: ["default"] }));
+    await userEvent.click(card("hp_potion"));
+    expect(firstIcon(detailButton("COMPRAR"))).toBe("/art/icon/btn-shop.png");
+    await userEvent.click(card("cafe"));
+    expect(firstIcon(detailButton("COMPRAR E EQUIPAR"))).toBe("/art/icon/btn-shop.png");
+    const look = CATALOG.avatar.options.find((o) => o.price && availableFor(o, "masculino"))!;
+    await userEvent.click(card(look.id));
+    expect(firstIcon(detailButton("COMPRAR E USAR"))).toBe("/art/icon/btn-shop.png");
+  });
+
+  it("button icon on FORJAR", async () => {
+    renderShop(player({ inventory: RECIPES[0].ingredients.map((m) => ({ item: m.item, quantity: m.quantity })), coins: 9999, gems: 9999 }));
+    await userEvent.click(recipe(RECIPES[0].id));
+    const forge = within(detail()).getByRole("button", { name: "FORJAR" });
+    expect(firstIcon(forge)).toBe("/art/icon/btn-build.png");
+  });
+
+  it("button icon on FORJAR E EQUIPAR", async () => {
+    const caneca = RECIPES.find((r) => r.id === "forja_caneca")!;
+    renderShop(player({ inventory: caneca.ingredients.map((m) => ({ item: m.item, quantity: m.quantity })), coins: 9999, gems: 9999 }));
+    await userEvent.click(recipe(caneca.id));
+    expect(firstIcon(within(detail()).getByRole("button", { name: "FORJAR E EQUIPAR" }))).toBe("/art/icon/btn-build.png");
+  });
+
+  // the decision's other rows: a label that neither buys nor forges carries no icon
+  it("button icon absent on EQUIPADO and a price shortfall", async () => {
+    renderShop(player({ gems: 0, coins: 0, gear: ["cafe"], equipment: { bebida: "cafe" } }));
+    await userEvent.click(card("cafe"));
+    expect(detailButton("EQUIPADO").querySelector("img")).toBeNull();
+    await userEvent.click(card("macbook"));
+    const short = within(detail()).getByRole("button");
+    expect(short.textContent).not.toMatch(/^COMPRAR/);
+    expect(short.querySelector("img")).toBeNull();
+  });
+
+  // assets-apply C14: rarity medals, table over the 5 rarities
+  it.each([
+    ["cafe", "medal-bronze"], ["fone", "medal-prata"], ["macbook", "medal-ouro"], ["monitor", "medal-rubi"], ["default", null],
+  ])("rarity medal (%s)", async (id, medal) => {
+    renderShop(player({ gear: [], equipment: {} }));
+    await userEvent.click(card(id));
+    const chip = detail().querySelector(".shop-rarity")!;
+    if (medal) expect(firstIcon(chip)).toBe(`/art/icon/${medal}.png`);
+    else expect(chip.querySelector("img")).toBeNull();
   });
 });

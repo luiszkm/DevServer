@@ -1,0 +1,21 @@
+{
+  "name": "build-flag",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A short pole with the green </> pennant (ESTRUTURAS: flag).",
+  "layers": [
+    {"rect": [10, 6, 2, 21], "color": "metal.2"},
+    {"rect": [10, 6, 1, 21], "color": "metal.3"},
+    {"ellipse": [11, 5, 1, 1], "color": "metal.3"},
+    {"rect": [12, 7, 12, 9], "color": "code.0"},
+    {"rect": [12, 7, 12, 1], "color": "code.1"},
+    {"rect": [12, 15, 12, 1], "color": "leaf.0"},
+    {"grid": [
+      ".G..G.G.",
+      "G...G..G",
+      ".G.G..G."
+    ], "legend": {"G": "code.3"}, "at": [14, 10]},
+    {"rect": [9, 27, 4, 2], "color": "stone.2"},
+    {"outline": "ink"}
+  ]
+}

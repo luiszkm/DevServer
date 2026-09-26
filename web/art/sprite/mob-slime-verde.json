@@ -1,0 +1,9 @@
+{
+  "name": "mob-slime-verde",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "The slime in terminal green, facing left.",
+  "layers": [
+    {"use": "mob-slime.json", "recolor": {"slime": "code"}, "flip": "h"}
+  ]
+}

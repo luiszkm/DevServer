@@ -1,0 +1,18 @@
+{
+  "name": "ic-laptop",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "A grey laptop with a blue-lit screen (badges row 3).",
+  "layers": [
+    {"rect": [2, 3, 12, 8], "color": "ink"},
+    {"rect": [3, 4, 10, 6], "color": "ink.1"},
+    {"line": [4, 8, 7, 5], "color": "net.2"},
+    {"rect": [8, 5, 1, 1], "color": "net.3"},
+    {"rect": [9, 7, 2, 1], "color": "code.2"},
+    {"rect": [4, 5, 1, 1], "color": "sky.3"},
+    {"rect": [1, 11, 14, 2], "color": "metal.2"},
+    {"rect": [1, 11, 14, 1], "color": "metal.3"},
+    {"rect": [6, 12, 4, 1], "color": "metal.1"},
+    {"outline": "ink"}
+  ]
+}

@@ -100,3 +100,60 @@ describe("Hud", () => {
     expect(img).toHaveClass("pixelated");
   });
 });
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("Hud assets", () => {
+  // assets C17
+  it("exit and skill points icons", () => {
+    render(<Hud player={player()} onLogout={vi.fn()} />);
+    const sair = screen.getByRole("button", { name: "SAIR" });
+    expectIcon(sair.querySelector("img"), "/art/icon/btn-exit.png");
+    const label = screen.getByText("SKILL PTS");
+    expectIcon(label.firstElementChild, "/art/icon/ic-star.png");
+    expect(label.firstChild).toBe(label.firstElementChild);
+  });
+
+  // assets C27
+  it("icon fails", () => {
+    render(<Hud player={player()} onLogout={vi.fn()} />);
+    const sair = screen.getByRole("button", { name: "SAIR" });
+    fireEvent.error(sair.querySelector("img")!);
+    expect(sair.querySelector("img")).toBeNull();
+    expect(sair.textContent).toBe("SAIR");
+    expect(sair.children).toHaveLength(0);
+  });
+});
+
+function expectLoadingFx(text: HTMLElement) {
+  const fx = text.querySelector("span.fx-loading") as HTMLElement;
+  expect(fx).not.toBeNull();
+  expect(fx.getAttribute("aria-hidden")).toBe("true");
+  expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/loading.png)");
+}
+
+describe("Hud loading", () => {
+  // assets C30
+  it("loading fx", () => {
+    render(<Hud />);
+    expectLoadingFx(screen.getByText("CARREGANDO..."));
+  });
+});
+
+describe("Hud applied assets", () => {
+  // assets-apply C12
+  it("button icon: rank before LEVEL", () => {
+    render(<Hud player={player({ level: 3 })} />);
+    const title = screen.getByText("LEVEL 3");
+    const img = title.firstElementChild!;
+    expect(img.getAttribute("src")).toBe("/art/icon/btn-rank.png");
+    expect(img.getAttribute("alt")).toBe("");
+    expect(img.getAttribute("width")).toBe("16");
+    expect(title.firstChild).toBe(img);
+  });
+});

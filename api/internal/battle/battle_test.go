@@ -23,6 +23,7 @@ import (
 )
 
 type battleJSON struct {
+	Enemy      string `json:"enemy"`
 	Region     string `json:"region"`
 	EnemyHP    int    `json:"enemyHp"`
 	EnemyHPMax int    `json:"enemyHpMax"`
@@ -145,7 +146,7 @@ func types(evs []eventJSON) []string {
 func TestStart_CreatesBattle(t *testing.T) {
 	f := newFixture(t)
 	got := f.start()
-	want := battleJSON{Region: "vila", EnemyHP: 60, EnemyHPMax: 60, SP: 50, SPMax: 50, Status: "active"}
+	want := battleJSON{Enemy: "vila", Region: "vila", EnemyHP: 60, EnemyHPMax: 60, SP: 50, SPMax: 50, Status: "active"}
 	if got.Battle == nil || *got.Battle != want {
 		t.Fatalf("battle = %+v, want %+v", got.Battle, want)
 	}
@@ -676,6 +677,9 @@ func TestItem_UnknownOrNotUsable(t *testing.T) {
 	f.start()
 	f.status(f.item("null_shard"), 422, "unknown_item")
 	f.status(f.item("x"), 422, "unknown_item")
+	// Body contract: the redesign token restores nothing, so it is never a battle item, even when held.
+	f.sql(`INSERT INTO player_items (player_id, item_id, quantity) SELECT id, 'redesign_token', 1 FROM players`)
+	f.status(f.item("redesign_token"), 422, "unknown_item")
 }
 
 // C34
@@ -688,7 +692,7 @@ func TestInventory_InEveryPlayer(t *testing.T) {
 		} `json:"player"`
 	}
 	want := []map[string]any{{"item": "sp_potion", "quantity": float64(2)}}
-	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"}, c)
+	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND", "body": "masculino"}, c)
 	if got := apptest.Decode[inv](t, rec).Player.Inventory; got == nil || !reflect.DeepEqual(*got, want) {
 		t.Fatalf("POST /api/players inventory = %v", got)
 	}
@@ -776,8 +780,9 @@ func TestTables_Constraints(t *testing.T) {
 		t.Errorf("negative quantity: %s, want 23514", c)
 	}
 	f.start()
-	if c := code(`INSERT INTO battles (player_id, region, enemy_hp, enemy_hp_max, sp, sp_max, weak, status)
-		SELECT id, 'vila', 1, 1, 1, 1, false, 'active' FROM players`); c != "23505" {
+	// the row carries every NOT NULL column (enemy since migration 10) so only the primary key can refuse it
+	if c := code(`INSERT INTO battles (player_id, enemy, region, enemy_hp, enemy_hp_max, sp, sp_max, weak, status)
+		SELECT id, 'vila', 'vila', 1, 1, 1, 1, false, 'active' FROM players`); c != "23505" {
 		t.Errorf("second battle: %s, want 23505", c)
 	}
 	if c := code(`INSERT INTO player_items (player_id, item_id, quantity) SELECT id, 'sp_potion', 1 FROM players`); c != "23505" {
@@ -881,7 +886,7 @@ func TestCreatePlayer_StartingItemsFailureRollsBack(t *testing.T) {
 	f := &fixture{t, env, env.Session(1, "u")}
 	f.sql(`CREATE FUNCTION reject_item() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'nope'; END $$`)
 	f.sql(`CREATE TRIGGER reject_item BEFORE INSERT ON player_items FOR EACH ROW EXECUTE FUNCTION reject_item()`)
-	rec := f.do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"})
+	rec := f.do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND", "body": "masculino"})
 	f.status(rec, 500, "internal")
 	if n := env.Count("players"); n != 0 {
 		t.Fatalf("players = %d, want 0 (player insert must roll back with its items)", n)
@@ -914,7 +919,7 @@ func TestCreatePlayer_StartingItemsFromCatalog(t *testing.T) {
 	env := apptest.NewWithCatalog(t, func(c *catalog.Catalog) {
 		c.Combat.StartingItems = []catalog.ItemQuantity{{Item: "hp_potion", Quantity: 3}, {Item: "sp_potion", Quantity: 1}}
 	})
-	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"}, env.Session(1, "u"))
+	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND", "body": "masculino"}, env.Session(1, "u"))
 	got := apptest.Decode[turnJSON](t, rec).Player.Inventory
 	want := []struct {
 		Item     string `json:"item"`
@@ -963,3 +968,154 @@ func TestCommand_DamageBonusFromGearAndSkin(t *testing.T) {
 		t.Fatalf("fix with macbook + neon (13%%) = %d, want 23", e.Amount)
 	}
 }
+
+// assets-apply C2: in a region with two enemies the start draws Rand.IntN(2), in catalog order (door 1)
+func TestStart_PicksEnemyByRand(t *testing.T) {
+	for _, tc := range []struct {
+		region string
+		draw   int
+		enemy  string
+		hp     int
+	}{
+		{"vila", 0, "vila", 60}, {"vila", 1, "slime", 45},
+		{"floresta", 0, "floresta", 70}, {"floresta", 1, "slime_verde", 55},
+		{"caverna", 0, "caverna", 110}, {"caverna", 1, "monstro", 100},
+	} {
+		f := newFixture(t)
+		f.sql(`UPDATE players SET region = $1`, tc.region)
+		f.env.Rand.Push(tc.draw)
+		b := f.start().Battle
+		if b.Enemy != tc.enemy || b.EnemyHP != tc.hp || b.EnemyHPMax != tc.hp || b.Region != tc.region {
+			t.Errorf("%s draw %d: %+v, want %s %d", tc.region, tc.draw, b, tc.enemy, tc.hp)
+		}
+	}
+}
+
+// assets-apply C3: a region with one enemy draws nothing (a draw of IntN(1) would get 1 and fail)
+func TestStart_SingleEnemyNoDraw(t *testing.T) {
+	f := newFixture(t)
+	f.sql(`UPDATE players SET region = 'mercado'`)
+	f.env.Rand.Push(1)
+	if b := f.start().Battle; b.Enemy != "mercado" || b.EnemyHP != 85 {
+		t.Fatalf("mercado start = %+v", b)
+	}
+}
+
+// assets-apply C4: an active battle resumes with the same enemy, no new draw
+func TestStart_ResumesSameEnemy(t *testing.T) {
+	f := newFixture(t)
+	f.env.Rand.Push(1)
+	first := f.start().Battle
+	if first.Enemy != "slime" {
+		t.Fatalf("first start = %+v", first)
+	}
+	f.env.Rand.Push(0)
+	again := f.start().Battle
+	if *again != *first {
+		t.Fatalf("resumed %+v, want %+v", again, first)
+	}
+}
+
+// assets-apply C5: the turn uses the enemy stored in the battle, not the region's first enemy
+func TestVictory_DropsFromStoredEnemy(t *testing.T) {
+	env := apptest.NewWithCatalog(t, func(c *catalog.Catalog) {
+		for i, e := range c.Enemies {
+			if e.ID == "slime" {
+				c.Enemies[i].Drop = "log_essence"
+			}
+		}
+	})
+	f := &fixture{t, env, env.NewPlayer(1, "DEV_01", "BACKEND")}
+	f.env.Rand.Push(1)
+	if b := f.start().Battle; b.Enemy != "slime" {
+		t.Fatalf("start = %+v", b)
+	}
+	f.sql(`UPDATE battles SET enemy_hp = 1`)
+	f.env.Rand.Push(0, 0, 99)
+	got := f.turn(f.cmd("fix"))
+	if quantity(got, "log_essence") != 1 || quantity(got, "null_shard") != 0 {
+		t.Fatalf("inventory = %+v, want log_essence from the stored slime", got.Player.Inventory)
+	}
+	drop := false
+	for _, e := range got.Events {
+		if e.Type == "drop" && e.Item == "log_essence" {
+			drop = true
+		}
+	}
+	if !drop {
+		t.Fatalf("events = %+v, want a log_essence drop", got.Events)
+	}
+}
+
+// assets-apply C6: battles saved before migration 10 get enemy = region; enemy is NOT NULL
+func TestMigration_BattleEnemyBackfill(t *testing.T) {
+	ctx := context.Background()
+	base := os.Getenv("TEST_DATABASE_URL")
+	if base == "" {
+		base = "postgres://devserver:devserver@localhost:5433/devserver_test?sslmode=disable"
+	}
+	admin, err := db.Open(ctx, base)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer admin.Close()
+	schema := fmt.Sprintf("m_%d", time.Now().UnixNano())
+	if _, err := admin.Exec(ctx, "CREATE SCHEMA "+schema); err != nil {
+		t.Fatal(err)
+	}
+	defer admin.Exec(ctx, "DROP SCHEMA "+schema+" CASCADE")
+	u, _ := url.Parse(base)
+	q := u.Query()
+	q.Set("search_path", schema)
+	u.RawQuery = q.Encode()
+
+	if err := db.MigrateTo(ctx, u.String(), 9); err != nil {
+		t.Fatal(err)
+	}
+	pool, err := db.Open(ctx, u.String())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+	if _, err := pool.Exec(ctx, `INSERT INTO players (github_user_id, dev_name, class, level, xp, xp_max, hp, hp_max,
+		coins, gems, skill_points, region, skin) VALUES (1, 'OLD_DEV', 'BACKEND', 4, 0, 500, 100, 100, 0, 0, 0, 'floresta', 'default')`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx, `INSERT INTO battles (player_id, region, enemy_hp, enemy_hp_max, sp, sp_max, weak, status)
+		SELECT id, 'floresta', 30, 70, 20, 55, false, 'active' FROM players`); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.MigrateTo(ctx, u.String(), 10); err != nil {
+		t.Fatal(err)
+	}
+	var enemy string
+	if err := pool.QueryRow(ctx, `SELECT enemy FROM battles`).Scan(&enemy); err != nil || enemy != "floresta" {
+		t.Fatalf("backfilled enemy = %q (%v), want floresta", enemy, err)
+	}
+	_, err = pool.Exec(ctx, `UPDATE battles SET enemy = NULL`)
+	if err == nil || !strings.Contains(err.Error(), "23502") {
+		t.Fatalf("NULL enemy: %v, want not_null_violation 23502", err)
+	}
+}
+
+// assets-apply C7: every response that carries a battle names its enemy
+func TestRoutes_BattleCarriesEnemy(t *testing.T) {
+	f := newFixture(t)
+	f.env.Rand.Push(1)
+	for _, route := range []struct {
+		name string
+		call func() *httptest.ResponseRecorder
+	}{
+		{"start", func() *httptest.ResponseRecorder { return f.do(http.MethodPost, "/api/me/battle", nil) }},
+		{"get", func() *httptest.ResponseRecorder { return f.do(http.MethodGet, "/api/me/battle", nil) }},
+		{"commands", func() *httptest.ResponseRecorder { return f.cmd("plain") }},
+		{"items", func() *httptest.ResponseRecorder { return f.item("sp_potion") }},
+	} {
+		name := route.name
+		got := f.turn(route.call())
+		if got.Battle == nil || got.Battle.Enemy != "slime" {
+			t.Errorf("%s: battle = %+v, want enemy slime", name, got.Battle)
+		}
+	}
+}
+

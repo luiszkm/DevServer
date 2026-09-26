@@ -17,7 +17,7 @@ import (
 )
 
 func create(env *apptest.Env, c *http.Cookie, devName, class string) (int, string) {
-	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": devName, "class": class}, c)
+	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": devName, "class": class, "body": "masculino"}, c)
 	code := ""
 	if rec.Code >= 400 {
 		code = apptest.ErrorCode(env.T, rec)
@@ -58,14 +58,14 @@ func TestCreatePlayer_InitialState(t *testing.T) {
 	env := apptest.New(t)
 	for i, class := range []string{"FRONTEND", "BACKEND", "DEVOPS", "FULLSTACK"} {
 		name := fmt.Sprintf("DEV_%02d", i)
-		rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": name, "class": class},
+		rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": name, "class": class, "body": "masculino"},
 			env.Session(int64(i+1), "u"))
 		if rec.Code != http.StatusCreated {
 			t.Fatalf("%s: status %d body %s", class, rec.Code, rec.Body.String())
 		}
 		p := apptest.Decode[apptest.PlayerBody](t, rec).Player
 		want := apptest.PlayerBody{}.Player
-		want.DevName, want.Class = name, class
+		want.DevName, want.Class, want.Body = name, class, "masculino"
 		want.Level, want.XP, want.XPMax, want.HP, want.HPMax = 1, 0, 500, 100, 100
 		want.Coins, want.Gems, want.SkillPoints, want.Region, want.Skin = 100, 20, 1, "vila", "default"
 		if p != want {
@@ -90,7 +90,7 @@ func TestCreatePlayer_DevNameBounds(t *testing.T) {
 	}
 
 	for name, stored := range map[string]string{"ABC": "ABC", "ABCDEFGHIJKLMNOP": "ABCDEFGHIJKLMNOP", "dev_01": "DEV_01"} {
-		rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": name, "class": "BACKEND"}, next())
+		rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": name, "class": "BACKEND", "body": "masculino"}, next())
 		if rec.Code != http.StatusCreated {
 			t.Errorf("%q: status %d, want 201", name, rec.Code)
 			continue

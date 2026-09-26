@@ -1,0 +1,16 @@
+{
+  "name": "glasses-escuro",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Sunglasses: ink frames, dark stone lenses with a small highlight; hide the eyes. Fixed colours.",
+  "legend": {"o": "ink", "s": "stone.1", "S": "stone.2", "T": "stone.3"},
+  "layers": [
+    {"grid": [
+      "...oooooo.oooooo.",
+      "ooooTsssoooTsssoo",
+      "...osTsso.osTsso.",
+      "...oSSSSo.oSSSSo.",
+      "...oooooo.oooooo."
+    ], "at": [14, 16]}
+  ]
+}

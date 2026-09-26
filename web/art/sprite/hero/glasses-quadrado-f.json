@@ -1,0 +1,18 @@
+{
+  "name": "glasses-quadrado-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "The glasses-quadrado design with the lenses on her eyes. Fixed colours.",
+  "legend": {"o": "ink", "M": "metal.2", "N": "metal.3", "w": "white"},
+  "layers": [
+    {"grid": [
+      "...oooooo..oooooo.",
+      "ooooNMMMooooNMMMoo",
+      "...o....o..o....o.",
+      "...o....o..o....o.",
+      "...o....o..o....o.",
+      "...o...wo..o...wo.",
+      "...oooooo..oooooo."
+    ], "at": [17, 15]}
+  ]
+}

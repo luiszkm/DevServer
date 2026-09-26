@@ -220,7 +220,7 @@ func TestPlayerSkills_UniquePerNode(t *testing.T) {
 func TestPlayerSkills_InEveryPlayerInCatalogOrder(t *testing.T) {
 	env := apptest.New(t)
 	c := env.Session(1, "u")
-	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND"}, c)
+	rec := env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "DEV_01", "class": "BACKEND", "body": "masculino"}, c)
 	mustStatus(t, rec, http.StatusCreated, "")
 	if got := skillsOf(t, rec); len(got) != 0 {
 		t.Fatalf("new player skills = %v, want []", got)

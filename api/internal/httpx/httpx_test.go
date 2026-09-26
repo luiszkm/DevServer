@@ -18,6 +18,9 @@ var protectedRoutes = []struct{ method, path string }{
 	{http.MethodGet, "/api/onboarding"},
 	{http.MethodPost, "/api/players"},
 	{http.MethodPost, "/api/me/travel"},
+	{http.MethodPut, "/api/me/appearance"},
+	{http.MethodPost, "/api/me/shop/looks/hair_moicano"},
+	{http.MethodPost, "/api/me/body"},
 }
 
 // C9
@@ -59,10 +62,10 @@ func TestErrorEnvelope_EveryCode(t *testing.T) {
 	}
 	cases["unauthenticated"] = do(http.MethodGet, "/api/me", nil)
 	cases["player_not_found"] = do(http.MethodGet, "/api/me", nil, noPlayer)
-	cases["player_exists"] = do(http.MethodPost, "/api/players", map[string]string{"devName": "OTHER_1", "class": "BACKEND"}, existing)
-	cases["invalid_dev_name"] = do(http.MethodPost, "/api/players", map[string]string{"devName": "ab", "class": "BACKEND"}, noPlayer)
-	cases["dev_name_taken"] = do(http.MethodPost, "/api/players", map[string]string{"devName": "taken_1", "class": "BACKEND"}, noPlayer)
-	cases["invalid_class"] = do(http.MethodPost, "/api/players", map[string]string{"devName": "FRESH_1", "class": "WIZARD"}, noPlayer)
+	cases["player_exists"] = do(http.MethodPost, "/api/players", map[string]string{"devName": "OTHER_1", "class": "BACKEND", "body": "masculino"}, existing)
+	cases["invalid_dev_name"] = do(http.MethodPost, "/api/players", map[string]string{"devName": "ab", "class": "BACKEND", "body": "masculino"}, noPlayer)
+	cases["dev_name_taken"] = do(http.MethodPost, "/api/players", map[string]string{"devName": "taken_1", "class": "BACKEND", "body": "masculino"}, noPlayer)
+	cases["invalid_class"] = do(http.MethodPost, "/api/players", map[string]string{"devName": "FRESH_1", "class": "WIZARD", "body": "masculino"}, noPlayer)
 	cases["level_too_low"] = do(http.MethodPost, "/api/me/travel", map[string]string{"region": "caverna"}, existing)
 	cases["unknown_region"] = do(http.MethodPost, "/api/me/travel", map[string]string{"region": "marte"}, existing)
 	cases["internal"] = do(http.MethodGet, "/api/test/panic", nil)
@@ -136,7 +139,7 @@ func TestHandlerError_Returns500AndLogsRequestID(t *testing.T) {
 		body         any
 	}{
 		{http.MethodGet, "/api/me", nil},
-		{http.MethodPost, "/api/players", map[string]string{"devName": "DEV_02", "class": "BACKEND"}},
+		{http.MethodPost, "/api/players", map[string]string{"devName": "DEV_02", "class": "BACKEND", "body": "masculino"}},
 		{http.MethodPost, "/api/me/travel", map[string]string{"region": "floresta"}},
 	} {
 		rec := env.Do(rt.method, rt.path, rt.body, c)
@@ -159,7 +162,7 @@ func TestHandle_DoesNotLogExpectedErrors(t *testing.T) {
 	for _, rec := range []*httptest.ResponseRecorder{
 		env.Do(http.MethodPost, "/api/me/travel", map[string]string{"region": "caverna"}, c),
 		env.Do(http.MethodPost, "/api/me/travel", map[string]string{"region": "marte"}, c),
-		env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "OTHER", "class": "BACKEND"}, c),
+		env.Do(http.MethodPost, "/api/players", map[string]string{"devName": "OTHER", "class": "BACKEND", "body": "masculino"}, c),
 	} {
 		if rec.Code < 400 || rec.Code >= 500 {
 			t.Fatalf("setup: expected a 4xx, got %d", rec.Code)

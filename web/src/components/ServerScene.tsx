@@ -5,8 +5,11 @@ import { post } from "@/lib/api";
 import { CONNECTION_FAILED, canPay, insufficient, priceShort } from "@/lib/gear";
 import { effectsText, rackStats, slotLabel, statBonus, statValue } from "@/lib/rack";
 import type { Player, Price, RackComponent } from "@/lib/types";
-import { GameArt } from "./GameArt";
+import { GameArt, PriceArt } from "./GameArt";
 import { useGame } from "./GameContext";
+
+// Icon before each rack stat's name (plan assumptions: stat icons).
+const STAT_ICON: Record<string, string> = { power: "chart", ram: "database", uptime: "shield" };
 
 const HELLO = "> selecione um componente para instalar no rack.";
 
@@ -68,7 +71,10 @@ export function ServerScene() {
         {stats.map((s) => (
           <div key={s.stat.id} className="panel server-stat" data-stat={s.stat.id}>
             <div className="server-stat-head">
-              <span className="pixel server-stat-name">{s.stat.name}</span>
+              <span className="pixel server-stat-name">
+                {STAT_ICON[s.stat.id] && <GameArt kind="ic" id={STAT_ICON[s.stat.id]} scale={1} alt="" fallback="" className="inline-icon" />}
+                {s.stat.name}
+              </span>
               <span className="pixel server-stat-value" style={{ color: s.stat.color }}>
                 {statValue(s)}
               </span>
@@ -83,7 +89,10 @@ export function ServerScene() {
 
       <div className="server-body">
         <div className="panel server-rack" role="region" aria-label="RACK LOCALHOST-01">
-          <span className="pixel server-title">RACK LOCALHOST-01</span>
+          <span className="pixel server-title">
+            <GameArt kind="ic" id="wrench" scale={1} alt="" fallback="" className="inline-icon" />
+            RACK LOCALHOST-01
+          </span>
           {rack.map((id, i) => {
             const k = id ? byId(id) : undefined;
             return (
@@ -128,14 +137,20 @@ export function ServerScene() {
                   </span>
                   <span className="server-card-foot">
                     <span className="term server-card-effect">{effectsText(k)}</span>
-                    <span className="pixel server-card-price">{priceShort(k.price).toUpperCase()}</span>
+                    <span className="pixel server-card-price">
+                      <PriceArt currency={k.price.currency} />
+                      {priceShort(k.price).toUpperCase()}
+                    </span>
                   </span>
                 </button>
               ))}
             </div>
           </div>
-          <div className="panel server-terminal term" role="status">
-            {message}
+          <div className="server-terminal-row">
+            <GameArt kind="mob" id="robo" scale={2} alt="robô" fallback="" />
+            <div className="panel server-terminal term" role="status">
+              {message}
+            </div>
           </div>
           {notice && (
             <div className="pixel server-notice" role="alert">

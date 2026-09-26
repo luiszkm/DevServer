@@ -5,10 +5,16 @@ import { post } from "@/lib/api";
 import { CONNECTION_FAILED, canPay, insufficient, priceLong, priceShort } from "@/lib/gear";
 import { furnitureBonus, officeLevel, officeStats, refundText } from "@/lib/office";
 import type { Furniture, Player } from "@/lib/types";
-import { GameArt } from "./GameArt";
+import { GameArt, PriceArt } from "./GameArt";
 import { useGame } from "./GameContext";
 
 type Filter = "all" | string;
+
+// Office level 1..5 -> the medal before its name (plan assumptions: office medal).
+const MEDALS = ["bronze", "prata", "ouro", "azul", "roxo"];
+
+// Each zone is tiled with its asset-sheet tile, repeated at 2x (assets-apply C17).
+const ZONE_TILE: Record<string, string> = { parede: "tile-parede-madeira", piso: "tile-tabua" };
 
 export function OfficeScene() {
   const { player, catalog, setPlayer } = useGame();
@@ -61,7 +67,7 @@ export function OfficeScene() {
   return (
     <section className="scene office" aria-label="OFFICE">
       <div className="office-left">
-        <div className="panel office-head">
+        <div className="panel panel-wood office-head">
           <span className="pixel">CATÁLOGO</span>
           <span className="term">escolha e clique num espaço da sala</span>
         </div>
@@ -80,7 +86,10 @@ export function OfficeScene() {
                 <span className="pixel office-glyph">
                   <GameArt kind="office" id={f.id} scale={2} alt="" fallback={f.glyph} />
                 </span>
-                <span className={`term office-tag ${f.price.currency}`}>{priceShort(f.price).toUpperCase()}</span>
+                <span className={`term office-tag ${f.price.currency}`}>
+                  <PriceArt currency={f.price.currency} />
+                  {priceShort(f.price).toUpperCase()}
+                </span>
               </button>
             ))}
           </div>
@@ -111,12 +120,15 @@ export function OfficeScene() {
       <div className="panel office-room-panel">
         <div className="office-room-col">
           <div className="office-room-head">
-            <span className="pixel office-level">{level.name}</span>
+            <span className="pixel office-level">
+              <GameArt kind="medal" id={MEDALS[catalog.office.levels.indexOf(level)]} scale={2} alt="" fallback="" className="inline-icon" />
+              {level.name}
+            </span>
             <span className="term office-count">{`${stats.count} móveis instalados`}</span>
           </div>
           <div className="office-room" role="region" aria-label="sala" style={{ backgroundImage: "url(/art/background/office.png)" }}>
             {zones.map((z) => (
-              <div key={z.id} className="office-zone" role="group" aria-label={z.name}>
+              <div key={z.id} className="office-zone" role="group" aria-label={z.name} style={{ backgroundImage: `url(/art/tile/${ZONE_TILE[z.id]}.png)` }}>
                 <span className="pixel office-zone-name">{z.name}</span>
                 <div className="office-cells">
                   {(player.office[z.id] ?? Array.from({ length: z.cells }, () => null)).map((id, i) => {

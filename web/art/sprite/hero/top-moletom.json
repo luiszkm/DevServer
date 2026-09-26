@@ -1,0 +1,35 @@
+{
+  "name": "top-moletom",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Traced from the prototype hero (web/public/hero.png); the hoodie with its hood in av-top-grafite (topColor) and the fixed green </> in code.",
+  "legend": {"o": "ink", "1": "av-top-grafite.0", "2": "av-top-grafite.1", "3": "av-top-grafite.2", "4": "av-top-grafite.3", "X": "code.0", "g": "code.1", "x": "code.2", "G": "code.3"},
+  "layers": [
+    {"grid": [
+      "....ooooo11o...................",
+      "....o111111o...................",
+      "..ooo1111111oo.................",
+      "..o1111111221ooo..........o....",
+      "..o111111111332ooooooooooo1o...",
+      "..oo1111111112321o.....o112o...",
+      "...o11124211111121o...o1211oo..",
+      "...o11333322111111o...1111111o.",
+      "...o12332321221111oo11o111112o.",
+      "...o23322211222222122111222111o",
+      "..o22333211122222g222X12222111o",
+      ".o12333221112222gG222x2g222111o",
+      ".o12222211112222x222gg2gx2211o.",
+      "o11222111111122G2222G212gx1111o",
+      "o12221111111122Xx22gg11Xx21111o",
+      "o122221111111122Xx1x211x211oo1o",
+      "o112332111111122211X111oooo..o.",
+      ".o1222111111111111111oo........",
+      "o1112321oooo111112221o.........",
+      ".o121ooo...o112222211ooo....o..",
+      "..........oo111111111111oooo1o.",
+      "..........o111111111111111111o.",
+      "..........ooooooooooooooooooo..",
+      "...........................ooo."
+    ], "at": [2, 23]}
+  ]
+}

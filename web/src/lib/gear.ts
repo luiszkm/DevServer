@@ -52,9 +52,5 @@ export function totalBonus(catalog: Catalog, player: Player, type: Bonus["type"]
   return skills + gear + (skin?.type === type ? skin.amount : 0) + rackBonus(catalog, player, type);
 }
 
-export function skinFilter(catalog: Catalog, skin: string): string {
-  return catalog.skins.find((s) => s.id === skin)?.filter ?? "none";
-}
-
 /** Toast after a successful shop or avatar action; everything else shows the api's message. */
 export const CONNECTION_FAILED = "falha na conexão. tente de novo.";

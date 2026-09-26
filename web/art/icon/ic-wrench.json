@@ -1,0 +1,19 @@
+{
+  "name": "ic-wrench",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "A steel wrench, open jaw at the top-right.",
+  "layers": [
+    {"line": [4, 12, 10, 6], "color": "metal.2"},
+    {"line": [3, 12, 10, 5], "color": "metal.2"},
+    {"line": [4, 13, 11, 6], "color": "metal.1"},
+    {"ellipse": [11, 4, 2, 2], "color": "metal.2"},
+    {"rect": [11, 2, 2, 2], "color": null},
+    {"rect": [12, 4, 1, 1], "color": null},
+    {"ellipse": [3, 12, 1, 1], "color": "metal.2"},
+    {"rect": [10, 3, 1, 1], "color": "metal.3"},
+    {"rect": [9, 4, 1, 1], "color": "metal.3"},
+    {"rect": [5, 10, 1, 1], "color": "metal.3"},
+    {"outline": "ink"}
+  ]
+}

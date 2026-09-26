@@ -5,7 +5,9 @@ import { api, post } from "@/lib/api";
 import { formatMinutes, formatRemaining } from "@/lib/time";
 import type { DeployJob, DeployLevel, Player } from "@/lib/types";
 import { GameArt } from "./GameArt";
+import { FxOnce, LoadingFx } from "./LoadingFx";
 import { useGame } from "./GameContext";
+import { HeroAvatar } from "./HeroAvatar";
 
 const STAGES = ["LINT", "BUILD", "TEST", "SHIP"];
 /** The inventory item a boost consumes. */
@@ -26,6 +28,8 @@ export function DeployScene() {
   const [selType, setSelType] = useState(catalog.deployTypes[0].id);
   const [selLevel, setSelLevel] = useState<Record<string, number>>({});
   const [log, setLog] = useState<string[]>(INITIAL_LOG);
+  // Counts successful claims; while > 0 the opened chest shows, and the count replays its collect strip.
+  const [claimed, setClaimed] = useState(0);
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -68,6 +72,7 @@ export function DeployScene() {
       sync(r.data.serverTime);
       setNow(Date.now());
       setJobs((js) => [...(js ?? []), r.data.deploy]);
+      setClaimed(0);
       setPlayer(r.data.player);
       const minutes = catalog.deployLevels.find((l) => l.level === level)!.minutes;
       addLog(`$ devserver deploy --tipo=${selType} --nivel=${level}`, `> pipeline de ${typeName(selType)} iniciado. estimativa: ${minutes}min.`);
@@ -85,6 +90,7 @@ export function DeployScene() {
       const r = await post<{ player: Player }>(`/api/me/deploys/${job.type}/claim`);
       if (!r.ok) return setMessage(r.error?.message ?? "erro ao coletar");
       setJobs((js) => (js ?? []).filter((j) => j.type !== job.type));
+      setClaimed((n) => n + 1);
       setPlayer(r.data.player);
       addLog(`> release de ${typeName(job.type)} nível ${job.level} publicada.`);
     } catch {
@@ -116,8 +122,8 @@ export function DeployScene() {
   const boosters = player.inventory.find((i) => i.item === BOOST_ITEM)?.quantity ?? 0;
 
   return (
-    <section className="scene deploy" aria-label="DEPLOY">
-      <div className="panel deploy-head">
+    <section className="scene deploy" aria-label="DEPLOY" style={{ backgroundImage: "url(/art/background/scene-dia.png)" }}>
+      <div className="panel panel-wood deploy-head">
         <span className="pixel">PIPELINES DE DEPLOY</span>
         <span className="term">cada tipo roda em paralelo · tempo real por nível</span>
       </div>
@@ -150,7 +156,16 @@ export function DeployScene() {
 
       <div className="deploy-body">
         <div className="panel deploy-panel" aria-label="painel de deploy" role="region">
-          <span className="pixel">{typeName(selType)}</span>
+          <span className="pixel deploy-title">
+            <GameArt kind="ic" id="laptop" scale={1} alt="" fallback="" className="inline-icon" />
+            {typeName(selType)}
+          </span>
+          {claimed > 0 && (
+            <div className="deploy-claimed" key={claimed}>
+              <GameArt kind="extra" id="bau-aberto" scale={2} alt="" fallback="" />
+              <FxOnce id="collect" />
+            </div>
+          )}
           {message && (
             <p role="alert" className="term field-error">
               {message}
@@ -164,9 +179,13 @@ export function DeployScene() {
               </button>
             </div>
           ) : jobs === null ? (
-            <p className="term">CARREGANDO...</p>
+              <p className="term">
+              <LoadingFx />
+              CARREGANDO...
+            </p>
           ) : current ? (
             <Running
+              player={player}
               job={current}
               remainingMs={remaining(current)}
               pending={pending}
@@ -194,12 +213,18 @@ export function DeployScene() {
                       <span className="pixel">{`NV.${l.level}`}</span>
                       <span className="term">{formatMinutes(l.minutes)}</span>
                       <span className="term deploy-reward">{rewardText(l)}</span>
-                      {locked && <span className="pixel deploy-locked">{`NÍVEL ${l.minLevel}`}</span>}
+                      {locked && (
+                        <span className="pixel deploy-locked">
+                          <GameArt kind="ic" id="lock" scale={1} alt="" fallback="" className="inline-icon" />
+                          {`NÍVEL ${l.minLevel}`}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
               </div>
               <button type="button" className="btn btn-green" disabled={pending} onClick={start}>
+                <GameArt kind="btn" id="deploy" scale={1} alt="" fallback="" className="inline-icon" />
                 INICIAR DEPLOY
               </button>
             </>
@@ -218,6 +243,7 @@ export function DeployScene() {
 }
 
 type RunningProps = {
+  player: Player;
   job: DeployJob;
   remainingMs: number;
   pending: boolean;
@@ -226,13 +252,16 @@ type RunningProps = {
   onBoost: () => void;
 };
 
-function Running({ job, remainingMs, pending, boosters, onClaim, onBoost }: RunningProps) {
+function Running({ player, job, remainingMs, pending, boosters, onClaim, onBoost }: RunningProps) {
   const total = Date.parse(job.endsAt) - Date.parse(job.startedAt);
   const ready = remainingMs <= 0;
   const pct = ready ? 100 : Math.max(0, Math.min(100, ((total - remainingMs) / total) * 100));
   const stage = ready ? "PRONTO PARA COLETAR" : STAGES[Math.min(3, Math.floor(pct / 25))];
   return (
     <>
+      <div className="deploy-hero">
+        <HeroAvatar look={player} scale={2} anim={ready ? "idle" : "interact"} />
+      </div>
       <span className="term">{`nível ${job.level} em andamento`}</span>
       <div className="bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct)}>
         <div style={{ width: `${pct}%`, background: "var(--green)" }} />
@@ -247,6 +276,7 @@ function Running({ job, remainingMs, pending, boosters, onClaim, onBoost }: Runn
         </button>
       )}
       <button type="button" className="btn btn-green" disabled={!ready || pending} onClick={onClaim}>
+        {ready && <GameArt kind="extra" id="bau" scale={1} alt="" fallback="" className="inline-icon" />}
         COLETAR RECOMPENSA
       </button>
     </>

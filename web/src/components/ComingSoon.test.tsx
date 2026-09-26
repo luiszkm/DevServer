@@ -29,7 +29,7 @@ describe("ComingSoon", () => {
     mockFetch({
       "GET /api/me/deploys": json(200, { serverTime: "2026-01-01T12:00:00Z", deploys: [] }),
       "POST /api/me/battle": json(200, {
-        battle: { region: "vila", enemyHp: 60, enemyHpMax: 60, sp: 50, spMax: 50, weakness: false, status: "active" },
+        battle: { enemy: "vila", region: "vila", enemyHp: 60, enemyHpMax: 60, sp: 50, spMax: 50, weakness: false, status: "active" },
         player: player(),
       }),
     });

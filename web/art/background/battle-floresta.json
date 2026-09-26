@@ -420,6 +420,198 @@
    ],
    "density": 0.1,
    "seed": 6
+  },
+  {
+   "rect": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "color": null,
+   "_": "assets-apply: pieces below come from the asset library"
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    0,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    32,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    64,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    96,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    128,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    160,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    192,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    224,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    256,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    288,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    0,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    32,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    64,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    96,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    128,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    160,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    192,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    224,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    256,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    288,
+    160
+   ]
+  },
+  {
+   "use": "../sprite/tile-arvore-grande.json",
+   "at": [
+    0,
+    68
+   ]
+  },
+  {
+   "use": "../sprite/tile-arbusto.json",
+   "at": [
+    150,
+    98
+   ]
+  },
+  {
+   "use": "../sprite/tile-arvore.json",
+   "at": [
+    250,
+    96
+   ]
+  },
+  {
+   "use": "../sprite/tile-arbusto.json",
+   "at": [
+    222,
+    98
+   ]
+  },
+  {
+   "use": "../sprite/prop-bloco-grama.json",
+   "at": [
+    286,
+    96
+   ]
+  },
+  {
+   "use": "../sprite/build-placa.json",
+   "at": [
+    196,
+    96
+   ]
   }
  ]
 }

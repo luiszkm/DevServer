@@ -485,6 +485,233 @@
    ],
    "density": 0.1,
    "seed": 6
+  },
+  {
+   "rect": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "color": null,
+   "_": "assets-apply: pieces below come from the asset library"
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    0,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    32,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    64,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    96,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    128,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    160,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    192,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    224,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    256,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    288,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    0,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    32,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    64,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    96,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    128,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    160,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    192,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    224,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    256,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    288,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-areia.json",
+   "at": [
+    128,
+    128
+   ]
+  },
+  {
+   "use": "../tile/tile-areia.json",
+   "at": [
+    160,
+    128
+   ]
+  },
+  {
+   "use": "../sprite/build-server-hut.json",
+   "at": [
+    224,
+    40
+   ]
+  },
+  {
+   "use": "../sprite/extra-lampada.json",
+   "at": [
+    0,
+    96
+   ]
+  },
+  {
+   "use": "../sprite/extra-fogueira.json",
+   "at": [
+    22,
+    96
+   ]
+  },
+  {
+   "use": "../sprite/extra-banco.json",
+   "at": [
+    150,
+    98
+   ]
+  },
+  {
+   "use": "../sprite/tile-cerca.json",
+   "at": [
+    178,
+    100
+   ]
+  },
+  {
+   "use": "../sprite/extra-placa.json",
+   "at": [
+    198,
+    96
+   ]
+  },
+  {
+   "use": "../sprite/extra-bandeira.json",
+   "at": [
+    212,
+    92
+   ]
+  },
+  {
+   "use": "../sprite/tile-flor.json",
+   "at": [
+    12,
+    136
+   ]
+  },
+  {
+   "use": "../sprite/tile-flor.json",
+   "at": [
+    200,
+    138
+   ]
   }
  ]
 }

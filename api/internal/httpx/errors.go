@@ -64,6 +64,16 @@ var (
 	ErrRackFull           = &Error{http.StatusConflict, "rack_full", "rack cheio. remova um componente antes"}
 	ErrUnknownComponent   = &Error{http.StatusUnprocessableEntity, "unknown_component", "componente desconhecido"}
 	ErrUnknownSlot        = &Error{http.StatusUnprocessableEntity, "unknown_slot", "slot do rack desconhecido"}
+	ErrUnknownRecipe      = &Error{http.StatusUnprocessableEntity, "unknown_recipe", "receita desconhecida"}
+	ErrNotEnoughMaterials = &Error{http.StatusConflict, "not_enough_materials", "materiais insuficientes"}
+	ErrUnknownPart        = &Error{http.StatusUnprocessableEntity, "unknown_part", "parte do visual desconhecida"}
+	ErrUnknownLook        = &Error{http.StatusUnprocessableEntity, "unknown_look", "visual desconhecido para esta parte"}
+	ErrLookNotFound       = &Error{http.StatusNotFound, "unknown_look", "visual desconhecido"}
+	ErrGearOnly           = &Error{http.StatusUnprocessableEntity, "gear_only", "este visual vem de um equipamento. equipe-o no inventário"}
+	ErrUnknownBody        = &Error{http.StatusUnprocessableEntity, "unknown_body", "corpo desconhecido"}
+	ErrWrongBody          = &Error{http.StatusUnprocessableEntity, "wrong_body", "este visual não é para o seu corpo"}
+	ErrSameBody           = &Error{http.StatusConflict, "same_body", "seu dev já tem este corpo"}
+	ErrNoRedesignToken    = &Error{http.StatusConflict, "no_redesign_token", "compre um TOKEN DE REDESIGN na Loja"}
 )
 
 type envelope struct {

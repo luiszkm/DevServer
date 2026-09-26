@@ -1,0 +1,321 @@
+{
+ "name": "scene-floresta",
+ "category": "background",
+ "size": [
+  320,
+  180
+ ],
+ "_design": "FLORESTA / NATUREZA (avatar): bright forest in three canopy layers with trunks, a lush grass floor dotted with flowers.",
+ "layers": [
+  {
+   "bands": [
+    0,
+    0,
+    320,
+    120
+   ],
+   "colors": [
+    "sky.2",
+    "sky.3",
+    "sky.4"
+   ],
+   "dither": 3
+  },
+  {
+   "ridge": [
+    0,
+    40,
+    320,
+    90
+   ],
+   "mode": "round",
+   "heights": [
+    50,
+    85
+   ],
+   "radii": [
+    12,
+    20
+   ],
+   "color": "leaf.0",
+   "seed": 4
+  },
+  {
+   "rect": [
+    0,
+    110,
+    320,
+    30
+   ],
+   "color": "leaf.0"
+  },
+  {
+   "rect": [
+    22,
+    95,
+    5,
+    40
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    70,
+    95,
+    5,
+    40
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    118,
+    95,
+    5,
+    40
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    170,
+    95,
+    5,
+    40
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    214,
+    95,
+    5,
+    40
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    262,
+    95,
+    5,
+    40
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    300,
+    95,
+    5,
+    40
+   ],
+   "color": "wood.1"
+  },
+  {
+   "ridge": [
+    0,
+    80,
+    320,
+    60
+   ],
+   "mode": "round",
+   "heights": [
+    30,
+    55
+   ],
+   "radii": [
+    9,
+    15
+   ],
+   "color": "leaf.1",
+   "seed": 8
+  },
+  {
+   "rect": [
+    0,
+    125,
+    320,
+    20
+   ],
+   "color": "leaf.1"
+  },
+  {
+   "ridge": [
+    0,
+    110,
+    320,
+    40
+   ],
+   "mode": "round",
+   "heights": [
+    14,
+    32
+   ],
+   "radii": [
+    7,
+    12
+   ],
+   "color": "leaf.2",
+   "seed": 15
+  },
+  {
+   "scatter": [
+    0,
+    80,
+    320,
+    60
+   ],
+   "colors": [
+    "leaf.3",
+    "leaf.2"
+   ],
+   "density": 0.05,
+   "seed": 16,
+   "on": "leaf.1"
+  },
+  {
+   "rect": [
+    0,
+    145,
+    320,
+    35
+   ],
+   "color": "grass.2"
+  },
+  {
+   "rect": [
+    0,
+    145,
+    320,
+    2
+   ],
+   "color": "grass.3"
+  },
+  {
+   "scatter": [
+    0,
+    147,
+    320,
+    33
+   ],
+   "colors": [
+    "grass.1",
+    "grass.3",
+    "leaf.3"
+   ],
+   "density": 0.12,
+   "seed": 17,
+   "on": "grass.2"
+  },
+  {
+   "scatter": [
+    0,
+    150,
+    320,
+    28
+   ],
+   "colors": [
+    "gold.3",
+    "white",
+    "red.3"
+   ],
+   "density": 0.006,
+   "seed": 18
+  },
+  {
+   "rect": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "color": null,
+   "_": "assets-apply: pieces below come from the asset library"
+  },
+  {
+   "use": "../tile/tile-grama.json",
+   "at": [
+    0,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama.json",
+   "at": [
+    32,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama.json",
+   "at": [
+    64,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama.json",
+   "at": [
+    96,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama.json",
+   "at": [
+    128,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama.json",
+   "at": [
+    160,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama.json",
+   "at": [
+    192,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama.json",
+   "at": [
+    224,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama.json",
+   "at": [
+    256,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama.json",
+   "at": [
+    288,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-borda.json",
+   "at": [
+    0,
+    116
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-borda.json",
+   "at": [
+    288,
+    116
+   ]
+  }
+ ]
+}

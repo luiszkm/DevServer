@@ -21,6 +21,7 @@ type Player struct {
 	GithubUserID int64  `json:"-"`
 	DevName      string `json:"devName"`
 	Class        string `json:"class"`
+	Body         string `json:"body"`
 	Level        int    `json:"level"`
 	XP           int    `json:"xp"`
 	XPMax        int    `json:"xpMax"`
@@ -46,10 +47,19 @@ type Player struct {
 	Office map[string][]*string `json:"office"`
 	// Rack has every catalog slot, with the installed component id or null.
 	Rack []*string `json:"rack"`
+	// Appearance has every avatar part as a key with the option worn (see ResolveAppearance).
+	Appearance map[string]string `json:"appearance"`
+	// Looks is the bought avatar option ids in catalog order; never nil.
+	Looks []string `json:"looks"`
+	// picks is players.appearance: only the parts the player chose, saved by WithLocked.
+	picks map[string]string
 }
 
 // DefaultSkin is owned by every player without a stored row (door 3).
 const DefaultSkin = "default"
+
+// DefaultBody is the body of every row stored before bodies existed (players.body's default).
+const DefaultBody = "masculino"
 
 func emptyEquipment() map[string]*string {
 	eq := map[string]*string{}
@@ -82,15 +92,47 @@ func validClass(c string) bool {
 }
 
 // newPlayer is the starting state of every dev.
-func newPlayer(githubUserID int64, devName, class string) *Player {
+func newPlayer(githubUserID int64, devName, class, body string) *Player {
 	return &Player{
-		GithubUserID: githubUserID, DevName: devName, Class: class,
+		GithubUserID: githubUserID, DevName: devName, Class: class, Body: body,
 		Level: 1, XP: 0, XPMax: 500, HP: 100, HPMax: 100,
 		Coins: 100, Gems: 20, SkillPoints: 1, Region: "vila", Skin: "default", Skills: []string{},
 		Inventory: []catalog.ItemQuantity{},
 		Gear:      []string{}, Equipment: emptyEquipment(), Skins: []string{DefaultSkin},
 		Office: emptyOffice(), Rack: emptyRack(),
+		Appearance: ResolveAppearance(catalog.Default(), body, nil), Looks: []string{}, picks: map[string]string{},
 	}
+}
+
+// ResolveAppearance is the one appearance rule: each catalog part wears the player's pick while
+// it is still an option of that part, not gear-only and available to the body, and the body's
+// default otherwise (catalog.AvatarDefault), so a part or option added or removed later, or a
+// change of body, never breaks a player.
+func ResolveAppearance(cat *catalog.Catalog, body string, picks map[string]string) map[string]string {
+	a := map[string]string{}
+	for _, part := range cat.Avatar.Parts {
+		a[part.ID] = cat.AvatarDefault(body, part.ID)
+		if o, ok := cat.AvatarOption(picks[part.ID]); ok && o.Part == part.ID && !o.GearOnly && o.AvailableTo(body) {
+			a[part.ID] = o.ID
+		}
+	}
+	return a
+}
+
+// Pick records option as the player's choice for part; WithLocked saves it.
+func (p *Player) Pick(part, option string) {
+	if p.picks == nil {
+		p.picks = map[string]string{}
+	}
+	p.picks[part] = option
+	p.Appearance = ResolveAppearance(catalog.Default(), p.Body, p.picks)
+}
+
+// SetBody changes the hero's body and re-resolves the appearance; the stored picks are kept, so a
+// pick the new body cannot wear comes back if the body changes again. WithLocked saves it.
+func (p *Player) SetBody(body string) {
+	p.Body = body
+	p.Appearance = ResolveAppearance(catalog.Default(), p.Body, p.picks)
 }
 
 var devNamePattern = regexp.MustCompile(`^[A-Z0-9_]{3,16}$`)
@@ -119,16 +161,23 @@ func SuggestDevName(login string) string {
 }
 
 const columns = `id, github_user_id, dev_name, class, level, xp, xp_max, hp, hp_max,
-	coins, gems, skill_points, region, skin`
+	coins, gems, skill_points, region, skin, appearance, body`
 
 func scan(row pgx.Row) (*Player, error) {
 	p := &Player{}
 	err := row.Scan(&p.ID, &p.GithubUserID, &p.DevName, &p.Class, &p.Level, &p.XP, &p.XPMax,
-		&p.HP, &p.HPMax, &p.Coins, &p.Gems, &p.SkillPoints, &p.Region, &p.Skin)
+		&p.HP, &p.HPMax, &p.Coins, &p.Gems, &p.SkillPoints, &p.Region, &p.Skin, &p.picks, &p.Body)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, httpx.ErrPlayerNotFound
 	}
-	return p, err
+	if err != nil {
+		return nil, err
+	}
+	if p.picks == nil {
+		p.picks = map[string]string{}
+	}
+	p.Appearance = ResolveAppearance(catalog.Default(), p.Body, p.picks)
+	return p, nil
 }
 
 type querier interface {
@@ -154,7 +203,26 @@ func Get(ctx context.Context, q querier, githubUserID int64) (*Player, error) {
 	if err := LoadOffice(ctx, q, p); err != nil {
 		return nil, err
 	}
-	return p, LoadRack(ctx, q, p)
+	if err := LoadRack(ctx, q, p); err != nil {
+		return nil, err
+	}
+	return p, LoadLooks(ctx, q, p)
+}
+
+// LoadLooks reads the bought avatar options into p.Looks, in catalog order like LoadGear.
+func LoadLooks(ctx context.Context, q querier, p *Player) error {
+	rows, err := q.Query(ctx, `SELECT look_id FROM player_looks WHERE player_id = $1`, p.ID)
+	if err != nil {
+		return err
+	}
+	looks, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		return err
+	}
+	cat := catalog.Default()
+	sort.SliceStable(looks, func(i, j int) bool { return cat.AvatarOptionPosition(looks[i]) < cat.AvatarOptionPosition(looks[j]) })
+	p.Looks = looks
+	return nil
 }
 
 // LoadOffice reads the installed furniture into p.Office. A row outside the catalog's zones is
@@ -336,12 +404,15 @@ func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn 
 	if err := LoadRack(ctx, tx, p); err != nil {
 		return nil, err
 	}
+	if err := LoadLooks(ctx, tx, p); err != nil {
+		return nil, err
+	}
 	if err := fn(tx, p); err != nil {
 		return nil, err
 	}
 	_, err = tx.Exec(ctx, `UPDATE players SET level = $2, xp = $3, xp_max = $4, hp = $5, hp_max = $6,
-		coins = $7, gems = $8, skill_points = $9, region = $10, skin = $11 WHERE id = $1`,
-		p.ID, p.Level, p.XP, p.XPMax, p.HP, p.HPMax, p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin)
+		coins = $7, gems = $8, skill_points = $9, region = $10, skin = $11, appearance = $12, body = $13 WHERE id = $1`,
+		p.ID, p.Level, p.XP, p.XPMax, p.HP, p.HPMax, p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin, p.picks, p.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -384,6 +455,9 @@ func Pay(p *Player, price catalog.Price) error {
 
 // Owns reports whether p owns a piece of gear.
 func (p *Player) Owns(gear string) bool { return slices.Contains(p.Gear, gear) }
+
+// OwnsLook reports whether p bought an avatar option.
+func (p *Player) OwnsLook(option string) bool { return slices.Contains(p.Looks, option) }
 
 // OwnsSkin reports whether p owns a skin; DefaultSkin is always owned.
 func (p *Player) OwnsSkin(skin string) bool { return slices.Contains(p.Skins, skin) }

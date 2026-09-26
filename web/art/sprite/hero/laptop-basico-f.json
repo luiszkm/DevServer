@@ -1,0 +1,28 @@
+{
+  "name": "laptop-basico-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Feminine body traced from web/public/female_keyart.png; her frontal grey laptop (metal, white spot, no brand), far right edge trimmed at x<=46.",
+  "legend": {"o": "ink", "m": "metal.0", "n": "metal.1", "M": "metal.2", "N": "metal.3", "w": "white"},
+  "layers": [
+    {"grid": [
+      "......o.............",
+      "...........ooooooooo",
+      "..........omNNNNNNNo",
+      "..........onMMMMMMMo",
+      ".........omMMnnnnnno",
+      ".........omNnnnnnnno",
+      ".........onMnnnnnnno",
+      ".........oMnnnnnnNMo",
+      "........omNnnnnnMwMo",
+      "........oMMnnnnnwwMo",
+      "........oMnnnnnnMMno",
+      "........oMnnnnnnnnno",
+      "o..oooo.oMnnnnnnnnno",
+      "mnnmmmmoMnnnnnnnnnno",
+      "omnnnnnnMnnnooonnnno",
+      ".o....ommooo..oMmoo.",
+      ".......oo......oo..."
+    ], "at": [27, 27]}
+  ]
+}

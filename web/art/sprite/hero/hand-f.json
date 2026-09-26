@@ -1,0 +1,16 @@
+{
+  "name": "hand-f",
+  "category": "sprite",
+  "size": [48, 64],
+  "_design": "Feminine body traced from web/public/female_keyart.png; the front hand holding her laptop, skin (tone).",
+  "legend": {"o": "ink", "1": "skin.0", "2": "skin.1", "3": "skin.2"},
+  "layers": [
+    {"grid": [
+      ".......111.",
+      "....o11221.",
+      "..o1232222o",
+      "ooo122221oo",
+      "ooooooooo.."
+    ], "at": [32, 41]}
+  ]
+}

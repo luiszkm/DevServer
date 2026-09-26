@@ -218,6 +218,48 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: checks.md S10 rows 1px outline / outline weight; F11 (web/art icon style)
 - last seen: 2026-09-24T21:21:26Z
 
+### L-035 - When a label follows a priority order, test each higher-priority state combined with every lower-priority condition failing, not only with the others satisfied.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `web-screens` · harmful: 0
+- features: forge
+- evidence: verification.md F4 / C22 web/src/components/ShopScene.tsx:247 (web-screens)
+- last seen: 2026-09-24T22:19:02Z
+
+### L-036 - A guard for a catalog reference the embedded data never breaks still needs a proof through apptest.NewWithCatalog and a status in Surface, or it should be removed.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `api-routes` · harmful: 0
+- features: forge
+- evidence: verification.md coverage / api/internal/shop/forge.go:26 (api-routes)
+- last seen: 2026-09-24T22:19:02Z
+
+### L-037 - A stale-async-load test must make the old load resolve after the switch (delay it), or a cached load hides a missing cancel guard.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `web/components` · harmful: 0
+- features: assets
+- evidence: web/src/components/HeroAvatar.test.tsx:73 (web/components)
+- last seen: 2026-09-26T02:33:59Z
+
+### L-038 - To prove 'icon before the text', assert firstChild === firstElementChild, not only firstElementChild and textContent.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `web/components` · harmful: 0
+- features: assets
+- evidence: web/src/components/OfficeScene.test.tsx:356 (web/components)
+- last seen: 2026-09-26T02:33:59Z
+
+### L-039 - When generalizing a checker to new categories, enumerate every guard of the function (gate, shape, each rule) as coverage members, not only the rules the check names.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `pixel-assets` · harmful: 0
+- features: assets
+- evidence: .claude/skills/pixel-assets/scripts/render.py:382 (pixel-assets)
+- last seen: 2026-09-26T02:33:59Z
+
+### L-040 - python3 -m unittest cannot take a path under .claude, and unittest -k is a substring (repeat -k, never 'a or b'); run the test file directly.
+- signal: `gate_fail` · recurrence: 1 feature(s) · scope: `pixel-assets` · harmful: 0
+- features: assets
+- evidence: .claude/skills/pixel-assets/scripts/test_render.py (pixel-assets)
+- last seen: 2026-09-26T02:33:59Z
+
+### L-041 - A check listing several labels (FORJAR and FORJAR E EQUIPAR) needs one fixture per label; one recipe only reaches one branch of startsWith.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `web/components` · harmful: 0
+- features: assets-apply
+- evidence: web/src/components/ShopScene.test.tsx:555 (web/components)
+- last seen: 2026-09-26T12:12:49Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

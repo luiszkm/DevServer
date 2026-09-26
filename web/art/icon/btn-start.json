@@ -1,0 +1,13 @@
+{
+  "name": "btn-start",
+  "category": "icon",
+  "size": [16, 16],
+  "_design": "PLAY (dark button): the green start triangle.",
+  "layers": [
+    {"poly": [[4, 2], [4, 14], [13, 8]], "color": "code.3"},
+    {"poly": [[4, 2], [4, 8], [13, 8]], "color": "code.4"},
+    {"rect": [4, 9, 3, 5], "color": "code.2"},
+    {"rect": [4, 3, 1, 10], "color": "code.4"},
+    {"outline": "ink"}
+  ]
+}

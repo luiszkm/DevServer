@@ -169,3 +169,78 @@ describe("SkillsScene", () => {
     expect(node("f2").querySelector(".skill-glyph")).toHaveTextContent("{}");
   });
 });
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("SkillsScene assets", () => {
+  // assets C18
+  it("lock icon", () => {
+    renderScene(player({ skills: [] }));
+    const locked = node("f2").querySelector(".skill-state")!;
+    expect(locked.textContent).toBe("BLOQ.");
+    expectIcon(locked.firstElementChild, "/art/icon/ic-lock.png");
+    expect(locked.firstChild).toBe(locked.firstElementChild);
+    expect(node("f1").querySelector(".skill-state")!.textContent).toBe("1 PT");
+    expect(node("f1").querySelector('img[src="/art/icon/ic-lock.png"]')).toBeNull();
+  });
+});
+
+describe("SkillsScene scene", () => {
+  // assets C39
+  it("scene background", () => {
+    renderScene();
+  const section = document.querySelector("section.scene") as HTMLElement;
+    expect(section.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/scene-noite.png)");
+  });
+});
+
+function expectFirstIcon(el: Element | null | undefined, src: string) {
+  const img = el?.firstElementChild;
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe("16");
+  expect(el!.firstChild).toBe(img);
+}
+
+describe("SkillsScene applied assets", () => {
+  // assets-apply C11
+  it("wood header", () => {
+    renderScene();
+    expect(document.querySelector(".skills-head")).toHaveClass("panel-wood");
+  });
+
+  // assets-apply C13
+  it.each([["FRONTEND", "ic-code"], ["BACKEND", "ic-server"], ["INFRA", "ic-cloud"]])("generic icon on tree %s", (name, icon) => {
+    renderScene();
+    const title = screen.getByText(name, { selector: ".skills-tree-name" });
+    expectFirstIcon(title, `/art/icon/${icon}.png`);
+  });
+});
+
+describe("SkillsScene sparkle", () => {
+  // assets-apply C20
+  it("sparkle on the node unlocked with 200", async () => {
+    mockFetch({ "POST /api/me/skills/b1/unlock": json(200, { player: player({ skills: ["b1"], skillPoints: 0 }) }) });
+    renderScene();
+    await userEvent.click(node("b1"));
+    await screen.findByText(/API REST desbloqueada/);
+    const fx = node("b1").querySelector('[data-fx="sparkle"]') as HTMLElement;
+    expect(fx).not.toBeNull();
+    expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/sparkle.png)");
+    expect(document.querySelectorAll('[data-fx="sparkle"]')).toHaveLength(1);
+  });
+
+  it("sparkle never on a 409", async () => {
+    mockFetch({ "POST /api/me/skills/b1/unlock": json(409, { error: { code: "no_skill_points", message: "sem pontos" } }) });
+    renderScene();
+    await userEvent.click(node("b1"));
+    await screen.findByText(/sem pontos/);
+    expect(document.querySelector('[data-fx="sparkle"]')).toBeNull();
+  });
+});

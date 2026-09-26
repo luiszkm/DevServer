@@ -35,9 +35,9 @@ type querier interface {
 
 func load(ctx context.Context, q querier, playerID int64) (*State, error) {
 	st := &State{}
-	err := q.QueryRow(ctx, `SELECT region, enemy_hp, enemy_hp_max, sp, sp_max, weak, status
+	err := q.QueryRow(ctx, `SELECT enemy, region, enemy_hp, enemy_hp_max, sp, sp_max, weak, status
 		FROM battles WHERE player_id = $1`, playerID).
-		Scan(&st.Region, &st.EnemyHP, &st.EnemyHPMax, &st.SP, &st.SPMax, &st.Weak, &st.Status)
+		Scan(&st.Enemy, &st.Region, &st.EnemyHP, &st.EnemyHPMax, &st.SP, &st.SPMax, &st.Weak, &st.Status)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, httpx.ErrBattleNotFound
 	}
@@ -45,12 +45,12 @@ func load(ctx context.Context, q querier, playerID int64) (*State, error) {
 }
 
 func save(ctx context.Context, tx pgx.Tx, playerID int64, st *State) error {
-	_, err := tx.Exec(ctx, `INSERT INTO battles (player_id, region, enemy_hp, enemy_hp_max, sp, sp_max, weak, status)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-		ON CONFLICT (player_id) DO UPDATE SET region = EXCLUDED.region, enemy_hp = EXCLUDED.enemy_hp,
+	_, err := tx.Exec(ctx, `INSERT INTO battles (player_id, enemy, region, enemy_hp, enemy_hp_max, sp, sp_max, weak, status)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		ON CONFLICT (player_id) DO UPDATE SET enemy = EXCLUDED.enemy, region = EXCLUDED.region, enemy_hp = EXCLUDED.enemy_hp,
 			enemy_hp_max = EXCLUDED.enemy_hp_max, sp = EXCLUDED.sp, sp_max = EXCLUDED.sp_max,
 			weak = EXCLUDED.weak, status = EXCLUDED.status`,
-		playerID, st.Region, st.EnemyHP, st.EnemyHPMax, st.SP, st.SPMax, st.Weak, st.Status)
+		playerID, st.Enemy, st.Region, st.EnemyHP, st.EnemyHPMax, st.SP, st.SPMax, st.Weak, st.Status)
 	return err
 }
 
@@ -93,12 +93,18 @@ func (h *Handlers) Start(w http.ResponseWriter, r *http.Request) error {
 			st = cur
 			return nil
 		}
-		enemy, ok := h.Catalog.Enemy(p.Region)
-		if !ok {
+		// Several enemies share a region (AD-017): draw one, and only when there is a choice, so a
+		// single-enemy region keeps the rules' draw order (AD-011).
+		enemies := h.Catalog.EnemiesIn(p.Region)
+		if len(enemies) == 0 {
 			return errors.New("no enemy for region " + p.Region)
 		}
+		enemy := enemies[0]
+		if len(enemies) > 1 {
+			enemy = enemies[h.Rand.IntN(len(enemies))]
+		}
 		spMax := enemy.SP + player.Bonus(h.Catalog, p, "sp")
-		st = &State{Region: p.Region, EnemyHP: enemy.HP, EnemyHPMax: enemy.HP, SP: spMax, SPMax: spMax, Status: "active"}
+		st = &State{Enemy: enemy.ID, Region: p.Region, EnemyHP: enemy.HP, EnemyHPMax: enemy.HP, SP: spMax, SPMax: spMax, Status: "active"}
 		return save(ctx, tx, p.ID, st)
 	})
 	if err != nil {
@@ -128,7 +134,7 @@ func (h *Handlers) turn(w http.ResponseWriter, r *http.Request, check func(*play
 		if err := check(p, st); err != nil {
 			return err
 		}
-		enemy, _ := h.Catalog.Enemy(st.Region)
+		enemy, _ := h.Catalog.Enemy(st.Enemy)
 		rules := Rules{Combat: h.Catalog.Combat, Enemy: enemy, DamageBonus: player.Bonus(h.Catalog, p, "dmg"),
 			SPRegenBonus: player.Bonus(h.Catalog, p, "spregen")}
 		if out, err = play(tx, p, st, rules); err != nil {

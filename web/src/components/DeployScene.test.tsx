@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import DeployPage from "@/app/(game)/deploy/page";
@@ -384,5 +384,138 @@ describe("DeployScene", () => {
     expect(backend.querySelector("img")).toBeNull();
     expect(backend.querySelector(".deploy-type-name")).toHaveTextContent("$_");
     expect(backend).toHaveAccessibleName("BACKEND");
+  });
+});
+
+function expectIcon(img: Element | null | undefined, src: string, width = 16) {
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe(String(width));
+}
+
+describe("DeployScene assets", () => {
+  // assets C20
+  it("lock icon", async () => {
+    mockFetch({ "GET /api/me/deploys": list([]) });
+    renderScene({ p: player({ level: 1 }) });
+    await within(panel()).findByRole("button", { name: "INICIAR DEPLOY" });
+    const tag = levelButton(2).querySelector(".deploy-locked")!;
+    expect(tag.textContent).toBe("NÍVEL 3");
+    expectIcon(tag.firstElementChild, "/art/icon/ic-lock.png");
+    expect(tag.firstChild).toBe(tag.firstElementChild);
+    expect(levelButton(1).querySelector('img[src="/art/icon/ic-lock.png"]')).toBeNull();
+  });
+});
+
+function expectLoadingFx(text: HTMLElement) {
+  const fx = text.querySelector("span.fx-loading") as HTMLElement;
+  expect(fx).not.toBeNull();
+  expect(fx.getAttribute("aria-hidden")).toBe("true");
+  expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/loading.png)");
+}
+
+describe("DeployScene world pieces", () => {
+  // assets C30
+  it("loading fx", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
+    renderScene();
+    expectLoadingFx(within(panel()).getByText("CARREGANDO..."));
+  });
+
+  // assets C32
+  it("chest closed on the claim button", async () => {
+    mockFetch({ "GET /api/me/deploys": list([job("backend", 1, 15, 15)]) });
+    renderScene();
+    const btn = await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" });
+    const img = btn.querySelector("img")!;
+    expect(img.getAttribute("src")).toBe("/art/sprite/extra-bau.png");
+    expect(img.getAttribute("alt")).toBe("");
+    expect(img.getAttribute("width")).toBe("32");
+  });
+
+  // assets C33
+  it("chest opens after a 200 claim", async () => {
+    mockFetch({
+      "GET /api/me/deploys": list([job("backend", 1, 15, 15)]),
+      "POST /api/me/deploys/backend/claim": json(200, { player: player(), reward: { xp: 80, coins: 40, gems: 0, levelsGained: 0 } }),
+    });
+    renderScene();
+    await userEvent.click(await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" }));
+    await waitFor(() => expect(document.querySelector('img[src="/art/sprite/extra-bau-aberto.png"]')).not.toBeNull());
+    const open = document.querySelector('img[src="/art/sprite/extra-bau-aberto.png"]')!;
+    expect(open.getAttribute("alt")).toBe("");
+    expect(open.getAttribute("width")).toBe("64");
+    const fx = document.querySelector('[data-fx="collect"]') as HTMLElement;
+    expect(fx).not.toBeNull();
+    expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/collect.png)");
+  });
+
+  it("chest opens only on success (claim error)", async () => {
+    mockFetch({
+      "GET /api/me/deploys": list([job("backend", 1, 15, 15)]),
+      "POST /api/me/deploys/backend/claim": json(409, { error: { code: "not_ready", message: "deploy ainda rodando" } }),
+    });
+    renderScene();
+    await userEvent.click(await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" }));
+    expect(await screen.findByText("deploy ainda rodando")).toBeInTheDocument();
+    expect(document.querySelector('img[src="/art/sprite/extra-bau-aberto.png"]')).toBeNull();
+    expect(document.querySelector('[data-fx="collect"]')).toBeNull();
+  });
+});
+
+describe("DeployScene scene", () => {
+  // assets C39
+  it("scene background", () => {
+    mockFetch({ "GET /api/me/deploys": list([]) });
+    renderScene();
+  const section = document.querySelector("section.scene") as HTMLElement;
+    expect(section.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/background/scene-dia.png)");
+  });
+});
+
+describe("DeployScene hero anim", () => {
+  // assets C48
+  const hero = () => within(panel()).getByRole("img", { name: "herói" });
+  it("hero anim: interact while the job runs", async () => {
+    mockFetch({ "GET /api/me/deploys": list([job("backend", 1, 5, 15)]) });
+    renderScene();
+    await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" });
+    expect(hero().dataset.anim).toBe("interact");
+  });
+
+  it("hero anim: idle when the job is ready", async () => {
+    mockFetch({ "GET /api/me/deploys": list([job("backend", 1, 15, 15)]) });
+    renderScene();
+    await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" });
+    expect(hero().dataset.anim).toBe("idle");
+  });
+});
+
+function expectFirstIcon(el: Element | null | undefined, src: string) {
+  const img = el?.firstElementChild;
+  expect(img?.tagName).toBe("IMG");
+  expect(img!.getAttribute("src")).toBe(src);
+  expect(img!.getAttribute("alt")).toBe("");
+  expect(img!.getAttribute("width")).toBe("16");
+  expect(el!.firstChild).toBe(img);
+}
+
+describe("DeployScene applied assets", () => {
+  // assets-apply C11
+  it("wood header", async () => {
+    mockFetch({ "GET /api/me/deploys": list([]) });
+    renderScene();
+    expect(document.querySelector(".deploy-head")).toHaveClass("panel-wood");
+  });
+
+  // assets-apply C12 / C13
+  it("button icon on INICIAR DEPLOY and generic icon on the panel title", async () => {
+    mockFetch({ "GET /api/me/deploys": list([]) });
+    renderScene();
+    const go = await within(panel()).findByRole("button", { name: "INICIAR DEPLOY" });
+    expectFirstIcon(go, "/art/icon/btn-deploy.png");
+    expectFirstIcon(panel().querySelector(".deploy-title"), "/art/icon/ic-laptop.png");
+    expect(panel().querySelector(".deploy-title")!.textContent).toBe("BACKEND");
   });
 });
