@@ -106,7 +106,7 @@ func newPlayer(githubUserID int64, devName, class, body string) *Player {
 	return &Player{
 		GithubUserID: githubUserID, DevName: devName, Class: class, Body: body,
 		Level: 1, XP: 0, XPMax: 500, HP: 100, HPMax: 100,
-		Coins: 100, Gems: 20, SkillPoints: 1, Region: "vila", Skin: "default", Skills: []string{},
+		Coins: 9999, Gems: 9999, SkillPoints: 1, Region: "vila", Skin: "default", Skills: []string{},
 		SkillLevels: map[string]int{}, Loadout: emptyLoadout(),
 		Inventory: []catalog.ItemQuantity{},
 		Gear:      []string{}, Equipment: emptyEquipment(), Skins: []string{DefaultSkin},

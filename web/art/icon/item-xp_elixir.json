@@ -1,0 +1,47 @@
+{
+ "name": "item-xp_elixir",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "ELIXIR DE XP: a taller, wider-bottomed bottle than the potion, sealed with a gold cap, full of terminal-green XP liquid, glossy top-left highlight.",
+ "legend": {
+  "o": "ink",
+  "y": "gold.3",
+  "Y": "gold.1",
+  "g": "metal.3",
+  "G": "metal.2",
+  "h": "code.4",
+  "l": "code.3",
+  "m": "code.2",
+  "d": "code.1",
+  "w": "white"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    ".....oooooo.....",
+    ".....oyyYYo.....",
+    ".....oooooo.....",
+    "......ogGo......",
+    "......ogGo......",
+    ".....oogGoo.....",
+    "....ohlllmmo....",
+    "...owhllmmmdo...",
+    "...ohlllmmmdo...",
+    "..ohlllmmmmddo..",
+    "..olllmmmmmddo..",
+    "..ollmmmmmdddo..",
+    "..ommmmmmddddo..",
+    "...oddddddddo...",
+    "....oooooooo...."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

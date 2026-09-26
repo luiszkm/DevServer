@@ -217,14 +217,17 @@ export function BattleScene() {
                 <button
                   key={i}
                   type="button"
-                  className="battle-command"
+                  className="battle-command battle-command-skill"
                   data-command={c.id}
                   data-slot={i}
                   disabled={blocked(c)}
                   onClick={() => fire(c)}
                 >
-                  <span className="pixel">{c.label}</span>
-                  <span className="term">{commandHint(c)}</span>
+                  <GameArt kind="skill" id={id} scale={2} alt="" fallback="" />
+                  <span className="battle-command-copy">
+                    <span className="pixel">{c.label}</span>
+                    <span className="term">{commandHint(c)}</span>
+                  </span>
                 </button>
               );
             })}
@@ -264,11 +267,12 @@ export function BattleScene() {
                 type="button"
                 className="battle-potion"
                 data-item={i.id}
+                aria-label={`${i.name} x${qty(i.id)}`}
                 disabled={pending || !active || qty(i.id) === 0}
                 onClick={() => act("/api/me/battle/items", { item: i.id })}
               >
                 <GameArt kind="item" id={i.id} scale={2} alt="" fallback={i.glyph} />
-                <span className="term">{`${i.name} x${qty(i.id)}`}</span>
+                <span className="battle-potion-qty term" aria-hidden="true">{qty(i.id)}</span>
               </button>
             ))}
           </div>

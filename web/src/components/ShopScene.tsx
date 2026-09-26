@@ -400,7 +400,7 @@ export function ShopScene() {
         <HeroAvatar look={wearing(o)} scale={2} className="shop-detail-sprite" />
         <span className="pixel shop-rarity">{partName(o.part)}</span>
         <span className="pixel shop-detail-name">{o.name}</span>
-        <span className="term shop-desc">Estilo extra para o seu dev. Troque quando quiser no AVATAR → VISUAL.</span>
+        <span className="term shop-desc">Estilo extra para o seu dev. Compre e use quando quiser na Loja.</span>
         <span className="term">{`custo: ${owned ? "já possui" : priceLong(o.price)}`}</span>
         <div className="shop-spacer" />
         <button type="button" className={`btn ${!worn && (owned || afford) ? "btn-green" : "btn-locked"}`}

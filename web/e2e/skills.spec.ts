@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { newDev } from "./helpers";
+import { newDev, openScene } from "./helpers";
 
 // C25, skill-loadout AC 6: unlocking equips the skill in the first slot, and it survives a reload.
 test("unlock persists", async ({ page }) => {
   await newDev(page, "masculino", "FRONTEND");
-  await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "SKILLS" }).click();
+  await openScene(page, "SKILLS");
   await expect(page.getByText("PONTOS: 1")).toBeVisible();
 
   const hotfix = page.locator('[data-skill="fe1"]');
@@ -14,8 +14,6 @@ test("unlock persists", async ({ page }) => {
     await expect(hotfix).toHaveAttribute("data-equipped", "true");
     await expect(page.locator('[data-slot="0"]')).toContainText("HOTFIX DE CSS");
     await expect(page.getByText("PONTOS: 0")).toBeVisible();
-    const hud = page.getByRole("banner", { name: "HUD" });
-    await expect(hud.getByLabel("habilidades ativas").getByRole("img", { name: "HOTFIX DE CSS" })).toHaveAttribute("src", "/art/icon/skill-fe1.png");
   };
   await check();
   await page.reload();
@@ -26,7 +24,7 @@ test("unlock persists", async ({ page }) => {
 test("loadout persists and decides the fight's commands", async ({ page }) => {
   await newDev(page);
   const nav = page.getByRole("navigation", { name: "Cenas" });
-  await nav.getByRole("link", { name: "SKILLS" }).click();
+  await openScene(page, "SKILLS");
   const endpoint = page.locator('[data-skill="be1"]');
   await endpoint.locator('[data-action="unlock"]').click();
   await expect(endpoint).toHaveAttribute("data-equipped", "true");
@@ -44,7 +42,7 @@ test("loadout persists and decides the fight's commands", async ({ page }) => {
   await expect(page.locator('[data-command="ship"]')).toBeDisabled();
   await expect(page.getByLabel("dev em combate")).toContainText("PODER 0/100");
 
-  await nav.getByRole("link", { name: "SKILLS" }).click();
+  await openScene(page, "SKILLS");
   await endpoint.locator('[data-action="equip"]').click();
   await expect(page.locator('[data-slot="0"]')).toContainText("ENDPOINT");
   await expect(page.getByText("bônus ativo: +0 HP · +0 SP · +8% dano")).toBeVisible();

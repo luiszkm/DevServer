@@ -6,10 +6,10 @@
     { "id": "hairColor", "name": "COR DO CABELO", "kind": "color" },
     { "id": "beard", "name": "BARBA", "kind": "style" },
     { "id": "glasses", "name": "ÓCULOS", "kind": "style" },
-    { "id": "top", "name": "ROUPA", "kind": "style", "gearSlot": "vestuario" },
+    { "id": "top", "name": "ROUPA", "kind": "style", "gearSlot": "torso" },
     { "id": "topColor", "name": "COR DA ROUPA", "kind": "color" },
     { "id": "bottomColor", "name": "CALÇA", "kind": "color" },
-    { "id": "laptop", "name": "NOTEBOOK", "kind": "style", "gearSlot": "setup" }
+    { "id": "laptop", "name": "NOTEBOOK", "kind": "style", "gearSlot": "notebook" }
   ],
   "bodies": [
     { "id": "masculino", "name": "MASCULINO" },

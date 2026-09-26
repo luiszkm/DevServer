@@ -48,7 +48,7 @@ const dressed = () =>
     gems: 20,
     coins: 100,
     gear: ["macbook", "moletom"],
-    equipment: { setup: "macbook", bebida: null, vestuario: null, acessorio: null },
+    equipment: { notebook: "macbook", bebida: null, torso: null, acessorio: null },
     skins: ["default", "neon", "shadow"],
     skin: "neon",
   });
@@ -62,7 +62,9 @@ describe("ShopScene", () => {
     expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["POÇÕES", "EQUIP", "SKINS", "ESTILOS", "FORJA"]);
     expect(screen.getByRole("tab", { name: "POÇÕES" })).toHaveAttribute("aria-selected", "true");
     expect(screen.queryByRole("tabpanel", { name: "EQUIPAMENTOS DO DEV" })).not.toBeInTheDocument();
-    expect(cardNames("POÇÕES")).toEqual(["POÇÃO DE CACHE", "POÇÃO DE MEMÓRIA", "ACELERADOR DE DEPLOY", "TOKEN DE REDESIGN"]);
+    expect(cardNames("POÇÕES")).toEqual([
+      "POÇÃO DE CACHE", "POÇÃO DE MEMÓRIA", "POÇÃO DE XP", "ELIXIR DE XP", "ACELERADOR DE DEPLOY", "TOKEN DE REDESIGN",
+    ]);
     expect(card("sp_potion")).toHaveTextContent("possui: 2");
     expect(card("sp_potion")).toHaveTextContent("15g");
     expect(card("hp_potion")).toHaveTextContent("possui: 0");
@@ -80,6 +82,8 @@ describe("ShopScene", () => {
     expect(detail()).toHaveTextContent("MACBOOK PRO");
     expect(cardNames("EQUIPAMENTOS DO DEV")).toEqual([
       "MACBOOK PRO", "MONITOR ULTRAWIDE", "CAFÉ EXPRESSO", "MOLETOM CONFORTÁVEL", "CADEIRA ERGONÔMICA", "FONE COM CANCELAMENTO",
+      "BONÉ DE HACKATHON", "ÓCULOS ANTI LUZ AZUL", "BRINCO DE BIT", "CRACHÁ DE ACESSO", "CINTO DE UTILIDADES", "CALÇA CARGO",
+      "TÊNIS DE SPRINT", "LUVAS SEM DEDO",
       "CANECA DE LOGS", "MOLETOM STACK TRACE", "TECLADO RACE CONDITION",
     ]);
     await openTab("SKINS");
@@ -118,7 +122,7 @@ describe("ShopScene", () => {
 
     await userEvent.click(await show("macbook"));
     expect(detail()).toHaveTextContent("MACBOOK PRO");
-    expect(within(detail()).getByText("RARO · CONFIGURAÇÃO")).toBeInTheDocument();
+    expect(within(detail()).getByText("RARO · NOTEBOOK")).toBeInTheDocument();
     expect(within(detail()).getByText("bônus: +8% de dano")).toBeInTheDocument();
     expect(within(detail()).getByText("custo: já possui")).toBeInTheDocument();
     expect(detailButton("EQUIPADO")).toBeDisabled();
@@ -144,7 +148,7 @@ describe("ShopScene", () => {
   it("detail button per state (can pay)", async () => {
     renderShop({ ...dressed(), gems: 500 });
     await userEvent.click(await show("macbook"));
-    expect(within(detail()).getByText("RARO · CONFIGURAÇÃO")).toBeInTheDocument();
+    expect(within(detail()).getByText("RARO · NOTEBOOK")).toBeInTheDocument();
     await userEvent.click(await show("monitor"));
     expect(detailButton("COMPRAR E EQUIPAR")).toBeEnabled();
     await userEvent.click(await show("fone"));
@@ -159,7 +163,7 @@ describe("ShopScene", () => {
   it("detail button per state (not owned)", async () => {
     renderShop(player({ gems: 500 }));
     await userEvent.click(await show("macbook"));
-    expect(within(detail()).getByText("RARO · CONFIGURAÇÃO")).toBeInTheDocument();
+    expect(within(detail()).getByText("RARO · NOTEBOOK")).toBeInTheDocument();
     expect(within(detail()).getByText("bônus: +8% de dano")).toBeInTheDocument();
     expect(within(detail()).getByText("custo: 120 GEMS")).toBeInTheDocument();
     expect(detailButton("COMPRAR E EQUIPAR")).toBeEnabled();
@@ -175,6 +179,10 @@ describe("ShopScene", () => {
     [120, 100, "macbook", "COMPRAR E EQUIPAR", true],
     [59, 100, "neon", "GEMS INSUFICIENTES", false],
     [60, 100, "neon", "COMPRAR E EQUIPAR", true],
+    [20, 119, "xp_potion", "COINS INSUFICIENTES", false],
+    [20, 120, "xp_potion", "COMPRAR", true],
+    [20, 59, "bone", "COINS INSUFICIENTES", false],
+    [20, 60, "bone", "COMPRAR E EQUIPAR", true],
   ])("insufficient balance (%i gems, %i coins, %s)", async (gems, coins, id, label, enabled) => {
     renderShop(player({ gems, coins }));
     await userEvent.click(await show(id));
@@ -187,6 +195,8 @@ describe("ShopScene", () => {
   it.each([
     ["sp_potion", "COMPRAR", "POST /api/me/shop/items/sp_potion", "+1 POÇÃO DE CACHE"],
     ["monitor", "COMPRAR E EQUIPAR", "POST /api/me/shop/gear/monitor", "ITEM COMPRADO E EQUIPADO"],
+    ["xp_elixir", "COMPRAR", "POST /api/me/shop/items/xp_elixir", "+1 ELIXIR DE XP"],
+    ["luvas_dev", "COMPRAR E EQUIPAR", "POST /api/me/shop/gear/luvas_dev", "ITEM COMPRADO E EQUIPADO"],
     ["golden", "COMPRAR E EQUIPAR", "POST /api/me/shop/skins/golden", "SKIN COMPRADA E EQUIPADA"],
     ["moletom", "EQUIPAR", "POST /api/me/gear/moletom/equip", "ITEM EQUIPADO"],
     ["shadow", "EQUIPAR", "POST /api/me/skins/shadow/equip", "SKIN EQUIPADA"],

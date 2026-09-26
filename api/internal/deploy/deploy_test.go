@@ -319,8 +319,8 @@ func TestClaim_CreditsReward(t *testing.T) {
 	if b.Reward.XP != 80 || b.Reward.Coins != 40 || b.Reward.Gems != 0 {
 		t.Errorf("reward %+v, want 80/40/0", b.Reward)
 	}
-	if b.Player.XP != 80 || b.Player.Coins != 140 || b.Player.Gems != 20 {
-		t.Errorf("player xp %d coins %d gems %d, want 80 140 20", b.Player.XP, b.Player.Coins, b.Player.Gems)
+	if b.Player.XP != 80 || b.Player.Coins != 10039 || b.Player.Gems != 9999 {
+		t.Errorf("player xp %d coins %d gems %d, want 80 10039 9999", b.Player.XP, b.Player.Coins, b.Player.Gems)
 	}
 	var collected bool
 	if err := env.Pool.QueryRow(context.Background(),
@@ -345,8 +345,8 @@ func TestClaim_CreditsFrozenReward(t *testing.T) {
 	if b.Reward.XP != 999 || b.Reward.Coins != 7 || b.Reward.Gems != 3 {
 		t.Fatalf("reward %+v, want the stored 999/7/3", b.Reward)
 	}
-	if b.Player.Coins != 107 || b.Player.Gems != 23 {
-		t.Fatalf("player coins %d gems %d, want 107 23", b.Player.Coins, b.Player.Gems)
+	if b.Player.Coins != 10006 || b.Player.Gems != 10002 {
+		t.Fatalf("player coins %d gems %d, want 10006 10002", b.Player.Coins, b.Player.Gems)
 	}
 }
 
@@ -424,8 +424,8 @@ func TestClaim_ConcurrentOnce(t *testing.T) {
 	if err := env.Pool.QueryRow(context.Background(), `SELECT coins FROM players`).Scan(&coins); err != nil {
 		t.Fatal(err)
 	}
-	if coins != 140 {
-		t.Fatalf("coins = %d, want 140 (credited once)", coins)
+	if coins != 10039 {
+		t.Fatalf("coins = %d, want 10039 (credited once)", coins)
 	}
 }
 

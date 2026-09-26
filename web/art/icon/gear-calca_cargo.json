@@ -1,0 +1,44 @@
+{
+ "name": "gear-calca_cargo",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CALÇA CARGO: khaki cargo trousers from the front, waistband on top, a fly line, a side pocket on each leg and darker hems; the left leg catches the light.",
+ "legend": {
+  "o": "ink",
+  "h": "dirt.3",
+  "H": "dirt.1",
+  "l": "dirt.3",
+  "m": "dirt.2",
+  "d": "dirt.0",
+  "D": "dirt.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "..ooooooooooo...",
+    "..ohhhhhhhhHo...",
+    "..ooooooooooo...",
+    "..olllldmmmmo...",
+    "..olllldmmmmo...",
+    "..ollllommmmo...",
+    "..olDDo.oDDmo...",
+    "..olDDo.oDDmo...",
+    "..ollmo.olmmo...",
+    "..ollmo.olmmo...",
+    "..ollmo.olmmo...",
+    "..oDDDo.oDDDo...",
+    "..ooooo.ooooo...",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

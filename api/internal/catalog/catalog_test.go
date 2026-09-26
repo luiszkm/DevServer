@@ -253,6 +253,7 @@ func TestCatalog_ServesCombat(t *testing.T) {
 				Stat   string
 				Amount int
 			}
+			XP int
 		} `json:"items"`
 		Combat struct {
 			Counter            []int
@@ -307,20 +308,20 @@ func TestCatalog_ServesCombat(t *testing.T) {
 		"fix|FIX|10|14-20|0|false|false|0|false|", "test|TEST|8||0|true|false|0|false|",
 		"refactor|REFACTOR|14||18|false|false|0|false|", "plain|PLAIN|0||0|false|true|3|false|",
 		"fe1|</> HOTFIX|12||26|false|false|0|false|fe1", "fe2|{} PAIR|10||0|true|false|4|false|fe2",
-		"fe3|~ DESIGN|18||32|false|false|8|false|fe3", "fe4|<a> A11Y|14||20|false|true|0|false|fe4",
-		"fe5|@ MEDIA|6||0|false|false|16|false|fe5", "fe6|# LIGHTHOUSE|12||12|true|false|0|false|fe6",
+		"fe3|~ DESIGN|18||32|false|false|8|false|fe3", "fe4|<a> A11Y|12||8|false|true|0|false|fe4",
+		"fe5|@ MEDIA|6||0|false|false|16|false|fe5", "fe6|# LIGHTHOUSE|16|18-24|0|false|false|0|false|fe6",
 		"fe7|* WORKER|20||40|false|false|0|false|fe7", "fe8|& HYDRATE|26||45|false|false|12|false|fe8",
 		"be1|$_ ENDPOINT|12|18-24|0|false|false|0|false|be1", "be2|[] QUERY|16|24-32|0|false|false|0|false|be2",
-		"be3|## DEADLOCK|22|32-42|0|false|false|0|false|be3", "be4|% CACHE|10|12-16|0|false|false|6|false|be4",
+		"be3|## DEADLOCK|22|32-42|0|false|false|0|false|be3", "be4|% CACHE|12||18|false|false|0|false|be4",
 		"be5|=> MIGRATE|14|10-14|0|true|false|0|false|be5", "be6|&& THREADS|24|34-42|0|false|false|0|false|be6",
-		"be7|!! HOTPATH|28|36-46|0|false|false|0|false|be7", "be8|>> SHARD|30|40-50|0|false|false|0|false|be8",
+		"be7|!! HOTPATH|14||8|false|true|0|false|be7", "be8|>> SHARD|30|40-50|0|false|false|0|false|be8",
 		"do1|>_ HEALTHCHECK|10||10|false|true|0|false|do1", "do2|:: FIREWALL|14||16|false|true|0|false|do2",
 		"do3|^ CIRCUIT|12||0|false|true|6|false|do3", "do4|[+] BACKUP|16||30|false|false|0|false|do4",
 		"do5|<> BALANCE|8||0|false|true|10|false|do5", "do6|@@ CANARY|12||0|true|true|0|false|do6",
-		"do7||| REPLICA|20||28|false|true|0|false|do7", "do8|{#} TERRAFORM|22|20-26|0|false|true|0|false|do8",
+		"do7||| REPLICA|20||28|false|true|0|false|do7", "do8|{#} TERRAFORM|20|22-30|0|false|false|0|false|do8",
 		"fs1|</> SNACK|12||22|false|false|0|false|fs1", "fs2|$_ SCRIPT|12|16-22|0|false|false|0|false|fs2",
-		"fs3|:: PAGER|10||8|false|true|0|false|fs3", "fs4|? OVERFLOW|9||0|true|false|3|false|fs4",
-		"fs5|$$ FREELA|16|20-28|0|false|false|0|false|fs5", "fs6|++ CRUD|16|12-16|12|false|false|0|false|fs6",
+		"fs3|:: PAGER|10||8|false|true|0|false|fs3", "fs4|? OVERFLOW|10||16|false|false|0|false|fs4",
+		"fs5|$$ FREELA|16|20-28|0|false|false|0|false|fs5", "fs6|++ CRUD|14||20|false|false|0|false|fs6",
 		"fs7|~> SEXTA|22|28-38|0|false|false|0|false|fs7", "fs8|<$> MVP|20||20|false|true|6|false|fs8",
 		"hot_reload|HOT RELOAD|0|40-40|60|false|false|50|false|", "ship|SHIP IT|0|80-80|0|false|false|0|false|",
 		"zero_downtime|ZERO DOWNTIME|0|50-50|60|false|true|0|false|", "monolito|MONOLITO|0|60-60|30|false|false|0|false|",
@@ -329,13 +330,13 @@ func TestCatalog_ServesCombat(t *testing.T) {
 	hints := []string{
 		"corrige o bug · 14-20 dano", "expõe a fraqueza · crítico", "recupera 18 HP", "defende e recupera 3 SP",
 		"cura 26 HP", "expõe a fraqueza e recupera 4 SP", "cura 32 HP e recupera 8 SP",
-		"escuda e cura 20 HP", "recupera 16 SP", "expõe a fraqueza e cura 12 HP", "cura 40 HP", "cura 45 HP e recupera 12 SP",
+		"escudo · cura 8 HP", "recupera 16 SP", "auditoria · 18-24 dano", "cura 40 HP", "cura 45 HP e recupera 12 SP",
 		"golpe forte · 18-24 dano", "query pesada · 24-32", "deadlock · 32-42",
-		"golpe rápido · 12-16 e recupera 6 SP", "expõe a fraqueza · 10-14", "golpes paralelos · 34-42", "caminho quente · 36-46", "sharding · 40-50",
+		"recupera 18 HP", "expõe a fraqueza · 10-14", "golpes paralelos · 34-42", "escuda e cura 8 HP", "sharding · 40-50",
 		"escuda e cura 10 HP", "escuda e cura 16 HP", "escuda e recupera 6 SP",
-		"cura 30 HP", "escuda e recupera 10 SP", "escuda e expõe a fraqueza", "escuda e cura 28 HP", "escuda e golpeia · 20-26",
+		"cura 30 HP", "escuda e recupera 10 SP", "escuda e expõe a fraqueza", "escuda e cura 28 HP", "revida · 22-30 dano",
 		"cura 22 HP", "golpe · 16-22 dano", "escuda e cura 8 HP",
-		"expõe a fraqueza e recupera 3 SP", "entrega · 20-28 dano", "12-16 dano e cura 12 HP", "deploy na sexta · 28-38", "escuda, cura 20 HP e recupera 6 SP",
+		"cura 16 HP", "entrega · 20-28 dano", "cura 20 HP", "deploy na sexta · 28-38", "escuda, cura 20 HP e recupera 6 SP",
 		"especial · 40 dano, cura 60 HP e recupera 50 SP", "o deploy que resolve · 80 dano",
 		"especial · escuda, cura 60 HP e 50 dano", "especial · 60 dano e cura 30 HP",
 		"volta para o mapa",
@@ -362,24 +363,29 @@ func TestCatalog_ServesCombat(t *testing.T) {
 		t.Errorf("combat.power = %+v, want max 100 perHit 10 perCrit 20", p)
 	}
 	items := []string{
-		"null_shard|FRAGMENTO NULL|0x0|COMUM|", "log_essence|ESSÊNCIA DE LOG|</>|COMUM|",
-		"corrupt_dep|DEPENDÊNCIA CORROMPIDA|!pkg|INCOMUM|", "wild_trace|STACK TRACE SELVAGEM|{!}|INCOMUM|",
-		"race_core|NÚCLEO DE CONCORRÊNCIA|//|RARO|", "memory_crystal|CRISTAL DE MEMÓRIA|^^|LENDÁRIO|",
-		"sp_potion|POÇÃO DE CACHE|++|COMUM|sp 30", "hp_potion|POÇÃO DE MEMÓRIA|HP+|COMUM|hp 40",
+		"null_shard|FRAGMENTO NULL|0x0|COMUM||", "log_essence|ESSÊNCIA DE LOG|</>|COMUM||",
+		"corrupt_dep|DEPENDÊNCIA CORROMPIDA|!pkg|INCOMUM||", "wild_trace|STACK TRACE SELVAGEM|{!}|INCOMUM||",
+		"race_core|NÚCLEO DE CONCORRÊNCIA|//|RARO||", "memory_crystal|CRISTAL DE MEMÓRIA|^^|LENDÁRIO||",
+		"sp_potion|POÇÃO DE CACHE|++|COMUM|sp 30|", "hp_potion|POÇÃO DE MEMÓRIA|HP+|COMUM|hp 40|",
+		// XP potions restore nothing in combat; they grant XP when used from the inventory.
+		"xp_potion|POÇÃO DE XP|XP+|COMUM||xp 150", "xp_elixir|ELIXIR DE XP|XP++|RARO||xp 500",
 		// shop-inventory-avatar AC 1 adds the deploy booster, which restores nothing in combat.
-		"boost_deploy|ACELERADOR DE DEPLOY|>>|COMUM|",
+		"boost_deploy|ACELERADOR DE DEPLOY|>>|COMUM||",
 		// The body contract adds the redesign token, which restores nothing in combat.
-		"redesign_token|TOKEN DE REDESIGN|<~>|RARO|",
+		"redesign_token|TOKEN DE REDESIGN|<~>|RARO||",
 	}
 	if len(b.Items) != len(items) {
 		t.Fatalf("items = %d", len(b.Items))
 	}
 	for i, it := range b.Items {
-		restore := ""
+		restore, xp := "", ""
 		if it.Restore != nil {
 			restore = fmt.Sprintf("%s %d", it.Restore.Stat, it.Restore.Amount)
 		}
-		if got := fmt.Sprintf("%s|%s|%s|%s|%s", it.ID, it.Name, it.Glyph, it.Rarity, restore); got != items[i] || it.Description == "" {
+		if it.XP != 0 {
+			xp = fmt.Sprintf("xp %d", it.XP)
+		}
+		if got := fmt.Sprintf("%s|%s|%s|%s|%s|%s", it.ID, it.Name, it.Glyph, it.Rarity, restore, xp); got != items[i] || it.Description == "" {
 			t.Errorf("item %d = %s, want %s", i, got, items[i])
 		}
 	}
@@ -435,8 +441,8 @@ func TestCatalog_ServesShop(t *testing.T) {
 			Bonus                         *bonus
 		} `json:"skins"`
 		Items []struct {
-			ID, Name, Glyph, Rarity string
-			Price                   *price
+			ID, Name, Glyph, Rarity, Description string
+			Price                                *price
 		} `json:"items"`
 	}
 	rec := env.Do(http.MethodGet, "/api/catalog", nil)
@@ -450,9 +456,12 @@ func TestCatalog_ServesShop(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	slots := []string{"setup|CONFIGURAÇÃO", "bebida|BEBIDA", "vestuario|VESTUÁRIO", "acessorio|ACESSÓRIO"}
+	slots := []string{
+		"cabeca|CABEÇA", "oculos|ÓCULOS", "brinco|BRINCO", "colar|COLAR", "torso|TORSO", "cinto|CINTO",
+		"pernas|PERNAS", "pe|PÉ", "maos|MÃOS", "notebook|NOTEBOOK", "acessorio|ACESSÓRIO", "bebida|BEBIDA",
+	}
 	if len(b.GearSlots) != len(slots) {
-		t.Fatalf("gearSlots = %d, want 4", len(b.GearSlots))
+		t.Fatalf("gearSlots = %d, want %d", len(b.GearSlots), len(slots))
 	}
 	for i, s := range b.GearSlots {
 		if got := s.ID + "|" + s.Name; got != slots[i] {
@@ -461,16 +470,38 @@ func TestCatalog_ServesShop(t *testing.T) {
 	}
 
 	gear := []string{
-		"macbook|MACBOOK PRO|setup|RARO|gems 120|dmg 8",
-		"monitor|MONITOR ULTRAWIDE|setup|LENDÁRIO|gems 200|sp 20",
+		"macbook|MACBOOK PRO|notebook|RARO|gems 120|dmg 8",
+		"monitor|MONITOR ULTRAWIDE|notebook|LENDÁRIO|gems 200|sp 20",
 		"cafe|CAFÉ EXPRESSO|bebida|COMUM|coins 50|sp 12",
-		"moletom|MOLETOM CONFORTÁVEL|vestuario|COMUM|coins 70|hp 15",
-		"cadeira|CADEIRA ERGONÔMICA|vestuario|RARO|gems 150|hp 30",
+		"moletom|MOLETOM CONFORTÁVEL|torso|COMUM|coins 70|hp 15",
+		"cadeira|CADEIRA ERGONÔMICA|torso|RARO|gems 150|hp 30",
 		"fone|FONE COM CANCELAMENTO|acessorio|INCOMUM|gems 90|dmg 6",
+		"bone|BONÉ DE HACKATHON|cabeca|COMUM|coins 60|hp 10",
+		"oculos_luz|ÓCULOS ANTI LUZ AZUL|oculos|INCOMUM|gems 50|dmg 4",
+		"brinco_bit|BRINCO DE BIT|brinco|INCOMUM|gems 40|sp 8",
+		"cracha|CRACHÁ DE ACESSO|colar|COMUM|coins 80|hp 12",
+		"cinto_util|CINTO DE UTILIDADES|cinto|INCOMUM|coins 110|sp 10",
+		"calca_cargo|CALÇA CARGO|pernas|COMUM|coins 90|hp 18",
+		"tenis_sprint|TÊNIS DE SPRINT|pe|COMUM|coins 70|sp 6",
+		"luvas_dev|LUVAS SEM DEDO|maos|RARO|gems 100|dmg 7",
 	}
-	// The forge's craft-only gear follows these six (forge C2).
+	glyphs := map[string]string{
+		"bone": "[^]", "oculos_luz": "(oo)", "brinco_bit": "o1", "cracha": "[ID]",
+		"cinto_util": "[=]", "calca_cargo": "||", "tenis_sprint": "_/>", "luvas_dev": "[m]",
+	}
+	descriptions := map[string]string{
+		"bone":         "Brinde do último hackathon. Segura o sol e o burnout.",
+		"oculos_luz":   "Enxerga o bug antes dele aparecer na tela.",
+		"brinco_bit":   "Um 0 e um 1 pendurados. Equilíbrio binário.",
+		"cracha":       "Libera todas as salas do servidor, até a de produção.",
+		"cinto_util":   "Pendrive, cabo USB e chave de fenda sempre à mão.",
+		"calca_cargo":  "Bolsos para adaptadores, snacks e mais adaptadores.",
+		"tenis_sprint": "Entrega a sprint sem tropeçar no prazo.",
+		"luvas_dev":    "Mãos quentes no ar-condicionado e digitação a mil.",
+	}
+	// The forge's craft-only gear follows these priced pieces (forge C2).
 	if len(b.Gear) < len(gear) {
-		t.Fatalf("gear = %d, want at least 6", len(b.Gear))
+		t.Fatalf("gear = %d, want at least %d", len(b.Gear), len(gear))
 	}
 	for i, g := range b.Gear[:len(gear)] {
 		if g.Price == nil || g.Bonus == nil {
@@ -480,6 +511,22 @@ func TestCatalog_ServesShop(t *testing.T) {
 		got := fmt.Sprintf("%s|%s|%s|%s|%s %d|%s %d", g.ID, g.Name, g.Slot, g.Rarity, g.Price.Currency, g.Price.Amount, g.Bonus.Type, g.Bonus.Amount)
 		if got != gear[i] || g.Glyph == "" || g.Description == "" {
 			t.Errorf("gear %d = %s (glyph %q), want %s", i, got, g.Glyph, gear[i])
+		}
+		if want, ok := glyphs[g.ID]; ok && g.Glyph != want {
+			t.Errorf("gear %s glyph = %q, want %q", g.ID, g.Glyph, want)
+		}
+		if want, ok := descriptions[g.ID]; ok && g.Description != want {
+			t.Errorf("gear %s description = %q, want %q", g.ID, g.Description, want)
+		}
+	}
+	// Every avatar slot has at least one piece the shop sells.
+	for _, s := range b.GearSlots {
+		sold := false
+		for _, g := range b.Gear {
+			sold = sold || (g.Slot == s.ID && g.Price != nil)
+		}
+		if !sold {
+			t.Errorf("slot %s has no priced gear", s.ID)
 		}
 	}
 
@@ -520,7 +567,10 @@ func TestCatalog_ServesShop(t *testing.T) {
 		}
 	}
 
-	prices := map[string]string{"sp_potion": "gems 15", "hp_potion": "gems 12", "boost_deploy": "gems 35", "redesign_token": "gems 100"}
+	prices := map[string]string{
+		"sp_potion": "gems 15", "hp_potion": "gems 12", "xp_potion": "coins 120", "xp_elixir": "gems 50",
+		"boost_deploy": "gems 35", "redesign_token": "gems 100",
+	}
 	seen := map[string]bool{}
 	for _, it := range b.Items {
 		want, priced := prices[it.ID]
@@ -535,6 +585,12 @@ func TestCatalog_ServesShop(t *testing.T) {
 		}
 		if it.ID == "redesign_token" && (it.Name != "TOKEN DE REDESIGN" || it.Glyph != "<~>" || it.Rarity != "RARO") {
 			t.Errorf("redesign_token = %+v", it)
+		}
+		if it.ID == "xp_potion" && it.Description != "Concede 150 XP. Use pelo inventário, fora do Bug Fight." {
+			t.Errorf("xp_potion description = %q", it.Description)
+		}
+		if it.ID == "xp_elixir" && it.Description != "Concede 500 XP. Use pelo inventário, fora do Bug Fight." {
+			t.Errorf("xp_elixir description = %q", it.Description)
 		}
 		seen[it.ID] = true
 	}
@@ -765,17 +821,26 @@ func TestCatalog_ServesForgeGear(t *testing.T) {
 		"moletom|price coins 70",
 		"cadeira|price gems 150",
 		"fone|price gems 90",
+		"bone|price coins 60",
+		"oculos_luz|price gems 50",
+		"brinco_bit|price gems 40",
+		"cracha|price coins 80",
+		"cinto_util|price coins 110",
+		"calca_cargo|price coins 90",
+		"tenis_sprint|price coins 70",
+		"luvas_dev|price gems 100",
 		"caneca_log|CANECA DE LOGS|[u]|bebida|INCOMUM|Café coado no filtro de stack trace.|sp 16",
-		"hoodie_trace|MOLETOM STACK TRACE|{#}|vestuario|RARO|Cada linha do erro costurada à mão.|hp 36",
+		"hoodie_trace|MOLETOM STACK TRACE|{#}|torso|RARO|Cada linha do erro costurada à mão.|hp 36",
 		"teclado_race|TECLADO RACE CONDITION|[kbd]|acessorio|LENDÁRIO|As teclas chegam antes de você apertar.|dmg 12",
 	}
+	const priced = 14
 	if len(b.Gear) != len(want) {
 		t.Fatalf("gear = %d, want %d", len(b.Gear), len(want))
 	}
 	for i, g := range b.Gear {
 		_, hasPrice := raw.Gear[i]["price"]
 		var got string
-		if i < 6 {
+		if i < priced {
 			if g.Price == nil {
 				t.Errorf("gear %s lacks price", g.ID)
 				continue
@@ -857,7 +922,7 @@ func TestCatalog_ServesAvatar(t *testing.T) {
 	parts := []string{
 		"tone|PELE|color|", "eyes|OLHOS|color|", "hair|CABELO|style|", "hairColor|COR DO CABELO|color|",
 		"beard|BARBA|style|", "glasses|ÓCULOS|style|",
-		"top|ROUPA|style|vestuario", "topColor|COR DA ROUPA|color|", "bottomColor|CALÇA|color|", "laptop|NOTEBOOK|style|setup",
+		"top|ROUPA|style|torso", "topColor|COR DA ROUPA|color|", "bottomColor|CALÇA|color|", "laptop|NOTEBOOK|style|notebook",
 	}
 	if len(a.Parts) != len(parts) {
 		t.Fatalf("parts = %d, want %d", len(a.Parts), len(parts))

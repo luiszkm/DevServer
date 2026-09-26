@@ -46,7 +46,7 @@ export const SKILL_TREES: Catalog["skillTrees"] = [
     { id: "be1", glyph: "$_", name: "ENDPOINT", description: "uma rota direta ao ponto fraco", bonus: { type: "dmg" }, levels: levels(8) },
     { id: "be2", glyph: "[]", name: "QUERY PESADA", description: "um JOIN que derruba qualquer um", bonus: { type: "dmg" }, levels: levels(10) },
     { id: "be3", glyph: "##", name: "DEADLOCK", description: "trava o bug no lugar", bonus: { type: "dmg" }, levels: levels(12) },
-    { id: "be4", glyph: "%", name: "CACHE HIT", description: "golpe rápido que devolve fôlego", bonus: { type: "sp" }, levels: levels(8) },
+    { id: "be4", glyph: "%", name: "CACHE HIT", description: "o cache quente devolve o fôlego", bonus: { type: "sp" }, levels: levels(8) },
     { id: "be5", glyph: "=>", name: "MIGRATION", description: "muda o schema e deixa a fraqueza à mostra", bonus: { type: "dmg" }, levels: levels(8) },
     { id: "be6", glyph: "&&", name: "THREAD POOL", description: "muitos golpes em paralelo", bonus: { type: "dmg" }, levels: levels(10) },
     { id: "be7", glyph: "!!", name: "HOT PATH", description: "otimiza o caminho quente e aguenta a carga", bonus: { type: "hp" }, levels: levels(10) },
@@ -93,27 +93,45 @@ export const ITEMS: Catalog["items"] = [
   { id: "memory_crystal", name: "CRISTAL DE MEMÓRIA", glyph: "^^", rarity: "LENDÁRIO", description: "resto de leak" },
   { id: "sp_potion", name: "POÇÃO DE CACHE", glyph: "++", rarity: "COMUM", description: "30 SP", restore: { stat: "sp", amount: 30 }, price: { currency: "gems", amount: 15 } },
   { id: "hp_potion", name: "POÇÃO DE MEMÓRIA", glyph: "HP+", rarity: "COMUM", description: "40 HP", restore: { stat: "hp", amount: 40 }, price: { currency: "gems", amount: 12 } },
+  { id: "xp_potion", name: "POÇÃO DE XP", glyph: "XP+", rarity: "COMUM", description: "+150 XP", xp: 150, price: { currency: "coins", amount: 120 } },
+  { id: "xp_elixir", name: "ELIXIR DE XP", glyph: "XP++", rarity: "RARO", description: "+500 XP", xp: 500, price: { currency: "gems", amount: 50 } },
   { id: "boost_deploy", name: "ACELERADOR DE DEPLOY", glyph: ">>", rarity: "COMUM", description: "-15 min", price: { currency: "gems", amount: 35 } },
-  { id: "redesign_token", name: "TOKEN DE REDESIGN", glyph: "<~>", rarity: "RARO", description: "Troca o corpo do seu dev (masculino/feminino). Consumido ao usar no AVATAR.", price: { currency: "gems", amount: 100 } },
+  { id: "redesign_token", name: "TOKEN DE REDESIGN", glyph: "<~>", rarity: "RARO", description: "Abre o editor visual do avatar. Trocar o corpo (masculino/feminino) consome 1 token.", price: { currency: "gems", amount: 100 } },
 ];
 
 export const GEAR_SLOTS: Catalog["gearSlots"] = [
-  { id: "setup", name: "CONFIGURAÇÃO" },
-  { id: "bebida", name: "BEBIDA" },
-  { id: "vestuario", name: "VESTUÁRIO" },
+  { id: "cabeca", name: "CABEÇA" },
+  { id: "oculos", name: "ÓCULOS" },
+  { id: "brinco", name: "BRINCO" },
+  { id: "colar", name: "COLAR" },
+  { id: "torso", name: "TORSO" },
+  { id: "cinto", name: "CINTO" },
+  { id: "pernas", name: "PERNAS" },
+  { id: "pe", name: "PÉ" },
+  { id: "maos", name: "MÃOS" },
+  { id: "notebook", name: "NOTEBOOK" },
   { id: "acessorio", name: "ACESSÓRIO" },
+  { id: "bebida", name: "BEBIDA" },
 ];
 
 export const GEAR: Catalog["gear"] = [
-  { id: "macbook", name: "MACBOOK PRO", glyph: "[Mac]", slot: "setup", rarity: "RARO", description: "compila sem travar", price: { currency: "gems", amount: 120 }, bonus: { type: "dmg", amount: 8 }, look: { part: "laptop", option: "laptop_macbook" } },
-  { id: "monitor", name: "MONITOR ULTRAWIDE", glyph: "[==]", slot: "setup", rarity: "LENDÁRIO", description: "mais tela", price: { currency: "gems", amount: 200 }, bonus: { type: "sp", amount: 20 } },
+  { id: "macbook", name: "MACBOOK PRO", glyph: "[Mac]", slot: "notebook", rarity: "RARO", description: "compila sem travar", price: { currency: "gems", amount: 120 }, bonus: { type: "dmg", amount: 8 }, look: { part: "laptop", option: "laptop_macbook" } },
+  { id: "monitor", name: "MONITOR ULTRAWIDE", glyph: "[==]", slot: "notebook", rarity: "LENDÁRIO", description: "mais tela", price: { currency: "gems", amount: 200 }, bonus: { type: "sp", amount: 20 } },
   { id: "cafe", name: "CAFÉ EXPRESSO", glyph: "{C}", slot: "bebida", rarity: "COMUM", description: "cafeína", price: { currency: "coins", amount: 50 }, bonus: { type: "sp", amount: 12 } },
-  { id: "moletom", name: "MOLETOM CONFORTÁVEL", glyph: "[[]]", slot: "vestuario", rarity: "COMUM", description: "conforto", price: { currency: "coins", amount: 70 }, bonus: { type: "hp", amount: 15 }, look: { part: "top", option: "top_moletom_gear" } },
-  { id: "cadeira", name: "CADEIRA ERGONÔMICA", glyph: "[|]", slot: "vestuario", rarity: "RARO", description: "postura", price: { currency: "gems", amount: 150 }, bonus: { type: "hp", amount: 30 } },
+  { id: "moletom", name: "MOLETOM CONFORTÁVEL", glyph: "[[]]", slot: "torso", rarity: "COMUM", description: "conforto", price: { currency: "coins", amount: 70 }, bonus: { type: "hp", amount: 15 }, look: { part: "top", option: "top_moletom_gear" } },
+  { id: "cadeira", name: "CADEIRA ERGONÔMICA", glyph: "[|]", slot: "torso", rarity: "RARO", description: "postura", price: { currency: "gems", amount: 150 }, bonus: { type: "hp", amount: 30 } },
   { id: "fone", name: "FONE COM CANCELAMENTO", glyph: "((o))", slot: "acessorio", rarity: "INCOMUM", description: "foco", price: { currency: "gems", amount: 90 }, bonus: { type: "dmg", amount: 6 } },
+  { id: "bone", name: "BONÉ DE HACKATHON", glyph: "[^]", slot: "cabeca", rarity: "COMUM", description: "brinde", price: { currency: "coins", amount: 60 }, bonus: { type: "hp", amount: 10 } },
+  { id: "oculos_luz", name: "ÓCULOS ANTI LUZ AZUL", glyph: "(oo)", slot: "oculos", rarity: "INCOMUM", description: "enxerga o bug", price: { currency: "gems", amount: 50 }, bonus: { type: "dmg", amount: 4 } },
+  { id: "brinco_bit", name: "BRINCO DE BIT", glyph: "o1", slot: "brinco", rarity: "INCOMUM", description: "binário", price: { currency: "gems", amount: 40 }, bonus: { type: "sp", amount: 8 } },
+  { id: "cracha", name: "CRACHÁ DE ACESSO", glyph: "[ID]", slot: "colar", rarity: "COMUM", description: "acesso", price: { currency: "coins", amount: 80 }, bonus: { type: "hp", amount: 12 } },
+  { id: "cinto_util", name: "CINTO DE UTILIDADES", glyph: "[=]", slot: "cinto", rarity: "INCOMUM", description: "ferramentas", price: { currency: "coins", amount: 110 }, bonus: { type: "sp", amount: 10 } },
+  { id: "calca_cargo", name: "CALÇA CARGO", glyph: "||", slot: "pernas", rarity: "COMUM", description: "bolsos", price: { currency: "coins", amount: 90 }, bonus: { type: "hp", amount: 18 } },
+  { id: "tenis_sprint", name: "TÊNIS DE SPRINT", glyph: "_/>", slot: "pe", rarity: "COMUM", description: "prazo", price: { currency: "coins", amount: 70 }, bonus: { type: "sp", amount: 6 } },
+  { id: "luvas_dev", name: "LUVAS SEM DEDO", glyph: "[m]", slot: "maos", rarity: "RARO", description: "digitação", price: { currency: "gems", amount: 100 }, bonus: { type: "dmg", amount: 7 } },
   // Copied by value from api/catalog/shop.json (forge C29 asserts the same values).
   { id: "caneca_log", name: "CANECA DE LOGS", glyph: "[u]", slot: "bebida", rarity: "INCOMUM", description: "Café coado no filtro de stack trace.", bonus: { type: "sp", amount: 16 } },
-  { id: "hoodie_trace", name: "MOLETOM STACK TRACE", glyph: "{#}", slot: "vestuario", rarity: "RARO", description: "Cada linha do erro costurada à mão.", bonus: { type: "hp", amount: 36 }, look: { part: "top", option: "top_hoodie_trace" } },
+  { id: "hoodie_trace", name: "MOLETOM STACK TRACE", glyph: "{#}", slot: "torso", rarity: "RARO", description: "Cada linha do erro costurada à mão.", bonus: { type: "hp", amount: 36 }, look: { part: "top", option: "top_hoodie_trace" } },
   { id: "teclado_race", name: "TECLADO RACE CONDITION", glyph: "[kbd]", slot: "acessorio", rarity: "LENDÁRIO", description: "As teclas chegam antes de você apertar.", bonus: { type: "dmg", amount: 12 } },
 ];
 
@@ -205,10 +223,10 @@ export const AVATAR: Catalog["avatar"] = {
     {"id": "hairColor", "name": "COR DO CABELO", "kind": "color"},
     {"id": "beard", "name": "BARBA", "kind": "style"},
     {"id": "glasses", "name": "ÓCULOS", "kind": "style"},
-    {"id": "top", "name": "ROUPA", "kind": "style", "gearSlot": "vestuario"},
+    {"id": "top", "name": "ROUPA", "kind": "style", "gearSlot": "torso"},
     {"id": "topColor", "name": "COR DA ROUPA", "kind": "color"},
     {"id": "bottomColor", "name": "CALÇA", "kind": "color"},
-    {"id": "laptop", "name": "NOTEBOOK", "kind": "style", "gearSlot": "setup"},
+    {"id": "laptop", "name": "NOTEBOOK", "kind": "style", "gearSlot": "notebook"},
   ],
   options: [
     {"id": "tone_clara", "part": "tone", "name": "CLARA", "ramp": ["#b07858", "#d8a07c", "#f8cfa8", "#ffe8cc"]},
@@ -288,7 +306,7 @@ export function player(overrides: Partial<Player> = {}): Player {
   return {
     devName: "DEV_01", class: "BACKEND", level: 1, xp: 0, xpMax: 500, hp: 100, hpMax: 100,
     coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], skillLevels: {}, loadout: [null, null, null, null], power: 0, inventory: [{ item: "sp_potion", quantity: 2 }],
-    gear: [], equipment: { setup: null, bebida: null, vestuario: null, acessorio: null }, skins: ["default"], office: room(), rack: rack(), body: "masculino", appearance: { ...AVATAR.defaults }, looks: [], progress: {}, ...overrides,
+    gear: [], equipment: { cabeca: null, oculos: null, brinco: null, colar: null, torso: null, cinto: null, pernas: null, pe: null, maos: null, notebook: null, acessorio: null, bebida: null }, skins: ["default"], office: room(), rack: rack(), body: "masculino", appearance: { ...AVATAR.defaults }, looks: [], progress: {}, ...overrides,
   };
 }
 

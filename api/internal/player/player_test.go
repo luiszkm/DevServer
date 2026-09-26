@@ -67,7 +67,7 @@ func TestCreatePlayer_InitialState(t *testing.T) {
 		want := apptest.PlayerBody{}.Player
 		want.DevName, want.Class, want.Body = name, class, "masculino"
 		want.Level, want.XP, want.XPMax, want.HP, want.HPMax = 1, 0, 500, 100, 100
-		want.Coins, want.Gems, want.SkillPoints, want.Region, want.Skin = 100, 20, 1, "vila", "default"
+		want.Coins, want.Gems, want.SkillPoints, want.Region, want.Skin = 9999, 9999, 1, "vila", "default"
 		if p != want {
 			t.Errorf("%s: player = %+v, want %+v", class, p, want)
 		}

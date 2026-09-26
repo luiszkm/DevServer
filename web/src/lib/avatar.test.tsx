@@ -16,7 +16,7 @@ const NEON = ["#1a6a70", "#2a9aa0", "#5ad2d2", "#a0f4f0"];
 const catalog = CATALOG;
 const ROSA = ["#6a1a4a", "#9c2a6c", "#d04a98", "#f080c0"];
 
-const EMPTY = { setup: null, bebida: null, vestuario: null, acessorio: null };
+const EMPTY = { cabeca: null, torso: null, pernas: null, pe: null, maos: null, notebook: null, acessorio: null, bebida: null };
 const input = (o: Partial<LookInput> = {}): LookInput => ({ body: "masculino", appearance: {}, equipment: EMPTY, skin: "default", ...o });
 const zip = (from: string[], to: string[]) => Object.fromEntries(from.map((h, i) => [h, to[i]]));
 const src = (layer: string) => `/art/sprite/hero/${layer}.png`;
@@ -84,19 +84,19 @@ describe("resolveLook", () => {
   });
 
   it("gear with a look dresses the top", () => {
-    const look = resolveLook(input({ equipment: { ...EMPTY, vestuario: "hoodie_trace" }, appearance: { top: "top_jaqueta" } }), catalog);
+    const look = resolveLook(input({ equipment: { ...EMPTY, torso: "hoodie_trace" }, appearance: { top: "top_jaqueta" } }), catalog);
     expect(look.layers[2]).toEqual({ src: src("top-hoodie_trace"), swap: {} });
     expect(look.parts.top).toEqual({ option: "top_hoodie_trace", by: "gear" });
   });
 
   it("gear with a look swaps the laptop", () => {
-    const look = resolveLook(input({ equipment: { ...EMPTY, setup: "macbook" } }), catalog);
+    const look = resolveLook(input({ equipment: { ...EMPTY, notebook: "macbook" } }), catalog);
     expect(look.layers[3]).toEqual({ src: src("laptop-macbook"), swap: {} });
     expect(look.parts.laptop).toEqual({ option: "laptop_macbook", by: "gear" });
   });
 
   it("gear without a look keeps the player's pick", () => {
-    const look = resolveLook(input({ equipment: { ...EMPTY, vestuario: "cadeira" }, appearance: { top: "top_jaqueta" } }), catalog);
+    const look = resolveLook(input({ equipment: { ...EMPTY, torso: "cadeira" }, appearance: { top: "top_jaqueta" } }), catalog);
     expect(look.parts.top).toEqual({ option: "top_jaqueta", by: "player" });
   });
 
@@ -130,7 +130,7 @@ describe("resolveLook", () => {
   });
 
   it("gear and glasses on feminino use the feminine variants", () => {
-    const look = resolveLook(input({ body: "feminino", equipment: { ...EMPTY, vestuario: "hoodie_trace", setup: "macbook" }, appearance: { glasses: "glasses_redondo" } }), catalog);
+    const look = resolveLook(input({ body: "feminino", equipment: { ...EMPTY, torso: "hoodie_trace", notebook: "macbook" }, appearance: { glasses: "glasses_redondo" } }), catalog);
     expect(look.layers[2]).toEqual({ src: src("top-hoodie_trace-f"), swap: {} });
     expect(look.layers[3]).toEqual({ src: src("laptop-macbook-f"), swap: {} });
     expect(look.layers.at(-1)).toEqual({ src: src("glasses-redondo-f"), swap: {} });

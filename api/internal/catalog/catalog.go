@@ -147,6 +147,8 @@ type Item struct {
 	Rarity      string   `json:"rarity"`
 	Description string   `json:"description"`
 	Restore     *Restore `json:"restore,omitempty"`
+	// XP is what using the item out of combat grants; zero for items that cannot be used that way.
+	XP int `json:"xp,omitempty"`
 	// Price is nil for items the shop does not sell (drops).
 	Price *Price `json:"price,omitempty"`
 }

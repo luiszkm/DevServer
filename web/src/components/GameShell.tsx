@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api, post } from "@/lib/api";
 import type { Catalog, Player } from "@/lib/types";
 import { GameContext } from "./GameContext";
+import { HubTabs } from "./HubTabs";
 import { Hud } from "./Hud";
 import { LoginScreen } from "./LoginScreen";
 import { Logo } from "./Logo";
@@ -17,6 +18,11 @@ type State =
   | { kind: "onboarding" }
   | { kind: "down" }
   | { kind: "ready"; player: Player; catalog: Catalog };
+
+// A player saved before region progress existed has no `progress` key. Absence means nothing cleared.
+function withProgress(player: Player): Player {
+  return player.progress ? player : { ...player, progress: {} };
+}
 
 async function loadCatalog(): Promise<Catalog | null> {
   const r = await api<Catalog>("/api/catalog");
@@ -35,7 +41,7 @@ export function GameShell({ children }: { children: React.ReactNode }) {
       if (!me.ok) return setState({ kind: "down" });
       const catalog = await loadCatalog();
       if (!catalog) return setState({ kind: "down" });
-      setState({ kind: "ready", player: me.data.player, catalog });
+      setState({ kind: "ready", player: withProgress(me.data.player), catalog });
     } catch {
       setState({ kind: "down" });
     }
@@ -49,14 +55,14 @@ export function GameShell({ children }: { children: React.ReactNode }) {
   const onCreated = useCallback(async (player: Player) => {
     try {
       const catalog = await loadCatalog();
-      setState(catalog ? { kind: "ready", player, catalog } : { kind: "down" });
+      setState(catalog ? { kind: "ready", player: withProgress(player), catalog } : { kind: "down" });
     } catch {
       setState({ kind: "down" });
     }
   }, []);
 
   const setPlayer = useCallback((player: Player) => {
-    setState((s) => (s.kind === "ready" ? { ...s, player } : s));
+    setState((s) => (s.kind === "ready" ? { ...s, player: withProgress(player) } : s));
   }, []);
 
   const logout = useCallback(async () => {
@@ -86,7 +92,8 @@ export function GameShell({ children }: { children: React.ReactNode }) {
       return (
         <GameContext.Provider value={{ player: state.player, catalog: state.catalog, setPlayer }}>
           <Frame>
-            <Hud player={state.player} catalog={state.catalog} onLogout={logout} />
+            <Hud player={state.player} onLogout={logout} />
+            <HubTabs />
             {children}
           </Frame>
         </GameContext.Provider>

@@ -23,7 +23,6 @@ const cells = () => within(screen.getByRole("region", { name: "mochila" })).quer
 const cell = (id: string) => document.querySelector(`[data-entry="${id}"]`) as HTMLButtonElement;
 const detail = () => screen.getByRole("region", { name: "detalhe do item" });
 const detailButton = (name: string) => within(detail()).getByRole("button", { name });
-const strip = (id: string) => document.querySelector(`[data-strip="${id}"]`) as HTMLButtonElement;
 
 // skills fe1, be2 equipped; macbook, cafe and moletom equipped; shadow worn; hpMax 125.
 const geared = (overrides: Partial<Player> = {}) =>
@@ -34,7 +33,7 @@ const geared = (overrides: Partial<Player> = {}) =>
     hp: 125,
     hpMax: 125,
     gear: ["macbook", "cafe", "moletom"],
-    equipment: { setup: "macbook", bebida: "cafe", vestuario: "moletom", acessorio: null },
+    equipment: { notebook: "macbook", bebida: "cafe", torso: "moletom", acessorio: null },
     skins: ["default", "shadow"],
     skin: "shadow",
     inventory: [
@@ -74,7 +73,7 @@ describe("AvatarScene", () => {
     expect(within(stats).getByText("dano +4%")).toBeInTheDocument();
     expect(within(stats).getByText("SP +6")).toBeInTheDocument();
     cleanup();
-    renderAvatar(player({ rack: rack({ 0: "gpu", 1: "ram" }), gear: ["macbook"], equipment: { setup: "macbook", bebida: null, vestuario: null, acessorio: null } }));
+    renderAvatar(player({ rack: rack({ 0: "gpu", 1: "ram" }), gear: ["macbook"], equipment: { notebook: "macbook", bebida: null, torso: null, acessorio: null } }));
     stats = screen.getByLabelText("atributos");
     expect(within(stats).getByText("dano +12%")).toBeInTheDocument();
   });
@@ -90,34 +89,31 @@ describe("AvatarScene", () => {
 
   // C36
   it("paper doll slots", () => {
-    renderAvatar(player({ gear: ["macbook"], equipment: { setup: "macbook", bebida: null, vestuario: null, acessorio: null } }));
-    const side = (name: string) =>
-      within(screen.getByRole("group", { name })).getAllByRole("button").map((b) => b.getAttribute("data-slot"));
-    expect(side("slots à esquerda")).toEqual(["setup", "vestuario"]);
-    expect(side("slots à direita")).toEqual(["acessorio", "bebida"]);
+    renderAvatar(player({ gear: ["macbook"], equipment: { notebook: "macbook", bebida: null, torso: null, acessorio: null } }));
+    const slots = within(screen.getByRole("group", { name: "slots" })).getAllByRole("button").map((b) => b.getAttribute("data-slot"));
+    expect(slots).toEqual(CATALOG.gearSlots.map((s) => s.id));
     const slot = (id: string) => document.querySelector(`[data-slot="${id}"]`) as HTMLButtonElement;
-    expect(slot("setup").querySelector(".avatar-slot-glyph img")?.getAttribute("src")).toBe("/art/icon/gear-macbook.png");
-    expect(slot("setup").querySelector(".avatar-slot-label")).toHaveTextContent("MACBOOK PRO");
-    for (const [id, name] of [["vestuario", "VESTUÁRIO"], ["acessorio", "ACESSÓRIO"], ["bebida", "BEBIDA"]]) {
+    expect(slot("notebook").querySelector(".avatar-slot-glyph img")?.getAttribute("src")).toBe("/art/icon/gear-macbook.png");
+    expect(slot("notebook").querySelector(".avatar-slot-label")).toHaveTextContent("MACBOOK PRO");
+    for (const [id, name] of [
+      ["cabeca", "CABEÇA"], ["oculos", "ÓCULOS"], ["brinco", "BRINCO"], ["colar", "COLAR"], ["torso", "TORSO"], ["cinto", "CINTO"],
+      ["pernas", "PERNAS"], ["pe", "PÉ"], ["maos", "MÃOS"], ["acessorio", "ACESSÓRIO"], ["bebida", "BEBIDA"],
+    ]) {
       expect(slot(id).querySelector(".avatar-slot-glyph")?.textContent).toBe("[ ]");
       expect(slot(id).querySelector(".avatar-slot-label")?.textContent).toBe(name);
     }
   });
 
-  // C37
+  // C37: unowned skins are not in the bag; an owned one equips from the SKINS tab.
   it("skin strip", async () => {
     const updated = geared({ skin: "neon", skins: ["default", "neon", "shadow"] });
     const f = mockFetch({ "POST /api/me/skins/neon/equip": json(200, { player: updated }) });
     const { setPlayer } = renderAvatar(geared({ skins: ["default", "neon", "shadow"] }));
-    expect(within(screen.getByRole("group", { name: "SKINS" })).getAllByRole("button").map((b) => b.getAttribute("data-strip"))).toEqual([
-      "default", "neon", "shadow", "golden",
-    ]);
-    expect(strip("golden")).toHaveAttribute("aria-disabled", "true");
-    expect(strip("neon")).toHaveAttribute("aria-disabled", "false");
-    await userEvent.click(strip("golden"));
-    expect(screen.getByRole("status")).toHaveTextContent("SKIN BLOQUEADA — COMPRE NA LOJA");
-    expect(f.fn).not.toHaveBeenCalled();
-    await userEvent.click(strip("neon"));
+    await userEvent.click(tab("SKINS"));
+    expect(cells().map((b) => b.getAttribute("data-entry"))).toEqual(["default", "neon", "shadow"]);
+    expect(cell("golden")).toBeNull();
+    await userEvent.click(cell("neon"));
+    await userEvent.click(detailButton("VESTIR"));
     expect(await screen.findByText("SKIN EQUIPADA")).toBeInTheDocument();
     expect(f.calls("POST /api/me/skins/neon/equip")).toBe(1);
     expect(setPlayer).toHaveBeenCalledWith(updated);
@@ -125,13 +121,13 @@ describe("AvatarScene", () => {
 
   // C38
   it("bag tabs", async () => {
-    renderAvatar(geared({ equipment: { setup: "macbook", bebida: "cafe", vestuario: null, acessorio: null } }));
+    renderAvatar(geared({ equipment: { notebook: "macbook", bebida: "cafe", torso: null, acessorio: null } }));
     const hint = () => document.querySelector(".avatar-bag-head .term")?.textContent;
     const tags = () => Object.fromEntries(cells().map((c) => [c.dataset.entry, c.querySelector(".avatar-cell-tag")?.textContent]));
-    expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["EQUIP", "POÇÕES", "LOOT", "SKINS", "VISUAL"]);
+    expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["EQUIP", "POÇÕES", "LOOT", "SKINS"]);
 
     expect(hint()).toBe("clique para equipar");
-    expect(tags()).toEqual({ macbook: "EQUIP", cafe: "EQUIP", moletom: "roupa" });
+    expect(tags()).toEqual({ macbook: "EQUIP", cafe: "EQUIP", moletom: "torso" });
 
     await userEvent.click(tab("POÇÕES"));
     expect(hint()).toBe("use no Bug Fight");
@@ -158,7 +154,7 @@ describe("AvatarScene", () => {
       "POST /api/me/items/null_shard/discard",
     ];
     const f = mockFetch(Object.fromEntries(routes.map((r) => [r, json(200, { player: updated })])));
-    const { setPlayer } = renderAvatar(geared({ equipment: { setup: "macbook", bebida: "cafe", vestuario: null, acessorio: null } }));
+    const { setPlayer } = renderAvatar(geared({ equipment: { notebook: "macbook", bebida: "cafe", torso: null, acessorio: null } }));
 
     await userEvent.click(cell("moletom"));
     await userEvent.click(detailButton("EQUIPAR"));
@@ -186,6 +182,42 @@ describe("AvatarScene", () => {
     for (const call of setPlayer.mock.calls) expect(call[0]).toEqual(updated);
   });
 
+  it("slot tags for every gear slot", () => {
+    const pieces = ["bone", "oculos_luz", "brinco_bit", "cracha", "cinto_util", "calca_cargo", "tenis_sprint", "luvas_dev"];
+    renderAvatar(player({ gear: pieces }));
+    const tags = Object.fromEntries(cells().map((c) => [c.dataset.entry, c.querySelector(".avatar-cell-tag")?.textContent]));
+    expect(tags).toEqual({
+      bone: "cabeça", oculos_luz: "óculos", brinco_bit: "brinco", cracha: "colar",
+      cinto_util: "cinto", calca_cargo: "pernas", tenis_sprint: "pé", luvas_dev: "mãos",
+    });
+  });
+
+  it("USAR on an XP item spends it on the server", async () => {
+    const updated = player({ devName: "UPDATED", xp: 150, inventory: [] });
+    const f = mockFetch({ "POST /api/me/items/xp_potion/use": json(200, { player: updated }) });
+    const { setPlayer } = renderAvatar(geared({ inventory: [{ item: "sp_potion", quantity: 2 }, { item: "xp_potion", quantity: 1 }] }));
+    await userEvent.click(tab("POÇÕES"));
+    await userEvent.click(cell("sp_potion"));
+    expect(within(detail()).queryByRole("button", { name: "USAR" })).toBeNull();
+    await userEvent.click(cell("xp_potion"));
+    expect(within(detail()).getByText("quantidade: 1")).toBeInTheDocument();
+    await userEvent.click(detailButton("USAR"));
+    expect(await screen.findByRole("status")).toHaveTextContent("+150 XP");
+    expect(f.calls("POST /api/me/items/xp_potion/use")).toBe(1);
+    expect(f.fn).toHaveBeenCalledTimes(1);
+    expect(setPlayer).toHaveBeenCalledWith(updated);
+  });
+
+  it("USAR on an XP item shows the api error", async () => {
+    mockFetch({ "POST /api/me/items/xp_elixir/use": json(409, { error: { code: "no_item", message: "você não tem este item" } }) });
+    const { setPlayer } = renderAvatar(geared({ inventory: [{ item: "xp_elixir", quantity: 1 }] }));
+    await userEvent.click(tab("POÇÕES"));
+    await userEvent.click(detailButton("USAR"));
+    expect(await screen.findByRole("status")).toHaveTextContent("você não tem este item");
+    expect(setPlayer).not.toHaveBeenCalled();
+    expect(detailButton("USAR")).toBeEnabled();
+  });
+
   // C40
   it("empty bag", () => {
     renderAvatar(player({ gear: [] }));
@@ -202,7 +234,7 @@ describe("AvatarScene", () => {
     ["network", () => Promise.reject(new TypeError("Failed to fetch")), "falha na conexão. tente de novo."],
   ])("avatar errors and pending (%s)", async (_name, failure, text) => {
     mockFetch({ "POST /api/me/gear/moletom/equip": failure as () => Response });
-    const { setPlayer } = renderAvatar(geared({ equipment: { setup: "macbook", bebida: null, vestuario: null, acessorio: null } }));
+    const { setPlayer } = renderAvatar(geared({ equipment: { notebook: "macbook", bebida: null, torso: null, acessorio: null } }));
     await userEvent.click(cell("moletom"));
     await userEvent.click(detailButton("EQUIPAR"));
     expect(await screen.findByRole("status")).toHaveTextContent(text);
@@ -223,7 +255,7 @@ describe("AvatarScene", () => {
 
   it("avatar errors and pending (pending, every button)", async () => {
     mockFetch({ "POST /api/me/items/null_shard/discard": () => new Promise<Response>(() => {}) });
-    renderAvatar(geared({ equipment: { setup: "macbook", bebida: "cafe", vestuario: null, acessorio: null } }));
+    renderAvatar(geared({ equipment: { notebook: "macbook", bebida: "cafe", torso: null, acessorio: null } }));
     await userEvent.click(tab("LOOT"));
     await userEvent.click(detailButton("DESCARTAR 1"));
     expect(detailButton("DESCARTAR 1")).toBeDisabled();
@@ -287,10 +319,10 @@ describe("AvatarScene", () => {
       expect(head.getAttribute("width")).toBe("32");
     }
 
-    const setup = slot("setup").querySelector("img")!;
-    expect(setup.getAttribute("src")).toBe("/art/icon/gear-macbook.png");
-    expect(setup.getAttribute("alt")).toBe("");
-    expect(setup.getAttribute("width")).toBe("32");
+    const notebook = slot("notebook").querySelector("img")!;
+    expect(notebook.getAttribute("src")).toBe("/art/icon/gear-macbook.png");
+    expect(notebook.getAttribute("alt")).toBe("");
+    expect(notebook.getAttribute("width")).toBe("32");
     expect(slot("acessorio").querySelector("img")).toBeNull();
     expect(slot("acessorio").querySelector(".avatar-slot-glyph")?.textContent).toBe("[ ]");
 
@@ -302,10 +334,10 @@ describe("AvatarScene", () => {
     expect(detail().querySelector(".avatar-detail-glyph")?.textContent).toBe("SKN");
     expect(detail().querySelector(".avatar-detail-glyph img")).toBeNull();
 
-    // the setup slot's label also carries ic-gear (assets-apply C13): the fallback is about the gear's own box
-    fireEvent.error(setup);
-    expect(slot("setup").querySelector(".avatar-slot-glyph img")).toBeNull();
-    expect(slot("setup").querySelector(".avatar-slot-glyph")).toHaveTextContent("[Mac]");
+    // the notebook slot's label also carries ic-gear (assets-apply C13): the fallback is about the gear's own box
+    fireEvent.error(notebook);
+    expect(slot("notebook").querySelector(".avatar-slot-glyph img")).toBeNull();
+    expect(slot("notebook").querySelector(".avatar-slot-glyph")).toHaveTextContent("[Mac]");
   });
 });
 
@@ -316,10 +348,17 @@ describe("AvatarScene visual editor", () => {
   const hero = () => document.querySelector(".avatar-hero") as HTMLCanvasElement;
   const visual = (name: string) => within(screen.getByRole("region", { name: "detalhe do item" })).getByRole("button", { name });
   const status = () => screen.getByRole("status").textContent;
-  const open = async () => userEvent.click(screen.getByRole("tab", { name: "VISUAL" }));
+  const withToken = (overrides: Partial<Player> = {}) =>
+    player({ inventory: [{ item: "redesign_token", quantity: 1 }], ...overrides });
+  const open = async (p: Player = withToken(), setPlayer = vi.fn()) => {
+    renderAvatar(p, setPlayer);
+    await userEvent.click(tab("POÇÕES"));
+    await userEvent.click(cell("redesign_token"));
+    await userEvent.click(detailButton("USAR"));
+    return { setPlayer };
+  };
 
   it("lists every part and its pickable options, prices on the locked ones", async () => {
-    renderAvatar();
     await open();
     expect([...document.querySelectorAll<HTMLElement>("[data-part]")].map((b) => b.textContent)).toEqual(
       CATALOG.avatar.parts.map((p) => p.name),
@@ -346,8 +385,7 @@ describe("AvatarScene visual editor", () => {
   it("a pick previews at once, SALVAR sends only the picks, DESFAZER drops them", async () => {
     const saved = player({ devName: "SAVED" });
     const f = mockFetch({ "PUT /api/me/appearance": json(200, { player: saved }) });
-    const { setPlayer } = renderAvatar();
-    await open();
+    const { setPlayer } = await open();
     const before = hero().dataset.look;
     expect(visual("SALVAR")).toBeDisabled();
     expect(visual("DESFAZER")).toBeDisabled();
@@ -371,10 +409,9 @@ describe("AvatarScene visual editor", () => {
   });
 
   it("a locked pick blocks SALVAR until bought", async () => {
-    const bought = player({ looks: ["hair_moicano"] });
+    const bought = player({ looks: ["hair_moicano"], inventory: [{ item: "redesign_token", quantity: 1 }] });
     const f = mockFetch({ "POST /api/me/shop/looks/hair_moicano": json(200, { player: bought }) });
-    const { setPlayer } = renderAvatar(player({ gems: 30 }));
-    await open();
+    const { setPlayer } = await open(withToken({ gems: 30 }));
     await userEvent.click(partButton("hair"));
     await userEvent.click(optionButton("hair_moicano"));
     expect(hero().dataset.look).toContain("/art/sprite/hero/hair-moicano.png");
@@ -387,19 +424,22 @@ describe("AvatarScene visual editor", () => {
   });
 
   it("can't afford: the buy button says so and stays off", async () => {
-    renderAvatar(player({ gems: 29 }));
-    await open();
+    await open(withToken({ gems: 29 }));
     await userEvent.click(partButton("hair"));
     await userEvent.click(optionButton("hair_moicano"));
     expect(visual("GEMS INSUFICIENTES")).toBeDisabled();
   });
 
   it.each([
-    ["gear", player({ gear: ["hoodie_trace"], equipment: { setup: null, bebida: null, vestuario: "hoodie_trace", acessorio: null } }), "top", "em uso: MOLETOM STACK TRACE — remova o item para usar a sua escolha."],
-    ["skin", player({ skin: "neon", skins: ["default", "neon"] }), "tone", "a skin DEV NEON define esta cor."],
+    [
+      "gear",
+      withToken({ gear: ["hoodie_trace"], equipment: { notebook: null, bebida: null, torso: "hoodie_trace", acessorio: null } }),
+      "top",
+      "em uso: MOLETOM STACK TRACE — remova o item para usar a sua escolha.",
+    ],
+    ["skin", withToken({ skin: "neon", skins: ["default", "neon"] }), "tone", "a skin DEV NEON define esta cor."],
   ])("part set by %s says why", async (_name, p, part, note) => {
-    renderAvatar(p);
-    await open();
+    await open(p);
     await userEvent.click(partButton(part));
     expect(screen.getByText(note)).toBeInTheDocument();
   });
@@ -409,8 +449,7 @@ describe("AvatarScene visual editor", () => {
     ["network", () => Promise.reject(new TypeError("Failed to fetch")), CONNECTION_FAILED],
   ])("save failure keeps the picks (%s)", async (_name, failure, text) => {
     mockFetch({ "PUT /api/me/appearance": failure as () => Response });
-    const { setPlayer } = renderAvatar();
-    await open();
+    const { setPlayer } = await open();
     await userEvent.click(optionButton("tone_negra"));
     await userEvent.click(visual("SALVAR"));
     expect(status()).toBe(text);
@@ -418,16 +457,33 @@ describe("AvatarScene visual editor", () => {
     expect(visual("SALVAR")).toBeEnabled();
     expect(hero().dataset.look).toBe(lookKey(player({ appearance: { ...CATALOG.avatar.defaults, tone: "tone_negra" } })));
   });
+
+  it("USAR on the redesign token opens the editor", async () => {
+    renderAvatar(withToken());
+    expect(screen.queryByRole("region", { name: "editor visual" })).not.toBeInTheDocument();
+    await userEvent.click(tab("POÇÕES"));
+    await userEvent.click(cell("redesign_token"));
+    await userEvent.click(detailButton("USAR"));
+    expect(screen.getByRole("region", { name: "editor visual" })).toBeInTheDocument();
+    expect(document.querySelector(".avatar-bag-head .term")).toHaveTextContent("monte o seu dev");
+  });
 });
 
 describe("AvatarScene body", () => {
   const partIds = () => [...document.querySelectorAll<HTMLElement>("[data-part]")].map((b) => b.dataset.part);
   const bodyRow = () => screen.getByRole("group", { name: "corpo" });
-  const open = async () => userEvent.click(screen.getByRole("tab", { name: "VISUAL" }));
+  const withToken = (overrides: Partial<Player> = {}) =>
+    player({ inventory: [{ item: "redesign_token", quantity: 1 }], ...overrides });
+  const open = async (p: Player = withToken(), setPlayer = vi.fn()) => {
+    renderAvatar(p, setPlayer);
+    await userEvent.click(tab("POÇÕES"));
+    await userEvent.click(cell("redesign_token"));
+    await userEvent.click(detailButton("USAR"));
+    return { setPlayer };
+  };
 
   it("feminino hides the beard and offers the feminine hair styles", async () => {
-    renderAvatar(player({ body: "feminino" }));
-    await open();
+    await open(withToken({ body: "feminino" }));
     expect(partIds()).not.toContain("beard");
     expect(within(bodyRow()).getByText("CORPO: FEMININO")).toBeInTheDocument();
     await userEvent.click(document.querySelector('[data-part="hair"]') as HTMLButtonElement);
@@ -437,25 +493,16 @@ describe("AvatarScene body", () => {
   });
 
   it("masculino shows the beard and not the feminine hair", async () => {
-    renderAvatar();
     await open();
     expect(partIds()).toContain("beard");
     await userEvent.click(document.querySelector('[data-part="hair"]') as HTMLButtonElement);
     expect(document.querySelector('[data-option="hair_rabo"]')).toBeNull();
   });
 
-  it("switching body needs a redesign token", async () => {
-    renderAvatar(player({ inventory: [] }));
-    await open();
-    expect(within(bodyRow()).getByRole("button", { name: "TROCAR PARA FEMININO" })).toBeDisabled();
-    expect(within(bodyRow()).getByText("precisa de 1 TOKEN DE REDESIGN — compre na Loja.")).toBeInTheDocument();
-  });
-
   it("with a token, TROCAR posts the other body", async () => {
     const changed = player({ body: "feminino", inventory: [] });
     const f = mockFetch({ "POST /api/me/body": json(200, { player: changed }) });
-    const { setPlayer } = renderAvatar(player({ inventory: [{ item: "redesign_token", quantity: 1 }] }));
-    await open();
+    const { setPlayer } = await open();
     expect(within(bodyRow()).getByText("tokens de redesign: 1")).toBeInTheDocument();
     await userEvent.click(within(bodyRow()).getByRole("button", { name: "TROCAR PARA FEMININO" }));
     expect(JSON.parse(f.fn.mock.calls[0][1]!.body as string)).toEqual({ body: "feminino" });
@@ -465,8 +512,7 @@ describe("AvatarScene body", () => {
 
   it("refused switch shows the api message", async () => {
     mockFetch({ "POST /api/me/body": json(409, { error: { code: "no_redesign_token", message: "compre um TOKEN DE REDESIGN na Loja" } }) });
-    const { setPlayer } = renderAvatar(player({ inventory: [{ item: "redesign_token", quantity: 1 }] }));
-    await open();
+    const { setPlayer } = await open();
     await userEvent.click(within(bodyRow()).getByRole("button", { name: "TROCAR PARA FEMININO" }));
     expect(screen.getByRole("status")).toHaveTextContent("compre um TOKEN DE REDESIGN na Loja");
     expect(setPlayer).not.toHaveBeenCalled();
@@ -498,21 +544,10 @@ describe("AvatarScene applied assets", () => {
     expect(document.querySelector(".avatar-bag-head")).toHaveClass("panel-wood");
   });
 
-  // assets-apply C12
-  it("button icon on the VISUAL tab", () => {
-    renderAvatar();
-    const visual = tab("VISUAL");
-    const img = visual.firstElementChild!;
-    expect(img.getAttribute("src")).toBe("/art/icon/btn-settings.png");
-    expect(img.getAttribute("alt")).toBe("");
-    expect(img.getAttribute("width")).toBe("16");
-    expect(visual.firstChild).toBe(img);
-  });
-
   // assets-apply C13
-  it("generic icon on the CONFIGURAÇÃO slot", () => {
+  it("generic icon on the NOTEBOOK slot", () => {
     renderAvatar();
-    const label = document.querySelector('[data-slot="setup"] .avatar-slot-label')!;
+    const label = document.querySelector('[data-slot="notebook"] .avatar-slot-label')!;
     const img = label.firstElementChild!;
     expect(img.getAttribute("src")).toBe("/art/icon/ic-gear.png");
     expect(img.getAttribute("alt")).toBe("");

@@ -1,0 +1,42 @@
+{
+ "name": "gear-bone",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "BONÉ DE HACKATHON: a blue baseball cap seen from the side, rounded crown lit from the top-left, dark band and a brim sticking out to the right.",
+ "legend": {
+  "o": "ink",
+  "l": "net.4",
+  "b": "net.3",
+  "B": "net.2",
+  "N": "net.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "....oooooo......",
+    "...obbbbbbo.....",
+    "..oblbbbbBBo....",
+    ".obbbbbbBBBBo...",
+    ".obbbbbBBBBBo...",
+    ".obbbbBBBBBBooo.",
+    ".oNNNNNNNNNNNNo.",
+    "..oooooooooooo..",
+    "................",
+    "................",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

@@ -1,5 +1,20 @@
 import { expect, type Page } from "@playwright/test";
 
+const HUB = new Set(["OFFICE", "AVATAR", "SKILLS", "SERVER"]);
+
+/** Opens a scene. Office, avatar, skills and server are tabs inside BASE. */
+export async function openScene(page: Page, name: string) {
+  if (HUB.has(name)) {
+    const base = page.getByRole("navigation", { name: "Base" });
+    if (!(await base.isVisible())) {
+      await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "BASE" }).click();
+    }
+    await base.getByRole("link", { name, exact: true }).click();
+    return;
+  }
+  await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name }).click();
+}
+
 const FAKE = "http://localhost:9180";
 
 /** Logs a brand-new GitHub user in through the fake OAuth flow and creates their dev. */

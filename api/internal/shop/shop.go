@@ -1,4 +1,4 @@
-// Package shop sells items, gear and skins, forges recipes, and equips, removes, wears and
+// Package shop sells items, gear and skins, forges recipes, and equips, removes, wears, uses and
 // discards what the player owns. Every rule runs inside player.WithLocked (AD-004).
 package shop
 
@@ -176,6 +176,28 @@ func (h *Handlers) EquipSkin(w http.ResponseWriter, r *http.Request) error {
 			return httpx.ErrNotOwned
 		}
 		h.wear(p, s)
+		return nil
+	})
+}
+
+// Use spends one owned item that grants XP out of combat; the amount comes from the catalog and
+// goes through the one level-up rule (AD-009).
+func (h *Handlers) Use(w http.ResponseWriter, r *http.Request) error {
+	it, ok := h.Catalog.Item(chi.URLParam(r, "id"))
+	if !ok {
+		return httpx.ErrUnknownShopItem
+	}
+	if it.XP <= 0 {
+		return httpx.ErrItemNotUsable
+	}
+	return h.mutate(w, r, func(ctx context.Context, tx pgx.Tx, p *player.Player) error {
+		if p.Quantity(it.ID) < 1 {
+			return httpx.ErrNoItem
+		}
+		if err := player.AddItem(ctx, tx, p, it.ID, -1); err != nil {
+			return err
+		}
+		player.GainXP(p, it.XP)
 		return nil
 	})
 }

@@ -1,0 +1,43 @@
+{
+ "name": "gear-luvas_dev",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "LUVAS SEM DEDO: the back of a dark fingerless glove, four bare fingertips in skin above knuckle ridges, and a blue cuff stripe at the wrist.",
+ "legend": {
+  "o": "ink",
+  "s": "skin.3",
+  "S": "skin.2",
+  "n": "metal.1",
+  "N": "stone.2",
+  "c": "net.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "...oo.oo.oo.oo..",
+    "..osSosSosSosSo.",
+    "..osSosSosSosSo.",
+    "..osSosSosSosSo.",
+    "..onnnnnnnnnnNo.",
+    "..onNnnNnnNnnNo.",
+    "..onnnnnnnnnnNo.",
+    "..onnnnnnnnnNNo.",
+    "..oNNNNNNNNNNNo.",
+    "..occccccccccco.",
+    "..ooooooooooooo.",
+    "................",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

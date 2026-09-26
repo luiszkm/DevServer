@@ -4,17 +4,15 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { GameArt } from "./GameArt";
+import { isHub } from "./HubTabs";
 
 export const TABS = [
   { label: "TÍTULO", href: "/", icon: "titulo" },
   { label: "MUNDO", href: "/mundo", icon: "mundo" },
-  { label: "SERVER", href: "/server", icon: "server" },
+  { label: "BASE", href: "/office", icon: "office" },
   { label: "DEPLOY", href: "/deploy", icon: "deploy" },
   { label: "BUG FIGHT", href: "/bug-fight", icon: "bug-fight" },
-  { label: "SKILLS", href: "/skills", icon: "skills" },
   { label: "LOJA", href: "/loja", icon: "loja" },
-  { label: "AVATAR", href: "/avatar", icon: "avatar" },
-  { label: "OFFICE", href: "/office", icon: "office" },
 ] as const;
 
 const EDITABLE = "input, textarea, select, [contenteditable]";
@@ -25,9 +23,9 @@ export function Tabs() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
-  const current = TABS.find((t) => t.href === pathname);
+  const current = TABS.find((t) => (t.href === "/office" ? isHub(pathname) : t.href === pathname));
 
-  // Keys 1-9 jump to the matching slot (game-menu door 3).
+  // Keys 1-6 jump to the matching slot (game-menu door 3). Office, avatar, skills and server are tabs inside BASE.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -66,7 +64,7 @@ export function Tabs() {
             key={t.href}
             href={t.href}
             className="tab"
-            aria-current={pathname === t.href ? "page" : undefined}
+            aria-current={(t.href === "/office" ? isHub(pathname) : pathname === t.href) ? "page" : undefined}
             onClick={() => setOpen(false)}
           >
             <span className="tab-num">{String(i + 1).padStart(2, "0")}</span>

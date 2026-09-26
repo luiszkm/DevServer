@@ -25,13 +25,16 @@
 | AD-019 | Loadout de skills: o jogador equipa no máximo `skills.json` `slots` (4) nós da trilha da classe (`player_skills.slot` 0..3, único por jogador); só os equipados viram comando no combate e somam passivo em `player.Bonus`, no bônus do nível; o HP do passivo entra e sai do HP gravado ao equipar, remover e upar um equipado (`player.ChangeHP`, mínimo 1); cada nó sobe do Nv 1 ao 3 pagando `levels[].cost` em pontos, e o comando joga a `levels[].scale` % | pedido do usuário: no máximo 4 skills + o especial, e upar uma skill; estende AD-012 sem segunda regra | active | 2026-09-26 |
 | AD-020 | Uma barra de poder só, `players.power` (0..`combat.power.max`), carregada pela tabela `combat.power` do catálogo (acerto `perHit`, golpe na fraqueza `perCrit`) e gasta por um comando `limit: true` com `class`: um especial por classe, fora do loadout, que zera a barra antes do golpe e não recarrega | pedido do usuário: a skill especial do avatar é o limit break, uma por classe; revisão do plano limit-break | active | 2026-09-26 |
 | AD-021 | Cada região tem um caminho de 5 nós no catálogo (`regions[].path`); o progresso é `region_progress.cleared` (quantos nós já venceu) e volta no `player.progress`; a luta de um nó entra por `POST /api/me/battle` com `{"node":"<id>"}` e só o índice `<= cleared` abre; vencer o nó da fronteira avança `cleared`; inimigo com `boss: true` não entra no sorteio de `EnemiesIn` (AD-017) | pedido do usuário: ao entrar na região, ver o caminho até o chefe, com progresso no servidor | active | 2026-09-26 |
+| AD-022 | Slots de gear: kit básico `cabeca`, `torso`, `pernas`, `pe`, `maos`, mais `notebook` e `acessorio`; `bebida` permanece. O que era `setup` virou `notebook` e o que era `vestuario` virou `torso`. Colar, cinto, brinco, pulseira e óculos ficam para depois | pedido do usuário na ficha do avatar | active | 2026-09-26 |
+| AD-023 | Slots `oculos` (ÓCULOS), `brinco`, `colar` e `cinto` entram em `shop.json` `slots`, vazios (nenhum gear ainda); a ordem segue o corpo: cabeça, óculos, brinco, colar, torso, cinto, pernas, pé, mãos, depois notebook, acessório, bebida. Pulseira segue para depois (atualiza AD-022) | pedido do usuário: "faltou os slots de cinto, colar, brinco, óculos" | active | 2026-09-26 |
+| AD-024 | Notebook é a arma: um por dev, `players.notebook_level` (1..`notebook.levels`, raridade derivada de `rarities[].from`) e `player_notebook_upgrades` (Nv 1..3), pagos em coins; `player.Bonus` soma sempre o nível e os upgrades (estende AD-012 sem segunda regra); HP de bônus entra no HP gravado ao subir (`player.ChangeHP`); o slot de gear `notebook` sai (MACBOOK PRO e MONITOR ULTRAWIDE vão para `acessorio`) e o laptop do herói segue a raridade a partir do RARO (atualiza AD-022 e AD-023) | decisão do usuário: "o dev conseguir gerenciar e upar seu notebook", um notebook único que evolui | active | 2026-09-26 |
 
 ## Handoff
 
-**Feature**: class-skills
-**Where**: C1–C39 implemented; api `go test ./...` and web `vitest run` green; e2e `unlock persists` green
+**Feature**: notebook
+**Where**: plan and checks approved (`validate_plan.py` and `validate_checks.py` green); not built
 **In progress**: none
-**Next step**: dispatch a fresh Verifier over the feature range with every check
+**Next step**: build the notebook from `.specs/features/notebook/checks.md`
 **Blockers**: none
-**Uncommitted**: none
+**Uncommitted**: notebook plan, checks and keyart
 **Branch**: main

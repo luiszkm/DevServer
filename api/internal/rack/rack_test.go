@@ -285,8 +285,8 @@ func TestRemove_RefundsFullPrice(t *testing.T) {
 	if got.Coins != 210 || rack(got.Rack) != "-,-,-,-,-,-" {
 		t.Fatalf("remove ram: coins %d rack %s, want 210 and empty", got.Coins, rack(got.Rack))
 	}
-	if got.Gems != 20 {
-		t.Errorf("gems %d, want 20 unchanged", got.Gems)
+	if got.Gems != 9999 {
+		t.Errorf("gems %d, want 9999 unchanged", got.Gems)
 	}
 }
 
@@ -535,8 +535,8 @@ func TestUnknownComponent_OccupiesAndRemoves(t *testing.T) {
 	}
 	f.status(f.buy("cpu"), 409, "rack_full")
 	got := f.ok(f.remove("0"))
-	if got.Coins != 920 || got.Gems != 20 || got.Rack[0] != nil {
-		t.Errorf("remove quantum: coins %d gems %d slot %v, want 920, 20 and null", got.Coins, got.Gems, got.Rack[0])
+	if got.Coins != 920 || got.Gems != 9999 || got.Rack[0] != nil {
+		t.Errorf("remove quantum: coins %d gems %d slot %v, want 920, 9999 and null", got.Coins, got.Gems, got.Rack[0])
 	}
 }
 

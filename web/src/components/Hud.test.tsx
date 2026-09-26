@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { CATALOG, player } from "@/test/helpers";
+import { player } from "@/test/helpers";
 import { GameShell } from "./GameShell";
 import { Hud } from "./Hud";
 
@@ -11,12 +11,12 @@ describe("Hud", () => {
   it("renders player values", () => {
     render(<Hud player={player({ level: 3, xp: 40, xpMax: 1000, hp: 80, hpMax: 140, coins: 55, gems: 7, skillPoints: 2 })} />);
     const hud = screen.getByRole("banner", { name: "HUD" });
-    for (const text of ["LEVEL 3", "40/1000", "HP 80/140", "55", "7", "2"]) {
+    for (const text of ["LEVEL 3", "40/1000", "HP 80/140", "55", "7"]) {
       expect(within(hud).getByText(text)).toBeInTheDocument();
     }
     expect(within(hud).getByText("COINS")).toBeInTheDocument();
     expect(within(hud).getByText("GEMS")).toBeInTheDocument();
-    expect(within(hud).getByText("SKILL PTS")).toBeInTheDocument();
+    expect(within(hud).queryByText("SKILL PTS")).not.toBeInTheDocument();
   });
 
   // C24
@@ -35,58 +35,6 @@ describe("Hud", () => {
     expect(screen.getByRole("button", { name: "SAIR" })).toBeInTheDocument();
   });
 
-  // C22
-  // skill-loadout AC 22: the HUD shows the loadout in slot order; unlocked but unequipped skills are not active.
-  it.each([
-    [["be1", "fe1"], ["be1", "fe1"], ["ENDPOINT", "HOTFIX DE CSS"]],
-    [["be1", "fe1"], [null, "fe1", null, "be1"], ["HOTFIX DE CSS", "ENDPOINT"]],
-    [["be1", "fe1"], [], []],
-    [[], [], []],
-  ])("shows active skill glyphs (skills %j, loadout %j)", (skills, loadout, names) => {
-    render(<Hud player={player({ skills, loadout })} catalog={CATALOG} />);
-    const hud = screen.getByRole("banner", { name: "HUD" });
-    const card = within(hud).getByText("SKILL PTS").parentElement!;
-    if (names.length) expect(within(within(card).getByLabelText("habilidades ativas")).getAllByRole("img").map((i) => i.getAttribute("alt"))).toEqual(names);
-    else expect(within(card).getByText("sem habilidades ativas")).toBeInTheDocument();
-  });
-
-  it("shows active skill glyphs only with a catalog (none without one)", () => {
-    render(<Hud player={player({ skills: ["be1"], loadout: ["be1"] })} />);
-    const hud = screen.getByRole("banner", { name: "HUD" });
-    expect(within(hud).queryByLabelText("habilidades ativas")).not.toBeInTheDocument();
-    expect(within(hud).queryByText("sem habilidades ativas")).not.toBeInTheDocument();
-    expect(within(hud).getByText("SKILL PTS")).toBeInTheDocument();
-  });
-
-  // game-art C19
-  it.each([[["be1"]], [["fe1", "be1", "be2"]]])("skill art (%j)", (skills) => {
-    render(<Hud player={player({ skills, loadout: skills })} catalog={CATALOG} />);
-    const chips = screen.getByLabelText("habilidades ativas");
-    const imgs = within(chips).getAllByRole("img");
-    const names: Record<string, string> = { be1: "ENDPOINT", be2: "QUERY PESADA", fe1: "HOTFIX DE CSS" };
-    expect(imgs.map((i) => i.getAttribute("src"))).toEqual(skills.map((id) => `/art/icon/skill-${id}.png`));
-    expect(imgs.map((i) => i.getAttribute("alt"))).toEqual(skills.map((id) => names[id]));
-    for (const img of imgs) {
-      expect(img.getAttribute("width")).toBe("16");
-      expect(img).toHaveClass("pixelated");
-    }
-  });
-
-  it("skill art (none active)", () => {
-    render(<Hud player={player({ skills: [] })} catalog={CATALOG} />);
-    const hud = screen.getByRole("banner", { name: "HUD" });
-    expect(within(hud).getByText("sem habilidades ativas")).toBeInTheDocument();
-    expect(hud.querySelector('img[src^="/art/icon/skill-"]')).toBeNull();
-  });
-
-  it("skill art falls back to the glyph", () => {
-    render(<Hud player={player({ skills: ["fe1"], loadout: ["fe1"] })} catalog={CATALOG} />);
-    const chips = screen.getByLabelText("habilidades ativas");
-    fireEvent.error(within(chips).getByRole("img"));
-    expect(within(chips).queryByRole("img")).toBeNull();
-    expect(chips).toHaveTextContent("</>");
-  });
-
   // game-art C20
   it.each([
     ["XP", "hud-xp"],
@@ -94,7 +42,7 @@ describe("Hud", () => {
     ["COINS", "hud-coin"],
     ["GEMS", "hud-gem"],
   ])("currency art (%s)", (label, icon) => {
-    render(<Hud player={player({ hp: 100, hpMax: 100 })} catalog={CATALOG} />);
+    render(<Hud player={player({ hp: 100, hpMax: 100 })} />);
     const card = screen.getByText(label).closest(".hud-card") as HTMLElement;
     const img = card.querySelector(`img[src="/art/icon/${icon}.png"]`)!;
     expect(img).not.toBeNull();
@@ -113,13 +61,11 @@ function expectIcon(img: Element | null | undefined, src: string, width = 16) {
 
 describe("Hud assets", () => {
   // assets C17
-  it("exit and skill points icons", () => {
+  it("exit icon", () => {
     render(<Hud player={player()} onLogout={vi.fn()} />);
     const sair = screen.getByRole("button", { name: "SAIR" });
     expectIcon(sair.querySelector("img"), "/art/icon/btn-exit.png");
-    const label = screen.getByText("SKILL PTS");
-    expectIcon(label.firstElementChild, "/art/icon/ic-star.png");
-    expect(label.firstChild).toBe(label.firstElementChild);
+    expect(screen.queryByText("SKILL PTS")).not.toBeInTheDocument();
   });
 
   // assets C27

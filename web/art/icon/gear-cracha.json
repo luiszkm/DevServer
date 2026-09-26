@@ -1,0 +1,45 @@
+{
+ "name": "gear-cracha",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CRACHÁ DE ACESSO: a red lanyard in a V down to a metal clip holding a white plastic badge with a blue photo and two lines of text.",
+ "legend": {
+  "o": "ink",
+  "r": "red.2",
+  "g": "metal.3",
+  "w": "white",
+  "c": "cloud.3",
+  "C": "cloud.2",
+  "n": "net.2",
+  "K": "stone.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "..oo........oo..",
+    "..oro......oro..",
+    "...oro....oro...",
+    "....oro..oro....",
+    ".....orooro.....",
+    "......oggo......",
+    "...oooooooooo...",
+    "...owcccccCCo...",
+    "...ocnnccccCo...",
+    "...ocnncKKcCo...",
+    "...ocnncccCCo...",
+    "...occcKKKCCo...",
+    "...oCCCCCCCCo...",
+    "...oooooooooo...",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

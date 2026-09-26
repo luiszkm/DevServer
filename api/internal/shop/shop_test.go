@@ -28,6 +28,7 @@ import (
 
 type playerJSON struct {
 	HP, HPMax, Coins, Gems, Level int
+	XP, XPMax, SkillPoints        int
 	Skin                          string
 	Gear                          []string
 	Equipment                     map[string]*string
@@ -121,12 +122,13 @@ func (f *fixture) balance(gems, coins int) {
 
 func ptr(s string) *string { return &s }
 
-func equipment(setup, bebida, vestuario, acessorio string) map[string]*string {
+func equipment(notebook, bebida, torso, acessorio string) map[string]*string {
 	m := map[string]*string{}
-	for k, v := range map[string]string{"setup": setup, "bebida": bebida, "vestuario": vestuario, "acessorio": acessorio} {
-		if v == "" {
-			m[k] = nil
-		} else {
+	for _, s := range catalog.Default().GearSlots {
+		m[s.ID] = nil
+	}
+	for k, v := range map[string]string{"notebook": notebook, "bebida": bebida, "torso": torso, "acessorio": acessorio} {
+		if v != "" {
 			m[k] = ptr(v)
 		}
 	}
@@ -135,7 +137,8 @@ func equipment(setup, bebida, vestuario, acessorio string) map[string]*string {
 
 func show(m map[string]*string) string {
 	parts := []string{}
-	for _, k := range []string{"setup", "bebida", "vestuario", "acessorio"} {
+	for _, s := range catalog.Default().GearSlots {
+		k := s.ID
 		v, ok := m[k]
 		switch {
 		case !ok:
@@ -179,7 +182,14 @@ func TestMe_ShopFields(t *testing.T) {
 	raw := apptest.Decode[struct {
 		Player map[string]any `json:"player"`
 	}](t, f.env.Do(http.MethodGet, "/api/me", nil, f.c))
-	want := map[string]any{"setup": "macbook", "bebida": nil, "vestuario": nil, "acessorio": nil}
+	want := map[string]any{}
+	for k, v := range equipment("macbook", "", "", "") {
+		if v == nil {
+			want[k] = nil
+		} else {
+			want[k] = *v
+		}
+	}
 	if !reflect.DeepEqual(raw.Player["equipment"], want) {
 		t.Fatalf("raw equipment = %#v, want %#v", raw.Player["equipment"], want)
 	}
@@ -199,7 +209,7 @@ func TestCreatePlayer_ShopDefaults(t *testing.T) {
 		t.Errorf("gear = %#v, want []", got.Gear)
 	}
 	if !reflect.DeepEqual(got.Equipment, equipment("", "", "", "")) {
-		t.Errorf("equipment = %s, want 4 null slots", show(got.Equipment))
+		t.Errorf("equipment = %s, want every slot empty", show(got.Equipment))
 	}
 	wantList(t, "skins", got.Skins, []string{"default"})
 	if got.Skin != "default" {
@@ -214,8 +224,8 @@ func TestCreatePlayer_ShopDefaults(t *testing.T) {
 func TestBuyItem_PaysAndAdds(t *testing.T) {
 	f := newFixture(t)
 	got := f.do("/api/me/shop/items/sp_potion")
-	if got.Gems != 5 || got.qty("sp_potion") != 3 {
-		t.Fatalf("sp_potion: gems %d qty %d, want 5 and 3", got.Gems, got.qty("sp_potion"))
+	if got.Gems != 9984 || got.qty("sp_potion") != 3 {
+		t.Fatalf("sp_potion: gems %d qty %d, want 9984 and 3", got.Gems, got.qty("sp_potion"))
 	}
 	f.balance(12, 100)
 	got = f.do("/api/me/shop/items/hp_potion")
@@ -239,8 +249,8 @@ func TestBuyItem_PaysAndAdds(t *testing.T) {
 func TestBuyGear_PaysOwnsEquips(t *testing.T) {
 	f := newFixture(t)
 	got := f.do("/api/me/shop/gear/cafe")
-	if got.Coins != 50 {
-		t.Errorf("coins = %d, want 50", got.Coins)
+	if got.Coins != 9949 {
+		t.Errorf("coins = %d, want 9949", got.Coins)
 	}
 	wantList(t, "gear", got.Gear, []string{"cafe"})
 	f.wantEquipment(got.Equipment, equipment("", "cafe", "", ""))
@@ -360,8 +370,8 @@ func TestEquipGear_ReplacesSlot(t *testing.T) {
 	f.do("/api/me/shop/gear/macbook")
 	f.do("/api/me/shop/gear/monitor")
 	got := f.do("/api/me/gear/macbook/equip")
-	if got.Equipment["setup"] == nil || *got.Equipment["setup"] != "macbook" {
-		t.Fatalf("equipment = %s, want setup=macbook", show(got.Equipment))
+	if got.Equipment["notebook"] == nil || *got.Equipment["notebook"] != "macbook" {
+		t.Fatalf("equipment = %s, want notebook=macbook", show(got.Equipment))
 	}
 	before := f.snapshot()
 	again := f.do("/api/me/gear/macbook/equip")
@@ -804,8 +814,8 @@ func TestUnequipGear_OtherPieceInSlotStays(t *testing.T) {
 	f.do("/api/me/shop/gear/monitor")
 	before := f.snapshot()
 	got := f.do("/api/me/gear/macbook/unequip")
-	if got.Equipment["setup"] == nil || *got.Equipment["setup"] != "monitor" {
-		t.Fatalf("equipment = %s, want setup=monitor", show(got.Equipment))
+	if got.Equipment["notebook"] == nil || *got.Equipment["notebook"] != "monitor" {
+		t.Fatalf("equipment = %s, want notebook=monitor", show(got.Equipment))
 	}
 	if after := f.snapshot(); after != before {
 		t.Fatalf("unequip of the other piece changed state:\n%s\n%s", before, after)

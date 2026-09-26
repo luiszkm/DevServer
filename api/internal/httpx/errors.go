@@ -56,6 +56,7 @@ var (
 	ErrNodeLocked         = &Error{http.StatusConflict, "node_locked", "o nó ainda está trancado"}
 	ErrUnknownItem        = &Error{http.StatusUnprocessableEntity, "unknown_item", "item desconhecido ou não usável em combate"}
 	ErrUnknownShopItem    = &Error{http.StatusUnprocessableEntity, "unknown_item", "item desconhecido"}
+	ErrItemNotUsable      = &Error{http.StatusUnprocessableEntity, "item_not_usable", "este item não pode ser usado pelo inventário"}
 	ErrNotEnoughGems      = &Error{http.StatusConflict, "not_enough_gems", "gems insuficientes"}
 	ErrNotEnoughCoins     = &Error{http.StatusConflict, "not_enough_coins", "coins insuficientes"}
 	ErrAlreadyOwned       = &Error{http.StatusConflict, "already_owned", "você já possui este item"}

@@ -71,8 +71,8 @@ func TestCreate_OmittedAppearance(t *testing.T) {
 	if !reflect.DeepEqual(p.Appearance, wantDefaults("masculino")) {
 		t.Fatalf("appearance = %v, want defaults", p.Appearance)
 	}
-	if p.Coins != 100 || p.Gems != 20 {
-		t.Fatalf("coins %d gems %d, want 100 and 20", p.Coins, p.Gems)
+	if p.Coins != 9999 || p.Gems != 9999 {
+		t.Fatalf("coins %d gems %d, want 9999 and 9999", p.Coins, p.Gems)
 	}
 	if got := storedAppearance(t, env); len(got) != 0 {
 		t.Fatalf("stored = %v, want {}", got)
@@ -87,8 +87,8 @@ func TestCreate_EmptyAppearance(t *testing.T) {
 	if !reflect.DeepEqual(p.Appearance, wantDefaults("masculino")) {
 		t.Fatalf("appearance = %v, want defaults", p.Appearance)
 	}
-	if p.Coins != 100 || p.Gems != 20 {
-		t.Fatalf("coins %d gems %d, want 100 and 20", p.Coins, p.Gems)
+	if p.Coins != 9999 || p.Gems != 9999 {
+		t.Fatalf("coins %d gems %d, want 9999 and 9999", p.Coins, p.Gems)
 	}
 	if got := storedAppearance(t, env); len(got) != 0 {
 		t.Fatalf("stored = %v, want {}", got)
@@ -107,8 +107,8 @@ func TestCreate_StoresFreeLooks(t *testing.T) {
 	if !reflect.DeepEqual(p.Appearance, want) {
 		t.Fatalf("appearance = %v, want %v", p.Appearance, want)
 	}
-	if p.Coins != 100 || p.Gems != 20 {
-		t.Fatalf("coins %d gems %d, want 100 and 20", p.Coins, p.Gems)
+	if p.Coins != 9999 || p.Gems != 9999 {
+		t.Fatalf("coins %d gems %d, want 9999 and 9999", p.Coins, p.Gems)
 	}
 	if got := meAppearance(t, env); !reflect.DeepEqual(got, want) {
 		t.Fatalf("GET /api/me appearance = %v, want %v", got, want)

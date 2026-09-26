@@ -1,0 +1,44 @@
+{
+ "name": "gear-brinco_bit",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "BRINCO DE BIT: a gold ear hook holding a small bar with two charms, a cyan gem '0' on the left and a gold '1' on the right.",
+ "legend": {
+  "o": "ink",
+  "y": "gold.3",
+  "Y": "gold.1",
+  "w": "white",
+  "b": "gem.3",
+  "B": "gem.2",
+  "N": "gem.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "........ooo.....",
+    ".......oyYYo....",
+    ".......oyooYo...",
+    ".......oyo.oo...",
+    ".......oyo......",
+    "...oooooyoooooo.",
+    "...oyyyyyyYYYYo.",
+    "...oooooooooooo.",
+    "...obbbbo..oyYo.",
+    "...owbbBo..oyYo.",
+    "...obNNBo..oyYo.",
+    "...obNNBo..oyYo.",
+    "...obbBBo..oyYo.",
+    "...oooooo..oooo.",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

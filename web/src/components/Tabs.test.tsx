@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { HubTabs } from "./HubTabs";
 import { Tabs } from "./Tabs";
 
 const nav = vi.hoisted(() => ({ pathname: "/mundo", push: vi.fn() }));
@@ -20,15 +21,12 @@ describe("Tabs", () => {
     expect(got).toEqual([
       ["TÍTULO", "/"],
       ["MUNDO", "/mundo"],
-      ["SERVER", "/server"],
+      ["BASE", "/office"],
       ["DEPLOY", "/deploy"],
       ["BUG FIGHT", "/bug-fight"],
-      ["SKILLS", "/skills"],
       ["LOJA", "/loja"],
-      ["AVATAR", "/avatar"],
-      ["OFFICE", "/office"],
     ]);
-    expect(links.map((l) => l.querySelector(".tab-num")?.textContent)).toEqual(["01", "02", "03", "04", "05", "06", "07", "08", "09"]);
+    expect(links.map((l) => l.querySelector(".tab-num")?.textContent)).toEqual(["01", "02", "03", "04", "05", "06"]);
     expect(links[2].querySelector(".tab-num")?.textContent).toBe("03");
   });
 
@@ -38,6 +36,35 @@ describe("Tabs", () => {
       .getAllByRole("link")
       .filter((l) => l.getAttribute("aria-current") === "page");
     expect(current.map((l) => l.getAttribute("href"))).toEqual(["/mundo"]);
+  });
+
+  it("marks BASE current on every hub route", () => {
+    nav.pathname = "/skills";
+    render(<Tabs />);
+    const current = within(screen.getByRole("navigation", { name: "Cenas" }))
+      .getAllByRole("link")
+      .filter((l) => l.getAttribute("aria-current") === "page");
+    expect(current.map((l) => l.textContent?.replace(/^\d\d/, ""))).toEqual(["BASE"]);
+  });
+});
+
+describe("HubTabs", () => {
+  it("switches office, avatar, skills and server", () => {
+    nav.pathname = "/avatar";
+    render(<HubTabs />);
+    const links = within(screen.getByRole("navigation", { name: "Base" })).getAllByRole("link");
+    expect(links.map((l) => [l.textContent, l.getAttribute("href"), l.getAttribute("aria-current")])).toEqual([
+      ["OFFICE", "/office", null],
+      ["AVATAR", "/avatar", "page"],
+      ["SKILLS", "/skills", null],
+      ["SERVER", "/server", null],
+    ]);
+  });
+
+  it("stays hidden outside the hub", () => {
+    nav.pathname = "/mundo";
+    render(<HubTabs />);
+    expect(screen.queryByRole("navigation", { name: "Base" })).not.toBeInTheDocument();
   });
 });
 
@@ -83,7 +110,7 @@ describe("Tabs menu", () => {
   it("escape closes menu", async () => {
     render(<Tabs />);
     await userEvent.click(menu());
-    within(scenes()).getByRole("link", { name: /SKILLS/ }).focus();
+    within(scenes()).getByRole("link", { name: /LOJA/ }).focus();
     await userEvent.keyboard("{Escape}");
     expect(menu()).toHaveAttribute("aria-expanded", "false");
     expect(scenes()).toHaveAttribute("data-open", "false");
@@ -94,7 +121,7 @@ describe("Tabs menu", () => {
   it("other keys keep menu open", async () => {
     render(<Tabs />);
     await userEvent.click(menu());
-    within(scenes()).getByRole("link", { name: /SKILLS/ }).focus();
+    within(scenes()).getByRole("link", { name: /LOJA/ }).focus();
     await userEvent.keyboard("{Tab}");
     expect(menu()).toHaveAttribute("aria-expanded", "true");
     expect(scenes()).toHaveAttribute("data-open", "true");
@@ -106,13 +133,13 @@ describe("Tabs menu", () => {
   const labels: [string, string][] = [
     ["/", "MENU · TÍTULO"],
     ["/mundo", "MENU · MUNDO"],
-    ["/server", "MENU · SERVER"],
+    ["/server", "MENU · BASE"],
     ["/deploy", "MENU · DEPLOY"],
     ["/bug-fight", "MENU · BUG FIGHT"],
-    ["/skills", "MENU · SKILLS"],
+    ["/skills", "MENU · BASE"],
     ["/loja", "MENU · LOJA"],
-    ["/avatar", "MENU · AVATAR"],
-    ["/office", "MENU · OFFICE"],
+    ["/avatar", "MENU · BASE"],
+    ["/office", "MENU · BASE"],
     ["/login", "MENU"],
   ];
   it.each(labels)("menu label %s", (pathname, label) => {
@@ -126,13 +153,10 @@ describe("Tabs menu", () => {
 const SLOTS: [string, string, string, string][] = [
   ["01", "TÍTULO", "/", "titulo"],
   ["02", "MUNDO", "/mundo", "mundo"],
-  ["03", "SERVER", "/server", "server"],
+  ["03", "BASE", "/office", "office"],
   ["04", "DEPLOY", "/deploy", "deploy"],
   ["05", "BUG FIGHT", "/bug-fight", "bug-fight"],
-  ["06", "SKILLS", "/skills", "skills"],
-  ["07", "LOJA", "/loja", "loja"],
-  ["08", "AVATAR", "/avatar", "avatar"],
-  ["09", "OFFICE", "/office", "office"],
+  ["06", "LOJA", "/loja", "loja"],
 ];
 
 describe("Tabs hotbar", () => {
@@ -158,10 +182,10 @@ describe("Tabs hotbar", () => {
 
   it("slot icon fallback", () => {
     render(<Tabs />);
-    const loja = links()[6];
+    const loja = links()[5];
     fireEvent.error(loja.querySelector("img")!);
     expect(loja.querySelector("img")).toBeNull();
-    expect(loja.querySelector(".tab-num")).toHaveTextContent("07");
+    expect(loja.querySelector(".tab-num")).toHaveTextContent("06");
     expect(loja).toHaveTextContent("LOJA");
   });
 

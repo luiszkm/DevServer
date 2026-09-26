@@ -146,8 +146,8 @@ func TestForge_GearOwnsEquips(t *testing.T) {
 	if !got.has("moletom") || !got.has("hoodie_trace") {
 		t.Errorf("gear = %v, want moletom and hoodie_trace", got.Gear)
 	}
-	if e := got.Equipment["vestuario"]; e == nil || *e != "hoodie_trace" {
-		t.Errorf("vestuario = %v, want hoodie_trace", e)
+	if e := got.Equipment["torso"]; e == nil || *e != "hoodie_trace" {
+		t.Errorf("torso = %v, want hoodie_trace", e)
 	}
 	if got.HPMax != before.HPMax+21 || got.HP != before.HP+21 {
 		t.Errorf("hp %d/%d, want %d/%d", got.HP, got.HPMax, before.HP+21, before.HPMax+21)

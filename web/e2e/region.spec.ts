@@ -8,13 +8,14 @@ test("entering floresta opens its path", async ({ page }) => {
   await page.getByRole("dialog", { name: "FLORESTA DE LOGS" }).getByRole("button", { name: "ENTRAR" }).click();
   await expect(page).toHaveURL(/\/mundo\/floresta$/);
   await expect(page.locator("[data-node]")).toHaveCount(5);
-  await expect(page.locator('[data-node="floresta-1"] button')).toBeEnabled();
+  await expect(page.locator('[data-node="floresta-1"]')).toBeEnabled();
   for (const id of ["floresta-2", "floresta-3", "floresta-4", "floresta-5"]) {
-    await expect(page.locator(`[data-node="${id}"] button`)).toBeDisabled();
+    await expect(page.locator(`[data-node="${id}"]`)).toBeDisabled();
   }
-  await page.locator('[data-node="floresta-1"] button').click();
+  await expect(page.getByText("clique em 1 para enfrentar SLIME DE LOG")).toBeVisible();
+  await page.locator('[data-node="floresta-1"]').click();
   await expect(page).toHaveURL(/\/bug-fight$/);
-  await expect(page.getByText("SLIME DE LOG")).toBeVisible();
+  await expect(page.getByLabel("inimigo").getByText("SLIME DE LOG", { exact: true })).toBeVisible();
 });
 
 test.describe("phone", () => {
@@ -22,7 +23,7 @@ test.describe("phone", () => {
 
   test("region map fits phone", async ({ page }) => {
     await newDev(page);
-    await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "MUNDO" }).click();
+    await page.goto("/mundo");
     await page.getByRole("button", { name: "FLORESTA DE LOGS" }).click();
     await page.getByRole("dialog", { name: "FLORESTA DE LOGS" }).getByRole("button", { name: "ENTRAR" }).click();
     await expect(page).toHaveURL(/\/mundo\/floresta$/);

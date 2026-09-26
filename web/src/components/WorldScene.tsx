@@ -58,12 +58,16 @@ export function WorldScene() {
     setFocus(id);
     if (id === heroAt) return;
     setWalking(true);
-    // Start the CSS transition from the current spot on the next frame.
+    // Start the CSS transition from the current spot on the next frame. A hidden hero (the phone
+    // map) never fires transitionend, which would leave ENTRAR disabled.
     requestAnimationFrame(() => {
       setHeroAt(id);
-      if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
-        setWalking(false);
-      }
+      requestAnimationFrame(() => {
+        const hero = document.querySelector(".map-hero");
+        const reduce = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+        // jsdom loads no stylesheet, so only a hero the page actually hides (the phone map) skips the walk.
+        if (reduce || (hero && getComputedStyle(hero).display === "none")) setWalking(false);
+      });
     });
   }
 

@@ -21,9 +21,17 @@ function renderRegion(regionId: string, p: Player = player({ region: regionId })
 }
 
 const node = (id: string) => document.querySelector(`[data-node="${id}"]`) as HTMLElement;
-const button = (id: string) => node(id).querySelector("button") as HTMLButtonElement;
+const button = (id: string) => node(id) as HTMLButtonElement;
 
 describe("RegionScene", () => {
+  it("opens the first node when progress is missing", () => {
+    const bare = player({ region: "mercado" });
+    delete (bare as { progress?: Player["progress"] }).progress;
+    renderRegion("mercado", bare);
+    expect(button("mercado-1")).toBeEnabled();
+    for (const id of ["mercado-2", "mercado-3", "mercado-4", "mercado-5"]) expect(button(id)).toBeDisabled();
+  });
+
   it("region map opens the first node", () => {
     renderRegion("floresta");
     const map = document.querySelector(".region-map") as HTMLElement;

@@ -108,6 +108,8 @@ export type Item = {
   rarity: string;
   description: string;
   restore?: { stat: "sp" | "hp"; amount: number };
+  /** XP granted when used from the inventory; absent for items that cannot be used there. */
+  xp?: number;
   /** Absent for items the shop does not sell (drops). */
   price?: Price;
 };

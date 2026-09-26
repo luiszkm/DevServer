@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { newDev } from "./helpers";
+import { newDev, openScene } from "./helpers";
 
 // game-art C33: the scene backgrounds are drawn at ×4 (1280x720) with pixelated rendering, which only
 // globals.css sets - jsdom never loads it, so the real browser's computed style is the proof.
@@ -18,7 +18,7 @@ const scenes: { link: string; selector: string; ready: (page: Page) => Promise<v
 for (const { link, selector, ready } of scenes) {
   test(`scene art scale ${selector}`, async ({ page }) => {
     await newDev(page);
-    await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: link }).click();
+    await openScene(page, link);
     await ready(page);
     const style = await page.locator(selector).evaluate((el) => {
       const s = getComputedStyle(el);

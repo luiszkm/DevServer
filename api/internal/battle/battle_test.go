@@ -598,8 +598,8 @@ func TestVictory_CreditsReward(t *testing.T) {
 	if r := got.Events[2]; r.XP != 90 || r.Coins != 40 || r.Gems != 1 {
 		t.Fatalf("reward = %+v", r)
 	}
-	if got.Player.XP != 90 || got.Player.Coins != 140 || got.Player.Gems != 21 || got.Player.HP != 100 {
-		t.Fatalf("player = %+v, want xp 90 coins 140 gems 21 and no counter", got.Player)
+	if got.Player.XP != 90 || got.Player.Coins != 10039 || got.Player.Gems != 10000 || got.Player.HP != 100 {
+		t.Fatalf("player = %+v, want xp 90 coins 10039 gems 10000 and no counter", got.Player)
 	}
 }
 

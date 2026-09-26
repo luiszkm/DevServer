@@ -1,0 +1,42 @@
+{
+ "name": "gear-tenis_sprint",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "TÊNIS DE SPRINT: a red running sneaker in side view facing right, high collar at the back, toe to the right and a thick white sole.",
+ "legend": {
+  "o": "ink",
+  "l": "red.4",
+  "r": "red.3",
+  "R": "red.2",
+  "c": "cloud.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "...ooooo........",
+    "..orrrrro.......",
+    "..orlrrrroo.....",
+    "..orrrrrrrroo...",
+    ".orrrrrrRRRRRo..",
+    ".orrrrrRRRRRRRo.",
+    ".occcccccccccco.",
+    "..oooooooooooo..",
+    "................",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

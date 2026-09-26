@@ -406,10 +406,10 @@ describe("asset sheet on disk", () => {
   });
 
   it("button and generic icon, 16x16", () => {
-    const btn = ["build", "deploy", "play", "rank", "start", "settings", "shop", "exit"];
-    const ic = ["code", "cloud", "server", "gear", "trophy", "star", "crown", "laptop", "database", "shield", "lock", "file", "wrench", "chart", "sp"];
-    expect(btn).toHaveLength(8);
-    expect(ic).toHaveLength(15);
+    const btn = ["build", "deploy", "play", "rank", "start", "shop", "exit"];
+    const ic = ["code", "cloud", "server", "gear", "trophy", "crown", "laptop", "database", "shield", "lock", "file", "wrench", "chart", "sp"];
+    expect(btn).toHaveLength(7);
+    expect(ic).toHaveLength(14);
     expectAssets(sized("icon", [16, 16], [...btn.map((b) => `btn-${b}`), ...ic.map((i) => `ic-${i}`)]));
   });
 
@@ -478,8 +478,8 @@ describe("asset sheet on disk", () => {
 const LIBRARY = {
   ui: ["ui-panel", "ui-panel-wood", "ui-btn-wood", "ui-btn-wood-press", "ui-btn-dark", "ui-btn-dark-press", "ui-btn-green", "ui-btn-green-press", "ui-bubble", "ui-bar"],
   icon: [
-    ...["build", "deploy", "play", "rank", "start", "settings", "shop", "exit"].map((k) => `btn-${k}`),
-    ...["code", "cloud", "server", "gear", "trophy", "star", "crown", "laptop", "database", "shield", "lock", "file", "wrench", "chart", "sp"].map((k) => `ic-${k}`),
+    ...["build", "deploy", "play", "rank", "start", "shop", "exit"].map((k) => `btn-${k}`),
+    ...["code", "cloud", "server", "gear", "trophy", "crown", "laptop", "database", "shield", "lock", "file", "wrench", "chart", "sp"].map((k) => `ic-${k}`),
     ...["bronze", "prata", "ouro", "azul", "roxo", "rubi"].map((k) => `medal-${k}`),
   ],
   sprite: [
@@ -569,7 +569,7 @@ describe("library consumers", () => {
     });
     const reached = reachedFrom([...backgrounds, ...enemies, ...named]);
     const names = Object.entries(LIBRARY).flatMap(([folder, list]) => list.map((name) => ({ folder, name })));
-    expect(names.length).toBe(101);
+    expect(names.length).toBe(99);
     expect(orphans(names, sources, reached)).toEqual([]);
   });
 

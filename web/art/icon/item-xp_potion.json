@@ -1,0 +1,47 @@
+{
+ "name": "item-xp_potion",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "POÇÃO DE XP: the round flask of the HP/SP potions filled with terminal-green XP liquid (XP = code green, like the HUD), cork stopper, glossy top-left highlight.",
+ "legend": {
+  "o": "ink",
+  "c": "wood.4",
+  "k": "wood.2",
+  "g": "metal.3",
+  "G": "metal.2",
+  "h": "code.4",
+  "l": "code.3",
+  "m": "code.2",
+  "d": "code.1",
+  "w": "white"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "......oooo......",
+    ".....occkko.....",
+    ".....oggGGo.....",
+    "......ogGo......",
+    "....ooogGooo....",
+    "...ohlllmmmmo...",
+    "..olwhllmmmmdo..",
+    ".olwhlllmmmmddo.",
+    ".olhlllmmmmmddo.",
+    ".ollllmmmmmmddo.",
+    ".olllmmmmmmdddo.",
+    ".ommmmmmmmddddo.",
+    "..ommmmmmddddo..",
+    "...oddddddddo...",
+    "....oooooooo...."
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "name": "gear-cinto_util",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CINTO DE UTILIDADES: a brown leather belt with a gold buckle in the middle and two leather tool pouches hanging below it.",
+ "legend": {
+  "o": "ink",
+  "k": "wood.4",
+  "K": "wood.3",
+  "y": "gold.3",
+  "Y": "gold.1",
+  "d": "dirt.2",
+  "D": "dirt.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "................",
+    ".oooooooooooooo.",
+    ".okkkkoyyokkkko.",
+    ".oKKKKoyYoKKKKo.",
+    ".oooooooooooooo.",
+    "..odddo..odddo..",
+    "..oDDDo..oDDDo..",
+    "..odddo..odddo..",
+    "..odDDo..odDDo..",
+    "..ooooo..ooooo..",
+    "................",
+    "................",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

@@ -30,7 +30,8 @@ test("onboarding look fits phone", async ({ page }) => {
   await page.getByRole("button", { name: "CRIAR DEV" }).click();
   await expect(page.getByRole("banner", { name: "HUD" })).toContainText("LEVEL 1");
   await page.getByRole("button", { name: /^MENU/ }).click();
-  await page.getByRole("link", { name: "AVATAR" }).click();
+  await page.getByRole("link", { name: "BASE" }).click();
+  await page.getByRole("navigation", { name: "Base" }).getByRole("link", { name: "AVATAR" }).click();
   await expect(page.locator(".avatar-hero")).toHaveAttribute("data-look", /#b07858/);
   await expect(page.locator(".avatar-hero")).toHaveAttribute("data-look", /top-camiseta/);
 });

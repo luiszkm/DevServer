@@ -1,18 +1,18 @@
 import { expect, test } from "@playwright/test";
-import { newDev } from "./helpers";
+import { newDev, openScene } from "./helpers";
 
 // C42
 test("buy and remove", async ({ page }) => {
   await newDev(page);
   const hud = page.getByRole("banner", { name: "HUD" });
   const coins = hud.locator(".hud-card", { hasText: "COINS" }).locator(".hud-value");
-  await expect(coins).toHaveText("100");
+  await expect(coins).toHaveText("9999");
 
-  await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "SERVER" }).click();
+  await openScene(page, "SERVER");
   await expect(page.getByText("LOJA DE COMPONENTES")).toBeVisible();
   await page.locator('[data-card="ram"]').click();
   await expect(page.getByRole("status")).toHaveText("> RAM 32GB instalado no slot 01 · ram +30");
-  await expect(coins).toHaveText("40");
+  await expect(coins).toHaveText("9939");
   const ram = page.locator('[data-stat="ram"]');
   await expect(ram.locator(".server-stat-value")).toHaveText("45");
   await expect(ram.locator(".server-stat-bonus")).toHaveText("SP MÁX +6");
@@ -20,11 +20,11 @@ test("buy and remove", async ({ page }) => {
   await page.reload();
   const first = page.locator('[data-slot="0"]');
   await expect(first).toContainText("RAM 32GB");
-  await expect(coins).toHaveText("40");
+  await expect(coins).toHaveText("9939");
 
   await first.click();
   await expect(page.getByRole("status")).toHaveText("> RAM 32GB removido. 60 coins devolvidos.");
-  await expect(coins).toHaveText("100");
+  await expect(coins).toHaveText("9999");
   await expect(first).toContainText("SLOT 01 VAZIO");
 });
 
@@ -37,7 +37,7 @@ test("entries", async ({ page }) => {
 
   await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "TÍTULO" }).click();
   await expect(page).toHaveURL(/\/$/);
-  await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "SERVER" }).click();
+  await openScene(page, "SERVER");
   await expect(page).toHaveURL(/\/server$/);
   await expect(page.getByText("LOJA DE COMPONENTES")).toBeVisible();
 });

@@ -60,7 +60,7 @@ test.describe("phone M", () => {
     const nav = page.getByRole("navigation", { name: "Cenas" });
     const menu = page.getByRole("button", { name: /^MENU/ });
     const all = nav.getByRole("link", { includeHidden: true });
-    await expect(all).toHaveCount(9);
+    await expect(all).toHaveCount(6);
     for (const link of await all.all()) await expect(link).toBeHidden();
     await expect(menu).toHaveText("MENU · TÍTULO");
     await expect(menu).toHaveAttribute("aria-expanded", "false");
@@ -69,12 +69,12 @@ test.describe("phone M", () => {
     const links = nav.getByRole("link");
     for (const link of await links.all()) await expect(link).toBeVisible();
     const names = (await links.allTextContents()).map((t) => t.replace(/^\d\d/, ""));
-    expect(names).toEqual(SCENES.map((s) => s.label));
+    expect(names).toEqual(["TÍTULO", "MUNDO", "BASE", "DEPLOY", "BUG FIGHT", "LOJA"]);
 
     await nav.getByRole("link", { name: /DEPLOY/ }).click();
     await expect(page).toHaveURL(/\/deploy$/);
     await expect(page.getByText("PIPELINES DE DEPLOY")).toBeVisible();
-    await expect(all).toHaveCount(9);
+    await expect(all).toHaveCount(6);
     for (const link of await all.all()) await expect(link).toBeHidden();
     await expect(menu).toHaveText("MENU · DEPLOY");
     await expect(menu).toHaveAttribute("aria-expanded", "false");
@@ -251,7 +251,7 @@ test.describe("desktop", () => {
       expect((await page.locator(".page").boundingBox())!.width).toBe(1200);
       expect((await page.locator(scene(s)).boundingBox())!.height).toBe(760);
       const links = page.getByRole("navigation", { name: "Cenas" }).getByRole("link");
-      await expect(links).toHaveCount(9);
+      await expect(links).toHaveCount(6);
       const ys = new Set<number>();
       for (const link of await links.all()) {
         await expect(link).toBeVisible();

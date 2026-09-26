@@ -140,18 +140,6 @@ describe("GameShell", () => {
     expect(frame.children[1]).toHaveTextContent("cena");
   });
 
-  it("gives the HUD the catalog so it shows active skill glyphs", async () => {
-    mockFetch({
-      "GET /api/me": json(200, { player: player({ skills: ["be1"], loadout: ["be1", null, null, null] }) }),
-      "GET /api/catalog": json(200, CATALOG),
-    });
-    render(<GameShell><p>cena</p></GameShell>);
-    await screen.findByText("cena");
-    const hud = screen.getByRole("banner", { name: "HUD" });
-    const chip = within(within(hud).getByLabelText("habilidades ativas")).getByRole("img");
-    expect(chip.getAttribute("src")).toBe("/art/icon/skill-be1.png");
-    expect(chip.getAttribute("alt")).toBe("ENDPOINT");
-  });
 });
 
 describe("GameShell assets", () => {

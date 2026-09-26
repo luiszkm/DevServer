@@ -5,11 +5,11 @@ import { type ApiResult, post, put } from "@/lib/api";
 import { availableFor, resolveLook } from "@/lib/avatar";
 import { CONNECTION_FAILED, bonusLong, canPay, insufficient, isEquipped, priceLong, priceShort, quantity, totalBonus } from "@/lib/gear";
 import type { AvatarOption, Player } from "@/lib/types";
-import { GameArt, RarityArt } from "./GameArt";
+import { GameArt, PriceArt, RarityArt } from "./GameArt";
 import { useGame } from "./GameContext";
 import { HeroAvatar } from "./HeroAvatar";
 
-type Bag = "equip" | "pocao" | "loot" | "skin" | "visual";
+type Bag = "equip" | "pocao" | "loot" | "skin";
 type Entry = { kind: "gear" | "item" | "skin"; id: string; name: string; glyph: string; tag: string; active: boolean };
 
 const BAGS: { id: Bag; label: string; hint: string }[] = [
@@ -17,12 +17,12 @@ const BAGS: { id: Bag; label: string; hint: string }[] = [
   { id: "pocao", label: "POÇÕES", hint: "use no Bug Fight" },
   { id: "loot", label: "LOOT", hint: "material de craft" },
   { id: "skin", label: "SKINS", hint: "clique para vestir" },
-  { id: "visual", label: "VISUAL", hint: "monte o seu dev" },
 ];
 
-const SLOT_TAG: Record<string, string> = { setup: "setup", bebida: "bebida", vestuario: "roupa", acessorio: "acess" };
-const LEFT_SLOTS = ["setup", "vestuario"];
-const RIGHT_SLOTS = ["acessorio", "bebida"];
+const SLOT_TAG: Record<string, string> = {
+  cabeca: "cabeça", oculos: "óculos", brinco: "brinco", colar: "colar", torso: "torso", cinto: "cinto",
+  pernas: "pernas", pe: "pé", maos: "mãos", notebook: "note", acessorio: "acess", bebida: "bebida",
+};
 
 export function AvatarScene() {
   const { player, catalog, setPlayer } = useGame();
@@ -30,6 +30,8 @@ export function AvatarScene() {
   const [picked, setPicked] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  // Opened by using a redesign token; closed when leaving via a bag tab.
+  const [editing, setEditing] = useState(false);
   // Unsaved avatar picks, shown on the preview until SALVAR or DESFAZER.
   const [draft, setDraft] = useState<Record<string, string>>({});
   const [part, setPart] = useState(catalog.avatar.parts[0].id);
@@ -50,15 +52,21 @@ export function AvatarScene() {
   }
 
   function openBag(b: Bag, id: string | null = null) {
+    setEditing(false);
+    setDraft({});
     setBag(b);
     setPicked(id);
   }
 
+  function openVisual() {
+    setEditing(true);
+    setDraft({});
+    setMessage(null);
+  }
+
   const preview: Player = { ...player, appearance: { ...player.appearance, ...draft } };
   const entries: Entry[] =
-    bag === "visual"
-      ? []
-      : bag === "equip"
+    bag === "equip"
       ? catalog.gear
           .filter((g) => player.gear.includes(g.id))
           .map((g) => {
@@ -78,86 +86,59 @@ export function AvatarScene() {
             .map((i) => ({ kind: "item", id: i.id, name: i.name, glyph: i.glyph, tag: `x${quantity(player, i.id)}`, active: false }));
   const current = entries.find((e) => e.id === picked) ?? entries[0];
   const skin = catalog.skins.find((s) => s.id === player.skin);
-  const hint = BAGS.find((b) => b.id === bag)!.hint;
+  const hint = editing ? "monte o seu dev" : BAGS.find((b) => b.id === bag)!.hint;
+  const className = catalog.skillTrees.find((t) => t.class === player.class)?.name ?? player.class;
 
   return (
     <section className="scene avatar" aria-label="AVATAR" style={{ backgroundImage: "url(/art/background/scene-floresta.png)" }}>
+      <h1 className="pixel avatar-title">AVATAR E INVENTÁRIO</h1>
+      <div className="panel avatar-sheet">
+        <span className="pixel avatar-sheet-title">AVATAR</span>
+        <div className="avatar-sheet-top">
+          <div className="avatar-preview">
+            <HeroAvatar look={preview} className="avatar-hero" anim="idle" />
+          </div>
+          <dl className="avatar-identity">
+            <div><dt className="term">NOME</dt><dd className="pixel">{player.devName}</dd></div>
+            <div><dt className="term">NÍVEL</dt><dd className="pixel">{player.level}</dd></div>
+            <div><dt className="term">XP</dt><dd className="pixel">{`${player.xp}/${player.xpMax}`}</dd></div>
+            <div><dt className="term">CLASSE</dt><dd className="pixel">{className}</dd></div>
+          </dl>
+        </div>
+        <div className="avatar-stats" aria-label="atributos">
+          <span className="term">{`HP máx ${player.hpMax}`}</span>
+          <span className="term">{`dano +${totalBonus(catalog, player, "dmg")}%`}</span>
+          <span className="term">{`SP +${totalBonus(catalog, player, "sp")}`}</span>
+        </div>
+        <div className="avatar-slots" role="group" aria-label="slots">
+          {catalog.gearSlots.map((s) => slotButton(s.id))}
+        </div>
+        <div className="avatar-money term">
+          <span><PriceArt currency="coins" />{player.coins}</span>
+          <span><PriceArt currency="gems" />{player.gems}</span>
+        </div>
+        <span className="term avatar-skin-name">{skin?.name}</span>
+      </div>
+
       <div className="avatar-bag">
         <div className="panel panel-wood avatar-bag-head">
           <span className="pixel">INVENTÁRIO</span>
           <span className="term">{hint}</span>
         </div>
-        {bag === "visual" ? editor() : cells()}
+        {editing ? editor() : cells()}
         <div className="avatar-tabs" role="tablist" aria-label="abas da mochila">
           {BAGS.map((b) => (
-            <button key={b.id} type="button" role="tab" aria-selected={bag === b.id} className="avatar-tab pixel" onClick={() => openBag(b.id)}>
-              {b.id === "visual" && <GameArt kind="btn" id="settings" scale={1} alt="" fallback="" className="inline-icon" />}
+            <button key={b.id} type="button" role="tab" aria-selected={!editing && bag === b.id} className="avatar-tab pixel" onClick={() => openBag(b.id)}>
               {b.label}
             </button>
           ))}
         </div>
         <div className="panel avatar-detail" role="region" aria-label="detalhe do item">
           {detail()}
+          <p className="term avatar-status" role="status">
+            {message ?? "vista skins e equipe o que comprou na Loja."}
+          </p>
         </div>
-      </div>
-
-      <div className="panel avatar-doll">
-        <div className="avatar-col">
-          <div className="avatar-skins">
-            <span className="pixel avatar-skins-title">SKINS</span>
-            <div className="avatar-skins-grid" role="group" aria-label="SKINS">
-              {catalog.skins.map((s) => {
-                const owned = player.skins.includes(s.id);
-                return (
-                  <button
-                    key={s.id}
-                    type="button"
-                    className="avatar-skin"
-                    data-strip={s.id}
-                    aria-label={s.name}
-                    aria-pressed={player.skin === s.id}
-                    aria-disabled={!owned}
-                    disabled={pending && owned}
-                    onClick={() => {
-                      if (!owned) return setMessage("SKIN BLOQUEADA — COMPRE NA LOJA");
-                      openBag("skin", s.id);
-                      run(`/api/me/skins/${s.id}/equip`, "SKIN EQUIPADA");
-                    }}
-                  >
-                    <HeroAvatar look={{ ...player, skin: s.id }} scale={0.5} className={owned ? "" : "avatar-skin-locked"} />
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div className="avatar-slots" role="group" aria-label="slots à esquerda">
-            {LEFT_SLOTS.map(slotButton)}
-          </div>
-        </div>
-
-        <div className="avatar-center">
-          <div className="avatar-preview">
-            <HeroAvatar look={preview} className="avatar-hero" anim="idle" />
-          </div>
-          <div className="avatar-name">
-            <span className="pixel">{player.devName}</span>
-            <span className="term avatar-skin-name">{skin?.name}</span>
-          </div>
-        </div>
-
-        <div className="avatar-col">
-          <div className="avatar-stats" aria-label="atributos">
-            <span className="term">{`HP máx ${player.hpMax}`}</span>
-            <span className="term">{`dano +${totalBonus(catalog, player, "dmg")}%`}</span>
-            <span className="term">{`SP +${totalBonus(catalog, player, "sp")}`}</span>
-          </div>
-          <div className="avatar-slots" role="group" aria-label="slots à direita">
-            {RIGHT_SLOTS.map(slotButton)}
-          </div>
-        </div>
-      </div>
-      <div className="panel avatar-message term" role="status">
-        {message ?? "vista skins e equipe o que comprou na Loja."}
       </div>
     </section>
   );
@@ -172,7 +153,7 @@ export function AvatarScene() {
           {g ? <GameArt kind="gear" id={g.id} scale={2} alt="" fallback={g.glyph} /> : "[ ]"}
         </span>
         <span className="term avatar-slot-label">
-          {slot === "setup" && <GameArt kind="ic" id="gear" scale={1} alt="" fallback="" className="inline-icon" />}
+          {slot === "notebook" && <GameArt kind="ic" id="gear" scale={1} alt="" fallback="" className="inline-icon" />}
           {g ? g.name : name}
         </span>
       </button>
@@ -333,7 +314,7 @@ export function AvatarScene() {
   }
 
   function detail() {
-    if (bag === "visual") return visualDetail();
+    if (editing) return visualDetail();
     if (!current) {
       return (
         <>
@@ -384,6 +365,16 @@ export function AvatarScene() {
         <DetailHead icon={<GameArt kind="item" id={it.id} scale={2} alt="" fallback={it.glyph} />} name={it.name} rarity={it.rarity} />
         <span className="term">{it.description}</span>
         <span className="term">{`quantidade: ${quantity(player, it.id)}`}</span>
+        {it.id === "redesign_token" && (
+          <button type="button" className="btn btn-green" disabled={pending} onClick={openVisual}>
+            USAR
+          </button>
+        )}
+        {!!it.xp && (
+          <button type="button" className="btn btn-green" disabled={pending} onClick={() => run(`/api/me/items/${it.id}/use`, `+${it.xp} XP`)}>
+            USAR
+          </button>
+        )}
         <button type="button" className="btn btn-dark" disabled={pending} onClick={() => run(`/api/me/items/${it.id}/discard`, `-1 ${it.name}`)}>
           DESCARTAR 1
         </button>

@@ -108,7 +108,9 @@ describe("BattleScene", () => {
     await screen.findByLabelText("inimigo");
     const grid = document.querySelector(".battle-commands") as HTMLElement;
     for (const id of shown.filter((id) => !COMMANDS.find((c) => c.id === id)?.limit)) {
-      expect(grid.querySelector(`[data-command="${id}"]`)).not.toBeNull();
+      const btn = grid.querySelector(`[data-command="${id}"]`)!;
+      expect(btn).not.toBeNull();
+      expect(btn.querySelector("img")?.getAttribute("src")).toBe(`/art/icon/skill-${id}.png`);
     }
     for (const id of shown) expect(command(id)).not.toBeNull();
     for (const id of hidden) expect(command(id)).toBeNull();
@@ -208,8 +210,14 @@ describe("BattleScene", () => {
     const hero = await screen.findByLabelText("dev em combate");
     expect(hero).toHaveTextContent("HP 80/100");
     expect(hero).toHaveTextContent("SP 40/50");
-    expect(potion("sp_potion")).toHaveTextContent("POÇÃO DE CACHE x2");
-    expect(potion("hp_potion")).toHaveTextContent("POÇÃO DE MEMÓRIA x0");
+    expect(potion("sp_potion").querySelector("img")).toHaveAttribute("src", "/art/icon/item-sp_potion.png");
+    expect(potion("sp_potion").querySelector(".battle-potion-qty")).toHaveTextContent("2");
+    expect(potion("sp_potion")).toHaveAttribute("aria-label", "POÇÃO DE CACHE x2");
+    expect(potion("sp_potion")).not.toHaveTextContent("POÇÃO DE CACHE");
+    expect(potion("hp_potion").querySelector("img")).toHaveAttribute("src", "/art/icon/item-hp_potion.png");
+    expect(potion("hp_potion").querySelector(".battle-potion-qty")).toHaveTextContent("0");
+    expect(potion("hp_potion")).toHaveAttribute("aria-label", "POÇÃO DE MEMÓRIA x0");
+    expect(potion("hp_potion")).not.toHaveTextContent("POÇÃO DE MEMÓRIA");
     expect(potion("hp_potion")).toBeDisabled();
     await userEvent.click(potion("sp_potion"));
     await screen.findByText(/POÇÃO DE CACHE usada/);
@@ -403,8 +411,10 @@ describe("BattleScene", () => {
     await screen.findByLabelText("dev em combate");
     const items = [...document.querySelectorAll<HTMLButtonElement>("[data-item]")];
     expect(items.map((b) => b.dataset.item)).toEqual(["sp_potion", "hp_potion"]);
-    expect(items[0]).toHaveTextContent("POÇÃO DE CACHE");
-    expect(items[1]).toHaveTextContent("POÇÃO DE MEMÓRIA");
+    expect(items[0]).toHaveAttribute("aria-label", "POÇÃO DE CACHE x0");
+    expect(items[1]).toHaveAttribute("aria-label", "POÇÃO DE MEMÓRIA x0");
+    expect(items[0].querySelector("img")).toHaveAttribute("src", "/art/icon/item-sp_potion.png");
+    expect(items[1].querySelector("img")).toHaveAttribute("src", "/art/icon/item-hp_potion.png");
     expect(document.querySelector('[data-item="boost_deploy"]')).toBeNull();
     expect(screen.queryByRole("button", { name: /ACELERADOR DE DEPLOY/ })).not.toBeInTheDocument();
   });

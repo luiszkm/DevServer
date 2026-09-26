@@ -11,7 +11,7 @@ test.describe("desktop", () => {
   test("C6 hotbar row", async ({ page }) => {
     await newDev(page);
     const links = nav(page).getByRole("link");
-    await expect(links).toHaveCount(9);
+    await expect(links).toHaveCount(6);
     const boxes = [];
     for (const link of await links.all()) {
       boxes.push((await link.boundingBox())!);
@@ -35,10 +35,10 @@ test.describe("desktop", () => {
       .getByRole("link")
       .evaluateAll((ls) => ls.map((l) => [l.textContent, getComputedStyle(l.querySelector(".tab-icon")!).borderTopColor]));
     for (const [text, color] of colors) {
-      if (text?.includes("SERVER")) expect(color, text!).toBe(YELLOW);
+      if (text?.includes("BASE")) expect(color, text!).toBe(YELLOW);
       else expect(color, text!).not.toBe(YELLOW);
     }
-    expect(colors).toHaveLength(9);
+    expect(colors).toHaveLength(6);
   });
 
   test("C8 focus outline", async ({ page }) => {
@@ -76,7 +76,7 @@ for (const viewport of [
       await newDev(page);
       await page.getByRole("button", { name: /^MENU/ }).click();
       const links = nav(page).getByRole("link");
-      await expect(links).toHaveCount(9);
+      await expect(links).toHaveCount(6);
       const xs = new Set<number>();
       const ys = new Set<number>();
       for (const link of await links.all()) {
@@ -87,7 +87,7 @@ for (const viewport of [
         ys.add(Math.round(b.y));
       }
       expect(xs.size).toBe(3);
-      expect(ys.size).toBe(3);
+      expect(ys.size).toBe(2);
       const { scrollWidth, innerWidth } = await page.evaluate(() => ({ scrollWidth: document.documentElement.scrollWidth, innerWidth: window.innerWidth }));
       expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
     });
@@ -126,7 +126,7 @@ async function slotLayouts(page: Page): Promise<SlotLayout[]> {
 }
 
 function expectActiveGlow(slots: SlotLayout[], activeLabel: string) {
-  expect(slots).toHaveLength(9);
+  expect(slots).toHaveLength(6);
   for (const s of slots) {
     if (s.text.includes(activeLabel)) expect(s.shadow, s.text).toContain("rgb(255, 224, 138)");
     else expect(s.shadow, s.text).not.toContain("rgb(255, 224, 138)");
@@ -141,7 +141,7 @@ test.describe("arrangement desktop", () => {
     await page.goto("/server");
     await expect(page.getByText("LOJA DE COMPONENTES")).toBeVisible();
     const slots = await slotLayouts(page);
-    expectActiveGlow(slots, "SERVER");
+    expectActiveGlow(slots, "BASE");
     for (const s of slots) {
       expect(s.num.x + s.num.w, s.text).toBeLessThanOrEqual(s.icon.x + 1);
       expect(s.icon.x + s.icon.w, s.text).toBeLessThanOrEqual(s.label.x + 1);
