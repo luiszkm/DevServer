@@ -551,8 +551,9 @@ func TestMe_SkipsSlotsOutsideCatalog(t *testing.T) {
 	}
 	// Bonus reads the same loaded rack: only the gpu counts (POWER 60, +4% dano).
 	f.sql(`UPDATE players SET region = 'vila'`)
-	f.env.Rand.Push(6, 0)
+	// starting in vila draws one of its two enemies (AD-017); the damage draws come after it
 	f.ok(f.env.Do(http.MethodPost, "/api/me/battle", nil, f.c))
+	f.env.Rand.Push(6, 0)
 	rec := f.env.Do(http.MethodPost, "/api/me/battle/commands", map[string]string{"command": "fix"}, f.c)
 	ev := apptest.Decode[struct {
 		Events []struct {

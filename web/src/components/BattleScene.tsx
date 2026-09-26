@@ -49,7 +49,7 @@ export function BattleScene() {
   useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), []);
 
   const addLog = (...lines: string[]) => setLog((l) => [...l, ...lines].slice(-6));
-  const enemyOf = (b: Battle) => catalog.enemies.find((e) => e.region === b.region)!;
+  const enemyOf = (b: Battle) => catalog.enemies.find((e) => e.id === b.enemy)!;
   const regionName = (id: string) => catalog.regions.find((r) => r.id === id)!.name;
 
   const start = useCallback(async () => {
@@ -61,7 +61,7 @@ export function BattleScene() {
       if (!r.ok) return setLoadFailed(true);
       setBattle(r.data.battle);
       setPlayer(r.data.player);
-      const enemy = catalog.enemies.find((e) => e.region === r.data.battle.region)!;
+      const enemy = enemyOf(r.data.battle);
       setLog([`> um ${enemy.name} apareceu em ${regionName(r.data.battle.region)}!`, "> escolha um comando."]);
     } catch {
       setLoadFailed(true);
@@ -267,7 +267,7 @@ export function BattleScene() {
         </div>
         <div className={`battle-actor battle-enemy-actor${beat?.enemy ? ` anim-${beat.enemy}` : ""}${down ? " is-down" : ""}`}>
           <div className="battle-sprite pixel">
-            <GameArt kind="enemy" id={battle.region} scale={ENEMY_SCALE[nativeSize("enemy", battle.region)]} alt={enemy.name} fallback={enemy.glyph} />
+            <GameArt kind="enemy" id={battle.enemy} scale={ENEMY_SCALE[nativeSize("enemy", battle.enemy)]} alt={enemy.name} fallback={enemy.glyph} />
           </div>
           {effects("enemy")}
         </div>

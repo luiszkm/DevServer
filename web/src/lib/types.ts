@@ -60,7 +60,7 @@ export type SkillNode = {
 
 export type SkillTree = { id: string; name: string; nodes: SkillNode[] };
 
-export type Enemy = { region: string; name: string; level: number; hp: number; sp: number; weakness: string; drop: string; glyph: string };
+export type Enemy = { id: string; region: string; name: string; level: number; hp: number; sp: number; weakness: string; drop: string; glyph: string };
 
 export type Command = {
   id: string;
@@ -220,6 +220,8 @@ export type Catalog = {
 };
 
 export type Battle = {
+  /** The catalog id of the enemy this battle drew (assets-apply door 2). */
+  enemy: string;
   region: string;
   enemyHp: number;
   enemyHpMax: number;

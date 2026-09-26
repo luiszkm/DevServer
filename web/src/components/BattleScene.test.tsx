@@ -8,8 +8,9 @@ import { CATALOG, ENEMIES, COMMANDS, REGIONS, json, mockFetch, player } from "@/
 import { GameContext } from "./GameContext";
 import { BattleScene } from "./BattleScene";
 
+// A battle's enemy defaults to its region's original enemy, whose id is the region (assets-apply door 3).
 const battle = (o: Partial<Battle> = {}): Battle => ({
-  region: "vila", enemyHp: 60, enemyHpMax: 60, sp: 50, spMax: 50, weakness: false, status: "active", ...o,
+  enemy: o.region ?? "vila", region: "vila", enemyHp: 60, enemyHpMax: 60, sp: 50, spMax: 50, weakness: false, status: "active", ...o,
 });
 
 // Stubs the OS "reduce motion" setting the scene reads to decide between playback and an instant turn.
@@ -35,10 +36,10 @@ const logText = () => screen.getByRole("log").textContent;
 // Every region's enemy (api/catalog/combat.json), for the art checks that walk all six.
 const ALL_ENEMIES: Catalog["enemies"] = [
   ...ENEMIES,
-  { region: "mercado", name: "PACOTE MALICIOSO", level: 7, hp: 85, sp: 60, weakness: "versão não travada", drop: "corrupt_dep", glyph: "[!pkg]" },
-  { region: "caverna", name: "EXCEÇÃO SELVAGEM", level: 10, hp: 110, sp: 70, weakness: "catch ausente", drop: "wild_trace", glyph: "{!!}" },
-  { region: "torre", name: "RACE CONDITION", level: 15, hp: 160, sp: 85, weakness: "mutex ausente", drop: "race_core", glyph: "//=//" },
-  { region: "nuvem", name: "MEMORY LEAK ANCESTRAL", level: 22, hp: 220, sp: 100, weakness: "garbage collector", drop: "memory_crystal", glyph: "^^^^" },
+  { id: "mercado", region: "mercado", name: "PACOTE MALICIOSO", level: 7, hp: 85, sp: 60, weakness: "versão não travada", drop: "corrupt_dep", glyph: "[!pkg]" },
+  { id: "caverna", region: "caverna", name: "EXCEÇÃO SELVAGEM", level: 10, hp: 110, sp: 70, weakness: "catch ausente", drop: "wild_trace", glyph: "{!!}" },
+  { id: "torre", region: "torre", name: "RACE CONDITION", level: 15, hp: 160, sp: 85, weakness: "mutex ausente", drop: "race_core", glyph: "//=//" },
+  { id: "nuvem", region: "nuvem", name: "MEMORY LEAK ANCESTRAL", level: 22, hp: 220, sp: 100, weakness: "garbage collector", drop: "memory_crystal", glyph: "^^^^" },
 ];
 const EVERY_ENEMY: Catalog = { ...CATALOG, enemies: ALL_ENEMIES };
 const sprite = () => document.querySelector(".battle-sprite") as HTMLElement;
@@ -528,3 +529,21 @@ describe("BattleScene loading", () => {
     expectLoadingFx(screen.getByText("CARREGANDO..."));
   });
 });
+
+describe("BattleScene enemy by id", () => {
+  // assets-apply C8: the battle's enemy comes from battle.enemy, not from the region
+  const SLIME: Catalog["enemies"][number] = { id: "slime", region: "vila", name: "SLIME DE CACHE", level: 2, hp: 45, sp: 40, weakness: "cache invalidado", drop: "null_shard", glyph: "(o.o)" };
+  it("enemy by id: slime in vila", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ enemy: "slime", region: "vila", enemyHp: 45, enemyHpMax: 45 })) });
+    renderScene({ catalog: { ...CATALOG, enemies: [...CATALOG.enemies, SLIME] } });
+    const enemy = await screen.findByLabelText("inimigo");
+    expect(enemy).toHaveTextContent("SLIME DE CACHE");
+    expect(enemy).toHaveTextContent("fraqueza: cache invalidado");
+    expect(enemy).not.toHaveTextContent("NULL SLIME");
+    const img = sprite().querySelector("img")!;
+    expect(img.getAttribute("src")).toBe("/art/sprite/enemy-slime.png");
+    expect(img.getAttribute("alt")).toBe("SLIME DE CACHE");
+    expect(img.getAttribute("width")).toBe("128");
+  });
+});
+

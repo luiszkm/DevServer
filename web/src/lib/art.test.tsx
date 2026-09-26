@@ -58,7 +58,7 @@ function expectAssets(assets: Asset[]) {
   }
 }
 
-type Combat = { enemies: { region: string }[]; items: { id: string }[] };
+type Combat = { enemies: { id: string; region: string }[]; items: { id: string }[] };
 type Regions = { id: string }[];
 type Shop = { gear: { id: string }[] };
 type Skills = { trees: { nodes: { id: string }[] }[] };
@@ -82,7 +82,8 @@ describe("catalog art on disk", () => {
   // C4
   it("enemy sprites per combat.json enemies", () => {
     expectAssets(
-      combat.enemies.map((e) => ({ category: "sprite", name: `enemy-${e.region}`, size: ENEMY_SIZE[e.region] ?? [32, 32] })),
+      // assets-apply C9: enemy art is addressed by the enemy id; the three mobs are 32x32
+      combat.enemies.map((e) => ({ category: "sprite", name: `enemy-${e.id}`, size: ENEMY_SIZE[e.id] ?? [32, 32] })),
     );
   });
 

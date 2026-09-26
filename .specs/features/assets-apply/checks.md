@@ -11,31 +11,31 @@ Go proofs run against the real Postgres (`make db-up`), from `api/`. Web proofs 
 
 ### S1 - mobs como inimigos do catálogo · api battle + catalog, web BattleScene · ~60 KB · ~15k
 
-**C1** - `GET /api/catalog` `enemies` has 9 entries with unique `id`s, in this order: `vila`, `slime`, `floresta`, `slime_verde`, `mercado`, `caverna`, `monstro`, `torre`, `nuvem`. The six old ones keep `region` = `id` and their current stats. `slime` = `vila|SLIME DE CACHE|2|45|40|cache invalidado|null_shard`, `slime_verde` = `floresta|SLIME DE LOG|4|55|45|log rotacionado|log_essence`, `monstro` = `caverna|BUG DE PRODUÇÃO|9|100|65|hotfix|wild_trace` (APL-01, AC 1; door 1, door 3)
+**C1** - `GET /api/catalog` `enemies` has 9 entries with unique `id`s, in this order: `vila`, `slime`, `floresta`, `slime_verde`, `mercado`, `caverna`, `monstro`, `torre`, `nuvem`. The six old ones keep `region` = `id` and their current stats. `slime` = `vila|SLIME DE CACHE|2|45|40|cache invalidado|null_shard`, `slime_verde` = `floresta|SLIME DE LOG|4|55|45|log rotacionado|log_essence`, `monstro` = `caverna|BUG DE PRODUÇÃO|9|100|65|hotfix|wild_trace` (APL-01, AC 1; door 1, door 3) ✅
 Proof: `cd api && go test ./internal/catalog -run 'TestCatalog_ServesCombat$'`
 
-**C2** - WHEN a dev in `vila` starts an encounter with `Rand` scripted `0`, THEN `battle.enemy` = `vila` and `enemyHp` = `60`. With `1`, `battle.enemy` = `slime` and `enemyHp` = `45`. The same table holds for `floresta` (`0` → `floresta` 70, `1` → `slime_verde` 55) and `caverna` (`0` → `caverna`, `1` → `monstro` 100) (APL-01, AC 2; door 1)
+**C2** - WHEN a dev in `vila` starts an encounter with `Rand` scripted `0`, THEN `battle.enemy` = `vila` and `enemyHp` = `60`. With `1`, `battle.enemy` = `slime` and `enemyHp` = `45`. The same table holds for `floresta` (`0` → `floresta` 70, `1` → `slime_verde` 55) and `caverna` (`0` → `caverna`, `1` → `monstro` 100) (APL-01, AC 2; door 1) ✅
 Proof: `cd api && go test ./internal/battle -run 'TestStart_PicksEnemyByRand'`
 
-**C3** - WHEN a dev in `mercado` (one enemy) starts with `Rand` scripted `1`, THEN the start succeeds with `battle.enemy` = `mercado`. A draw of `IntN(1)` would receive `1` and fail the test (APL-01, AC 3)
+**C3** - WHEN a dev in `mercado` (one enemy) starts with `Rand` scripted `1`, THEN the start succeeds with `battle.enemy` = `mercado`. A draw of `IntN(1)` would receive `1` and fail the test (APL-01, AC 3) ✅
 Proof: `cd api && go test ./internal/battle -run 'TestStart_SingleEnemyNoDraw'`
 
-**C4** - WHILE an `active` battle against `slime` exists in `vila`, WHEN the dev starts again with `Rand` scripted `0`, THEN the answer is the same battle with `battle.enemy` = `slime` and the same `enemyHp` (APL-01, AC 4)
+**C4** - WHILE an `active` battle against `slime` exists in `vila`, WHEN the dev starts again with `Rand` scripted `0`, THEN the answer is the same battle with `battle.enemy` = `slime` and the same `enemyHp` (APL-01, AC 4) ✅
 Proof: `cd api && go test ./internal/battle -run 'TestStart_ResumesSameEnemy'`
 
-**C5** - Given a catalog where the region's second enemy drops a different item than the first, WHEN that enemy (picked with `Rand` `1`) is defeated with the drop draw below `dropChance`, THEN the `drop` event and the inventory carry the second enemy's `drop` (APL-01, AC 5; door 2)
+**C5** - Given a catalog where the region's second enemy drops a different item than the first, WHEN that enemy (picked with `Rand` `1`) is defeated with the drop draw below `dropChance`, THEN the `drop` event and the inventory carry the second enemy's `drop` (APL-01, AC 5; door 2) ✅
 Proof: `cd api && go test ./internal/battle -run 'TestVictory_DropsFromStoredEnemy'`
 
-**C6** - A `battles` row created before migration `00010` has `enemy` = its `region` after it. Inserting a row with `enemy` NULL is rejected by the NOT NULL constraint (APL-01, AC 6; door 2)
+**C6** - A `battles` row created before migration `00010` has `enemy` = its `region` after it. Inserting a row with `enemy` NULL is rejected by the NOT NULL constraint (APL-01, AC 6; door 2) ✅
 Proof: `cd api && go test ./internal/battle -run 'TestMigration_BattleEnemyBackfill'`
 
-**C7** - Every battle response carries `battle.enemy`: GET current, POST start, POST commands and POST items (table-driven over the 4 routes) (APL-01, AC 2, 5; door 2)
+**C7** - Every battle response carries `battle.enemy`: GET current, POST start, POST commands and POST items (table-driven over the 4 routes) (APL-01, AC 2, 5; door 2) ✅
 Proof: `cd api && go test ./internal/battle -run 'TestRoutes_BattleCarriesEnemy'`
 
-**C8** - Bug Fight with `battle.enemy` = `slime` shows the name `SLIME DE CACHE`, the text `fraqueza: cache invalidado` and `img` `src="/art/sprite/enemy-slime.png"` `alt="SLIME DE CACHE"` `width=128`, even though the region is `vila` (APL-02, AC 7)
+**C8** - Bug Fight with `battle.enemy` = `slime` shows the name `SLIME DE CACHE`, the text `fraqueza: cache invalidado` and `img` `src="/art/sprite/enemy-slime.png"` `alt="SLIME DE CACHE"` `width=128`, even though the region is `vila` (APL-02, AC 7) ✅
 Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "enemy by id"`
 
-**C9** - For each enemy in `combat.json`, `web/art/sprite/enemy-<id>.json` and a PNG exist. The three new ones are 32x32; the size is otherwise as today (APL-02, AC 7)
+**C9** - For each enemy in `combat.json`, `web/art/sprite/enemy-<id>.json` and a PNG exist. The three new ones are 32x32; the size is otherwise as today (APL-02, AC 7) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "enemy"`
 
 ### S2 - todo ícone e peça de UI em uso · ~12 screen files · ~20k
@@ -110,13 +110,13 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "orphan detector"`
 
 ### Regression across the feature
 
-**C25** - The existing Go suites still pass with the new model: battle start per region, drops, and the catalog, under the updated fixtures (APL-01, AC 1-5)
+**C25** - The existing Go suites still pass with the new model: battle start per region, drops, and the catalog, under the updated fixtures (APL-01, AC 1-5) ✅
 Proof: `cd api && go test ./internal/battle ./internal/catalog`
 
 **C26** - The Bug Fight e2e fights the enemy the server picked, whose name comes from `battle.enemy`. `e2e/battle.spec.ts` passes (APL-02, AC 7)
 Proof: `cd web && npx playwright test e2e/battle.spec.ts`
 
-**C27** - `.specs/STATE.md` has `AD-017` (several enemies per region, drawn at start through `Deps.Rand`, battle stores `enemy`) with status `active` (APL-01; door 1)
+**C27** - `.specs/STATE.md` has `AD-017` (several enemies per region, drawn at start through `Deps.Rand`, battle stores `enemy`) with status `active` (APL-01; door 1) ✅
 Proof: `grep -q '^| AD-017 |.*active' .specs/STATE.md`
 
 ## Coverage

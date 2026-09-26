@@ -45,8 +45,8 @@ export const SKILL_TREES: Catalog["skillTrees"] = [
 ];
 
 export const ENEMIES: Catalog["enemies"] = [
-  { region: "vila", name: "NULL SLIME", level: 3, hp: 60, sp: 50, weakness: "null-check", drop: "null_shard", glyph: "(0x0)" },
-  { region: "floresta", name: "LOG WISP", level: 5, hp: 70, sp: 55, weakness: "referência circular", drop: "log_essence", glyph: "(~.~)" },
+  { id: "vila", region: "vila", name: "NULL SLIME", level: 3, hp: 60, sp: 50, weakness: "null-check", drop: "null_shard", glyph: "(0x0)" },
+  { id: "floresta", region: "floresta", name: "LOG WISP", level: 5, hp: 70, sp: 55, weakness: "referência circular", drop: "log_essence", glyph: "(~.~)" },
 ];
 
 export const COMMANDS: Catalog["commands"] = [

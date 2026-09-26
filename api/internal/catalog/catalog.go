@@ -58,6 +58,7 @@ type SkillTree struct {
 }
 
 type Enemy struct {
+	ID       string `json:"id"`
 	Region   string `json:"region"`
 	Name     string `json:"name"`
 	Level    int    `json:"level"`
@@ -500,13 +501,25 @@ func (c *Catalog) SkillPosition(id string) int {
 	return pos
 }
 
-func (c *Catalog) Enemy(region string) (Enemy, bool) {
+// Enemy finds an enemy by its catalog id (assets-apply door 1).
+func (c *Catalog) Enemy(id string) (Enemy, bool) {
 	for _, e := range c.Enemies {
-		if e.Region == region {
+		if e.ID == id {
 			return e, true
 		}
 	}
 	return Enemy{}, false
+}
+
+// EnemiesIn lists a region's enemies in catalog order; the battle start draws one of them.
+func (c *Catalog) EnemiesIn(region string) []Enemy {
+	var out []Enemy
+	for _, e := range c.Enemies {
+		if e.Region == region {
+			out = append(out, e)
+		}
+	}
+	return out
 }
 
 func (c *Catalog) Command(id string) (Command, bool) {

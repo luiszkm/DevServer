@@ -181,7 +181,7 @@ func TestCatalog_ServesCombat(t *testing.T) {
 	env := apptest.New(t)
 	var b struct {
 		Enemies []struct {
-			Region, Name, Weakness, Drop, Glyph string
+			ID, Region, Name, Weakness, Drop, Glyph string
 			Level, HP, SP                       int
 		} `json:"enemies"`
 		Commands []struct {
@@ -214,19 +214,28 @@ func TestCatalog_ServesCombat(t *testing.T) {
 	if err := json.Unmarshal(env.Do(http.MethodGet, "/api/catalog", nil).Body.Bytes(), &b); err != nil {
 		t.Fatal(err)
 	}
+	// assets-apply C1: every enemy has a unique id; the six original ones keep id = region (door 3)
 	enemies := []string{
-		"vila|NULL SLIME|3|60|50|null-check|null_shard",
-		"floresta|LOG WISP|5|70|55|referência circular|log_essence",
-		"mercado|PACOTE MALICIOSO|7|85|60|versão não travada|corrupt_dep",
-		"caverna|EXCEÇÃO SELVAGEM|10|110|70|catch ausente|wild_trace",
-		"torre|RACE CONDITION|15|160|85|mutex ausente|race_core",
-		"nuvem|MEMORY LEAK ANCESTRAL|22|220|100|garbage collector|memory_crystal",
+		"vila|vila|NULL SLIME|3|60|50|null-check|null_shard",
+		"slime|vila|SLIME DE CACHE|2|45|40|cache invalidado|null_shard",
+		"floresta|floresta|LOG WISP|5|70|55|referência circular|log_essence",
+		"slime_verde|floresta|SLIME DE LOG|4|55|45|log rotacionado|log_essence",
+		"mercado|mercado|PACOTE MALICIOSO|7|85|60|versão não travada|corrupt_dep",
+		"caverna|caverna|EXCEÇÃO SELVAGEM|10|110|70|catch ausente|wild_trace",
+		"monstro|caverna|BUG DE PRODUÇÃO|9|100|65|hotfix|wild_trace",
+		"torre|torre|RACE CONDITION|15|160|85|mutex ausente|race_core",
+		"nuvem|nuvem|MEMORY LEAK ANCESTRAL|22|220|100|garbage collector|memory_crystal",
 	}
-	if len(b.Enemies) != 6 {
+	if len(b.Enemies) != 9 {
 		t.Fatalf("enemies = %d", len(b.Enemies))
 	}
+	ids := map[string]bool{}
 	for i, e := range b.Enemies {
-		if got := fmt.Sprintf("%s|%s|%d|%d|%d|%s|%s", e.Region, e.Name, e.Level, e.HP, e.SP, e.Weakness, e.Drop); got != enemies[i] || e.Glyph == "" {
+		if ids[e.ID] {
+			t.Errorf("enemy id %q repeated", e.ID)
+		}
+		ids[e.ID] = true
+		if got := fmt.Sprintf("%s|%s|%s|%d|%d|%d|%s|%s", e.ID, e.Region, e.Name, e.Level, e.HP, e.SP, e.Weakness, e.Drop); got != enemies[i] || e.Glyph == "" {
 			t.Errorf("enemy %d = %s (glyph %q), want %s", i, got, e.Glyph, enemies[i])
 		}
 	}
