@@ -23,10 +23,10 @@
 
 ## Handoff
 
-**Feature**: forge
-**Where**: C1–C33 fechados; Verifier round 2 PASS (round 1 FAIL: mutante sobrevivente na prioridade `JÁ POSSUI` e ramo `unknown_gear` sem prova)
+**Feature**: assets
+**Where**: C1–C48 fechados; Verifier round 4 PASS (rounds 1–3 FAIL: mutantes em HeroAvatar stale load, ordem ícone/preço, regras de strip de tile e guarda de forma; round 4 autorizado pelo usuário além do limite de 3)
 **In progress**: nenhum
-**Next step**: push e PR de `feat/office`, `feat/server-room`, `feat/game-art`, `feat/responsive`, `feat/game-menu` e `feat/forge` quando o usuário pedir
+**Next step**: push e PR de `feat/assets` (e das branches anteriores) quando o usuário pedir
 **Blockers**: none
 **Uncommitted**: none
-**Branch**: feat/forge (sobre feat/game-menu)
+**Branch**: feat/assets (sobre feat/forge)

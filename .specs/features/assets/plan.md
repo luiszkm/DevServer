@@ -143,14 +143,14 @@ Quando isto for entregue:
 
 | ID | Slice | Criteria | Status |
 | --- | --- | --- | --- |
-| AST-01 | S1 | 1, 2, 3, 4, 5, 6 | Pending |
-| AST-02 | S2 | 7, 8, 9, 10 | Pending |
-| AST-03 | S2 | 11, 12, 13, 14, 15, 16 | Pending |
-| AST-04 | S3 | 17, 18, 19, 20 | Pending |
-| AST-05 | S3 | 21, 22, 23, 24 | Pending |
-| AST-06 | S4 | 25, 26 | Pending |
-| AST-07 | S5 | 27, 28, 29, 30, 31, 32 | Pending |
-| AST-08 | S5 | 33, 34 | Pending |
+| AST-01 | S1 | 1, 2, 3, 4, 5, 6 | Verified |
+| AST-02 | S2 | 7, 8, 9, 10 | Verified |
+| AST-03 | S2 | 11, 12, 13, 14, 15, 16 | Verified |
+| AST-04 | S3 | 17, 18, 19, 20 | Verified |
+| AST-05 | S3 | 21, 22, 23, 24 | Verified |
+| AST-06 | S4 | 25, 26 | Verified |
+| AST-07 | S5 | 27, 28, 29, 30, 31, 32 | Verified |
+| AST-08 | S5 | 33, 34 | Verified |
 
 ## Observable
 

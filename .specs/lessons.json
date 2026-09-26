@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 37,
+  "next_id": 41,
   "lessons": [
     {
       "id": "L-001",
@@ -652,6 +652,78 @@
       ],
       "created": "2026-09-24T22:19:02Z",
       "last_seen": "2026-09-24T22:19:02Z"
+    },
+    {
+      "id": "L-037",
+      "key": "surviving_mutant::a stale async load test must make the old load resolve after the switch delay it or a cached load hides a missing cancel guard",
+      "text": "A stale-async-load test must make the old load resolve after the switch (delay it), or a cached load hides a missing cancel guard.",
+      "signal": "surviving_mutant",
+      "scope": "web/components",
+      "status": "candidate",
+      "features": [
+        "assets"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "web/src/components/HeroAvatar.test.tsx:73 (web/components)"
+      ],
+      "created": "2026-09-26T02:33:59Z",
+      "last_seen": "2026-09-26T02:33:59Z"
+    },
+    {
+      "id": "L-038",
+      "key": "surviving_mutant::to prove icon before the text assert firstchild firstelementchild not only firstelementchild and textcontent",
+      "text": "To prove 'icon before the text', assert firstChild === firstElementChild, not only firstElementChild and textContent.",
+      "signal": "surviving_mutant",
+      "scope": "web/components",
+      "status": "candidate",
+      "features": [
+        "assets"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "web/src/components/OfficeScene.test.tsx:356 (web/components)"
+      ],
+      "created": "2026-09-26T02:33:59Z",
+      "last_seen": "2026-09-26T02:33:59Z"
+    },
+    {
+      "id": "L-039",
+      "key": "ac_gap::when generalizing a checker to new categories enumerate every guard of the function gate shape each rule as coverage members not only the rules the check names",
+      "text": "When generalizing a checker to new categories, enumerate every guard of the function (gate, shape, each rule) as coverage members, not only the rules the check names.",
+      "signal": "ac_gap",
+      "scope": "pixel-assets",
+      "status": "candidate",
+      "features": [
+        "assets"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        ".claude/skills/pixel-assets/scripts/render.py:382 (pixel-assets)"
+      ],
+      "created": "2026-09-26T02:33:59Z",
+      "last_seen": "2026-09-26T02:33:59Z"
+    },
+    {
+      "id": "L-040",
+      "key": "gate_fail::python3 m unittest cannot take a path under claude and unittest k is a substring repeat k never a or b run the test file directly",
+      "text": "python3 -m unittest cannot take a path under .claude, and unittest -k is a substring (repeat -k, never 'a or b'); run the test file directly.",
+      "signal": "gate_fail",
+      "scope": "pixel-assets",
+      "status": "candidate",
+      "features": [
+        "assets"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        ".claude/skills/pixel-assets/scripts/test_render.py (pixel-assets)"
+      ],
+      "created": "2026-09-26T02:33:59Z",
+      "last_seen": "2026-09-26T02:33:59Z"
     }
   ]
 }
