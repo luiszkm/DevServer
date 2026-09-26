@@ -32,9 +32,9 @@
 ## Handoff
 
 **Feature**: notebook
-**Where**: plan and checks approved (`validate_plan.py` and `validate_checks.py` green); not built
+**Where**: C1–C44 implemented; api `go test ./...`, web `vitest run`, `make ci-build` and `make art-check` green. Playwright `e2e/notebook.spec.ts` was not run: another `next dev` already holds the project lock. The flow was exercised in the browser on `localhost:3000/notebook` (enhance to RARO Nv 4, CPU TURBO Nv 1 then locked until Nv 4).
 **In progress**: none
-**Next step**: build the notebook from `.specs/features/notebook/checks.md`
+**Next step**: dispatch a fresh Verifier over the notebook diff with every check
 **Blockers**: none
-**Uncommitted**: notebook plan, checks and keyart
+**Uncommitted**: notebook
 **Branch**: main

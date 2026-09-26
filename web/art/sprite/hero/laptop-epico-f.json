@@ -1,0 +1,41 @@
+{
+ "name": "laptop-epico-f",
+ "category": "sprite",
+ "size": [
+  48,
+  64
+ ],
+ "_design": "Notebook epico: the gamer laptop silhouette, screen recolored for the rarity.",
+ "legend": {
+  "o": "ink",
+  "m": "ink.1",
+  "n": "ink.2",
+  "M": "slime.1",
+  "r": "slime.2",
+  "R": "slime.3",
+  "g": "slime.2",
+  "b": "slime.3",
+  "p": "net.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "......oooooooooooo",
+    "......oMMMMMMMMMMo",
+    "......oMnnnnnnnnMo",
+    "......oMnnRRnnnnMo",
+    "......oMnnRRnnnnMo",
+    "......oMnnnnnnnnMo",
+    "......oMnnnnnnnnMo",
+    "oooooooooooooooooo",
+    "oggbbpprrggbbpprro",
+    "ommmmmmmmmmmmmmmmo",
+    "oooooooooooooooooo"
+   ],
+   "at": [
+    28,
+    31
+   ]
+  }
+ ]
+}

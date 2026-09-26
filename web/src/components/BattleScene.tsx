@@ -206,7 +206,7 @@ export function BattleScene() {
           <div className="battle-commands" aria-label="loadout">
             {player.loadout.map((id, i) => {
               const c = id ? commandForSkill(catalog, id) : undefined;
-              if (!c) {
+              if (!id || !c) {
                 return (
                   <div key={i} className="battle-command battle-command-empty" data-slot={i}>
                     <span className="pixel">VAZIO</span>

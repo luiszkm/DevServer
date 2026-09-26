@@ -1,0 +1,219 @@
+{
+ "name": "laptop-epico-f-run",
+ "category": "anim",
+ "size": [
+  192,
+  64
+ ],
+ "_design": "Notebook epico-f in the run pose, traced from the gamer rig.",
+ "layers": [
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    -2,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    24,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    26,
+    45
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    24,
+    48,
+    22
+   ],
+   "at": [
+    0,
+    25
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    0,
+    48,
+    24
+   ],
+   "at": [
+    0,
+    1
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    48,
+    44
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    24,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    72,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    24,
+    48,
+    22
+   ],
+   "at": [
+    48,
+    24
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    0,
+    48,
+    24
+   ],
+   "at": [
+    48,
+    0
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    98,
+    45
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    24,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    118,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    24,
+    48,
+    22
+   ],
+   "at": [
+    96,
+    25
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    0,
+    48,
+    24
+   ],
+   "at": [
+    96,
+    1
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    144,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    24,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    168,
+    44
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    24,
+    48,
+    22
+   ],
+   "at": [
+    144,
+    24
+   ]
+  },
+  {
+   "use": "../laptop-epico-f.json",
+   "clip": [
+    0,
+    0,
+    48,
+    24
+   ],
+   "at": [
+    144,
+    0
+   ]
+  }
+ ]
+}

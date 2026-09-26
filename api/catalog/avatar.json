@@ -9,7 +9,7 @@
     { "id": "top", "name": "ROUPA", "kind": "style", "gearSlot": "torso" },
     { "id": "topColor", "name": "COR DA ROUPA", "kind": "color" },
     { "id": "bottomColor", "name": "CALÇA", "kind": "color" },
-    { "id": "laptop", "name": "NOTEBOOK", "kind": "style", "gearSlot": "notebook" }
+    { "id": "laptop", "name": "NOTEBOOK", "kind": "style" }
   ],
   "bodies": [
     { "id": "masculino", "name": "MASCULINO" },
@@ -84,7 +84,9 @@
     { "id": "laptop_basico", "part": "laptop", "name": "NOTEBOOK", "layer": "laptop-basico", "fixed": true },
     { "id": "laptop_preto", "part": "laptop", "name": "NOTEBOOK PRETO", "layer": "laptop-preto", "fixed": true },
     { "id": "laptop_gamer", "part": "laptop", "name": "NOTEBOOK GAMER RGB", "layer": "laptop-gamer", "fixed": true, "price": { "currency": "gems", "amount": 40 } },
-    { "id": "laptop_macbook", "part": "laptop", "name": "MACBOOK PRO", "layer": "laptop-macbook", "fixed": true, "gearOnly": true }
+    { "id": "laptop_raro", "part": "laptop", "name": "NOTEBOOK RARO", "layer": "laptop-raro", "fixed": true, "gearOnly": true },
+    { "id": "laptop_epico", "part": "laptop", "name": "NOTEBOOK ÉPICO", "layer": "laptop-epico", "fixed": true, "gearOnly": true },
+    { "id": "laptop_lendario", "part": "laptop", "name": "NOTEBOOK LENDÁRIO", "layer": "laptop-lendario", "fixed": true, "gearOnly": true }
   ],
   "defaults": {
     "tone": "tone_padrao",

@@ -996,7 +996,8 @@ func TestStart_SPMaxIncludesGearAndSkin(t *testing.T) {
 func TestCommand_DamageBonusFromGearAndSkin(t *testing.T) {
 	f := newFixture(t)
 	f.sql(`UPDATE players SET gems = 1000, coins = 1000, hp = 1000, hp_max = 1000`)
-	for _, path := range []string{"/api/me/shop/gear/macbook", "/api/me/shop/gear/fone", "/api/me/shop/skins/neon"} {
+	// Macbook and fone share acessorio now, so the second slot is the gloves.
+	for _, path := range []string{"/api/me/shop/gear/macbook", "/api/me/shop/gear/luvas_dev", "/api/me/shop/skins/neon"} {
 		if rec := f.do(http.MethodPost, path, nil); rec.Code != 200 {
 			t.Fatalf("%s: %d %s", path, rec.Code, rec.Body.String())
 		}
@@ -1005,10 +1006,10 @@ func TestCommand_DamageBonusFromGearAndSkin(t *testing.T) {
 	f.sql(`UPDATE battles SET enemy_hp = 500, enemy_hp_max = 500, sp = 999, sp_max = 999`)
 	f.env.Rand.Push(6, 0)
 	if e := f.turn(f.cmd("fix")).Events[0]; e.Amount != 24 {
-		t.Fatalf("fix with macbook + fone + neon (19%%) = %d, want 24", e.Amount)
+		t.Fatalf("fix with macbook + gloves + neon (20%%) = %d, want 24", e.Amount)
 	}
-	if rec := f.do(http.MethodPost, "/api/me/gear/fone/unequip", nil); rec.Code != 200 {
-		t.Fatalf("unequip fone: %d %s", rec.Code, rec.Body.String())
+	if rec := f.do(http.MethodPost, "/api/me/gear/luvas_dev/unequip", nil); rec.Code != 200 {
+		t.Fatalf("unequip gloves: %d %s", rec.Code, rec.Body.String())
 	}
 	f.env.Rand.Push(6, 0)
 	if e := f.turn(f.cmd("fix")).Events[0]; e.Amount != 23 {
@@ -1330,5 +1331,20 @@ func TestMigration_RefundsClassSkills(t *testing.T) {
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("after migration = %+v, want %+v", got, want)
+	}
+}
+
+func TestStart_NotebookBonus(t *testing.T) {
+	f := newFixture(t)
+	f.sql(`INSERT INTO player_notebook_upgrades (player_id, upgrade_id, level)
+		SELECT id, 'ssd_nvme', 1 FROM players UNION ALL SELECT id, 'cpu_turbo', 3 FROM players`)
+	f.env.Rand.Push(1)
+	b := f.start().Battle
+	if b.Enemy != "slime" || b.SPMax != 45 {
+		t.Fatalf("battle enemy %s spMax %d, want slime and 45", b.Enemy, b.SPMax)
+	}
+	f.env.Rand.Push(6, 0)
+	if e := f.turn(f.cmd("fix")).Events[0]; e.Amount != 21 {
+		t.Fatalf("fix = %d, want 21 (base 20 × 1.06)", e.Amount)
 	}
 }

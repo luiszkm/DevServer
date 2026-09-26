@@ -1,0 +1,41 @@
+{
+ "name": "laptop-lendario-f",
+ "category": "sprite",
+ "size": [
+  48,
+  64
+ ],
+ "_design": "Notebook lendario: the gamer laptop silhouette, screen recolored for the rarity.",
+ "legend": {
+  "o": "ink",
+  "m": "ink.1",
+  "n": "ink.2",
+  "M": "roof.2",
+  "r": "roof.3",
+  "R": "red.3",
+  "g": "roof.3",
+  "b": "red.2",
+  "p": "roof.1"
+ },
+ "layers": [
+  {
+   "grid": [
+    "......oooooooooooo",
+    "......oMMMMMMMMMMo",
+    "......oMnnnnnnnnMo",
+    "......oMnnRRnnnnMo",
+    "......oMnnRRnnnnMo",
+    "......oMnnnnnnnnMo",
+    "......oMnnnnnnnnMo",
+    "oooooooooooooooooo",
+    "oggbbpprrggbbpprro",
+    "ommmmmmmmmmmmmmmmo",
+    "oooooooooooooooooo"
+   ],
+   "at": [
+    28,
+    31
+   ]
+  }
+ ]
+}

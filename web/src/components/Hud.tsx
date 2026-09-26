@@ -1,5 +1,8 @@
+import { useContext } from "react";
 import type { Player } from "@/lib/types";
 import { GameArt } from "./GameArt";
+import { GameContext } from "./GameContext";
+import { HeroAvatar } from "./HeroAvatar";
 import { LoadingFx } from "./LoadingFx";
 
 type Props = { player?: Player; onLogout?: () => void };
@@ -14,6 +17,7 @@ function Bar({ value, max, color }: { value: number; max: number; color: string 
 }
 
 export function Hud({ player, onLogout }: Props) {
+  const game = useContext(GameContext);
   if (!player) {
     return (
       <header className="hud" aria-label="HUD">
@@ -60,7 +64,10 @@ export function Hud({ player, onLogout }: Props) {
         </div>
       </div>
       <div className="hud-card">
-        <span className="pixel hud-label">{player.devName}</span>
+        <span className="pixel hud-label">
+          {game?.catalog && <HeroAvatar look={player} catalog={game.catalog} scale={1} />}
+          {player.devName}
+        </span>
         {onLogout && (
           <button type="button" className="btn btn-dark" onClick={onLogout}>
             <GameArt kind="btn" id="exit" scale={1} alt="" fallback="" className="inline-icon" />

@@ -570,8 +570,17 @@ button { font-family: inherit; }
 .server-terminal { background: var(--edge); padding: 12px 14px; font-size: 20px; color: var(--green); min-height: 64px; }
 .server-notice { align-self: flex-start; font-size: 10px; color: var(--edge); background: var(--yellow); padding: 8px 10px; }
 
+.notebook { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+.notebook-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.notebook-panel, .notebook-card { display: flex; flex-direction: column; gap: 8px; padding: 12px; }
+.notebook-upgrades { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.notebook-stats { margin: 0; padding: 0; list-style: none; }
+.notebook-msg { margin: 0; color: var(--yellow); }
+.notebook-link { display: flex; align-items: center; gap: 8px; }
+
 /* Below 1200px every scene is one column and the tabs collapse behind MENU (AD-015). Grouped per scene, in the order above. */
 @media (max-width: 1199px) {
+  .notebook-layout { grid-template-columns: 1fr; }
   .shop-npc { position: static; justify-content: center; }
   .shop-bubble { white-space: normal; }
   .map-hero { display: none; }

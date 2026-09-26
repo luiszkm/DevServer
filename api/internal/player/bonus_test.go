@@ -169,3 +169,34 @@ func TestBonus_Rack(t *testing.T) {
 		}
 	}
 }
+
+func TestBonus_Notebook(t *testing.T) {
+	cat := catalog.Default()
+	nb := func(level int, ups map[string]int) player.Player {
+		return player.Player{Notebook: player.Notebook{Level: level, Upgrades: ups}, Skin: "default"}
+	}
+	check := func(name string, p player.Player, typ string, want int) {
+		t.Helper()
+		if got := player.Bonus(cat, &p, typ); got != want {
+			t.Errorf("%s: Bonus(%s) = %d, want %d", name, typ, got, want)
+		}
+	}
+	check("level 1", nb(1, nil), "dmg", 0)
+	check("level 1 hp", nb(1, nil), "hp", 0)
+	check("level 4 dmg", nb(4, nil), "dmg", 3)
+	check("level 4 hp", nb(4, nil), "hp", 15)
+	check("level 10 dmg", nb(10, nil), "dmg", 10)
+	check("level 10 hp", nb(10, nil), "hp", 50)
+	full := map[string]int{"cpu_turbo": 2, "bateria": 1, "ssd_nvme": 3, "rede_5g": 1}
+	p := nb(4, full)
+	check("level 4 upgrades dmg", p, "dmg", 7)
+	check("level 4 upgrades hp", p, "hp", 25)
+	check("level 4 upgrades sp", p, "sp", 15)
+	check("level 4 upgrades spregen", p, "spregen", 1)
+	check("bateria above 3", nb(1, map[string]int{"bateria": 5}), "hp", 30)
+	check("unknown upgrade", nb(1, map[string]int{"sumiu": 2}), "dmg", 0)
+	mac := "macbook"
+	equipped := nb(4, nil)
+	equipped.Equipment = map[string]*string{"acessorio": &mac}
+	check("notebook plus macbook", equipped, "dmg", 11)
+}

@@ -221,7 +221,7 @@ describe("Onboarding look", () => {
       ["top", "top_moletom_gear"],
       ["glasses", "glasses_cyber"],
       ["laptop", "laptop_gamer"],
-      ["laptop", "laptop_macbook"],
+      ["laptop", "laptop_raro"],
     ];
     for (const [part, option] of hidden) {
       await userEvent.click(document.querySelector(`[data-part="${part}"]`)!);

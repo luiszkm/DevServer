@@ -114,6 +114,13 @@ describe("HeroAvatar anim", () => {
     expect(loaded.every((src) => !src.includes("/anim/"))).toBe(true);
   });
 
+  it("rarity laptop in every animation", async () => {
+    const rare = player({ notebook: { level: 10, rarity: "lendario", upgrades: { cpu_turbo: 0, bateria: 0, ssd_nvme: 0, rede_5g: 0 } } });
+    render(<HeroAvatar look={rare} catalog={CATALOG} anim="walk" />);
+    await flush();
+    expect(loaded).toContain("/art/sprite/hero/anim/laptop-lendario-walk.png");
+  });
+
   it("static without anim: no frame and no timer", async () => {
     render(<HeroAvatar look={look} catalog={CATALOG} />);
     expect(canvas().dataset.frame).toBeUndefined();

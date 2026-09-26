@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { type ReactNode, useState } from "react";
 import { type ApiResult, post, put } from "@/lib/api";
 import { availableFor, resolveLook } from "@/lib/avatar";
+import { rarityOf } from "@/lib/notebook";
 import { CONNECTION_FAILED, bonusLong, canPay, insufficient, isEquipped, priceLong, priceShort, quantity, totalBonus } from "@/lib/gear";
 import type { AvatarOption, Player } from "@/lib/types";
 import { GameArt, PriceArt, RarityArt } from "./GameArt";
@@ -110,6 +112,12 @@ export function AvatarScene() {
           <span className="term">{`dano +${totalBonus(catalog, player, "dmg")}%`}</span>
           <span className="term">{`SP +${totalBonus(catalog, player, "sp")}`}</span>
         </div>
+        <Link href="/notebook" className="notebook-link">
+          <img src={`/art/sprite/notebook-${player.notebook.rarity}.png`} alt="" width={32} height={24} />
+          <span className="pixel">NOTEBOOK</span>
+          <span className="term">{rarityOf(catalog, player).name}</span>
+          <span className="term">{`NV ${player.notebook.level}`}</span>
+        </Link>
         <div className="avatar-slots" role="group" aria-label="slots">
           {catalog.gearSlots.map((s) => slotButton(s.id))}
         </div>
@@ -152,10 +160,7 @@ export function AvatarScene() {
         <span className="pixel avatar-slot-glyph">
           {g ? <GameArt kind="gear" id={g.id} scale={2} alt="" fallback={g.glyph} /> : "[ ]"}
         </span>
-        <span className="term avatar-slot-label">
-          {slot === "notebook" && <GameArt kind="ic" id="gear" scale={1} alt="" fallback="" className="inline-icon" />}
-          {g ? g.name : name}
-        </span>
+        <span className="term avatar-slot-label">{g ? g.name : name}</span>
       </button>
     );
   }
@@ -276,6 +281,8 @@ export function AvatarScene() {
       note = `em uso: ${g.name} — remova o item para usar a sua escolha.`;
     } else if (source.by === "skin") {
       note = `a skin ${catalog.skins.find((s) => s.id === player.skin)!.name} define esta cor.`;
+    } else if (source.by === "notebook") {
+      note = "definido pelo notebook";
     }
     return (
       <>

@@ -1,0 +1,219 @@
+{
+ "name": "laptop-raro-f-interact",
+ "category": "anim",
+ "size": [
+  192,
+  64
+ ],
+ "_design": "Notebook raro-f in the interact pose, traced from the gamer rig.",
+ "layers": [
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    0,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    24,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    24,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    24,
+    48,
+    22
+   ],
+   "at": [
+    0,
+    24
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    0,
+    48,
+    24
+   ],
+   "at": [
+    0,
+    1
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    48,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    24,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    72,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    24,
+    48,
+    22
+   ],
+   "at": [
+    48,
+    25
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    0,
+    48,
+    24
+   ],
+   "at": [
+    48,
+    2
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    96,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    24,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    120,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    24,
+    48,
+    22
+   ],
+   "at": [
+    96,
+    24
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    0,
+    48,
+    24
+   ],
+   "at": [
+    97,
+    1
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    144,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    24,
+    46,
+    24,
+    18
+   ],
+   "at": [
+    168,
+    46
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    24,
+    48,
+    22
+   ],
+   "at": [
+    144,
+    24
+   ]
+  },
+  {
+   "use": "../laptop-raro-f.json",
+   "clip": [
+    0,
+    0,
+    48,
+    24
+   ],
+   "at": [
+    144,
+    2
+   ]
+  }
+ ]
+}

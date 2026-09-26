@@ -1,0 +1,66 @@
+{
+  "rarities": [
+    { "id": "basico", "name": "BÁSICO", "from": 1 },
+    { "id": "raro", "name": "RARO", "from": 4, "look": "laptop_raro" },
+    { "id": "epico", "name": "ÉPICO", "from": 7, "look": "laptop_epico" },
+    { "id": "lendario", "name": "LENDÁRIO", "from": 10, "look": "laptop_lendario" }
+  ],
+  "levels": [
+    { "cost": null, "dmg": 0, "hp": 0 },
+    { "cost": 100, "dmg": 1, "hp": 5 },
+    { "cost": 150, "dmg": 2, "hp": 10 },
+    { "cost": 250, "dmg": 3, "hp": 15 },
+    { "cost": 350, "dmg": 4, "hp": 20 },
+    { "cost": 450, "dmg": 5, "hp": 25 },
+    { "cost": 600, "dmg": 6, "hp": 30 },
+    { "cost": 750, "dmg": 7, "hp": 35 },
+    { "cost": 900, "dmg": 8, "hp": 40 },
+    { "cost": 1200, "dmg": 10, "hp": 50 }
+  ],
+  "upgrades": [
+    {
+      "id": "cpu_turbo",
+      "name": "CPU TURBO",
+      "description": "Aumenta o dano no Bug Fight.",
+      "bonus": "dmg",
+      "levels": [
+        { "minLevel": 1, "cost": 300, "amount": 2 },
+        { "minLevel": 4, "cost": 500, "amount": 4 },
+        { "minLevel": 7, "cost": 800, "amount": 6 }
+      ]
+    },
+    {
+      "id": "bateria",
+      "name": "BATERIA ESTENDIDA",
+      "description": "Aumenta o HP máximo.",
+      "bonus": "hp",
+      "levels": [
+        { "minLevel": 1, "cost": 250, "amount": 10 },
+        { "minLevel": 4, "cost": 400, "amount": 20 },
+        { "minLevel": 7, "cost": 650, "amount": 30 }
+      ]
+    },
+    {
+      "id": "ssd_nvme",
+      "name": "SSD NVME",
+      "description": "Aumenta o SP máximo no Bug Fight.",
+      "bonus": "sp",
+      "levels": [
+        { "minLevel": 1, "cost": 300, "amount": 5 },
+        { "minLevel": 4, "cost": 450, "amount": 10 },
+        { "minLevel": 7, "cost": 700, "amount": 15 }
+      ]
+    },
+    {
+      "id": "rede_5g",
+      "name": "CONECTIVIDADE 5G",
+      "description": "Recupera mais SP a cada turno.",
+      "bonus": "spregen",
+      "levels": [
+        { "minLevel": 1, "cost": 200, "amount": 1 },
+        { "minLevel": 4, "cost": 350, "amount": 2 },
+        { "minLevel": 7, "cost": 550, "amount": 3 }
+      ]
+    }
+  ]
+}

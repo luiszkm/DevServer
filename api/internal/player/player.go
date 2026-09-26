@@ -59,8 +59,26 @@ type Player struct {
 	Looks []string `json:"looks"`
 	// Progress is how many path nodes each region has been cleared; no row means 0. Never nil (AD-021).
 	Progress map[string]int `json:"progress"`
+	// Notebook is the weapon: stored level, derived rarity, and every catalog upgrade (0 when never bought).
+	Notebook Notebook `json:"notebook"`
 	// picks is players.appearance: only the parts the player chose, saved by WithLocked.
 	picks map[string]string
+}
+
+// Notebook is the dev's weapon as the client reads it (AD-024).
+type Notebook struct {
+	Level    int            `json:"level"`
+	Rarity   string         `json:"rarity"`
+	Upgrades map[string]int `json:"upgrades"`
+}
+
+func emptyNotebook() Notebook {
+	cat := catalog.Default()
+	ups := map[string]int{}
+	for _, u := range cat.Notebook.Upgrades {
+		ups[u.ID] = 0
+	}
+	return Notebook{Level: 1, Rarity: cat.NotebookRarity(1), Upgrades: ups}
 }
 
 // DefaultSkin is owned by every player without a stored row (door 3).
@@ -112,7 +130,7 @@ func newPlayer(githubUserID int64, devName, class, body string) *Player {
 		Gear:      []string{}, Equipment: emptyEquipment(), Skins: []string{DefaultSkin},
 		Office: emptyOffice(), Rack: emptyRack(),
 		Appearance: ResolveAppearance(catalog.Default(), body, nil), Looks: []string{}, picks: map[string]string{},
-		Progress: map[string]int{},
+		Progress: map[string]int{}, Notebook: emptyNotebook(),
 	}
 }
 
@@ -173,12 +191,13 @@ func SuggestDevName(login string) string {
 }
 
 const columns = `id, github_user_id, dev_name, class, level, xp, xp_max, hp, hp_max,
-	coins, gems, skill_points, region, skin, appearance, body, power`
+	coins, gems, skill_points, region, skin, appearance, body, power, notebook_level`
 
 func scan(row pgx.Row) (*Player, error) {
 	p := &Player{}
 	err := row.Scan(&p.ID, &p.GithubUserID, &p.DevName, &p.Class, &p.Level, &p.XP, &p.XPMax,
-		&p.HP, &p.HPMax, &p.Coins, &p.Gems, &p.SkillPoints, &p.Region, &p.Skin, &p.picks, &p.Body, &p.Power)
+		&p.HP, &p.HPMax, &p.Coins, &p.Gems, &p.SkillPoints, &p.Region, &p.Skin, &p.picks, &p.Body, &p.Power,
+		&p.Notebook.Level)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, httpx.ErrPlayerNotFound
 	}
@@ -221,7 +240,10 @@ func Get(ctx context.Context, q querier, githubUserID int64) (*Player, error) {
 	if err := LoadLooks(ctx, q, p); err != nil {
 		return nil, err
 	}
-	return p, loadProgress(ctx, q, p)
+	if err := loadProgress(ctx, q, p); err != nil {
+		return nil, err
+	}
+	return p, loadNotebook(ctx, q, p)
 }
 
 // LoadLooks reads the bought avatar options into p.Looks, in catalog order like LoadGear.
@@ -442,14 +464,17 @@ func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn 
 	if err := loadProgress(ctx, tx, p); err != nil {
 		return nil, err
 	}
+	if err := loadNotebook(ctx, tx, p); err != nil {
+		return nil, err
+	}
 	if err := fn(tx, p); err != nil {
 		return nil, err
 	}
 	_, err = tx.Exec(ctx, `UPDATE players SET level = $2, xp = $3, xp_max = $4, hp = $5, hp_max = $6,
 		coins = $7, gems = $8, skill_points = $9, region = $10, skin = $11, appearance = $12, body = $13,
-		power = $14 WHERE id = $1`,
+		power = $14, notebook_level = $15 WHERE id = $1`,
 		p.ID, p.Level, p.XP, p.XPMax, p.HP, p.HPMax, p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin, p.picks, p.Body,
-		p.Power)
+		p.Power, p.Notebook.Level)
 	if err != nil {
 		return nil, err
 	}
@@ -571,8 +596,64 @@ func Bonus(cat *catalog.Catalog, p *Player, bonusType string) int {
 		}
 	}
 	sum += rackBonus(cat, p.Rack, bonusType)
+	sum += notebookBonus(cat, p.Notebook, bonusType)
 	if bonusType == "deploy" {
 		sum = min(sum, cat.Office.MaxDeployCut)
+	}
+	return sum
+}
+
+// loadNotebook fills p.Notebook from the scanned level and player_notebook_upgrades. An upgrade the
+// catalog no longer has is skipped. The map always has every catalog upgrade, 0 when never bought.
+func loadNotebook(ctx context.Context, q querier, p *Player) error {
+	cat := catalog.Default()
+	level := p.Notebook.Level
+	ups := map[string]int{}
+	for _, u := range cat.Notebook.Upgrades {
+		ups[u.ID] = 0
+	}
+	rows, err := q.Query(ctx, `SELECT upgrade_id, level FROM player_notebook_upgrades WHERE player_id = $1`, p.ID)
+	if err != nil {
+		return err
+	}
+	var id string
+	var lvl int
+	if _, err := pgx.ForEachRow(rows, []any{&id, &lvl}, func() error {
+		if _, ok := ups[id]; ok {
+			ups[id] = lvl
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	p.Notebook = Notebook{Level: level, Rarity: cat.NotebookRarity(level), Upgrades: ups}
+	return nil
+}
+
+// notebookBonus is AD-024: the notebook level's dmg and hp, plus each bought upgrade at its level,
+// clamped to the last catalog step. Level 0 and an upgrade the catalog does not list add nothing.
+func notebookBonus(cat *catalog.Catalog, nb Notebook, bonusType string) int {
+	sum := 0
+	if lv, ok := cat.NotebookLevelAt(nb.Level); ok {
+		if bonusType == "dmg" {
+			sum += lv.Dmg
+		}
+		if bonusType == "hp" {
+			sum += lv.HP
+		}
+	}
+	for _, u := range cat.Notebook.Upgrades {
+		if u.Bonus != bonusType || len(u.Levels) == 0 {
+			continue
+		}
+		k := nb.Upgrades[u.ID]
+		if k < 1 {
+			continue
+		}
+		if k > len(u.Levels) {
+			k = len(u.Levels)
+		}
+		sum += u.Levels[k-1].Amount
 	}
 	return sum
 }

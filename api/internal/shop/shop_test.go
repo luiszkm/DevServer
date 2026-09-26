@@ -127,7 +127,11 @@ func equipment(notebook, bebida, torso, acessorio string) map[string]*string {
 	for _, s := range catalog.Default().GearSlots {
 		m[s.ID] = nil
 	}
-	for k, v := range map[string]string{"notebook": notebook, "bebida": bebida, "torso": torso, "acessorio": acessorio} {
+	// A piece that used to sit in the notebook slot now sits in acessorio (AD-024).
+	if notebook != "" {
+		m["acessorio"] = ptr(notebook)
+	}
+	for k, v := range map[string]string{"bebida": bebida, "torso": torso, "acessorio": acessorio} {
 		if v != "" {
 			m[k] = ptr(v)
 		}
@@ -370,8 +374,8 @@ func TestEquipGear_ReplacesSlot(t *testing.T) {
 	f.do("/api/me/shop/gear/macbook")
 	f.do("/api/me/shop/gear/monitor")
 	got := f.do("/api/me/gear/macbook/equip")
-	if got.Equipment["notebook"] == nil || *got.Equipment["notebook"] != "macbook" {
-		t.Fatalf("equipment = %s, want notebook=macbook", show(got.Equipment))
+	if got.Equipment["acessorio"] == nil || *got.Equipment["acessorio"] != "macbook" {
+		t.Fatalf("equipment = %s, want acessorio=macbook", show(got.Equipment))
 	}
 	before := f.snapshot()
 	again := f.do("/api/me/gear/macbook/equip")
@@ -814,10 +818,27 @@ func TestUnequipGear_OtherPieceInSlotStays(t *testing.T) {
 	f.do("/api/me/shop/gear/monitor")
 	before := f.snapshot()
 	got := f.do("/api/me/gear/macbook/unequip")
-	if got.Equipment["notebook"] == nil || *got.Equipment["notebook"] != "monitor" {
-		t.Fatalf("equipment = %s, want notebook=monitor", show(got.Equipment))
+	if got.Equipment["acessorio"] == nil || *got.Equipment["acessorio"] != "monitor" {
+		t.Fatalf("equipment = %s, want acessorio=monitor", show(got.Equipment))
 	}
 	if after := f.snapshot(); after != before {
 		t.Fatalf("unequip of the other piece changed state:\n%s\n%s", before, after)
+	}
+}
+
+func TestEquip_NotebookGearGoesToAcessorio(t *testing.T) {
+	f := newFixture(t)
+	got := f.me()
+	if _, ok := got.Equipment["notebook"]; ok {
+		t.Fatalf("equipment has a notebook key: %s", show(got.Equipment))
+	}
+	if len(got.Equipment) != len(catalog.Default().GearSlots) {
+		t.Fatalf("equipment has %d keys, want %d", len(got.Equipment), len(catalog.Default().GearSlots))
+	}
+	f.balance(1000, 0)
+	f.do("/api/me/shop/gear/macbook")
+	got = f.do("/api/me/gear/macbook/equip")
+	if got.Equipment["acessorio"] == nil || *got.Equipment["acessorio"] != "macbook" {
+		t.Fatalf("equipment = %s, want acessorio=macbook", show(got.Equipment))
 	}
 }

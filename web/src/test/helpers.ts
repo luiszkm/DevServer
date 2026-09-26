@@ -109,14 +109,13 @@ export const GEAR_SLOTS: Catalog["gearSlots"] = [
   { id: "pernas", name: "PERNAS" },
   { id: "pe", name: "PÉ" },
   { id: "maos", name: "MÃOS" },
-  { id: "notebook", name: "NOTEBOOK" },
   { id: "acessorio", name: "ACESSÓRIO" },
   { id: "bebida", name: "BEBIDA" },
 ];
 
 export const GEAR: Catalog["gear"] = [
-  { id: "macbook", name: "MACBOOK PRO", glyph: "[Mac]", slot: "notebook", rarity: "RARO", description: "compila sem travar", price: { currency: "gems", amount: 120 }, bonus: { type: "dmg", amount: 8 }, look: { part: "laptop", option: "laptop_macbook" } },
-  { id: "monitor", name: "MONITOR ULTRAWIDE", glyph: "[==]", slot: "notebook", rarity: "LENDÁRIO", description: "mais tela", price: { currency: "gems", amount: 200 }, bonus: { type: "sp", amount: 20 } },
+  { id: "macbook", name: "MACBOOK PRO", glyph: "[Mac]", slot: "acessorio", rarity: "RARO", description: "compila sem travar", price: { currency: "gems", amount: 120 }, bonus: { type: "dmg", amount: 8 } },
+  { id: "monitor", name: "MONITOR ULTRAWIDE", glyph: "[==]", slot: "acessorio", rarity: "LENDÁRIO", description: "mais tela", price: { currency: "gems", amount: 200 }, bonus: { type: "sp", amount: 20 } },
   { id: "cafe", name: "CAFÉ EXPRESSO", glyph: "{C}", slot: "bebida", rarity: "COMUM", description: "cafeína", price: { currency: "coins", amount: 50 }, bonus: { type: "sp", amount: 12 } },
   { id: "moletom", name: "MOLETOM CONFORTÁVEL", glyph: "[[]]", slot: "torso", rarity: "COMUM", description: "conforto", price: { currency: "coins", amount: 70 }, bonus: { type: "hp", amount: 15 }, look: { part: "top", option: "top_moletom_gear" } },
   { id: "cadeira", name: "CADEIRA ERGONÔMICA", glyph: "[|]", slot: "torso", rarity: "RARO", description: "postura", price: { currency: "gems", amount: 150 }, bonus: { type: "hp", amount: 30 } },
@@ -226,7 +225,7 @@ export const AVATAR: Catalog["avatar"] = {
     {"id": "top", "name": "ROUPA", "kind": "style", "gearSlot": "torso"},
     {"id": "topColor", "name": "COR DA ROUPA", "kind": "color"},
     {"id": "bottomColor", "name": "CALÇA", "kind": "color"},
-    {"id": "laptop", "name": "NOTEBOOK", "kind": "style", "gearSlot": "notebook"},
+    {"id": "laptop", "name": "NOTEBOOK", "kind": "style"},
   ],
   options: [
     {"id": "tone_clara", "part": "tone", "name": "CLARA", "ramp": ["#b07858", "#d8a07c", "#f8cfa8", "#ffe8cc"]},
@@ -290,23 +289,53 @@ export const AVATAR: Catalog["avatar"] = {
     {"id": "laptop_basico", "part": "laptop", "name": "NOTEBOOK", "layer": "laptop-basico", "fixed": true},
     {"id": "laptop_preto", "part": "laptop", "name": "NOTEBOOK PRETO", "layer": "laptop-preto", "fixed": true},
     {"id": "laptop_gamer", "part": "laptop", "name": "NOTEBOOK GAMER RGB", "layer": "laptop-gamer", "fixed": true, "price": {"currency": "gems", "amount": 40}},
-    {"id": "laptop_macbook", "part": "laptop", "name": "MACBOOK PRO", "layer": "laptop-macbook", "fixed": true, "gearOnly": true},
+    {"id": "laptop_raro", "part": "laptop", "name": "NOTEBOOK RARO", "layer": "laptop-raro", "fixed": true, "gearOnly": true},
+    {"id": "laptop_epico", "part": "laptop", "name": "NOTEBOOK ÉPICO", "layer": "laptop-epico", "fixed": true, "gearOnly": true},
+    {"id": "laptop_lendario", "part": "laptop", "name": "NOTEBOOK LENDÁRIO", "layer": "laptop-lendario", "fixed": true, "gearOnly": true},
   ],
   defaults: {"tone": "tone_padrao", "eyes": "eyes_castanho", "hair": "hair_espetado", "hairColor": "hair_preto", "beard": "beard_nenhuma", "glasses": "glasses_nenhum", "top": "top_moletom", "topColor": "top_grafite", "bottomColor": "bottom_jeans", "laptop": "laptop_basico"},
+};
+
+export const NOTEBOOK: Catalog["notebook"] = {
+  rarities: [
+    { id: "basico", name: "BÁSICO", from: 1 },
+    { id: "raro", name: "RARO", from: 4, look: "laptop_raro" },
+    { id: "epico", name: "ÉPICO", from: 7, look: "laptop_epico" },
+    { id: "lendario", name: "LENDÁRIO", from: 10, look: "laptop_lendario" },
+  ],
+  levels: [
+    { cost: null, dmg: 0, hp: 0 },
+    { cost: 100, dmg: 1, hp: 5 },
+    { cost: 150, dmg: 2, hp: 10 },
+    { cost: 250, dmg: 3, hp: 15 },
+    { cost: 350, dmg: 4, hp: 20 },
+    { cost: 450, dmg: 5, hp: 25 },
+    { cost: 600, dmg: 6, hp: 30 },
+    { cost: 750, dmg: 7, hp: 35 },
+    { cost: 900, dmg: 8, hp: 40 },
+    { cost: 1200, dmg: 10, hp: 50 },
+  ],
+  upgrades: [
+    { id: "cpu_turbo", name: "CPU TURBO", description: "Aumenta o dano no Bug Fight.", bonus: "dmg", levels: [{ minLevel: 1, cost: 300, amount: 2 }, { minLevel: 4, cost: 500, amount: 4 }, { minLevel: 7, cost: 800, amount: 6 }] },
+    { id: "bateria", name: "BATERIA ESTENDIDA", description: "Aumenta o HP máximo.", bonus: "hp", levels: [{ minLevel: 1, cost: 250, amount: 10 }, { minLevel: 4, cost: 400, amount: 20 }, { minLevel: 7, cost: 650, amount: 30 }] },
+    { id: "ssd_nvme", name: "SSD NVME", description: "Aumenta o SP máximo no Bug Fight.", bonus: "sp", levels: [{ minLevel: 1, cost: 300, amount: 5 }, { minLevel: 4, cost: 450, amount: 10 }, { minLevel: 7, cost: 700, amount: 15 }] },
+    { id: "rede_5g", name: "CONECTIVIDADE 5G", description: "Recupera mais SP a cada turno.", bonus: "spregen", levels: [{ minLevel: 1, cost: 200, amount: 1 }, { minLevel: 4, cost: 350, amount: 2 }, { minLevel: 7, cost: 550, amount: 3 }] },
+  ],
 };
 
 export const CATALOG: Catalog = {
   version: "v1", regions: REGIONS, deployTypes: DEPLOY_TYPES, deployLevels: DEPLOY_LEVELS, skillTrees: SKILL_TREES, skillSlots: 4,
   enemies: ENEMIES, commands: COMMANDS, items: ITEMS,
   combat: { counter: [7, 14], spRegen: 5, weaknessMultiplier: 1.8, victory: { xp: 90, coins: 40, gems: 1 }, dropChance: 65, potionChance: 30, potion: "sp_potion", power: { max: 100, perHit: 10, perCrit: 20 } },
-  gearSlots: GEAR_SLOTS, gear: GEAR, skins: SKINS, avatar: AVATAR, office: OFFICE, rack: RACK, recipes: RECIPES,
+  gearSlots: GEAR_SLOTS, gear: GEAR, skins: SKINS, avatar: AVATAR, office: OFFICE, rack: RACK, recipes: RECIPES, notebook: NOTEBOOK,
 };
 
 export function player(overrides: Partial<Player> = {}): Player {
   return {
     devName: "DEV_01", class: "BACKEND", level: 1, xp: 0, xpMax: 500, hp: 100, hpMax: 100,
     coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], skillLevels: {}, loadout: [null, null, null, null], power: 0, inventory: [{ item: "sp_potion", quantity: 2 }],
-    gear: [], equipment: { cabeca: null, oculos: null, brinco: null, colar: null, torso: null, cinto: null, pernas: null, pe: null, maos: null, notebook: null, acessorio: null, bebida: null }, skins: ["default"], office: room(), rack: rack(), body: "masculino", appearance: { ...AVATAR.defaults }, looks: [], progress: {}, ...overrides,
+    gear: [], equipment: { cabeca: null, oculos: null, brinco: null, colar: null, torso: null, cinto: null, pernas: null, pe: null, maos: null, acessorio: null, bebida: null }, skins: ["default"], office: room(), rack: rack(), body: "masculino", appearance: { ...AVATAR.defaults }, looks: [], progress: {},
+    notebook: { level: 1, rarity: "basico", upgrades: { cpu_turbo: 0, bateria: 0, ssd_nvme: 0, rede_5g: 0 } }, ...overrides,
   };
 }
 

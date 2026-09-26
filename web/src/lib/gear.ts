@@ -1,3 +1,4 @@
+import { notebookBonus } from "./notebook";
 import { rackBonus } from "./rack";
 import { loadoutBonus } from "./skills";
 import type { Bonus, Catalog, Player, Price } from "./types";
@@ -47,7 +48,7 @@ export function totalBonus(catalog: Catalog, player: Player, type: Bonus["type"]
     .filter((g) => player.equipment[g.slot] === g.id && g.bonus.type === type)
     .reduce((sum, g) => sum + g.bonus.amount, 0);
   const skin = catalog.skins.find((s) => s.id === player.skin)?.bonus;
-  return skills + gear + (skin?.type === type ? skin.amount : 0) + rackBonus(catalog, player, type);
+  return skills + gear + (skin?.type === type ? skin.amount : 0) + rackBonus(catalog, player, type) + notebookBonus(catalog, player, type);
 }
 
 /** Toast after a successful shop or avatar action; everything else shows the api's message. */

@@ -1,0 +1,45 @@
+{
+ "name": "nbup-rede_5g",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "nbup-rede_5g: macbook silhouette, screen ramp slime.",
+ "legend": {
+  "o": "ink",
+  "h": "metal.3",
+  "m": "metal.2",
+  "d": "metal.1",
+  "s": "ui.2",
+  "g": "slime.3",
+  "G": "slime.3",
+  "w": "net.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "..oooooooooooo..",
+    "..ohhhhhhhhhmo..",
+    "..ohwsssssssmo..",
+    "..ohsGgsggGsmo..",
+    "..ohssssssssmo..",
+    "..ohsggsgggsmo..",
+    "..ohssssssssmo..",
+    "..ohsGgsssssmo..",
+    "..ommmmmmmmmmo..",
+    ".oooooooooooooo.",
+    ".ohhhhhhhhhhhmo.",
+    ".ohdmdmdmdmddmo.",
+    ".oddddddddddddo.",
+    "..oooooooooooo..",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

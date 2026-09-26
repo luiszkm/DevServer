@@ -9,13 +9,12 @@
     { "id": "pernas", "name": "PERNAS" },
     { "id": "pe", "name": "PÉ" },
     { "id": "maos", "name": "MÃOS" },
-    { "id": "notebook", "name": "NOTEBOOK" },
     { "id": "acessorio", "name": "ACESSÓRIO" },
     { "id": "bebida", "name": "BEBIDA" }
   ],
   "gear": [
-    { "id": "macbook", "name": "MACBOOK PRO", "glyph": "[Mac]", "slot": "notebook", "rarity": "RARO", "description": "Ferramenta de trabalho rápida, compila sem travar.", "price": { "currency": "gems", "amount": 120 }, "bonus": { "type": "dmg", "amount": 8 }, "look": { "part": "laptop", "option": "laptop_macbook" } },
-    { "id": "monitor", "name": "MONITOR ULTRAWIDE", "glyph": "[==]", "slot": "notebook", "rarity": "LENDÁRIO", "description": "Mais tela, mais produtividade e mais foco em combate.", "price": { "currency": "gems", "amount": 200 }, "bonus": { "type": "sp", "amount": 20 } },
+    { "id": "macbook", "name": "MACBOOK PRO", "glyph": "[Mac]", "slot": "acessorio", "rarity": "RARO", "description": "Ferramenta de trabalho rápida, compila sem travar.", "price": { "currency": "gems", "amount": 120 }, "bonus": { "type": "dmg", "amount": 8 } },
+    { "id": "monitor", "name": "MONITOR ULTRAWIDE", "glyph": "[==]", "slot": "acessorio", "rarity": "LENDÁRIO", "description": "Mais tela, mais produtividade e mais foco em combate.", "price": { "currency": "gems", "amount": 200 }, "bonus": { "type": "sp", "amount": 20 } },
     { "id": "cafe", "name": "CAFÉ EXPRESSO", "glyph": "{C}", "slot": "bebida", "rarity": "COMUM", "description": "Cafeína pura para aguentar o plantão.", "price": { "currency": "coins", "amount": 50 }, "bonus": { "type": "sp", "amount": 12 } },
     { "id": "moletom", "name": "MOLETOM CONFORTÁVEL", "glyph": "[[]]", "slot": "torso", "rarity": "COMUM", "description": "Conforto que rende. Aguenta mais dano.", "price": { "currency": "coins", "amount": 70 }, "bonus": { "type": "hp", "amount": 15 }, "look": { "part": "top", "option": "top_moletom_gear" } },
     { "id": "cadeira", "name": "CADEIRA ERGONÔMICA", "glyph": "[|]", "slot": "torso", "rarity": "RARO", "description": "Postura perfeita para maratonas de código.", "price": { "currency": "gems", "amount": 150 }, "bonus": { "type": "hp", "amount": 30 } },

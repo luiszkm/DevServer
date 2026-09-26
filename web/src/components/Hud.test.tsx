@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { player } from "@/test/helpers";
+import { CATALOG, player } from "@/test/helpers";
+import { GameContext } from "./GameContext";
 import { GameShell } from "./GameShell";
 import { Hud } from "./Hud";
 
@@ -91,6 +92,18 @@ describe("Hud loading", () => {
   it("loading fx", () => {
     render(<Hud />);
     expectLoadingFx(screen.getByText("CARREGANDO..."));
+  });
+});
+
+describe("Hud hero", () => {
+  it("hero holds the rarity laptop", () => {
+    const p = player({ notebook: { level: 4, rarity: "raro", upgrades: { cpu_turbo: 0, bateria: 0, ssd_nvme: 0, rede_5g: 0 } } });
+    render(
+      <GameContext.Provider value={{ player: p, catalog: CATALOG, setPlayer: vi.fn() }}>
+        <Hud player={p} />
+      </GameContext.Provider>,
+    );
+    expect(document.querySelector("canvas")?.getAttribute("data-look")).toContain("/art/sprite/hero/laptop-raro.png");
   });
 });
 

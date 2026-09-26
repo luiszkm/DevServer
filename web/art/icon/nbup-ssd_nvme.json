@@ -1,0 +1,45 @@
+{
+ "name": "nbup-ssd_nvme",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "nbup-ssd_nvme: macbook silhouette, screen ramp roof.",
+ "legend": {
+  "o": "ink",
+  "h": "metal.3",
+  "m": "metal.2",
+  "d": "metal.1",
+  "s": "ui.2",
+  "g": "roof.3",
+  "G": "roof.3",
+  "w": "net.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "..oooooooooooo..",
+    "..ohhhhhhhhhmo..",
+    "..ohwsssssssmo..",
+    "..ohsGgsggGsmo..",
+    "..ohssssssssmo..",
+    "..ohsggsgggsmo..",
+    "..ohssssssssmo..",
+    "..ohsGgsssssmo..",
+    "..ommmmmmmmmmo..",
+    ".oooooooooooooo.",
+    ".ohhhhhhhhhhhmo.",
+    ".ohdmdmdmdmddmo.",
+    ".oddddddddddddo.",
+    "..oooooooooooo..",
+    "................"
+   ],
+   "at": [
+    0,
+    0
+   ]
+  }
+ ]
+}

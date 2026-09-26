@@ -89,10 +89,17 @@ describe("resolveLook", () => {
     expect(look.parts.top).toEqual({ option: "top_hoodie_trace", by: "gear" });
   });
 
-  it("gear with a look swaps the laptop", () => {
-    const look = resolveLook(input({ equipment: { ...EMPTY, notebook: "macbook" } }), catalog);
-    expect(look.layers[3]).toEqual({ src: src("laptop-macbook"), swap: {} });
-    expect(look.parts.laptop).toEqual({ option: "laptop_macbook", by: "gear" });
+  it("laptop follows the notebook rarity", () => {
+    const gamer = input({ appearance: { laptop: "laptop_gamer" }, notebook: { level: 1, rarity: "basico", upgrades: {} } });
+    expect(resolveLook(gamer, catalog).parts.laptop).toEqual({ option: "laptop_gamer", by: "player" });
+    for (const [rarity, option] of [["raro", "laptop_raro"], ["epico", "laptop_epico"], ["lendario", "laptop_lendario"]] as const) {
+      const look = resolveLook({ ...gamer, notebook: { level: 1, rarity, upgrades: {} } }, catalog);
+      expect(look.parts.laptop).toEqual({ option, by: "notebook" });
+    }
+    const unknown = resolveLook({ ...gamer, notebook: { level: 1, rarity: "mito", upgrades: {} } }, catalog);
+    expect(unknown.parts.laptop).toEqual({ option: "laptop_gamer", by: "player" });
+    const fem = resolveLook({ ...gamer, body: "feminino", notebook: { level: 4, rarity: "raro", upgrades: {} } }, catalog);
+    expect(fem.layers.find((l) => l.src.includes("laptop"))?.src).toBe("/art/sprite/hero/laptop-raro-f.png");
   });
 
   it("gear without a look keeps the player's pick", () => {
@@ -132,7 +139,7 @@ describe("resolveLook", () => {
   it("gear and glasses on feminino use the feminine variants", () => {
     const look = resolveLook(input({ body: "feminino", equipment: { ...EMPTY, torso: "hoodie_trace", notebook: "macbook" }, appearance: { glasses: "glasses_redondo" } }), catalog);
     expect(look.layers[2]).toEqual({ src: src("top-hoodie_trace-f"), swap: {} });
-    expect(look.layers[3]).toEqual({ src: src("laptop-macbook-f"), swap: {} });
+    expect(look.layers[3]).toEqual({ src: src("laptop-basico-f"), swap: {} });
     expect(look.layers.at(-1)).toEqual({ src: src("glasses-redondo-f"), swap: {} });
   });
 

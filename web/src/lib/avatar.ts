@@ -1,10 +1,12 @@
 import type { AvatarOption, Catalog, Player } from "./types";
 
-/** What decides the hero's look: the body, the picks, the equipped gear and the worn skin. */
-export type LookInput = Pick<Player, "body" | "appearance" | "equipment" | "skin">;
+/** What decides the hero's look: the body, the picks, the equipped gear, the notebook and the worn skin. */
+export type LookInput = Pick<Player, "body" | "appearance" | "equipment" | "skin"> & {
+  notebook?: Player["notebook"];
+};
 
-/** Who set a part: equipped gear, the worn skin, the player's pick, or the catalog default. */
-export type LookSource = "gear" | "skin" | "player" | "default";
+/** Who set a part: the notebook's rarity, equipped gear, the worn skin, the player's pick, or the catalog default. */
+export type LookSource = "notebook" | "gear" | "skin" | "player" | "default";
 
 /** One PNG of the hero, with the exact base-hex → target-hex swaps to paint it with. */
 export type Layer = { src: string; swap: Record<string, string> };
@@ -73,6 +75,11 @@ export function resolveLook(input: LookInput, catalog: Catalog): Look {
     if (gear && gear.look?.part === part.id) {
       chosen = option(gear.look.option)!;
       by = "gear";
+    }
+    const band = catalog.notebook?.rarities.find((r) => r.id === input.notebook?.rarity);
+    if (part.id === "laptop" && band?.look) {
+      chosen = option(band.look)!;
+      by = "notebook";
     }
     const forced = part.kind === "color" ? skin?.palette[part.id] : undefined;
     if (forced) by = "skin";

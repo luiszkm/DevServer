@@ -21,6 +21,8 @@ var protectedRoutes = []struct{ method, path string }{
 	{http.MethodPut, "/api/me/appearance"},
 	{http.MethodPost, "/api/me/shop/looks/hair_moicano"},
 	{http.MethodPost, "/api/me/body"},
+	{http.MethodPost, "/api/me/notebook/enhance"},
+	{http.MethodPost, "/api/me/notebook/upgrades/cpu_turbo"},
 }
 
 // C9

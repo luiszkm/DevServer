@@ -33,7 +33,7 @@ const geared = (overrides: Partial<Player> = {}) =>
     hp: 125,
     hpMax: 125,
     gear: ["macbook", "cafe", "moletom"],
-    equipment: { notebook: "macbook", bebida: "cafe", torso: "moletom", acessorio: null },
+    equipment: { bebida: "cafe", torso: "moletom", acessorio: "macbook" },
     skins: ["default", "shadow"],
     skin: "shadow",
     inventory: [
@@ -53,7 +53,7 @@ describe("AvatarScene", () => {
     const hero = document.querySelector(".avatar-hero") as HTMLCanvasElement;
     // the worn skin's palette and the equipped macbook are on the drawing
     expect(hero.dataset.look).toBe(lookKey(p));
-    expect(hero.dataset.look).toContain("/art/sprite/hero/laptop-macbook.png");
+    expect(hero.dataset.look).toContain("/art/sprite/hero/laptop-basico.png");
     expect(hero.dataset.look).toContain(`${CATALOG.avatar.options.find((o) => o.id === "tone_padrao")!.ramp![0]}>${CATALOG.skins.find((s) => s.id === "shadow")!.palette.tone[0]}`);
     expect(screen.getByText("DEV_01")).toBeInTheDocument();
     expect(document.querySelector(".avatar-skin-name")).toHaveTextContent("DEV SOMBRIO");
@@ -73,7 +73,7 @@ describe("AvatarScene", () => {
     expect(within(stats).getByText("dano +4%")).toBeInTheDocument();
     expect(within(stats).getByText("SP +6")).toBeInTheDocument();
     cleanup();
-    renderAvatar(player({ rack: rack({ 0: "gpu", 1: "ram" }), gear: ["macbook"], equipment: { notebook: "macbook", bebida: null, torso: null, acessorio: null } }));
+    renderAvatar(player({ rack: rack({ 0: "gpu", 1: "ram" }), gear: ["macbook"], equipment: { acessorio: "macbook", bebida: null, torso: null } }));
     stats = screen.getByLabelText("atributos");
     expect(within(stats).getByText("dano +12%")).toBeInTheDocument();
   });
@@ -89,15 +89,15 @@ describe("AvatarScene", () => {
 
   // C36
   it("paper doll slots", () => {
-    renderAvatar(player({ gear: ["macbook"], equipment: { notebook: "macbook", bebida: null, torso: null, acessorio: null } }));
+    renderAvatar(player({ gear: ["macbook"], equipment: { acessorio: "macbook", bebida: null, torso: null } }));
     const slots = within(screen.getByRole("group", { name: "slots" })).getAllByRole("button").map((b) => b.getAttribute("data-slot"));
     expect(slots).toEqual(CATALOG.gearSlots.map((s) => s.id));
     const slot = (id: string) => document.querySelector(`[data-slot="${id}"]`) as HTMLButtonElement;
-    expect(slot("notebook").querySelector(".avatar-slot-glyph img")?.getAttribute("src")).toBe("/art/icon/gear-macbook.png");
-    expect(slot("notebook").querySelector(".avatar-slot-label")).toHaveTextContent("MACBOOK PRO");
+    expect(slot("acessorio").querySelector(".avatar-slot-glyph img")?.getAttribute("src")).toBe("/art/icon/gear-macbook.png");
+    expect(slot("acessorio").querySelector(".avatar-slot-label")).toHaveTextContent("MACBOOK PRO");
     for (const [id, name] of [
       ["cabeca", "CABEÇA"], ["oculos", "ÓCULOS"], ["brinco", "BRINCO"], ["colar", "COLAR"], ["torso", "TORSO"], ["cinto", "CINTO"],
-      ["pernas", "PERNAS"], ["pe", "PÉ"], ["maos", "MÃOS"], ["acessorio", "ACESSÓRIO"], ["bebida", "BEBIDA"],
+      ["pernas", "PERNAS"], ["pe", "PÉ"], ["maos", "MÃOS"], ["bebida", "BEBIDA"],
     ]) {
       expect(slot(id).querySelector(".avatar-slot-glyph")?.textContent).toBe("[ ]");
       expect(slot(id).querySelector(".avatar-slot-label")?.textContent).toBe(name);
@@ -121,7 +121,7 @@ describe("AvatarScene", () => {
 
   // C38
   it("bag tabs", async () => {
-    renderAvatar(geared({ equipment: { notebook: "macbook", bebida: "cafe", torso: null, acessorio: null } }));
+    renderAvatar(geared({ equipment: { acessorio: "macbook", bebida: "cafe", torso: null } }));
     const hint = () => document.querySelector(".avatar-bag-head .term")?.textContent;
     const tags = () => Object.fromEntries(cells().map((c) => [c.dataset.entry, c.querySelector(".avatar-cell-tag")?.textContent]));
     expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["EQUIP", "POÇÕES", "LOOT", "SKINS"]);
@@ -154,7 +154,7 @@ describe("AvatarScene", () => {
       "POST /api/me/items/null_shard/discard",
     ];
     const f = mockFetch(Object.fromEntries(routes.map((r) => [r, json(200, { player: updated })])));
-    const { setPlayer } = renderAvatar(geared({ equipment: { notebook: "macbook", bebida: "cafe", torso: null, acessorio: null } }));
+    const { setPlayer } = renderAvatar(geared({ equipment: { acessorio: "macbook", bebida: "cafe", torso: null } }));
 
     await userEvent.click(cell("moletom"));
     await userEvent.click(detailButton("EQUIPAR"));
@@ -234,7 +234,7 @@ describe("AvatarScene", () => {
     ["network", () => Promise.reject(new TypeError("Failed to fetch")), "falha na conexão. tente de novo."],
   ])("avatar errors and pending (%s)", async (_name, failure, text) => {
     mockFetch({ "POST /api/me/gear/moletom/equip": failure as () => Response });
-    const { setPlayer } = renderAvatar(geared({ equipment: { notebook: "macbook", bebida: null, torso: null, acessorio: null } }));
+    const { setPlayer } = renderAvatar(geared({ equipment: { acessorio: "macbook", bebida: null, torso: null } }));
     await userEvent.click(cell("moletom"));
     await userEvent.click(detailButton("EQUIPAR"));
     expect(await screen.findByRole("status")).toHaveTextContent(text);
@@ -255,7 +255,7 @@ describe("AvatarScene", () => {
 
   it("avatar errors and pending (pending, every button)", async () => {
     mockFetch({ "POST /api/me/items/null_shard/discard": () => new Promise<Response>(() => {}) });
-    renderAvatar(geared({ equipment: { notebook: "macbook", bebida: "cafe", torso: null, acessorio: null } }));
+    renderAvatar(geared({ equipment: { acessorio: "macbook", bebida: "cafe", torso: null } }));
     await userEvent.click(tab("LOOT"));
     await userEvent.click(detailButton("DESCARTAR 1"));
     expect(detailButton("DESCARTAR 1")).toBeDisabled();
@@ -319,12 +319,10 @@ describe("AvatarScene", () => {
       expect(head.getAttribute("width")).toBe("32");
     }
 
-    const notebook = slot("notebook").querySelector("img")!;
+    const notebook = slot("acessorio").querySelector("img")!;
     expect(notebook.getAttribute("src")).toBe("/art/icon/gear-macbook.png");
     expect(notebook.getAttribute("alt")).toBe("");
     expect(notebook.getAttribute("width")).toBe("32");
-    expect(slot("acessorio").querySelector("img")).toBeNull();
-    expect(slot("acessorio").querySelector(".avatar-slot-glyph")?.textContent).toBe("[ ]");
 
     await userEvent.click(tab("SKINS"));
     const skin = cell("shadow").querySelector("canvas")!;
@@ -336,8 +334,8 @@ describe("AvatarScene", () => {
 
     // the notebook slot's label also carries ic-gear (assets-apply C13): the fallback is about the gear's own box
     fireEvent.error(notebook);
-    expect(slot("notebook").querySelector(".avatar-slot-glyph img")).toBeNull();
-    expect(slot("notebook").querySelector(".avatar-slot-glyph")).toHaveTextContent("[Mac]");
+    expect(slot("acessorio").querySelector(".avatar-slot-glyph img")).toBeNull();
+    expect(slot("acessorio").querySelector(".avatar-slot-glyph")).toHaveTextContent("[Mac]");
   });
 });
 
@@ -482,6 +480,37 @@ describe("AvatarScene body", () => {
     return { setPlayer };
   };
 
+  it("laptop part is set by the notebook", async () => {
+    const zeros = { cpu_turbo: 0, bateria: 0, ssd_nvme: 0, rede_5g: 0 };
+    await open(withToken({ notebook: { level: 7, rarity: "epico", upgrades: zeros } }));
+    await userEvent.click(document.querySelector('[data-part="laptop"]') as HTMLButtonElement);
+    expect(screen.getByText("definido pelo notebook")).toBeInTheDocument();
+    for (const id of ["laptop_raro", "laptop_epico", "laptop_lendario"]) {
+      expect(document.querySelector(`[data-option="${id}"]`)).toBeNull();
+    }
+    cleanup();
+    await open(withToken({ notebook: { level: 3, rarity: "basico", upgrades: zeros } }));
+    await userEvent.click(document.querySelector('[data-part="laptop"]') as HTMLButtonElement);
+    expect(screen.queryByText("definido pelo notebook")).not.toBeInTheDocument();
+  });
+
+  it("ficha totals include the notebook", () => {
+    renderAvatar(player({
+      notebook: { level: 4, rarity: "raro", upgrades: { cpu_turbo: 0, bateria: 0, ssd_nvme: 1, rede_5g: 0 } },
+    }));
+    const stats = screen.getByLabelText("atributos");
+    expect(within(stats).getByText("dano +3%")).toBeInTheDocument();
+    expect(within(stats).getByText("SP +5")).toBeInTheDocument();
+  });
+
+  it("slots follow the catalog without notebook", () => {
+    renderAvatar(player({ gear: ["macbook"], equipment: { acessorio: "macbook" } }));
+    const slots = within(screen.getByRole("group", { name: "slots" })).getAllByRole("button").map((b) => b.getAttribute("data-slot"));
+    expect(slots).toEqual(CATALOG.gearSlots.map((s) => s.id));
+    expect(slots).not.toContain("notebook");
+    expect(document.querySelector('[data-slot="acessorio"] .avatar-slot-label')).toHaveTextContent("MACBOOK PRO");
+  });
+
   it("feminino hides the beard and offers the feminine hair styles", async () => {
     await open(withToken({ body: "feminino" }));
     expect(partIds()).not.toContain("beard");
@@ -545,14 +574,14 @@ describe("AvatarScene applied assets", () => {
   });
 
   // assets-apply C13
-  it("generic icon on the NOTEBOOK slot", () => {
-    renderAvatar();
-    const label = document.querySelector('[data-slot="notebook"] .avatar-slot-label')!;
-    const img = label.firstElementChild!;
-    expect(img.getAttribute("src")).toBe("/art/icon/ic-gear.png");
-    expect(img.getAttribute("alt")).toBe("");
-    expect(img.getAttribute("width")).toBe("16");
-    expect(label.firstChild).toBe(img);
+  it("notebook card links to the notebook", () => {
+    renderAvatar(player({ notebook: { level: 7, rarity: "epico", upgrades: { cpu_turbo: 0, bateria: 0, ssd_nvme: 0, rede_5g: 0 } } }));
+    const link = screen.getByRole("link", { name: /NOTEBOOK/ });
+    expect(link).toHaveAttribute("href", "/notebook");
+    expect(link.querySelector("img")?.getAttribute("src")).toBe("/art/sprite/notebook-epico.png");
+    expect(link).toHaveTextContent("ÉPICO");
+    expect(link).toHaveTextContent("NV 7");
+    expect(document.querySelector('[data-slot="notebook"]')).toBeNull();
   });
 
   // assets-apply C15: the detail rarity carries the medal

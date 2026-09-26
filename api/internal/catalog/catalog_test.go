@@ -458,7 +458,7 @@ func TestCatalog_ServesShop(t *testing.T) {
 
 	slots := []string{
 		"cabeca|CABEÇA", "oculos|ÓCULOS", "brinco|BRINCO", "colar|COLAR", "torso|TORSO", "cinto|CINTO",
-		"pernas|PERNAS", "pe|PÉ", "maos|MÃOS", "notebook|NOTEBOOK", "acessorio|ACESSÓRIO", "bebida|BEBIDA",
+		"pernas|PERNAS", "pe|PÉ", "maos|MÃOS", "acessorio|ACESSÓRIO", "bebida|BEBIDA",
 	}
 	if len(b.GearSlots) != len(slots) {
 		t.Fatalf("gearSlots = %d, want %d", len(b.GearSlots), len(slots))
@@ -470,8 +470,8 @@ func TestCatalog_ServesShop(t *testing.T) {
 	}
 
 	gear := []string{
-		"macbook|MACBOOK PRO|notebook|RARO|gems 120|dmg 8",
-		"monitor|MONITOR ULTRAWIDE|notebook|LENDÁRIO|gems 200|sp 20",
+		"macbook|MACBOOK PRO|acessorio|RARO|gems 120|dmg 8",
+		"monitor|MONITOR ULTRAWIDE|acessorio|LENDÁRIO|gems 200|sp 20",
 		"cafe|CAFÉ EXPRESSO|bebida|COMUM|coins 50|sp 12",
 		"moletom|MOLETOM CONFORTÁVEL|torso|COMUM|coins 70|hp 15",
 		"cadeira|CADEIRA ERGONÔMICA|torso|RARO|gems 150|hp 30",
@@ -922,7 +922,7 @@ func TestCatalog_ServesAvatar(t *testing.T) {
 	parts := []string{
 		"tone|PELE|color|", "eyes|OLHOS|color|", "hair|CABELO|style|", "hairColor|COR DO CABELO|color|",
 		"beard|BARBA|style|", "glasses|ÓCULOS|style|",
-		"top|ROUPA|style|torso", "topColor|COR DA ROUPA|color|", "bottomColor|CALÇA|color|", "laptop|NOTEBOOK|style|notebook",
+		"top|ROUPA|style|torso", "topColor|COR DA ROUPA|color|", "bottomColor|CALÇA|color|", "laptop|NOTEBOOK|style|",
 	}
 	if len(a.Parts) != len(parts) {
 		t.Fatalf("parts = %d, want %d", len(a.Parts), len(parts))
@@ -1015,7 +1015,9 @@ func TestCatalog_ServesAvatar(t *testing.T) {
 		"laptop_basico|laptop|NOTEBOOK|laptop-basico|fixed|-|-",
 		"laptop_preto|laptop|NOTEBOOK PRETO|laptop-preto|fixed|-|-",
 		"laptop_gamer|laptop|NOTEBOOK GAMER RGB|laptop-gamer|fixed|gems 40|-",
-		"laptop_macbook|laptop|MACBOOK PRO|laptop-macbook|fixed,gearOnly|-|-",
+		"laptop_raro|laptop|NOTEBOOK RARO|laptop-raro|fixed,gearOnly|-|-",
+		"laptop_epico|laptop|NOTEBOOK ÉPICO|laptop-epico|fixed,gearOnly|-|-",
+		"laptop_lendario|laptop|NOTEBOOK LENDÁRIO|laptop-lendario|fixed,gearOnly|-|-",
 	}
 	if len(a.Options) != len(options) {
 		t.Fatalf("options = %d, want %d", len(a.Options), len(options))
@@ -1086,7 +1088,6 @@ func TestCatalog_ServesGearLooks(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := map[string]string{
-		"macbook":      `{"part":"laptop","option":"laptop_macbook"}`,
 		"moletom":      `{"part":"top","option":"top_moletom_gear"}`,
 		"hoodie_trace": `{"part":"top","option":"top_hoodie_trace"}`,
 	}
@@ -1112,6 +1113,16 @@ func validRamp(r []string) bool {
 		}
 	}
 	return true
+}
+
+// rarityLaptop is a notebook-band look: gear-only so the editor cannot pick it, and not the look of a gear piece.
+func rarityLaptop(c *catalog.Catalog, id string) bool {
+	for _, r := range c.Notebook.Rarities {
+		if r.Look == id {
+			return true
+		}
+	}
+	return false
 }
 
 // Avatar C3: every reference inside avatar.json and from shop.json lands on a valid part/option.
@@ -1208,7 +1219,7 @@ func TestCatalog_AvatarReferencesCatalog(t *testing.T) {
 		dressed[g.Look.Option] = true
 	}
 	for _, o := range c.Avatar.Options {
-		if o.GearOnly && !dressed[o.ID] {
+		if o.GearOnly && !dressed[o.ID] && !rarityLaptop(c, o.ID) {
 			t.Errorf("gear-only option %s is the look of no gear", o.ID)
 		}
 	}
@@ -1362,4 +1373,131 @@ func TestCatalog_EnemiesInSkipsBosses(t *testing.T) {
 			t.Errorf("%s: EnemiesIn = %v, want %v", region, have, ids)
 		}
 	}
+}
+
+func TestCatalog_GearSlots(t *testing.T) {
+	c := catalog.Default()
+	want := []string{"cabeca", "oculos", "brinco", "colar", "torso", "cinto", "pernas", "pe", "maos", "acessorio", "bebida"}
+	if len(c.GearSlots) != len(want) {
+		t.Fatalf("gearSlots = %d, want %d", len(c.GearSlots), len(want))
+	}
+	for i, id := range want {
+		if c.GearSlots[i].ID != id {
+			t.Errorf("slot %d = %s, want %s", i, c.GearSlots[i].ID, id)
+		}
+	}
+}
+
+func TestCatalog_NotebookGearMoved(t *testing.T) {
+	c := catalog.Default()
+	for _, id := range []string{"macbook", "monitor"} {
+		g, ok := c.GearItem(id)
+		if !ok || g.Slot != "acessorio" || g.Look != nil {
+			t.Errorf("%s = slot %s look %v, want acessorio and no look", id, g.Slot, g.Look)
+		}
+	}
+}
+
+func TestCatalog_LaptopRarityOptions(t *testing.T) {
+	c := catalog.Default()
+	var laptop catalog.AvatarPart
+	for _, p := range c.Avatar.Parts {
+		if p.ID == "laptop" {
+			laptop = p
+		}
+	}
+	if laptop.GearSlot != "" {
+		t.Errorf("laptop gearSlot = %q, want empty", laptop.GearSlot)
+	}
+	if _, ok := c.AvatarOption("laptop_macbook"); ok {
+		t.Error("laptop_macbook still exists")
+	}
+	want := map[string]string{"laptop_raro": "laptop-raro", "laptop_epico": "laptop-epico", "laptop_lendario": "laptop-lendario"}
+	for id, layer := range want {
+		o, ok := c.AvatarOption(id)
+		if !ok || o.Part != "laptop" || o.Layer != layer || !o.Fixed || !o.GearOnly {
+			t.Errorf("%s = %+v, want part laptop layer %s fixed gearOnly", id, o, layer)
+		}
+	}
+}
+
+func TestCatalog_Notebook(t *testing.T) {
+	env := apptest.New(t)
+	var body struct {
+		Notebook catalog.Notebook `json:"notebook"`
+	}
+	if err := json.Unmarshal(env.Do(http.MethodGet, "/api/catalog", nil).Body.Bytes(), &body); err != nil {
+		t.Fatal(err)
+	}
+	nb := body.Notebook
+	rarities := []string{"basico|BÁSICO|1|", "raro|RARO|4|laptop_raro", "epico|ÉPICO|7|laptop_epico", "lendario|LENDÁRIO|10|laptop_lendario"}
+	if len(nb.Rarities) != len(rarities) {
+		t.Fatalf("rarities = %d, want %d", len(nb.Rarities), len(rarities))
+	}
+	for i, r := range nb.Rarities {
+		if got := fmt.Sprintf("%s|%s|%d|%s", r.ID, r.Name, r.From, r.Look); got != rarities[i] {
+			t.Errorf("rarity %d = %s, want %s", i, got, rarities[i])
+		}
+	}
+	levels := []struct {
+		cost *int
+		dmg  int
+		hp   int
+	}{
+		{nil, 0, 0}, {ptr(100), 1, 5}, {ptr(150), 2, 10}, {ptr(250), 3, 15}, {ptr(350), 4, 20},
+		{ptr(450), 5, 25}, {ptr(600), 6, 30}, {ptr(750), 7, 35}, {ptr(900), 8, 40}, {ptr(1200), 10, 50},
+	}
+	if len(nb.Levels) != len(levels) {
+		t.Fatalf("levels = %d, want %d", len(nb.Levels), len(levels))
+	}
+	for i, lv := range nb.Levels {
+		if !sameCost(lv.Cost, levels[i].cost) || lv.Dmg != levels[i].dmg || lv.HP != levels[i].hp {
+			t.Errorf("level %d = cost %v dmg %d hp %d, want cost %v dmg %d hp %d", i+1, lv.Cost, lv.Dmg, lv.HP, levels[i].cost, levels[i].dmg, levels[i].hp)
+		}
+	}
+	ups := []struct {
+		id, name, desc, bonus string
+		steps                 string
+	}{
+		{"cpu_turbo", "CPU TURBO", "Aumenta o dano no Bug Fight.", "dmg", "1,300,2|4,500,4|7,800,6"},
+		{"bateria", "BATERIA ESTENDIDA", "Aumenta o HP máximo.", "hp", "1,250,10|4,400,20|7,650,30"},
+		{"ssd_nvme", "SSD NVME", "Aumenta o SP máximo no Bug Fight.", "sp", "1,300,5|4,450,10|7,700,15"},
+		{"rede_5g", "CONECTIVIDADE 5G", "Recupera mais SP a cada turno.", "spregen", "1,200,1|4,350,2|7,550,3"},
+	}
+	if len(nb.Upgrades) != len(ups) {
+		t.Fatalf("upgrades = %d, want %d", len(nb.Upgrades), len(ups))
+	}
+	for i, u := range nb.Upgrades {
+		w := ups[i]
+		got := u.ID + "|" + u.Name + "|" + u.Description + "|" + u.Bonus + "|" + steps(u)
+		if got != w.id+"|"+w.name+"|"+w.desc+"|"+w.bonus+"|"+w.steps {
+			t.Errorf("upgrade %d = %s, want %s|%s|%s|%s|%s", i, got, w.id, w.name, w.desc, w.bonus, w.steps)
+		}
+	}
+}
+
+func TestNotebookRarity_Bands(t *testing.T) {
+	c := catalog.Default()
+	for level, want := range map[int]string{1: "basico", 3: "basico", 4: "raro", 6: "raro", 7: "epico", 9: "epico", 10: "lendario", 12: "lendario"} {
+		if got := c.NotebookRarity(level); got != want {
+			t.Errorf("level %d rarity = %s, want %s", level, got, want)
+		}
+	}
+}
+
+func ptr(n int) *int { return &n }
+
+func sameCost(a, b *int) bool {
+	if a == nil || b == nil {
+		return a == nil && b == nil
+	}
+	return *a == *b
+}
+
+func steps(u catalog.NotebookUpgrade) string {
+	parts := make([]string, len(u.Levels))
+	for i, s := range u.Levels {
+		parts[i] = fmt.Sprintf("%d,%d,%d", s.MinLevel, s.Cost, s.Amount)
+	}
+	return strings.Join(parts, "|")
 }

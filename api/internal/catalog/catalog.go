@@ -298,6 +298,44 @@ type Avatar struct {
 	Defaults map[string]string `json:"defaults"`
 }
 
+// NotebookRarity is the band a notebook level falls in. Look is empty for the basic band.
+type NotebookRarity struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	From int    `json:"from"`
+	Look string `json:"look,omitempty"`
+}
+
+// NotebookLevel is the cumulative stats at one notebook level. Cost is nil at level 1.
+type NotebookLevel struct {
+	Cost *int `json:"cost"`
+	Dmg  int  `json:"dmg"`
+	HP   int  `json:"hp"`
+}
+
+// NotebookUpgradeLevel is one bought step of an upgrade.
+type NotebookUpgradeLevel struct {
+	MinLevel int `json:"minLevel"`
+	Cost     int `json:"cost"`
+	Amount   int `json:"amount"`
+}
+
+// NotebookUpgrade is one of the four parts a dev buys for the notebook.
+type NotebookUpgrade struct {
+	ID          string                 `json:"id"`
+	Name        string                 `json:"name"`
+	Description string                 `json:"description"`
+	Bonus       string                 `json:"bonus"`
+	Levels      []NotebookUpgradeLevel `json:"levels"`
+}
+
+// Notebook is the weapon catalog: rarity bands, cumulative levels and upgrades.
+type Notebook struct {
+	Rarities []NotebookRarity  `json:"rarities"`
+	Levels   []NotebookLevel   `json:"levels"`
+	Upgrades []NotebookUpgrade `json:"upgrades"`
+}
+
 type ItemQuantity struct {
 	Item     string `json:"item"`
 	Quantity int    `json:"quantity"`
@@ -353,6 +391,7 @@ type Catalog struct {
 	Rack       Rack
 	Recipes    []Recipe
 	Avatar     Avatar
+	Notebook   Notebook
 	body       []byte
 }
 
@@ -472,6 +511,14 @@ func Load() (*Catalog, error) {
 		return nil, fmt.Errorf("avatar.json: %w", err)
 	}
 
+	raw, err = data.Files.ReadFile("notebook.json")
+	if err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(raw, &c.Notebook); err != nil {
+		return nil, fmt.Errorf("notebook.json: %w", err)
+	}
+
 	c.body, err = json.Marshal(struct {
 		Version      string        `json:"version"`
 		Regions      []Region      `json:"regions"`
@@ -490,8 +537,9 @@ func Load() (*Catalog, error) {
 		Rack         Rack          `json:"rack"`
 		Recipes      []Recipe      `json:"recipes"`
 		Avatar       Avatar        `json:"avatar"`
+		Notebook     Notebook      `json:"notebook"`
 	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees, c.SkillSlots, c.Enemies, c.Commands, c.Items, c.Combat,
-		c.GearSlots, c.Gear, c.Skins, c.Office, c.Rack, c.Recipes, c.Avatar})
+		c.GearSlots, c.Gear, c.Skins, c.Office, c.Rack, c.Recipes, c.Avatar, c.Notebook})
 	if err != nil {
 		return nil, err
 	}
@@ -736,6 +784,40 @@ func (c *Catalog) AvatarOptionPosition(id string) int {
 		}
 	}
 	return len(c.Avatar.Options)
+}
+
+// NotebookRarity is the last band whose From is at or below level. A level past the last band stays there.
+func (c *Catalog) NotebookRarity(level int) string {
+	id := ""
+	for _, r := range c.Notebook.Rarities {
+		if r.From <= level {
+			id = r.ID
+		}
+	}
+	return id
+}
+
+// NotebookUpgrade returns the upgrade with id.
+func (c *Catalog) NotebookUpgrade(id string) (NotebookUpgrade, bool) {
+	for _, u := range c.Notebook.Upgrades {
+		if u.ID == id {
+			return u, true
+		}
+	}
+	return NotebookUpgrade{}, false
+}
+
+// NotebookLevelAt is the cumulative stats of level, clamped to the last catalog level.
+// Level below 1 has none.
+func (c *Catalog) NotebookLevelAt(level int) (NotebookLevel, bool) {
+	n := len(c.Notebook.Levels)
+	if level < 1 || n == 0 {
+		return NotebookLevel{}, false
+	}
+	if level > n {
+		level = n
+	}
+	return c.Notebook.Levels[level-1], true
 }
 
 // SkillBonus sums the bonus of one type ("hp", "sp", "dmg") over the equipped skill ids (nil

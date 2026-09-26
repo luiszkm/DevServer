@@ -15,6 +15,7 @@ import (
 	"devserver/api/internal/catalog"
 	"devserver/api/internal/deploy"
 	"devserver/api/internal/httpx"
+	"devserver/api/internal/notebook"
 	"devserver/api/internal/office"
 	"devserver/api/internal/player"
 	"devserver/api/internal/rack"
@@ -59,6 +60,7 @@ func NewRouter(d Deps) *chi.Mux {
 	shopH := &shop.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 	officeH := &office.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 	rackH := &rack.Handlers{Pool: d.Pool, Catalog: d.Catalog}
+	notebookH := &notebook.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 	avatarH := &avatar.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 
 	r.Get("/api/auth/github/login", h(authH.Login))
@@ -97,6 +99,8 @@ func NewRouter(d Deps) *chi.Mux {
 		pr.Post("/api/me/office/{zone}/{position}/remove", h(officeH.Remove))
 		pr.Post("/api/me/rack", h(rackH.Buy))
 		pr.Post("/api/me/rack/{slot}/remove", h(rackH.Remove))
+		pr.Post("/api/me/notebook/enhance", h(notebookH.Enhance))
+		pr.Post("/api/me/notebook/upgrades/{id}", h(notebookH.Upgrade))
 		pr.Put("/api/me/appearance", h(avatarH.Update))
 		pr.Post("/api/me/shop/looks/{id}", h(avatarH.Buy))
 		pr.Post("/api/me/body", h(avatarH.ChangeBody))

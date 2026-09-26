@@ -34,6 +34,8 @@ export type Player = {
   body: string;
   /** Every avatar part, with the chosen option id (catalog defaults fill what was never picked). */
   appearance: Record<string, string>;
+  /** The weapon: stored level, derived rarity, and every catalog upgrade (0 when never bought). */
+  notebook: { level: number; rarity: string; upgrades: Record<string, number> };
   /** Owned priced avatar options, catalog order. */
   looks: string[];
   /** Nodes cleared per region. A missing region means none (AD-021). */
@@ -217,6 +219,17 @@ export type RackComponent = {
 
 export type Rack = { slots: number; stats: RackStat[]; components: RackComponent[] };
 
+export type NotebookRarity = { id: string; name: string; from: number; look?: string };
+export type NotebookLevel = { cost: number | null; dmg: number; hp: number };
+export type NotebookUpgrade = {
+  id: string;
+  name: string;
+  description: string;
+  bonus: "dmg" | "hp" | "sp" | "spregen";
+  levels: { minLevel: number; cost: number; amount: number }[];
+};
+export type NotebookCatalog = { rarities: NotebookRarity[]; levels: NotebookLevel[]; upgrades: NotebookUpgrade[] };
+
 /** A forge recipe: its ingredients, plus an optional price, make one unit of its output. */
 export type Recipe = {
   id: string;
@@ -244,6 +257,7 @@ export type Catalog = {
   office: Office;
   rack: Rack;
   recipes: Recipe[];
+  notebook: NotebookCatalog;
 };
 
 export type Battle = {

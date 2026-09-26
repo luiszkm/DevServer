@@ -241,6 +241,7 @@ func TestUpdateAppearance_Refused(t *testing.T) {
 		{"unknown option", map[string]string{"hair": "hair_gone"}, httpx.ErrUnknownLook},
 		{"option of another part", map[string]string{"hair": "hair_preto"}, httpx.ErrUnknownLook},
 		{"gear-only option", map[string]string{"top": "top_hoodie_trace"}, httpx.ErrGearOnly},
+		{"rarity laptop", map[string]string{"laptop": "laptop_raro"}, httpx.ErrGearOnly},
 		{"priced option not bought", map[string]string{"hair": "hair_moicano"}, httpx.ErrNotOwned},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -306,7 +307,7 @@ func TestBuyLook_Refused(t *testing.T) {
 	}{
 		{"unknown option", "hair_gone", httpx.ErrLookNotFound},
 		{"free option", "hair_curto", httpx.ErrNotForSale},
-		{"gear-only option", "laptop_macbook", httpx.ErrNotForSale},
+		{"gear-only option", "laptop_raro", httpx.ErrNotForSale},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			g := *f
@@ -394,5 +395,13 @@ func TestBuyLook_OneRowPerLook(t *testing.T) {
 	var pgErr *pgconn.PgError
 	if !errors.As(err, &pgErr) || pgErr.Code != "23505" {
 		t.Fatalf("duplicate insert: %v, want unique violation 23505", err)
+	}
+}
+
+func TestUpdate_RarityLaptopIsGearOnly(t *testing.T) {
+	f := newFixture(t)
+	rec := f.pick(map[string]string{"laptop": "laptop_raro"})
+	if rec.Code != http.StatusUnprocessableEntity || apptest.ErrorCode(t, rec) != "gear_only" {
+		t.Fatalf("laptop_raro: %d %s, want 422 gear_only", rec.Code, rec.Body.String())
 	}
 }

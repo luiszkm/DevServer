@@ -1,0 +1,41 @@
+{
+ "name": "laptop-raro-f",
+ "category": "sprite",
+ "size": [
+  48,
+  64
+ ],
+ "_design": "Notebook raro: the gamer laptop silhouette, screen recolored for the rarity.",
+ "legend": {
+  "o": "ink",
+  "m": "ink.1",
+  "n": "ink.2",
+  "M": "net.1",
+  "r": "net.2",
+  "R": "net.3",
+  "g": "net.2",
+  "b": "net.3",
+  "p": "slime.3"
+ },
+ "layers": [
+  {
+   "grid": [
+    "......oooooooooooo",
+    "......oMMMMMMMMMMo",
+    "......oMnnnnnnnnMo",
+    "......oMnnRRnnnnMo",
+    "......oMnnRRnnnnMo",
+    "......oMnnnnnnnnMo",
+    "......oMnnnnnnnnMo",
+    "oooooooooooooooooo",
+    "oggbbpprrggbbpprro",
+    "ommmmmmmmmmmmmmmmo",
+    "oooooooooooooooooo"
+   ],
+   "at": [
+    28,
+    31
+   ]
+  }
+ ]
+}

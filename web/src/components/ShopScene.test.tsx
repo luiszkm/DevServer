@@ -48,7 +48,7 @@ const dressed = () =>
     gems: 20,
     coins: 100,
     gear: ["macbook", "moletom"],
-    equipment: { notebook: "macbook", bebida: null, torso: null, acessorio: null },
+    equipment: { bebida: null, torso: null, acessorio: "macbook" },
     skins: ["default", "neon", "shadow"],
     skin: "neon",
   });
@@ -122,7 +122,7 @@ describe("ShopScene", () => {
 
     await userEvent.click(await show("macbook"));
     expect(detail()).toHaveTextContent("MACBOOK PRO");
-    expect(within(detail()).getByText("RARO · NOTEBOOK")).toBeInTheDocument();
+    expect(within(detail()).getByText("RARO · ACESSÓRIO")).toBeInTheDocument();
     expect(within(detail()).getByText("bônus: +8% de dano")).toBeInTheDocument();
     expect(within(detail()).getByText("custo: já possui")).toBeInTheDocument();
     expect(detailButton("EQUIPADO")).toBeDisabled();
@@ -148,7 +148,7 @@ describe("ShopScene", () => {
   it("detail button per state (can pay)", async () => {
     renderShop({ ...dressed(), gems: 500 });
     await userEvent.click(await show("macbook"));
-    expect(within(detail()).getByText("RARO · NOTEBOOK")).toBeInTheDocument();
+    expect(within(detail()).getByText("RARO · ACESSÓRIO")).toBeInTheDocument();
     await userEvent.click(await show("monitor"));
     expect(detailButton("COMPRAR E EQUIPAR")).toBeEnabled();
     await userEvent.click(await show("fone"));
@@ -163,7 +163,7 @@ describe("ShopScene", () => {
   it("detail button per state (not owned)", async () => {
     renderShop(player({ gems: 500 }));
     await userEvent.click(await show("macbook"));
-    expect(within(detail()).getByText("RARO · NOTEBOOK")).toBeInTheDocument();
+    expect(within(detail()).getByText("RARO · ACESSÓRIO")).toBeInTheDocument();
     expect(within(detail()).getByText("bônus: +8% de dano")).toBeInTheDocument();
     expect(within(detail()).getByText("custo: 120 GEMS")).toBeInTheDocument();
     expect(detailButton("COMPRAR E EQUIPAR")).toBeEnabled();
