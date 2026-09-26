@@ -555,8 +555,26 @@ describe("ShopScene applied assets", () => {
   it("button icon on FORJAR", async () => {
     renderShop(player({ inventory: RECIPES[0].ingredients.map((m) => ({ item: m.item, quantity: m.quantity })), coins: 9999, gems: 9999 }));
     await userEvent.click(recipe(RECIPES[0].id));
-    const forge = within(detail()).getByRole("button", { name: /^FORJAR/ });
+    const forge = within(detail()).getByRole("button", { name: "FORJAR" });
     expect(firstIcon(forge)).toBe("/art/icon/btn-build.png");
+  });
+
+  it("button icon on FORJAR E EQUIPAR", async () => {
+    const caneca = RECIPES.find((r) => r.id === "forja_caneca")!;
+    renderShop(player({ inventory: caneca.ingredients.map((m) => ({ item: m.item, quantity: m.quantity })), coins: 9999, gems: 9999 }));
+    await userEvent.click(recipe(caneca.id));
+    expect(firstIcon(within(detail()).getByRole("button", { name: "FORJAR E EQUIPAR" }))).toBe("/art/icon/btn-build.png");
+  });
+
+  // the decision's other rows: a label that neither buys nor forges carries no icon
+  it("button icon absent on EQUIPAR, EQUIPADO and a price shortfall", async () => {
+    renderShop(player({ gems: 0, coins: 0, gear: ["cafe"], equipment: { bebida: "cafe" } }));
+    await userEvent.click(card("cafe"));
+    expect(detailButton("EQUIPADO").querySelector("img")).toBeNull();
+    await userEvent.click(card("macbook"));
+    const short = within(detail()).getByRole("button");
+    expect(short.textContent).not.toMatch(/^COMPRAR/);
+    expect(short.querySelector("img")).toBeNull();
   });
 
   // assets-apply C14: rarity medals, table over the 5 rarities

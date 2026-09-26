@@ -235,6 +235,7 @@ describe("WorldScene applied assets", () => {
   it("button icon on VIAJAR ATÉ AQUI", () => {
     renderWorld(player({ level: 1, region: "vila" }));
     expectFirstIcon(button("FLORESTA DE LOGS"), "/art/icon/btn-start.png");
+    expect(button("FLORESTA DE LOGS")).toHaveAccessibleName("VIAJAR ATÉ AQUI");
     expect(button("CAVERNA DOS BUGS").querySelector('img[src="/art/icon/btn-start.png"]')).toBeNull();
   });
 

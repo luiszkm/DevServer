@@ -229,6 +229,12 @@ func TestCatalog_ServesCombat(t *testing.T) {
 	if len(b.Enemies) != 9 {
 		t.Fatalf("enemies = %d", len(b.Enemies))
 	}
+	glyphs := map[string]string{"slime": "(o.o)", "slime_verde": "(-.-)", "monstro": "{>_<}"}
+	for _, e := range b.Enemies {
+		if want, ok := glyphs[e.ID]; ok && e.Glyph != want {
+			t.Errorf("enemy %s glyph = %q, want %q", e.ID, e.Glyph, want)
+		}
+	}
 	ids := map[string]bool{}
 	for i, e := range b.Enemies {
 		if ids[e.ID] {

@@ -503,6 +503,7 @@ describe("AvatarScene applied assets", () => {
     const img = visual.firstElementChild!;
     expect(img.getAttribute("src")).toBe("/art/icon/btn-settings.png");
     expect(img.getAttribute("alt")).toBe("");
+    expect(img.getAttribute("width")).toBe("16");
     expect(visual.firstChild).toBe(img);
   });
 
@@ -512,6 +513,7 @@ describe("AvatarScene applied assets", () => {
     const label = document.querySelector('[data-slot="setup"] .avatar-slot-label')!;
     const img = label.firstElementChild!;
     expect(img.getAttribute("src")).toBe("/art/icon/ic-gear.png");
+    expect(img.getAttribute("alt")).toBe("");
     expect(img.getAttribute("width")).toBe("16");
     expect(label.firstChild).toBe(img);
   });
