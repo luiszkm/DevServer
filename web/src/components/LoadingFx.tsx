@@ -4,6 +4,8 @@ export function LoadingFx() {
 }
 
 /** A one-shot 4-frame effect strip at 3x (96x96), keyed by the caller so it replays. */
-export function FxOnce({ id }: { id: string }) {
-  return <span className="fx-once" data-fx={id} aria-hidden="true" style={{ backgroundImage: `url(/art/fx/${id}.png)` }} />;
+export function FxOnce({ id, className }: { id: string; className?: string }) {
+  return (
+    <span className={`fx-once ${className ?? ""}`} data-fx={id} aria-hidden="true" style={{ backgroundImage: `url(/art/fx/${id}.png)` }} />
+  );
 }

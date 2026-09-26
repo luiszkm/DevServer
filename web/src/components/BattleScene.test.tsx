@@ -408,6 +408,19 @@ describe("BattleScene turn playback", () => {
     expect(heroAnim()).toBe("jump");
   });
 
+  // assets-apply C19: dust at the hero's feet while it runs in, never on a cast
+  it("dust on the lunge beat", async () => {
+    await fightOneTurn([{ type: "damage", command: "fix", amount: 20 }], battle({ enemyHp: 40 }));
+    const dust = heroActor().querySelector('[data-fx="dust"]') as HTMLElement;
+    expect(dust).not.toBeNull();
+    expect(dust.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/dust.png)");
+  });
+
+  it("dust never on a cast beat", async () => {
+    await fightOneTurn([{ type: "heal", amount: 10 }], battle({ enemyHp: 40 }));
+    expect(heroActor().querySelector('[data-fx="dust"]')).toBeNull();
+  });
+
   it("plays the turn one event at a time", async () => {
     const { setPlayer, next } = await fightOneTurn(
       [{ type: "damage", command: "f1", amount: 20 }, { type: "counter", amount: 9 }],

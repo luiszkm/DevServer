@@ -40,7 +40,7 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "enemy"`
 
 ### S2 - todo ícone e peça de UI em uso · ~12 screen files · ~20k
 
-**C10** - In the browser, `.panel-wood` has computed `border-image-source` containing `/art/ui/ui-panel-wood.png` with slice `8 fill`, and `.bar` has `border-image-source` containing `/art/ui/ui-bar.png` (APL-03, AC 8, 9)
+**C10** - In the browser, `.panel-wood` has computed `border-image-source` containing `/art/ui/ui-panel-wood.png` with slice `8 fill`, and `.bar` has `border-image-source` containing `/art/ui/ui-bar.png` (APL-03, AC 8, 9) ✅
 Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "wood and bar"`
 
 **C11** - The six scene headers carry the class `panel-wood`: `.deploy-head`, `.battle-head`, `.skills-head`, `.shop-head`, `.office-head`, `.avatar-bag-head` (APL-03, AC 8) ✅
@@ -79,7 +79,7 @@ Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "rarity 
 **C16** - Each prop, `build-*` (except `build-flag`), `extra-*` (except `extra-bau`, `extra-bau-aberto`), tile and tile decal of the door 1 list of `assets` is reached by at least one spec in `web/art/background/**`, following `use` transitively (APL-04, AC 13) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "scene pieces"`
 
-**C17** - In the OFFICE, the PAREDE zone has inline `background-image` `url(/art/tile/tile-parede-madeira.png)` and the PISO zone has `url(/art/tile/tile-tabua.png)`. In the browser both have `background-size` `64px 64px` and `background-repeat` `repeat` (APL-04, AC 14)
+**C17** - In the OFFICE, the PAREDE zone has inline `background-image` `url(/art/tile/tile-parede-madeira.png)` and the PISO zone has `url(/art/tile/tile-tabua.png)`. In the browser both have `background-size` `64px 64px` and `background-repeat` `repeat` (APL-04, AC 14) ✅
 Proof: `cd web && npx vitest run src/components/OfficeScene.test.tsx -t "tiled zones"`
 Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "tiled office"`
 
@@ -88,21 +88,21 @@ Proof: `make art-check`
 
 ### S4 - efeitos restantes · BattleScene, SkillsScene, WorldScene · ~8k
 
-**C19** - During the `lunge` beat, the hero actor contains `[data-fx="dust"]` with `url(/art/fx/dust.png)`. During `cast` it has none (APL-05, AC 16)
+**C19** - During the `lunge` beat, the hero actor contains `[data-fx="dust"]` with `url(/art/fx/dust.png)`. During `cast` it has none (APL-05, AC 16) ✅
 Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "dust"`
 
-**C20** - WHEN unlocking a skill answers `200`, THEN the unlocked node contains `[data-fx="sparkle"]` with `url(/art/fx/sparkle.png)`. WHEN it answers `409`, THEN no node contains one (APL-05, AC 17)
+**C20** - WHEN unlocking a skill answers `200`, THEN the unlocked node contains `[data-fx="sparkle"]` with `url(/art/fx/sparkle.png)`. WHEN it answers `409`, THEN no node contains one (APL-05, AC 17) ✅
 Proof: `cd web && npx vitest run src/components/SkillsScene.test.tsx -t "sparkle"`
 
-**C21** - The MUNDO contains exactly one `span.fx-fire` `aria-hidden="true"` with `url(/art/fx/fire.png)` (APL-05, AC 18)
+**C21** - The MUNDO contains exactly one `span.fx-fire` `aria-hidden="true"` with `url(/art/fx/fire.png)` (APL-05, AC 18) ✅
 Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "campfire"`
 
-**C22** - In the browser, `.fx-fire` has `animation-iteration-count` `infinite`. With `prefers-reduced-motion: reduce`, `animation-name` is `none` (APL-05, AC 18)
+**C22** - In the browser, `.fx-fire` has `animation-iteration-count` `infinite`. With `prefers-reduced-motion: reduce`, `animation-name` is `none` (APL-05, AC 18) ✅
 Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "fire loops"`
 
 ### S5 - nada sobra · art.test · ~3k
 
-**C23** - Every asset of the door 1 literal list of `assets` has at least one consumer, meaning its name is referenced by a file under `web/src` or it is reached from a spec in `web/art/background/**`. The test prints the orphans, and the count is `0` (APL-06, AC 19)
+**C23** - Every asset of the door 1 literal list of `assets` has at least one consumer, meaning its name is referenced by a file under `web/src` or it is reached from a spec in `web/art/background/**`. The test prints the orphans, and the count is `0` (APL-06, AC 19) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "no orphan"`
 
 **C24** - The consumer test fails on a library asset with no consumer: its own orphan function returns `["x"]` for a fixture asset `x` that nothing references (APL-06, AC 19) ✅
@@ -113,7 +113,7 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "orphan detector"`
 **C25** - The existing Go suites still pass with the new model: battle start per region, drops, and the catalog, under the updated fixtures (APL-01, AC 1-5) ✅
 Proof: `cd api && go test ./internal/battle ./internal/catalog`
 
-**C26** - The Bug Fight e2e fights the enemy the server picked, whose name comes from `battle.enemy`. `e2e/battle.spec.ts` passes (APL-02, AC 7)
+**C26** - The Bug Fight e2e fights the enemy the server picked, whose name comes from `battle.enemy`. `e2e/battle.spec.ts` passes (APL-02, AC 7) ✅
 Proof: `cd web && npx playwright test e2e/battle.spec.ts`
 
 **C27** - `.specs/STATE.md` has `AD-017` (several enemies per region, drawn at start through `Deps.Rand`, battle stores `enemy`) with status `active` (APL-01; door 1) ✅
@@ -180,3 +180,8 @@ Cost: 6 new Go tests, 1 new migration test, about 12 new screen tests, 3 new e2e
 Intended split, with the arithmetic, written before any code:
 
 - S1 = ~15k (catalog.go, combat.json, battle handlers/tests about 45 KB, BattleScene about 20 KB). S2-S5 = ~45k (screens, globals.css, about 40 background specs). Total ~60k, under the 150k budget, so one builder and no handoff.
+
+- **Boundary:** C1-C27 closed on `feat/assets-apply` in one builder, as planned
+- **Settled mid-build:** two pre-existing tests relied on "a start consumes no draw" and on a `battles` insert without `enemy` (`rack_test.go` damage-bonus test, `battle_test.go` `TestTables_Constraints`); both keep their claim with the draw after the start and the new column filled. The old fallback assertion on the AVATAR setup slot is scoped to the gear's own box, since the label now carries `ic-gear`. The battle e2e reads the drawn enemy from `GET /api/me/battle`. The scene pieces were moved out of the world map (every 32px sprite is 128px there) into the battle backgrounds and `scene-floresta`; the map keeps only the campfire under the fire strip
+- **Abandoned:** waterfall and pond on the world map (they covered the MERCADO marker); a wainscot of `tile-parede-madeira` across the office floor (it cut the desks)
+

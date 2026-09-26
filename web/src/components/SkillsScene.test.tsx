@@ -222,3 +222,25 @@ describe("SkillsScene applied assets", () => {
     expectFirstIcon(title, `/art/icon/${icon}.png`);
   });
 });
+
+describe("SkillsScene sparkle", () => {
+  // assets-apply C20
+  it("sparkle on the node unlocked with 200", async () => {
+    mockFetch({ "POST /api/me/skills/b1/unlock": json(200, { player: player({ skills: ["b1"], skillPoints: 0 }) }) });
+    renderScene();
+    await userEvent.click(node("b1"));
+    await screen.findByText(/API REST desbloqueada/);
+    const fx = node("b1").querySelector('[data-fx="sparkle"]') as HTMLElement;
+    expect(fx).not.toBeNull();
+    expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/sparkle.png)");
+    expect(document.querySelectorAll('[data-fx="sparkle"]')).toHaveLength(1);
+  });
+
+  it("sparkle never on a 409", async () => {
+    mockFetch({ "POST /api/me/skills/b1/unlock": json(409, { error: { code: "no_skill_points", message: "sem pontos" } }) });
+    renderScene();
+    await userEvent.click(node("b1"));
+    await screen.findByText(/sem pontos/);
+    expect(document.querySelector('[data-fx="sparkle"]')).toBeNull();
+  });
+});

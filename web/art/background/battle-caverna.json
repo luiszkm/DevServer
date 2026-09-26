@@ -715,6 +715,71 @@
    ]
   },
   {
+   "use": "../tile/tile-cachoeira.json",
+   "at": [
+    166,
+    64
+   ],
+   "clip": [
+    0,
+    0,
+    32,
+    32
+   ]
+  },
+  {
+   "use": "../tile/tile-cachoeira.json",
+   "at": [
+    166,
+    96
+   ],
+   "clip": [
+    0,
+    0,
+    32,
+    32
+   ]
+  },
+  {
+   "use": "../tile/tile-agua.json",
+   "at": [
+    150,
+    128
+   ],
+   "clip": [
+    0,
+    0,
+    32,
+    32
+   ]
+  },
+  {
+   "use": "../tile/tile-agua.json",
+   "at": [
+    182,
+    128
+   ],
+   "clip": [
+    0,
+    0,
+    32,
+    32
+   ]
+  },
+  {
+   "use": "../tile/tile-agua-funda.json",
+   "at": [
+    166,
+    160
+   ],
+   "clip": [
+    0,
+    0,
+    32,
+    32
+   ]
+  },
+  {
    "use": "../sprite/prop-gema-pedestal.json",
    "at": [
     30,

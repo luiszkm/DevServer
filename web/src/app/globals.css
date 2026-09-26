@@ -233,6 +233,11 @@ button { font-family: inherit; }
 @keyframes fx-loop { to { background-position: -128px 0; } }
 .fx-once { position: absolute; left: 50%; top: 50%; width: 96px; height: 96px; margin: -48px 0 0 -48px; background: no-repeat 0 0 / 384px 96px; image-rendering: pixelated; pointer-events: none; animation: fx-play .4s steps(4) forwards; }
 .node-marker { position: relative; }
+.fx-dust { top: auto; bottom: -30px; }
+.skill-node { position: relative; }
+/* the world background is centred at 4x: art (x, y) sits at 50% + (4x - 640, 4y - 360)px; fire over the campfire at (112, 126) */
+.fx-fire { position: absolute; left: calc(50% - 160px); top: calc(50% + 164px); width: 64px; height: 64px; background: no-repeat 0 0 / 256px 64px; image-rendering: pixelated; pointer-events: none; animation: fx-fire .5s steps(4) infinite; }
+@keyframes fx-fire { to { background-position: -256px 0; } }
 .node-flag { position: absolute; left: 70%; bottom: 60%; }
 .map-hero { position: absolute; right: 100%; bottom: 0; margin-right: 4px; pointer-events: none; }
 .deploy-hero { display: flex; justify-content: center; }
@@ -259,6 +264,7 @@ button { font-family: inherit; }
   .battle-stage, .battle-actor, .battle-float, .battle-fx { animation: none !important; }
   .battle-fx { display: none; }
   .fx-loading { animation: none; }
+  .fx-fire { animation: none; }
   .fx-once { display: none; }
   .battle-enemy-card .bar > div, .battle-hero-bar > div { transition: none; }
 }

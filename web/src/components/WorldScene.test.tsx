@@ -248,3 +248,15 @@ describe("WorldScene applied assets", () => {
     else expect(chip.querySelector("img")).toBeNull();
   });
 });
+
+describe("WorldScene campfire", () => {
+  // assets-apply C21
+  it("campfire strip over the map fire", () => {
+    renderWorld(player());
+    const fires = document.querySelectorAll("span.fx-fire");
+    expect(fires).toHaveLength(1);
+    const fire = fires[0] as HTMLElement;
+    expect(fire.getAttribute("aria-hidden")).toBe("true");
+    expect(fire.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/fire.png)");
+  });
+});

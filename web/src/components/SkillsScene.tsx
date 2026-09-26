@@ -4,6 +4,7 @@ import { useState } from "react";
 import { post } from "@/lib/api";
 import type { Player, SkillNode } from "@/lib/types";
 import { GameArt } from "./GameArt";
+import { FxOnce } from "./LoadingFx";
 import { useGame } from "./GameContext";
 
 type NodeState = "ATIVA" | "1 PT" | "BLOQ.";
@@ -15,6 +16,8 @@ export function SkillsScene() {
   const { player, catalog, setPlayer } = useGame();
   const [message, setMessage] = useState("> gaste pontos para desbloquear a primeira camada de cada trilha.");
   const [pending, setPending] = useState(false);
+  // The node just unlocked with 200; `key` replays its sparkle strip.
+  const [sparkled, setSparkled] = useState<{ id: string; key: number } | null>(null);
 
   const active = catalog.skillTrees.flatMap((t) => t.nodes).filter((n) => player.skills.includes(n.id));
   const bonus = (type: SkillNode["bonus"]["type"]) =>
@@ -26,6 +29,7 @@ export function SkillsScene() {
       const r = await post<{ player: Player }>(`/api/me/skills/${node.id}/unlock`);
       if (!r.ok) return setMessage(`> ${r.error?.message ?? "erro ao desbloquear"}`);
       setPlayer(r.data.player);
+      setSparkled((s) => ({ id: node.id, key: (s?.key ?? 0) + 1 }));
       setMessage(`> ${node.name} desbloqueada · ${node.description}`);
     } catch {
       setMessage("> SERVIDOR FORA DO AR");
@@ -67,6 +71,7 @@ export function SkillsScene() {
                   <span className="pixel skill-glyph">
                     <GameArt kind="skill" id={node.id} scale={2} alt="" fallback={node.glyph} />
                   </span>
+                  {sparkled?.id === node.id && <FxOnce key={sparkled.key} id="sparkle" />}
                   <span className="skill-text">
                     <span className="pixel skill-name">{node.name}</span>
                     <span className="term">{node.description}</span>

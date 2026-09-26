@@ -7,7 +7,7 @@ import { beatOf, type Beat } from "@/lib/battleFx";
 import { eventText } from "@/lib/battleLog";
 import type { Battle, BattleEvent, Player } from "@/lib/types";
 import { GameArt, nativeSize } from "./GameArt";
-import { LoadingFx } from "./LoadingFx";
+import { FxOnce, LoadingFx } from "./LoadingFx";
 import { useGame } from "./GameContext";
 import { HeroAvatar } from "./HeroAvatar";
 
@@ -274,6 +274,7 @@ export function BattleScene() {
         <div className={`battle-actor battle-hero-actor${beat?.hero ? ` anim-${beat.hero}` : ""}`} aria-label="herói na arena">
           <HeroAvatar look={player} scale={2} className="battle-hero-sprite" anim={heroAnim(beat, battle.status)} />
           {effects("hero")}
+          {beat?.hero === "lunge" && <FxOnce key={`dust-${beat.key}`} id="dust" className="fx-dust" />}
         </div>
         <div className={`battle-actor battle-enemy-actor${beat?.enemy ? ` anim-${beat.enemy}` : ""}${down ? " is-down" : ""}`}>
           <div className="battle-sprite pixel">

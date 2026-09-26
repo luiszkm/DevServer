@@ -74,6 +74,8 @@ export function WorldScene() {
             </div>
           );
         })}
+        {/* the campfire of the world background (art 112,126) burns in a loop */}
+        <span className="fx-fire" aria-hidden="true" style={{ backgroundImage: "url(/art/fx/fire.png)" }} />
         <div className="term world-current">{`região atual: ${current?.name ?? player.region}`}</div>
       </div>
       <div className="world-list">

@@ -660,43 +660,43 @@
   {
    "use": "../sprite/extra-lampada.json",
    "at": [
-    2,
+    0,
     96
    ]
   },
   {
    "use": "../sprite/extra-fogueira.json",
    "at": [
-    30,
+    22,
     96
    ]
   },
   {
    "use": "../sprite/extra-banco.json",
    "at": [
-    58,
+    150,
     98
+   ]
+  },
+  {
+   "use": "../sprite/tile-cerca.json",
+   "at": [
+    178,
+    100
    ]
   },
   {
    "use": "../sprite/extra-placa.json",
    "at": [
-    190,
+    198,
     96
    ]
   },
   {
    "use": "../sprite/extra-bandeira.json",
    "at": [
-    208,
+    212,
     92
-   ]
-  },
-  {
-   "use": "../sprite/tile-cerca.json",
-   "at": [
-    96,
-    100
    ]
   },
   {
