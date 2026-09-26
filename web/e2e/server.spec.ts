@@ -4,7 +4,7 @@ import { newDev } from "./helpers";
 // C42
 test("buy and remove", async ({ page }) => {
   await newDev(page);
-  const hud = page.getByRole("contentinfo", { name: "HUD" });
+  const hud = page.getByRole("banner", { name: "HUD" });
   const coins = hud.locator(".hud-card", { hasText: "COINS" }).locator(".hud-value");
   await expect(coins).toHaveText("100");
 

@@ -13,7 +13,17 @@ export type ArtKind =
 const SPRITE_KINDS: ArtKind[] = ["enemy", "prop", "build", "mob", "npc", "extra"];
 
 // Sprites bigger than the 32x32 grid: the bosses, and the server hut (plan assumptions: native sizes).
-const BIG_SPRITES: Record<string, number> = { "enemy-torre": 48, "enemy-nuvem": 64, "build-server-hut": 96 };
+const BIG_SPRITES: Record<string, number> = {
+  "enemy-torre": 48,
+  "enemy-nuvem": 64,
+  "enemy-boss_vila": 48,
+  "enemy-boss_floresta": 48,
+  "enemy-boss_mercado": 48,
+  "enemy-boss_caverna": 48,
+  "enemy-boss_torre": 48,
+  "enemy-boss_nuvem": 48,
+  "build-server-hut": 96,
+};
 
 export function artSrc(kind: ArtKind, id: string) {
   return `/art/${SPRITE_KINDS.includes(kind) ? "sprite" : "icon"}/${kind}-${id}.png`;

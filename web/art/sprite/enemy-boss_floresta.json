@@ -1,0 +1,41 @@
+{
+  "name": "enemy-boss_floresta",
+  "category": "sprite",
+  "size": [48, 48],
+  "_design": "LOG INFINITO: looping scroll wisp of the Log Forest; green terminal glow, leaf/code ramps, a tail that curls back into itself through scrolling log lines.",
+  "_source": "traced from web/public/assests_keyart.png 690,890,70,70 (slime verde) at 48x48, redesigned toward enemy-floresta language",
+  "layers": [
+    {"poly": [[14, 20], [18, 8], [22, 2], [24, 10], [30, 4], [32, 14], [34, 22], [14, 24]], "color": "code.2"},
+    {"ellipse": [24, 24, 12, 11], "color": "code.2"},
+    {"ellipse": [21, 21, 8, 7], "color": "code.3"},
+    {"poly": [[18, 18], [22, 6], [24, 14]], "color": "code.3"},
+    {"ellipse": [16, 16, 3, 2], "color": "leaf.3"},
+    {"rect": [15, 15, 1, 1], "color": "white"},
+    {"poly": [[12, 30], [34, 30], [30, 38], [16, 38]], "color": "code.1"},
+    {"ellipse": [28, 38, 8, 6], "color": "code.1"},
+    {"ellipse": [28, 38, 5, 3], "color": null},
+    {"rect": [30, 32, 3, 3], "color": "code.1"},
+    {"ellipse": [14, 36, 4, 3], "color": "leaf.1"},
+    {"ellipse": [36, 20, 4, 5], "color": "code.2"},
+    {"ellipse": [36, 14, 3, 3], "color": "code.3"},
+    {"line": [34, 16, 30, 22], "color": "code.4"},
+    {"grid": [
+      "ooo......ooo",
+      "o..........o",
+      "............",
+      ".....oo....."
+    ], "legend": {"o": "ink"}, "at": [16, 18]},
+    {"rect": [16, 26, 12, 1], "color": "code.4"},
+    {"rect": [15, 28, 14, 1], "color": "ink.1"},
+    {"rect": [16, 28, 3, 1], "color": "code.4"},
+    {"rect": [20, 28, 5, 1], "color": "code.3"},
+    {"rect": [26, 28, 2, 1], "color": "code.4"},
+    {"rect": [17, 30, 11, 1], "color": "code.3"},
+    {"rect": [18, 32, 9, 1], "color": "leaf.3"},
+    {"rect": [19, 34, 6, 1], "color": "code.4"},
+    {"rect": [14, 24, 2, 1], "color": "code.4"},
+    {"rect": [0, 44, 48, 4], "color": null},
+    {"rect": [0, 0, 48, 1], "color": null},
+    {"outline": "ink"}
+  ]
+}

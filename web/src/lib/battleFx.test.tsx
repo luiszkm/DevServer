@@ -46,6 +46,27 @@ describe("beatOf", () => {
   ])("%s", (_name, event, beat) => {
     expect(beatOf(event)).toEqual(beat);
   });
+
+  // limit-break AC 28: a limit command's damage is the long ship beat, crit or not.
+  it.each<[string, BattleEvent]>([
+    ["plain", { type: "damage", command: "ship", amount: 80 }],
+    ["on the weakness", { type: "damage", command: "ship", amount: 144, weakness: true }],
+  ])("limit damage (%s)", (_name, event) => {
+    expect(beatOf(event, "SHIP IT")).toEqual({
+      hero: "special",
+      enemy: "hit",
+      fx: { id: "ship", on: "enemy" },
+      float: { text: `-${event.amount} SHIP IT!`, tone: "crit", on: "enemy" },
+      shake: true,
+      limit: true,
+      enemyHp: -event.amount!,
+      ms: 1200,
+    });
+  });
+
+  it("a limit label only changes damage beats", () => {
+    expect(beatOf({ type: "heal", amount: 60 }, "HOT RELOAD")).toEqual(beatOf({ type: "heal", amount: 60 }));
+  });
 });
 
 describe("fxOf", () => {

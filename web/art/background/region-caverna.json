@@ -1,0 +1,766 @@
+{
+ "name": "region-caverna",
+ "category": "background",
+ "size": [
+  320,
+  180
+ ],
+ "_design": "Caverna path: dark stone cave, crystals, bug nests, purple gloom; lighter stone trail to boss arena.",
+ "layers": [
+  {
+   "rect": [
+    0,
+    0,
+    320,
+    180
+   ],
+   "color": "stone.0"
+  },
+  {
+   "ridge": [
+    0,
+    15,
+    320,
+    110
+   ],
+   "mode": "round",
+   "heights": [
+    55,
+    100
+   ],
+   "radii": [
+    14,
+    26
+   ],
+   "color": "stone.1",
+   "seed": 31
+  },
+  {
+   "ridge": [
+    0,
+    65,
+    320,
+    55
+   ],
+   "mode": "round",
+   "heights": [
+    18,
+    48
+   ],
+   "radii": [
+    10,
+    18
+   ],
+   "color": "stone.2",
+   "seed": 33
+  },
+  {
+   "scatter": [
+    0,
+    20,
+    320,
+    100
+   ],
+   "colors": [
+    "stone.0"
+   ],
+   "density": 0.03,
+   "seed": 34,
+   "on": "stone.1"
+  },
+  {
+   "poly": [
+    [
+     0,
+     0
+    ],
+    [
+     18,
+     0
+    ],
+    [
+     9,
+     34
+    ]
+   ],
+   "color": "stone.2"
+  },
+  {
+   "poly": [
+    [
+     40,
+     0
+    ],
+    [
+     60,
+     0
+    ],
+    [
+     50,
+     42
+    ]
+   ],
+   "color": "stone.2"
+  },
+  {
+   "poly": [
+    [
+     96,
+     0
+    ],
+    [
+     112,
+     0
+    ],
+    [
+     104,
+     28
+    ]
+   ],
+   "color": "stone.2"
+  },
+  {
+   "poly": [
+    [
+     200,
+     0
+    ],
+    [
+     214,
+     0
+    ],
+    [
+     207,
+     24
+    ]
+   ],
+   "color": "stone.2"
+  },
+  {
+   "poly": [
+    [
+     250,
+     0
+    ],
+    [
+     270,
+     0
+    ],
+    [
+     260,
+     40
+    ]
+   ],
+   "color": "stone.2"
+  },
+  {
+   "poly": [
+    [
+     290,
+     0
+    ],
+    [
+     320,
+     0
+    ],
+    [
+     305,
+     32
+    ]
+   ],
+   "color": "stone.2"
+  },
+  {
+   "rect": [
+    0,
+    0,
+    320,
+    6
+   ],
+   "color": "stone.1"
+  },
+  {
+   "scatter": [
+    0,
+    40,
+    320,
+    80
+   ],
+   "colors": [
+    "corrupt.1",
+    "slime.1"
+   ],
+   "density": 0.008,
+   "seed": 35
+  },
+  {
+   "rect": [
+    0,
+    118,
+    320,
+    40
+   ],
+   "color": "stone.2"
+  },
+  {
+   "rect": [
+    0,
+    118,
+    320,
+    2
+   ],
+   "color": "stone.3"
+  },
+  {
+   "scatter": [
+    0,
+    121,
+    320,
+    36
+   ],
+   "colors": [
+    "stone.1",
+    "stone.3"
+   ],
+   "density": 0.07,
+   "seed": 7
+  },
+  {
+   "rect": [
+    0,
+    156,
+    320,
+    24
+   ],
+   "color": "stone.1"
+  },
+  {
+   "poly": [
+    [
+     10,
+     120
+    ],
+    [
+     16,
+     98
+    ],
+    [
+     22,
+     120
+    ]
+   ],
+   "color": "gem.1"
+  },
+  {
+   "poly": [
+    [
+     16,
+     120
+    ],
+    [
+     20,
+     104
+    ],
+    [
+     26,
+     120
+    ]
+   ],
+   "color": "gem.2"
+  },
+  {
+   "line": [
+    17,
+    102,
+    17,
+    118
+   ],
+   "color": "gem.3"
+  },
+  {
+   "poly": [
+    [
+     290,
+     118
+    ],
+    [
+     297,
+     90
+    ],
+    [
+     303,
+     118
+    ]
+   ],
+   "color": "gem.1"
+  },
+  {
+   "poly": [
+    [
+     298,
+     118
+    ],
+    [
+     304,
+     100
+    ],
+    [
+     310,
+     118
+    ]
+   ],
+   "color": "gem.2"
+  },
+  {
+   "rect": [
+    40,
+    70,
+    2,
+    1
+   ],
+   "color": "red.3"
+  },
+  {
+   "rect": [
+    45,
+    70,
+    2,
+    1
+   ],
+   "color": "red.3"
+  },
+  {
+   "rect": [
+    250,
+    60,
+    2,
+    1
+   ],
+   "color": "red.3"
+  },
+  {
+   "rect": [
+    255,
+    60,
+    2,
+    1
+   ],
+   "color": "red.3"
+  },
+  {
+   "poly": [
+    [
+     34,
+     157
+    ],
+    [
+     62,
+     135
+    ],
+    [
+     49,
+     120
+    ],
+    [
+     21,
+     142
+    ]
+   ],
+   "color": "metal.2"
+  },
+  {
+   "poly": [
+    [
+     61,
+     136
+    ],
+    [
+     115,
+     104
+    ],
+    [
+     104,
+     87
+    ],
+    [
+     50,
+     119
+    ]
+   ],
+   "color": "metal.2"
+  },
+  {
+   "poly": [
+    [
+     105,
+     105
+    ],
+    [
+     163,
+     133
+    ],
+    [
+     172,
+     114
+    ],
+    [
+     114,
+     86
+    ]
+   ],
+   "color": "metal.2"
+  },
+  {
+   "poly": [
+    [
+     174,
+     131
+    ],
+    [
+     226,
+     85
+    ],
+    [
+     213,
+     70
+    ],
+    [
+     161,
+     116
+    ]
+   ],
+   "color": "metal.2"
+  },
+  {
+   "poly": [
+    [
+     224,
+     86
+    ],
+    [
+     280,
+     56
+    ],
+    [
+     271,
+     39
+    ],
+    [
+     215,
+     69
+    ]
+   ],
+   "color": "metal.2"
+  },
+  {
+   "poly": [
+    [
+     32,
+     156
+    ],
+    [
+     60,
+     134
+    ],
+    [
+     51,
+     121
+    ],
+    [
+     23,
+     143
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "poly": [
+    [
+     60,
+     134
+    ],
+    [
+     114,
+     102
+    ],
+    [
+     105,
+     89
+    ],
+    [
+     51,
+     121
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "poly": [
+    [
+     106,
+     103
+    ],
+    [
+     164,
+     131
+    ],
+    [
+     171,
+     116
+    ],
+    [
+     113,
+     88
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "poly": [
+    [
+     173,
+     129
+    ],
+    [
+     225,
+     83
+    ],
+    [
+     214,
+     72
+    ],
+    [
+     162,
+     118
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "poly": [
+    [
+     223,
+     85
+    ],
+    [
+     279,
+     55
+    ],
+    [
+     272,
+     40
+    ],
+    [
+     216,
+     70
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    28,
+    150,
+    10,
+    8
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    56,
+    128,
+    10,
+    8
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    110,
+    96,
+    10,
+    8
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    168,
+    124,
+    10,
+    8
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    220,
+    78,
+    10,
+    8
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    276,
+    48,
+    22,
+    16
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    276,
+    48,
+    18,
+    13
+   ],
+   "color": "metal.3"
+  },
+  {
+   "scatter": [
+    10,
+    30,
+    300,
+    140
+   ],
+   "colors": [
+    "metal.2",
+    "stone.3"
+   ],
+   "density": 0.04,
+   "seed": 74,
+   "on": "stone.3"
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    32,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    64,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    192,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    224,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    256,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    288,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    0,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    32,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    64,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    96,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    128,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    160,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    192,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    224,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    256,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-pedra.json",
+   "at": [
+    288,
+    160
+   ]
+  },
+  {
+   "use": "../sprite/prop-gema-pedestal.json",
+   "at": [
+    8,
+    90
+   ]
+  },
+  {
+   "use": "../sprite/prop-gema-pedestal.json",
+   "at": [
+    280,
+    90
+   ],
+   "flip": "h"
+  }
+ ]
+}

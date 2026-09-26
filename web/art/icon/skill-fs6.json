@@ -1,0 +1,112 @@
+{
+ "name": "skill-fs6",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CRUD (fullstack): a yellow pencil writing a record, diagonal, pink eraser at the top.",
+ "layers": [
+  {
+   "poly": [
+    [
+     12,
+     1
+    ],
+    [
+     15,
+     4
+    ],
+    [
+     6,
+     13
+    ],
+    [
+     3,
+     10
+    ]
+   ],
+   "color": "gold.3"
+  },
+  {
+   "poly": [
+    [
+     12,
+     1
+    ],
+    [
+     15,
+     4
+    ],
+    [
+     14,
+     5
+    ],
+    [
+     11,
+     2
+    ]
+   ],
+   "color": "red.4"
+  },
+  {
+   "poly": [
+    [
+     11,
+     2
+    ],
+    [
+     14,
+     5
+    ],
+    [
+     13,
+     6
+    ],
+    [
+     10,
+     3
+    ]
+   ],
+   "color": "metal.3"
+  },
+  {
+   "poly": [
+    [
+     3,
+     10
+    ],
+    [
+     6,
+     13
+    ],
+    [
+     2,
+     14
+    ]
+   ],
+   "color": "wood.4"
+  },
+  {
+   "rect": [
+    2,
+    14,
+    1,
+    1
+   ],
+   "color": "ink.0"
+  },
+  {
+   "line": [
+    4,
+    10,
+    11,
+    3
+   ],
+   "color": "gold.4"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

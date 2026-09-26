@@ -186,6 +186,137 @@ function expectLoadingFx(text: HTMLElement) {
   expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/loading.png)");
 }
 
+const LOOK_ONB = json(200, { suggestedDevName: "DEV_01", classes: ["FRONTEND", "BACKEND", "DEVOPS", "FULLSTACK"] });
+
+function partIds() {
+  return [...document.querySelectorAll<HTMLElement>("[data-part]")].map((el) => el.dataset.part);
+}
+
+function previewLook() {
+  return document.querySelector<HTMLElement>(".onboarding-hero")!.dataset.look!;
+}
+
+describe("Onboarding look", () => {
+  it("hides parts until a body is chosen", async () => {
+    mockFetch({ "GET /api/catalog": json(200, CATALOG), "GET /api/onboarding": LOOK_ONB });
+    render(<Onboarding onCreated={vi.fn()} />);
+    await screen.findByText("MASCULINO");
+    expect(partIds()).toEqual([]);
+    expect([...document.querySelectorAll<HTMLElement>("[data-body]")].map((el) => el.dataset.body)).toEqual(
+      CATALOG.avatar.bodies.map((b) => b.id),
+    );
+  });
+
+  it("lists free masculino parts", async () => {
+    mockFetch({ "GET /api/catalog": json(200, CATALOG), "GET /api/onboarding": LOOK_ONB });
+    render(<Onboarding onCreated={vi.fn()} />);
+    await screen.findByText("MASCULINO");
+    await userEvent.click(bodyButton("masculino"));
+    expect(partIds()).toEqual(["tone", "eyes", "hair", "hairColor", "beard", "glasses", "top", "topColor", "bottomColor", "laptop"]);
+    const hidden: [string, string][] = [
+      ["hair", "hair_moicano"],
+      ["hairColor", "hair_azul"],
+      ["top", "top_jaqueta"],
+      ["top", "top_hoodie_trace"],
+      ["top", "top_moletom_gear"],
+      ["glasses", "glasses_cyber"],
+      ["laptop", "laptop_gamer"],
+      ["laptop", "laptop_macbook"],
+    ];
+    for (const [part, option] of hidden) {
+      await userEvent.click(document.querySelector(`[data-part="${part}"]`)!);
+      expect(document.querySelector(`[data-option="${option}"]`)).toBeNull();
+    }
+  });
+
+  it("feminino has no beard", async () => {
+    mockFetch({ "GET /api/catalog": json(200, CATALOG), "GET /api/onboarding": LOOK_ONB });
+    render(<Onboarding onCreated={vi.fn()} />);
+    await screen.findByText("FEMININO");
+    await userEvent.click(bodyButton("feminino"));
+    expect(screen.queryByRole("button", { name: "BARBA" })).not.toBeInTheDocument();
+  });
+
+  it("preview wears the picked option", async () => {
+    mockFetch({ "GET /api/catalog": json(200, CATALOG), "GET /api/onboarding": LOOK_ONB });
+    render(<Onboarding onCreated={vi.fn()} />);
+    await screen.findByText("MASCULINO");
+    await userEvent.click(bodyButton("masculino"));
+    await userEvent.click(screen.getByRole("button", { name: "CLARA" }));
+    expect(screen.getByRole("button", { name: "CLARA" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "PADRÃO" })).toHaveAttribute("aria-pressed", "false");
+    await userEvent.click(screen.getByRole("button", { name: "ROUPA" }));
+    await userEvent.click(screen.getByRole("button", { name: "CAMISETA" }));
+    expect(previewLook()).toContain("#b07858");
+    expect(previewLook()).toContain("top-camiseta");
+  });
+
+  it("switching body keeps wearable picks", async () => {
+    const f = mockFetch({ "GET /api/catalog": json(200, CATALOG), "GET /api/onboarding": LOOK_ONB, "POST /api/players": json(201, { player: {} }) });
+    render(<Onboarding onCreated={vi.fn()} />);
+    await userEvent.click(await screen.findByRole("button", { name: "BACKEND" }));
+    await userEvent.click(bodyButton("masculino"));
+    await userEvent.click(screen.getByRole("button", { name: "CLARA" }));
+    await userEvent.click(screen.getByRole("button", { name: "BARBA" }));
+    await userEvent.click(screen.getByRole("button", { name: "BIGODE" }));
+    expect(previewLook()).toContain("#b07858");
+    expect(previewLook()).toContain("beard-bigode");
+    await userEvent.click(bodyButton("feminino"));
+    expect(screen.queryByRole("button", { name: "BARBA" })).not.toBeInTheDocument();
+    expect(previewLook()).toContain("#b07858");
+    expect(previewLook()).not.toContain("beard-bigode");
+    await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
+    await vi.waitFor(() => expect(f.fn).toHaveBeenCalled());
+    const sent = JSON.parse(f.fn.mock.calls.find(([u]) => String(u) === "/api/players")![1]!.body as string);
+    expect(sent.appearance).toEqual({ tone: "tone_clara" });
+    expect(sent.appearance.beard).toBeUndefined();
+  });
+
+  it("CRIAR DEV needs class and body only", async () => {
+    mockFetch({ "GET /api/catalog": json(200, CATALOG), "GET /api/onboarding": LOOK_ONB });
+    const { unmount } = render(<Onboarding onCreated={vi.fn()} />);
+    const submit = await screen.findByRole("button", { name: "CRIAR DEV" });
+    expect(submit).toBeDisabled();
+    await userEvent.click(screen.getByRole("button", { name: "BACKEND" }));
+    expect(submit).toBeDisabled();
+    unmount();
+
+    mockFetch({ "GET /api/catalog": json(200, CATALOG), "GET /api/onboarding": LOOK_ONB });
+    render(<Onboarding onCreated={vi.fn()} />);
+    await screen.findByText("MASCULINO");
+    await userEvent.click(bodyButton("masculino"));
+    expect(screen.getByRole("button", { name: "CRIAR DEV" })).toBeDisabled();
+    await userEvent.click(screen.getByRole("button", { name: "BACKEND" }));
+    expect(screen.getByRole("button", { name: "CRIAR DEV" })).toBeEnabled();
+  });
+
+  it("create without picks omits appearance", async () => {
+    const f = mockFetch({ "GET /api/catalog": json(200, CATALOG), "GET /api/onboarding": LOOK_ONB, "POST /api/players": json(201, { player: {} }) });
+    render(<Onboarding onCreated={vi.fn()} />);
+    await userEvent.click(await screen.findByRole("button", { name: "BACKEND" }));
+    await userEvent.click(bodyButton("masculino"));
+    await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
+    await vi.waitFor(() => expect(f.fn).toHaveBeenCalled());
+    const sent = JSON.parse(f.fn.mock.calls.find(([u]) => String(u) === "/api/players")![1]!.body as string);
+    expect(sent).toEqual({ devName: "DEV_01", class: "BACKEND", body: "masculino" });
+    expect(sent).not.toHaveProperty("appearance");
+  });
+
+  it("create sends touched parts only", async () => {
+    const f = mockFetch({ "GET /api/catalog": json(200, CATALOG), "GET /api/onboarding": LOOK_ONB, "POST /api/players": json(201, { player: {} }) });
+    render(<Onboarding onCreated={vi.fn()} />);
+    await userEvent.click(await screen.findByRole("button", { name: "BACKEND" }));
+    await userEvent.click(bodyButton("masculino"));
+    await userEvent.click(screen.getByRole("button", { name: "CLARA" }));
+    await userEvent.click(screen.getByRole("button", { name: "ROUPA" }));
+    await userEvent.click(screen.getByRole("button", { name: "CAMISETA" }));
+    await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
+    await vi.waitFor(() => expect(f.fn).toHaveBeenCalled());
+    const sent = JSON.parse(f.fn.mock.calls.find(([u]) => String(u) === "/api/players")![1]!.body as string);
+    expect(sent.appearance).toEqual({ tone: "tone_clara", top: "top_camiseta" });
+  });
+});
+
 describe("Onboarding loading", () => {
   // assets C30
   it("loading fx", () => {

@@ -15,12 +15,20 @@ import (
 	data "devserver/api/catalog"
 )
 
+// PathNode is one fight on a region's trail. The last node of a path has Boss set (AD-021).
+type PathNode struct {
+	ID    string `json:"id"`
+	Enemy string `json:"enemy"`
+	Boss  bool   `json:"boss,omitempty"`
+}
+
 type Region struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Tag         string `json:"tag"`
-	MinLevel    int    `json:"minLevel"`
-	Description string `json:"description"`
+	ID          string     `json:"id"`
+	Name        string     `json:"name"`
+	Tag         string     `json:"tag"`
+	MinLevel    int        `json:"minLevel"`
+	Description string     `json:"description"`
+	Path        []PathNode `json:"path"`
 }
 
 type DeployType struct {
@@ -43,12 +51,35 @@ type Bonus struct {
 	Amount int    `json:"amount"`
 }
 
+// SkillBonusType names the passive a skill node gives; the amount comes from its level.
+type SkillBonusType struct {
+	Type string `json:"type"`
+}
+
+// SkillLevel is one level of a node: Cost skill points to reach it, the passive Bonus while
+// equipped, and Scale, the percent applied to the node's command damage, heal and SP gain.
+type SkillLevel struct {
+	Cost  int `json:"cost"`
+	Bonus int `json:"bonus"`
+	Scale int `json:"scale"`
+}
+
 type SkillNode struct {
-	ID          string `json:"id"`
-	Glyph       string `json:"glyph"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Bonus       Bonus  `json:"bonus"`
+	ID          string         `json:"id"`
+	Glyph       string         `json:"glyph"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Bonus       SkillBonusType `json:"bonus"`
+	// Levels are levels 1..len(Levels) in order; unlocking pays Levels[0].Cost.
+	Levels []SkillLevel `json:"levels"`
+}
+
+// Level is the node's entry for level n, clamped to the levels the node has.
+func (n SkillNode) Level(level int) SkillLevel {
+	if len(n.Levels) == 0 {
+		return SkillLevel{Scale: 100}
+	}
+	return n.Levels[max(0, min(level, len(n.Levels))-1)]
 }
 
 type SkillTree struct {
@@ -69,6 +100,8 @@ type Enemy struct {
 	Weakness string `json:"weakness"`
 	Drop     string `json:"drop"`
 	Glyph    string `json:"glyph"`
+	// Boss enemies are reached only from a path node; EnemiesIn leaves them out of the random draw (AD-021).
+	Boss bool `json:"boss,omitempty"`
 }
 
 type Command struct {
@@ -83,6 +116,17 @@ type Command struct {
 	SPGain          int    `json:"spGain,omitempty"`
 	Flee            bool   `json:"flee,omitempty"`
 	Skill           string `json:"skill,omitempty"`
+	// Limit commands spend the full power bar instead of SP and belong to one Class.
+	Limit bool   `json:"limit,omitempty"`
+	Class string `json:"class,omitempty"`
+}
+
+// PowerRules fill the power bar: PerHit for a landed hit, PerCrit when it consumed the weakness,
+// capped at Max (limit-break door 2).
+type PowerRules struct {
+	Max     int `json:"max"`
+	PerHit  int `json:"perHit"`
+	PerCrit int `json:"perCrit"`
 }
 
 type Restore struct {
@@ -285,6 +329,7 @@ type CombatRules struct {
 	PotionChance  int            `json:"potionChance"`
 	Potion        string         `json:"potion"`
 	StartingItems []ItemQuantity `json:"startingItems"`
+	Power         PowerRules     `json:"power"`
 }
 
 type Catalog struct {
@@ -293,18 +338,20 @@ type Catalog struct {
 	DeployTypes  []DeployType
 	DeployLevels []DeployLevel
 	SkillTrees   []SkillTree
-	Enemies      []Enemy
-	Commands     []Command
-	Items        []Item
-	Combat       CombatRules
-	GearSlots    []GearSlot
-	Gear         []Gear
-	Skins        []Skin
-	Office       Office
-	Rack         Rack
-	Recipes      []Recipe
-	Avatar       Avatar
-	body         []byte
+	// SkillSlots is how many skills a player equips at once.
+	SkillSlots int
+	Enemies    []Enemy
+	Commands   []Command
+	Items      []Item
+	Combat     CombatRules
+	GearSlots  []GearSlot
+	Gear       []Gear
+	Skins      []Skin
+	Office     Office
+	Rack       Rack
+	Recipes    []Recipe
+	Avatar     Avatar
+	body       []byte
 }
 
 func Load() (*Catalog, error) {
@@ -350,12 +397,13 @@ func Load() (*Catalog, error) {
 		return nil, err
 	}
 	var skills struct {
+		Slots int         `json:"slots"`
 		Trees []SkillTree `json:"trees"`
 	}
 	if err := json.Unmarshal(raw, &skills); err != nil {
 		return nil, fmt.Errorf("skills.json: %w", err)
 	}
-	c.SkillTrees = skills.Trees
+	c.SkillTrees, c.SkillSlots = skills.Trees, skills.Slots
 
 	raw, err = data.Files.ReadFile("combat.json")
 	if err != nil {
@@ -428,6 +476,7 @@ func Load() (*Catalog, error) {
 		DeployTypes  []DeployType  `json:"deployTypes"`
 		DeployLevels []DeployLevel `json:"deployLevels"`
 		SkillTrees   []SkillTree   `json:"skillTrees"`
+		SkillSlots   int           `json:"skillSlots"`
 		Enemies      []Enemy       `json:"enemies"`
 		Commands     []Command     `json:"commands"`
 		Items        []Item        `json:"items"`
@@ -439,7 +488,7 @@ func Load() (*Catalog, error) {
 		Rack         Rack          `json:"rack"`
 		Recipes      []Recipe      `json:"recipes"`
 		Avatar       Avatar        `json:"avatar"`
-	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees, c.Enemies, c.Commands, c.Items, c.Combat,
+	}{c.Version, c.Regions, c.DeployTypes, c.DeployLevels, c.SkillTrees, c.SkillSlots, c.Enemies, c.Commands, c.Items, c.Combat,
 		c.GearSlots, c.Gear, c.Skins, c.Office, c.Rack, c.Recipes, c.Avatar})
 	if err != nil {
 		return nil, err
@@ -514,15 +563,27 @@ func (c *Catalog) Enemy(id string) (Enemy, bool) {
 	return Enemy{}, false
 }
 
-// EnemiesIn lists a region's enemies in catalog order; the battle start draws one of them.
+// EnemiesIn lists a region's non-boss enemies in catalog order; the battle start draws one of them.
 func (c *Catalog) EnemiesIn(region string) []Enemy {
 	var out []Enemy
 	for _, e := range c.Enemies {
-		if e.Region == region {
+		if e.Region == region && !e.Boss {
 			out = append(out, e)
 		}
 	}
 	return out
+}
+
+// PathNode finds a trail node by id and returns its region, its index on that path, and the node.
+func (c *Catalog) PathNode(id string) (string, int, PathNode, bool) {
+	for _, r := range c.Regions {
+		for i, n := range r.Path {
+			if n.ID == id {
+				return r.ID, i, n, true
+			}
+		}
+	}
+	return "", 0, PathNode{}, false
 }
 
 func (c *Catalog) Command(id string) (Command, bool) {
@@ -675,12 +736,16 @@ func (c *Catalog) AvatarOptionPosition(id string) int {
 	return len(c.Avatar.Options)
 }
 
-// SkillBonus sums the bonus of one type ("hp", "sp", "dmg") over the given skill ids.
-func (c *Catalog) SkillBonus(skills []string, bonusType string) int {
+// SkillBonus sums the bonus of one type ("hp", "sp", "dmg") over the equipped skill ids (nil
+// slots and unknown ids add nothing), each at its level in levels (AD-019).
+func (c *Catalog) SkillBonus(loadout []*string, levels map[string]int, bonusType string) int {
 	sum := 0
-	for _, id := range skills {
-		if n, _, _, ok := c.Skill(id); ok && n.Bonus.Type == bonusType {
-			sum += n.Bonus.Amount
+	for _, id := range loadout {
+		if id == nil {
+			continue
+		}
+		if n, _, _, ok := c.Skill(*id); ok && n.Bonus.Type == bonusType {
+			sum += n.Level(levels[*id]).Bonus
 		}
 	}
 	return sum

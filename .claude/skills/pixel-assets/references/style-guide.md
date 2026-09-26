@@ -1,12 +1,23 @@
 # DevServer style guide
 
-Everything here was read off `web/public/keyart.png`. When a rule and the key art disagree,
-the key art wins: open it and look.
+When a rule and the reference picture disagree, the picture wins: open it and look.
+Trace the object you are drawing from the picture that actually contains it:
+
+| Subject | Picture |
+| --- | --- |
+| Masculine hero, HUD, server hut, coin, gem, heart, the meadow | `web/public/keyart.png` |
+| Feminine hero | `web/public/female_keyart.png` |
+| Icon, prop, tile, scene, mob, effect, UI on the asset sheet | `web/public/assests_keyart.png` |
+| Boss, corruption, the side-view lunge | `web/public/boss_screen_keyart` |
+
+If the object is not in that picture, trace the closest relative that is (a new enemy
+starts from the sheet's slime, bug or robot) and keep that silhouette's language.
 
 ## What the key art looks like
 
 - **16-bit JRPG pixel art**, bright and saturated: deep blue sky, lush greens, gold, cyan,
-  purple. Friendly, not grim.
+  purple. The meadow, the office and the HUD stay friendly. A boss may be threatening;
+  it still uses this outline, this light and this palette, on the `corrupt` ramp.
 - **Theme = developer life as an adventure.** Recurring motifs: the `</>` glyph in terminal
   green, dark server racks with little green/blue LEDs, laptops, terminal screens (green
   on near-black), clouds as "deploy", bugs and slimes as enemies, gems and coins as currency.
@@ -24,15 +35,15 @@ the key art wins: open it and look.
 `references/palette.json`. Ramps are named by material (`wood`, `stone`, `leaf`, `gold`,
 `gem`, `slime`, `code`, `net`, `skin`, `hoodie`, ...), darkest first. `ui` mirrors the CSS
 tokens in `web/src/app/globals.css` so art and chrome agree. If you need a tone that isn't
-there, sample it from the key art with `scripts/sample_colors.py` and add a ramp; don't
-invent hex values.
+there, sample it from the reference picture with `scripts/sample_colors.py` and add a ramp;
+don't invent hex values. Add one when `trace.py` reports a mean distance above 24.
 
 ## Per category
 
 ### sprite: characters, enemies, props
 
 - Sizes: 32x32 (enemy, prop, NPC, extra), 32x48 (humanoid), 48x64 (the layered hero), 48x48 / 64x64
-  (boss, big prop), 96x96 (building).
+  (big prop, smaller boss), 96x96 (building), 128x128 (a boss that fills the battle, shown at 1x).
 - Chibi proportions, like the hero: head about 40% of the height, big simple eyes (2x2 or
   2x3 ink with one white pixel), short legs.
 - The silhouette must read at 1x. Test it: squint at the preview. If you can't tell what it
@@ -42,6 +53,20 @@ invent hex values.
   corrupted-data blobs, a "null pointer" ghost. Tie the design to the enemy's name.
 - Variants (colour, level) are a `use` with `recolor`, not a copied grid.
 - Draw facing right. Flip in CSS (`transform: scaleX(-1)`) or with `flip: "h"`.
+- Start the silhouette from `scripts/trace.py` on the reference crop, then clean it. Eyes,
+  `</>` marks and hands stay decisions in the grid. An ellipse is for a volume you are
+  shading, not a substitute for the traced outline.
+
+### boss
+
+- Trace it from `web/public/boss_screen_keyart` at 128x128 (or 48x48 / 64x64 when it is a smaller fight).
+- Corruption is the `corrupt` ramp, sampled from that picture. Glow, embers and the beam's
+  hot core are opaque pixels of the lightest indices plus `white`, sprinkled with `scatter`.
+  No partial alpha and no extra gradient: the top of the ramp is the bloom.
+- The hero in the lunge is a separate sprite, `sprite/hero-side`, 64x64, facing right,
+  traced from the same picture. It is not a paper-doll layer and not a recolor of the
+  front-facing body. The layered avatar stays the front view from `keyart.png` /
+  `female_keyart.png`.
 
 ### hero layers
 
@@ -90,6 +115,8 @@ invent hex values.
 - Build back to front: sky `bands` → clouds → far city `ridge` (blocks, `sky.1`, lit
   windows `net.3`) → nearer city (`sky.0`) → tree lines (`ridge` round, `leaf.0` then
   `leaf.1`) → ground (`grass` with a lighter top line, `scatter` texture) → `soil` strip.
+- Include every layer the crop shows. `examples/meadow.json` is the density of an outdoor
+  scene that has sky, city, trees and ground.
 - Leave the middle band calm (where sprites stand) and push detail to the edges and the back.
 - Scene props (server hut, sign, tree) are separate sprite specs placed with `use`, so they
   can be reused.
@@ -102,9 +129,11 @@ invent hex values.
 - 9-slice pieces: 24x24 with 8px corners (or 48x24 for a button with states side by side).
   Use as CSS `border-image: url(/art/ui/panel.png) 8 fill / 24px round;` with
   `image-rendering: pixelated`.
-- Two families from the key art: **dark HUD panel** (`ink` edge, `ui.3` fill, `ui.5` top-left
+- Three families. **Dark HUD panel** (`ink` edge, `ui.3` fill, `ui.5` top-left
   bevel, `ui.1` bottom-right shadow, 1px-cut corners) and **wooden sign** (`wood` ramp,
-  `wood.0` plank seams, `metal.2` nail pixels).
+  `wood.0` plank seams, `metal.2` nail pixels) come from the title keyart. **Boss plate**
+  comes from `boss_screen_keyart`: `ink` edge, `corrupt.0` fill, `corrupt.3` top-left bevel,
+  `corrupt.1` bottom-right shadow. The skull and the words stay HTML, or the skull is its own icon.
 - **Never bake text into an image.** Labels are HTML in the pixel font (`.pixel`), so they
   stay translatable, accessible and crisp.
 
@@ -122,7 +151,8 @@ invent hex values.
   after the frames it should touch and before the others.
 - One ramp per effect, keyed to its source: generic hit = `gold` + `white`, enemy hit = `red`
   + `gold`, frontend = `code`, backend = `net`, infra = `gold`, weakness/scan = `slime` +
-  `gem`, heal = `code`, defense = `net`.
+  `gem`, heal = `code`, defense = `net`, boss corruption = `corrupt` + `white`.
+  The bloom is the top index of that ramp plus `white`, painted as opaque pixels.
 - The peak frame fills most of the cell; the last frame is a few pixels or specks.
 - Shown at 3x (a 96x96 box) as a CSS sprite: `background: url(/art/fx/slash.png) 0 0 / 384px
   96px; image-rendering: pixelated; animation: fx 400ms steps(4) forwards;` with

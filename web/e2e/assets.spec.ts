@@ -29,7 +29,6 @@ const style = (page: Page, cls: string) =>
 
 const chrome: [string, string, string][] = [
   ["panel", "div", "/art/ui/ui-panel.png"],
-  ["hud-card", "div", "/art/ui/ui-panel.png"],
   ["btn btn-yellow", "button", "/art/ui/ui-btn-wood.png"],
   ["btn btn-dark", "button", "/art/ui/ui-btn-dark.png"],
   ["btn btn-green", "button", "/art/ui/ui-btn-green.png"],

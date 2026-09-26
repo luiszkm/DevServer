@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"sort"
 
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -16,6 +17,8 @@ import (
 type Handlers struct {
 	Pool    *pgxpool.Pool
 	Catalog *catalog.Catalog
+	// Look is avatar.Choose, set by the router: this package cannot import avatar.
+	Look func(cat *catalog.Catalog, p *Player, part, option string) error
 }
 
 type response struct {
@@ -44,9 +47,10 @@ func (h *Handlers) Create(w http.ResponseWriter, r *http.Request) error {
 	id := auth.IdentityFrom(ctx)
 
 	var in struct {
-		DevName string `json:"devName"`
-		Class   string `json:"class"`
-		Body    string `json:"body"`
+		DevName    string            `json:"devName"`
+		Class      string            `json:"class"`
+		Body       string            `json:"body"`
+		Appearance map[string]string `json:"appearance"`
 	}
 	if err := httpx.DecodeJSON(r, &in); err != nil {
 		return err
@@ -70,6 +74,9 @@ func (h *Handlers) Create(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	p := newPlayer(id.GithubUserID, name, in.Class, in.Body)
+	if err := h.pickLooks(p, in.Appearance); err != nil {
+		return err
+	}
 	err := h.insert(ctx, p)
 	var pgErr *pgconn.PgError
 	if errors.As(err, &pgErr) && pgErr.Code == "23505" {
@@ -86,6 +93,28 @@ func (h *Handlers) Create(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+// pickLooks checks every explicit pick with Look and keeps them. One refusal keeps none.
+// An absent or empty map leaves the catalog defaults, stored as no picks.
+func (h *Handlers) pickLooks(p *Player, appearance map[string]string) error {
+	if len(appearance) == 0 {
+		return nil
+	}
+	parts := make([]string, 0, len(appearance))
+	for part := range appearance {
+		parts = append(parts, part)
+	}
+	sort.Strings(parts)
+	for _, part := range parts {
+		if err := h.Look(h.Catalog, p, part, appearance[part]); err != nil {
+			return err
+		}
+	}
+	for _, part := range parts {
+		p.Pick(part, appearance[part])
+	}
+	return nil
+}
+
 // insert creates the player and its starting items in one transaction.
 func (h *Handlers) insert(ctx context.Context, p *Player) error {
 	tx, err := h.Pool.Begin(ctx)
@@ -94,10 +123,10 @@ func (h *Handlers) insert(ctx context.Context, p *Player) error {
 	}
 	defer tx.Rollback(ctx)
 	if err := tx.QueryRow(ctx, `INSERT INTO players (github_user_id, dev_name, class, level, xp, xp_max,
-		hp, hp_max, coins, gems, skill_points, region, skin, body)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id`,
+		hp, hp_max, coins, gems, skill_points, region, skin, body, appearance)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id`,
 		p.GithubUserID, p.DevName, p.Class, p.Level, p.XP, p.XPMax, p.HP, p.HPMax,
-		p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin, p.Body).Scan(&p.ID); err != nil {
+		p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin, p.Body, p.picks).Scan(&p.ID); err != nil {
 		return err
 	}
 	for _, it := range h.Catalog.Combat.StartingItems {

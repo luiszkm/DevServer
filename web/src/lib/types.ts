@@ -11,7 +11,14 @@ export type Player = {
   skillPoints: number;
   region: string;
   skin: string;
+  /** Unlocked skill ids, catalog order. */
   skills: string[];
+  /** Every unlocked skill id with its level (1..3). */
+  skillLevels: Record<string, number>;
+  /** Every skill slot (catalog `skillSlots`), with the equipped skill id or null. */
+  loadout: (string | null)[];
+  /** Power bar, 0..combat.power.max; full enables the class's limit command. */
+  power: number;
   inventory: { item: string; quantity: number }[];
   /** Owned gear ids, catalog order. */
   gear: string[];
@@ -29,7 +36,12 @@ export type Player = {
   appearance: Record<string, string>;
   /** Owned priced avatar options, catalog order. */
   looks: string[];
+  /** Nodes cleared per region. A missing region means none (AD-021). */
+  progress: Record<string, number>;
 };
+
+/** One fight on a region's trail. The last node has `boss` set (AD-021). */
+export type PathNode = { id: string; enemy: string; boss?: boolean };
 
 export type Region = {
   id: string;
@@ -37,6 +49,7 @@ export type Region = {
   tag: string;
   minLevel: number;
   description: string;
+  path: PathNode[];
 };
 
 export type DeployType = { id: string; name: string; glyph: string };
@@ -50,17 +63,22 @@ export type DeployLevel = {
   gems: number;
 };
 
+/** One level of a skill: its cost in skill points, the passive while equipped, and the % its command plays at. */
+export type SkillLevel = { cost: number; bonus: number; scale: number };
+
 export type SkillNode = {
   id: string;
   glyph: string;
   name: string;
   description: string;
-  bonus: Bonus;
+  bonus: { type: Bonus["type"] };
+  /** Levels 1..n in order; unlocking pays levels[0].cost. */
+  levels: SkillLevel[];
 };
 
 export type SkillTree = { id: string; name: string; class: string; role: string; nodes: SkillNode[] };
 
-export type Enemy = { id: string; region: string; name: string; level: number; hp: number; sp: number; weakness: string; drop: string; glyph: string };
+export type Enemy = { id: string; region: string; name: string; level: number; hp: number; sp: number; weakness: string; drop: string; glyph: string; boss?: boolean };
 
 export type Command = {
   id: string;
@@ -74,6 +92,9 @@ export type Command = {
   spGain?: number;
   flee?: boolean;
   skill?: string;
+  /** Limit commands spend the full power bar instead of SP and belong to one class. */
+  limit?: boolean;
+  class?: string;
 };
 
 export type Bonus = { type: "hp" | "sp" | "dmg"; amount: number };
@@ -176,6 +197,8 @@ export type CombatRules = {
   dropChance: number;
   potionChance: number;
   potion: string;
+  /** The power bar: +perHit per hit, +perCrit when the hit consumed the weakness, capped at max. */
+  power: { max: number; perHit: number; perCrit: number };
 };
 
 /** POWER, RAM or UPTIME: base + installed effects, capped at max; each step above base adds 1 to `bonus` (AD-014). */
@@ -206,6 +229,8 @@ export type Catalog = {
   deployTypes: DeployType[];
   deployLevels: DeployLevel[];
   skillTrees: SkillTree[];
+  /** How many skills a player equips at once. */
+  skillSlots: number;
   enemies: Enemy[];
   commands: Command[];
   items: Item[];
@@ -229,6 +254,8 @@ export type Battle = {
   spMax: number;
   weakness: boolean;
   status: "active" | "won";
+  /** Path node this fight was started from. Absent on a random encounter. */
+  node?: string;
 };
 
 export type BattleEvent = {

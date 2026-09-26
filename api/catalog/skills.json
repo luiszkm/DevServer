@@ -1,35 +1,56 @@
 {
+  "slots": 4,
   "trees": [
     {
       "id": "frontend", "name": "FRONTEND", "class": "FRONTEND", "role": "SUPORTE",
       "nodes": [
-        { "id": "fe1", "glyph": "</>", "name": "HOTFIX DE CSS", "description": "+8 SP máximo em combate", "bonus": { "type": "sp", "amount": 8 } },
-        { "id": "fe2", "glyph": "{}", "name": "PAIR REVIEW", "description": "+10 HP máximo permanente", "bonus": { "type": "hp", "amount": 10 } },
-        { "id": "fe3", "glyph": "~", "name": "DESIGN SYSTEM", "description": "+12 SP máximo em combate", "bonus": { "type": "sp", "amount": 12 } }
+        { "id": "fe1", "glyph": "</>", "name": "HOTFIX DE CSS", "description": "um ajuste de estilo que salva a sprint", "bonus": { "type": "sp" }, "levels": [{ "cost": 1, "bonus": 8, "scale": 100 }, { "cost": 2, "bonus": 12, "scale": 125 }, { "cost": 3, "bonus": 16, "scale": 150 }] },
+        { "id": "fe2", "glyph": "{}", "name": "PAIR REVIEW", "description": "dois olhos acham o bug mais rápido", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 10, "scale": 100 }, { "cost": 2, "bonus": 15, "scale": 125 }, { "cost": 3, "bonus": 20, "scale": 150 }] },
+        { "id": "fe3", "glyph": "~", "name": "DESIGN SYSTEM", "description": "componentes prontos, menos retrabalho", "bonus": { "type": "sp" }, "levels": [{ "cost": 1, "bonus": 12, "scale": 100 }, { "cost": 2, "bonus": 18, "scale": 125 }, { "cost": 3, "bonus": 24, "scale": 150 }] },
+        { "id": "fe4", "glyph": "<a>", "name": "ACESSIBILIDADE", "description": "interface que protege todo mundo", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 12, "scale": 100 }, { "cost": 2, "bonus": 18, "scale": 125 }, { "cost": 3, "bonus": 24, "scale": 150 }] },
+        { "id": "fe5", "glyph": "@", "name": "MEDIA QUERY", "description": "se adapta a qualquer tela e recupera o fôlego", "bonus": { "type": "sp" }, "levels": [{ "cost": 1, "bonus": 10, "scale": 100 }, { "cost": 2, "bonus": 15, "scale": 125 }, { "cost": 3, "bonus": 20, "scale": 150 }] },
+        { "id": "fe6", "glyph": "#", "name": "LIGHTHOUSE", "description": "auditoria que expõe onde dói", "bonus": { "type": "dmg" }, "levels": [{ "cost": 1, "bonus": 6, "scale": 100 }, { "cost": 2, "bonus": 9, "scale": 125 }, { "cost": 3, "bonus": 12, "scale": 150 }] },
+        { "id": "fe7", "glyph": "*", "name": "SERVICE WORKER", "description": "cache offline que segura a queda", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 15, "scale": 100 }, { "cost": 2, "bonus": 23, "scale": 125 }, { "cost": 3, "bonus": 30, "scale": 150 }] },
+        { "id": "fe8", "glyph": "&", "name": "HYDRATION", "description": "a página ganha vida de uma vez", "bonus": { "type": "sp" }, "levels": [{ "cost": 1, "bonus": 16, "scale": 100 }, { "cost": 2, "bonus": 24, "scale": 125 }, { "cost": 3, "bonus": 32, "scale": 150 }] }
       ]
     },
     {
       "id": "backend", "name": "BACKEND", "class": "BACKEND", "role": "ATAQUE",
       "nodes": [
-        { "id": "be1", "glyph": "$_", "name": "ENDPOINT", "description": "+8% de dano em todos os ataques", "bonus": { "type": "dmg", "amount": 8 } },
-        { "id": "be2", "glyph": "[]", "name": "QUERY PESADA", "description": "+10% de dano em todos os ataques", "bonus": { "type": "dmg", "amount": 10 } },
-        { "id": "be3", "glyph": "##", "name": "DEADLOCK", "description": "+12% de dano em todos os ataques", "bonus": { "type": "dmg", "amount": 12 } }
+        { "id": "be1", "glyph": "$_", "name": "ENDPOINT", "description": "uma rota direta ao ponto fraco", "bonus": { "type": "dmg" }, "levels": [{ "cost": 1, "bonus": 8, "scale": 100 }, { "cost": 2, "bonus": 12, "scale": 125 }, { "cost": 3, "bonus": 16, "scale": 150 }] },
+        { "id": "be2", "glyph": "[]", "name": "QUERY PESADA", "description": "um JOIN que derruba qualquer um", "bonus": { "type": "dmg" }, "levels": [{ "cost": 1, "bonus": 10, "scale": 100 }, { "cost": 2, "bonus": 15, "scale": 125 }, { "cost": 3, "bonus": 20, "scale": 150 }] },
+        { "id": "be3", "glyph": "##", "name": "DEADLOCK", "description": "trava o bug no lugar", "bonus": { "type": "dmg" }, "levels": [{ "cost": 1, "bonus": 12, "scale": 100 }, { "cost": 2, "bonus": 18, "scale": 125 }, { "cost": 3, "bonus": 24, "scale": 150 }] },
+        { "id": "be4", "glyph": "%", "name": "CACHE HIT", "description": "golpe rápido que devolve fôlego", "bonus": { "type": "sp" }, "levels": [{ "cost": 1, "bonus": 8, "scale": 100 }, { "cost": 2, "bonus": 12, "scale": 125 }, { "cost": 3, "bonus": 16, "scale": 150 }] },
+        { "id": "be5", "glyph": "=>", "name": "MIGRATION", "description": "muda o schema e deixa a fraqueza à mostra", "bonus": { "type": "dmg" }, "levels": [{ "cost": 1, "bonus": 8, "scale": 100 }, { "cost": 2, "bonus": 12, "scale": 125 }, { "cost": 3, "bonus": 16, "scale": 150 }] },
+        { "id": "be6", "glyph": "&&", "name": "THREAD POOL", "description": "muitos golpes em paralelo", "bonus": { "type": "dmg" }, "levels": [{ "cost": 1, "bonus": 10, "scale": 100 }, { "cost": 2, "bonus": 15, "scale": 125 }, { "cost": 3, "bonus": 20, "scale": 150 }] },
+        { "id": "be7", "glyph": "!!", "name": "HOT PATH", "description": "otimiza o caminho quente e aguenta a carga", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 10, "scale": 100 }, { "cost": 2, "bonus": 15, "scale": 125 }, { "cost": 3, "bonus": 20, "scale": 150 }] },
+        { "id": "be8", "glyph": ">>", "name": "SHARDING", "description": "divide o banco e multiplica o dano", "bonus": { "type": "dmg" }, "levels": [{ "cost": 1, "bonus": 14, "scale": 100 }, { "cost": 2, "bonus": 21, "scale": 125 }, { "cost": 3, "bonus": 28, "scale": 150 }] }
       ]
     },
     {
       "id": "devops", "name": "DEVOPS", "class": "DEVOPS", "role": "DEFESA",
       "nodes": [
-        { "id": "do1", "glyph": ">_", "name": "HEALTHCHECK", "description": "+15 HP máximo permanente", "bonus": { "type": "hp", "amount": 15 } },
-        { "id": "do2", "glyph": "::", "name": "FIREWALL", "description": "+12 HP máximo permanente", "bonus": { "type": "hp", "amount": 12 } },
-        { "id": "do3", "glyph": "^", "name": "CIRCUIT BREAKER", "description": "+18 HP máximo permanente", "bonus": { "type": "hp", "amount": 18 } }
+        { "id": "do1", "glyph": ">_", "name": "HEALTHCHECK", "description": "sabe quando algo vai cair", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 15, "scale": 100 }, { "cost": 2, "bonus": 23, "scale": 125 }, { "cost": 3, "bonus": 30, "scale": 150 }] },
+        { "id": "do2", "glyph": "::", "name": "FIREWALL", "description": "bloqueia o tráfego malicioso", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 12, "scale": 100 }, { "cost": 2, "bonus": 18, "scale": 125 }, { "cost": 3, "bonus": 24, "scale": 150 }] },
+        { "id": "do3", "glyph": "^", "name": "CIRCUIT BREAKER", "description": "corta a falha antes que ela se espalhe", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 18, "scale": 100 }, { "cost": 2, "bonus": 27, "scale": 125 }, { "cost": 3, "bonus": 36, "scale": 150 }] },
+        { "id": "do4", "glyph": "[+]", "name": "BACKUP", "description": "restaura o estado bom de ontem", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 14, "scale": 100 }, { "cost": 2, "bonus": 21, "scale": 125 }, { "cost": 3, "bonus": 28, "scale": 150 }] },
+        { "id": "do5", "glyph": "<>", "name": "LOAD BALANCER", "description": "distribui a carga e poupa energia", "bonus": { "type": "sp" }, "levels": [{ "cost": 1, "bonus": 10, "scale": 100 }, { "cost": 2, "bonus": 15, "scale": 125 }, { "cost": 3, "bonus": 20, "scale": 150 }] },
+        { "id": "do6", "glyph": "@@", "name": "CANARY", "description": "testa em produção com cuidado", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 16, "scale": 100 }, { "cost": 2, "bonus": 24, "scale": 125 }, { "cost": 3, "bonus": 32, "scale": 150 }] },
+        { "id": "do7", "glyph": "||", "name": "RÉPLICA", "description": "uma cópia sempre de pé", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 20, "scale": 100 }, { "cost": 2, "bonus": 30, "scale": 125 }, { "cost": 3, "bonus": 40, "scale": 150 }] },
+        { "id": "do8", "glyph": "{#}", "name": "TERRAFORM", "description": "infra como código que também revida", "bonus": { "type": "dmg" }, "levels": [{ "cost": 1, "bonus": 8, "scale": 100 }, { "cost": 2, "bonus": 12, "scale": 125 }, { "cost": 3, "bonus": 16, "scale": 150 }] }
       ]
     },
     {
       "id": "fullstack", "name": "FULLSTACK", "class": "FULLSTACK", "role": "HÍBRIDO",
       "nodes": [
-        { "id": "fs1", "glyph": "</>", "name": "SNACK DE CSS", "description": "+6 SP máximo em combate", "bonus": { "type": "sp", "amount": 6 } },
-        { "id": "fs2", "glyph": "$_", "name": "SCRIPT", "description": "+6% de dano em todos os ataques", "bonus": { "type": "dmg", "amount": 6 } },
-        { "id": "fs3", "glyph": "::", "name": "PAGER", "description": "+10 HP máximo permanente", "bonus": { "type": "hp", "amount": 10 } }
+        { "id": "fs1", "glyph": "</>", "name": "SNACK DE CSS", "description": "um lanche rápido entre deploys", "bonus": { "type": "sp" }, "levels": [{ "cost": 1, "bonus": 6, "scale": 100 }, { "cost": 2, "bonus": 9, "scale": 125 }, { "cost": 3, "bonus": 12, "scale": 150 }] },
+        { "id": "fs2", "glyph": "$_", "name": "SCRIPT", "description": "automatiza o golpe", "bonus": { "type": "dmg" }, "levels": [{ "cost": 1, "bonus": 6, "scale": 100 }, { "cost": 2, "bonus": 9, "scale": 125 }, { "cost": 3, "bonus": 12, "scale": 150 }] },
+        { "id": "fs3", "glyph": "::", "name": "PAGER", "description": "acorda na hora certa", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 10, "scale": 100 }, { "cost": 2, "bonus": 15, "scale": 125 }, { "cost": 3, "bonus": 20, "scale": 150 }] },
+        { "id": "fs4", "glyph": "?", "name": "STACK OVERFLOW", "description": "alguém já teve esse bug", "bonus": { "type": "sp" }, "levels": [{ "cost": 1, "bonus": 8, "scale": 100 }, { "cost": 2, "bonus": 12, "scale": 125 }, { "cost": 3, "bonus": 16, "scale": 150 }] },
+        { "id": "fs5", "glyph": "$$", "name": "FREELA", "description": "entrega rápida, cobra caro", "bonus": { "type": "dmg" }, "levels": [{ "cost": 1, "bonus": 8, "scale": 100 }, { "cost": 2, "bonus": 12, "scale": 125 }, { "cost": 3, "bonus": 16, "scale": 150 }] },
+        { "id": "fs6", "glyph": "++", "name": "CRUD", "description": "cria, lê, atualiza e cura", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 12, "scale": 100 }, { "cost": 2, "bonus": 18, "scale": 125 }, { "cost": 3, "bonus": 24, "scale": 150 }] },
+        { "id": "fs7", "glyph": "~>", "name": "DEPLOY NA SEXTA", "description": "coragem pura, dano puro", "bonus": { "type": "dmg" }, "levels": [{ "cost": 1, "bonus": 10, "scale": 100 }, { "cost": 2, "bonus": 15, "scale": 125 }, { "cost": 3, "bonus": 20, "scale": 150 }] },
+        { "id": "fs8", "glyph": "<$>", "name": "MVP", "description": "o mínimo que resolve tudo", "bonus": { "type": "hp" }, "levels": [{ "cost": 1, "bonus": 15, "scale": 100 }, { "cost": 2, "bonus": 23, "scale": 125 }, { "cost": 3, "bonus": 30, "scale": 150 }] }
       ]
     }
   ]

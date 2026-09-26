@@ -54,6 +54,7 @@ test("picked colours are drawn and survive a reload", async ({ page }) => {
 test("equipped hoodie dresses the hero", async ({ page }) => {
   await newDev(page);
   await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "LOJA" }).click();
+  await page.getByRole("tab", { name: "EQUIP" }).click();
   await page.locator('[data-card="moletom"]').click();
   await page.getByRole("region", { name: "detalhe" }).getByRole("button", { name: "COMPRAR E EQUIPAR" }).click();
   await expect(page.getByRole("status")).toHaveText("ITEM COMPRADO E EQUIPADO");

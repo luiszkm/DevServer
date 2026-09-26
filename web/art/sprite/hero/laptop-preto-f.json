@@ -1,28 +1,38 @@
 {
   "name": "laptop-preto-f",
   "category": "sprite",
-  "size": [48, 64],
-  "_design": "Feminine body traced from web/public/female_keyart.png; black laptop (roof) at her laptop's place, net-blue LED.",
-  "legend": {"o": "ink", "m": "roof.0", "n": "roof.1", "M": "roof.2", "N": "roof.3", "l": "net.3", "w": "roof.3"},
+  "size": [
+    48,
+    64
+  ],
+  "_design": "Open black laptop from the female keyart, full lid and deck, net-blue power LED. Fixed. Right edge stays inside the canvas.",
+  "legend": {
+    "o": "ink",
+    "m": "roof.0",
+    "n": "roof.1",
+    "M": "roof.2",
+    "N": "roof.3",
+    "l": "net.3"
+  },
   "layers": [
-    {"grid": [
-      "......o.............",
-      "...........ooooooooo",
-      "..........omNNNNNNNo",
-      "..........onMMMMMMMo",
-      ".........omMMnnnnnno",
-      ".........omNnnnnnnno",
-      ".........onMnnnnnnno",
-      ".........oMnnnnnnNMo",
-      "........omNnnnnnMwMo",
-      "........oMMnnnnnwwMo",
-      "........oMnnnnnnMMno",
-      "........oMnnnnnnnnno",
-      "o..oooo.oMnnnnnnnnno",
-      "mnnmmmmoMnnnnnnnnnno",
-      "omnlnnnnMnnnooonnnno",
-      ".o....ommooo..oMmoo.",
-      ".......oo......oo..."
-    ], "at": [27, 27]}
+    {
+      "grid": [
+        "......oooooooooooo",
+        "......oNNNNNNNNNNo",
+        "......oNMMMMMMMMMo",
+        "......oNMMMMMMMMMo",
+        "......oNMMMMMMMMMo",
+        "......oNMMMMMMMMMo",
+        "......oNMMMMMMMMMo",
+        "oooooooooooooooooo",
+        "onnnnnnnnnnnnnnnno",
+        "ommmmmmmmmmmmmmmlo",
+        "oooooooooooooooooo"
+      ],
+      "at": [
+        28,
+        31
+      ]
+    }
   ]
 }

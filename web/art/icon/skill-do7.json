@@ -1,0 +1,113 @@
+{
+ "name": "skill-do7",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "RÉPLICA (devops): two stacked server boxes with green status LEDs, one copy always up.",
+ "layers": [
+  {
+   "rect": [
+    2,
+    2,
+    12,
+    5
+   ],
+   "color": "metal.2"
+  },
+  {
+   "rect": [
+    2,
+    9,
+    12,
+    5
+   ],
+   "color": "metal.2"
+  },
+  {
+   "rect": [
+    3,
+    3,
+    7,
+    1
+   ],
+   "color": "metal.3"
+  },
+  {
+   "rect": [
+    3,
+    10,
+    7,
+    1
+   ],
+   "color": "metal.3"
+  },
+  {
+   "rect": [
+    3,
+    5,
+    7,
+    1
+   ],
+   "color": "metal.1"
+  },
+  {
+   "rect": [
+    3,
+    12,
+    7,
+    1
+   ],
+   "color": "metal.1"
+  },
+  {
+   "rect": [
+    11,
+    4,
+    1,
+    1
+   ],
+   "color": "code.4"
+  },
+  {
+   "rect": [
+    12,
+    4,
+    1,
+    1
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    11,
+    11,
+    1,
+    1
+   ],
+   "color": "code.4"
+  },
+  {
+   "rect": [
+    12,
+    11,
+    1,
+    1
+   ],
+   "color": "gold.3"
+  },
+  {
+   "rect": [
+    7,
+    7,
+    2,
+    2
+   ],
+   "color": "metal.1"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

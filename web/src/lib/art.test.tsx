@@ -77,7 +77,16 @@ const officeCatalog = catalog<Office>("office.json");
 
 const icons = (names: string[]): Asset[] => names.map((name) => ({ category: "icon", name, size: [16, 16] }));
 
-const ENEMY_SIZE: Record<string, [number, number]> = { torre: [48, 48], nuvem: [64, 64] };
+const ENEMY_SIZE: Record<string, [number, number]> = {
+  torre: [48, 48],
+  nuvem: [64, 64],
+  boss_vila: [48, 48],
+  boss_floresta: [48, 48],
+  boss_mercado: [48, 48],
+  boss_caverna: [48, 48],
+  boss_torre: [48, 48],
+  boss_nuvem: [48, 48],
+};
 
 describe("catalog art on disk", () => {
   // C4

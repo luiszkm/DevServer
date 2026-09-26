@@ -12,6 +12,8 @@ import ServerPage from "@/app/(game)/server/page";
 import { CATALOG, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ push: vi.fn() }) }));
+
 // Foundation C28 listed the scenes still showing EM BREVE; with LOJA and AVATAR shipped that set is empty.
 describe("ComingSoon", () => {
   // C46 (shop), C41 (office), C43 (server-room)

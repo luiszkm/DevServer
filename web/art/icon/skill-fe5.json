@@ -1,0 +1,86 @@
+{
+ "name": "skill-fe5",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MEDIA QUERY (frontend): a phone in portrait, green screen with stacked responsive blocks.",
+ "layers": [
+  {
+   "rect": [
+    4,
+    1,
+    8,
+    14
+   ],
+   "color": "metal.1"
+  },
+  {
+   "rect": [
+    5,
+    3,
+    6,
+    9
+   ],
+   "color": "code.1"
+  },
+  {
+   "rect": [
+    5,
+    3,
+    6,
+    2
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    5,
+    6,
+    3,
+    2
+   ],
+   "color": "code.2"
+  },
+  {
+   "rect": [
+    8,
+    6,
+    3,
+    2
+   ],
+   "color": "code.2"
+  },
+  {
+   "rect": [
+    5,
+    9,
+    6,
+    2
+   ],
+   "color": "code.2"
+  },
+  {
+   "rect": [
+    7,
+    13,
+    2,
+    1
+   ],
+   "color": "metal.3"
+  },
+  {
+   "rect": [
+    4,
+    1,
+    1,
+    5
+   ],
+   "color": "metal.2"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

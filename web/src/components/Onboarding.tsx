@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { api, post } from "@/lib/api";
-import { bodyDefaults } from "@/lib/avatar";
-import type { Catalog, Player } from "@/lib/types";
+import { availableFor, bodyDefaults } from "@/lib/avatar";
+import type { AvatarOption, Catalog, Player } from "@/lib/types";
 import { HeroAvatar } from "./HeroAvatar";
 import { LoadingFx } from "./LoadingFx";
 
@@ -16,6 +16,9 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
   // The body is chosen once here; later only a redesign token changes it.
   const [catalog, setCatalog] = useState<Catalog | null>(null);
   const [body, setBody] = useState<string | null>(null);
+  // Parts the player actually touched. Untouched parts stay catalog defaults and are not sent.
+  const [draft, setDraft] = useState<Record<string, string>>({});
+  const [part, setPart] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [nameTaken, setNameTaken] = useState(false);
   const [sending, setSending] = useState(false);
@@ -45,7 +48,13 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
     setError(null);
     setNameTaken(false);
     try {
-      const r = await post<{ player: Player }>("/api/players", { devName, class: cls, body });
+      const payload: { devName: string; class: string; body: string; appearance?: Record<string, string> } = {
+        devName,
+        class: cls,
+        body,
+      };
+      if (Object.keys(draft).length > 0) payload.appearance = draft;
+      const r = await post<{ player: Player }>("/api/players", payload);
       if (r.ok) {
         onCreated(r.data.player);
         return;
@@ -58,6 +67,27 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
       setSending(false);
     }
   }
+
+  function wearable(option: AvatarOption, bodyId: string) {
+    return !option.price && !option.gearOnly && availableFor(option, bodyId) && !!(option.layer || option.ramp);
+  }
+
+  function chooseBody(id: string) {
+    setBody(id);
+    setDraft((current) => {
+      const next: Record<string, string> = {};
+      for (const [partId, optionId] of Object.entries(current)) {
+        const option = catalog!.avatar.options.find((o) => o.id === optionId && o.part === partId);
+        if (option && wearable(option, id)) next[partId] = optionId;
+      }
+      return next;
+    });
+  }
+
+  const parts = body ? catalog!.avatar.parts.filter((p) => catalog!.avatar.options.some((o) => o.part === p.id && wearable(o, body))) : [];
+  const currentPart = parts.find((p) => p.id === part) ?? parts[0];
+  const options = currentPart ? catalog!.avatar.options.filter((o) => o.part === currentPart.id && wearable(o, body!)) : [];
+  const preview = body ? { ...bodyDefaults(catalog!, body), ...draft } : null;
 
   return (
     <main className="center-screen">
@@ -98,7 +128,7 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
             <fieldset className="bodies">
               <legend className="pixel field-label">CORPO</legend>
               {catalog!.avatar.bodies.map((b) => (
-                <button key={b.id} type="button" className="btn body-btn" data-body={b.id} aria-pressed={body === b.id} onClick={() => setBody(b.id)}>
+                <button key={b.id} type="button" className="btn body-btn" data-body={b.id} aria-pressed={body === b.id} onClick={() => chooseBody(b.id)}>
                   <HeroAvatar
                     catalog={catalog!}
                     look={{ body: b.id, appearance: bodyDefaults(catalog!, b.id), equipment: {}, skin: "default" }}
@@ -109,6 +139,51 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
               ))}
               <span className="term bodies-hint">só troca depois com um TOKEN DE REDESIGN da Loja.</span>
             </fieldset>
+            {body && currentPart && preview && (
+              <div className="onboarding-look">
+                <HeroAvatar
+                  className="onboarding-hero"
+                  catalog={catalog!}
+                  look={{ body, appearance: preview, equipment: {}, skin: "default" }}
+                  scale={3}
+                />
+                <div className="avatar-parts" role="group" aria-label="partes">
+                  {parts.map((p) => (
+                    <button key={p.id} type="button" className="avatar-part pixel" data-part={p.id} aria-pressed={currentPart.id === p.id} onClick={() => setPart(p.id)}>
+                      {p.name}
+                    </button>
+                  ))}
+                </div>
+                <div className={`avatar-options avatar-options-${currentPart.kind}`} role="group" aria-label="opções">
+                  {options.map((o) => (
+                    <button
+                      key={o.id}
+                      type="button"
+                      className="avatar-option"
+                      data-option={o.id}
+                      aria-label={o.name}
+                      aria-pressed={preview[currentPart.id] === o.id}
+                      onClick={() => setDraft((d) => ({ ...d, [currentPart.id]: o.id }))}
+                    >
+                      {o.ramp ? (
+                        <span className="avatar-swatch" aria-hidden="true">
+                          {o.ramp.map((hex) => (
+                            <span key={hex} style={{ background: hex }} />
+                          ))}
+                        </span>
+                      ) : (
+                        <HeroAvatar
+                          catalog={catalog!}
+                          look={{ body, appearance: { ...preview, [currentPart.id]: o.id }, equipment: {}, skin: "default" }}
+                          scale={1}
+                        />
+                      )}
+                      <span className="term avatar-option-name">{o.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <button type="submit" className="btn btn-green" disabled={!cls || !body || sending}>
               CRIAR DEV
             </button>

@@ -71,7 +71,7 @@ export function Tabs() {
           >
             <span className="tab-num">{String(i + 1).padStart(2, "0")}</span>
             <span className="tab-icon">
-              <GameArt kind="menu" id={t.icon} scale={2} alt="" fallback="" />
+              <GameArt kind="menu" id={t.icon} scale={1} alt="" fallback="" />
             </span>
             <span>{t.label}</span>
           </Link>

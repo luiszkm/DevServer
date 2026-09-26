@@ -1,8 +1,44 @@
 [
-  { "id": "vila", "name": "VILA LOCALHOST", "tag": "HUB", "minLevel": 1, "description": "Onde todo projeto começa. Oficina, NPC mentor e o primeiro rack de servidor do jogador." },
-  { "id": "floresta", "name": "FLORESTA DE LOGS", "tag": "EXPLORAR", "minLevel": 1, "description": "Árvores de stack trace crescem aqui. Colete logs raros para rastrear a origem dos bugs." },
-  { "id": "mercado", "name": "MERCADO DE PACOTES", "tag": "LOJA", "minLevel": 2, "description": "Dependências à venda — algumas úteis, outras trazem vulnerabilidades escondidas." },
-  { "id": "caverna", "name": "CAVERNA DOS BUGS", "tag": "COMBATE", "minLevel": 5, "description": "Ninho de exceções não tratadas. Combate por turnos com criaturas de erro." },
-  { "id": "torre", "name": "TORRE DE DEPLOY", "tag": "CHEFE", "minLevel": 8, "description": "Suba os andares do pipeline. No topo, o chefe Race Condition espera." },
-  { "id": "nuvem", "name": "PICOS DA NUVEM", "tag": "ENDGAME", "minLevel": 12, "description": "Região de auto-scaling infinito. Conteúdo de fim de jogo." }
+  { "id": "vila", "name": "VILA LOCALHOST", "tag": "HUB", "minLevel": 1, "description": "Onde todo projeto começa. Oficina, NPC mentor e o primeiro rack de servidor do jogador.", "path": [
+    { "id": "vila-1", "enemy": "slime" },
+    { "id": "vila-2", "enemy": "slime" },
+    { "id": "vila-3", "enemy": "vila" },
+    { "id": "vila-4", "enemy": "vila" },
+    { "id": "vila-5", "enemy": "boss_vila", "boss": true }
+  ] },
+  { "id": "floresta", "name": "FLORESTA DE LOGS", "tag": "EXPLORAR", "minLevel": 1, "description": "Árvores de stack trace crescem aqui. Colete logs raros para rastrear a origem dos bugs.", "path": [
+    { "id": "floresta-1", "enemy": "slime_verde" },
+    { "id": "floresta-2", "enemy": "slime_verde" },
+    { "id": "floresta-3", "enemy": "floresta" },
+    { "id": "floresta-4", "enemy": "floresta" },
+    { "id": "floresta-5", "enemy": "boss_floresta", "boss": true }
+  ] },
+  { "id": "mercado", "name": "MERCADO DE PACOTES", "tag": "LOJA", "minLevel": 2, "description": "Dependências à venda — algumas úteis, outras trazem vulnerabilidades escondidas.", "path": [
+    { "id": "mercado-1", "enemy": "mercado" },
+    { "id": "mercado-2", "enemy": "mercado" },
+    { "id": "mercado-3", "enemy": "mercado" },
+    { "id": "mercado-4", "enemy": "mercado" },
+    { "id": "mercado-5", "enemy": "boss_mercado", "boss": true }
+  ] },
+  { "id": "caverna", "name": "CAVERNA DOS BUGS", "tag": "COMBATE", "minLevel": 5, "description": "Ninho de exceções não tratadas. Combate por turnos com criaturas de erro.", "path": [
+    { "id": "caverna-1", "enemy": "monstro" },
+    { "id": "caverna-2", "enemy": "monstro" },
+    { "id": "caverna-3", "enemy": "caverna" },
+    { "id": "caverna-4", "enemy": "caverna" },
+    { "id": "caverna-5", "enemy": "boss_caverna", "boss": true }
+  ] },
+  { "id": "torre", "name": "TORRE DE DEPLOY", "tag": "CHEFE", "minLevel": 8, "description": "Suba os andares do pipeline. No topo, o chefe Race Condition espera.", "path": [
+    { "id": "torre-1", "enemy": "torre" },
+    { "id": "torre-2", "enemy": "torre" },
+    { "id": "torre-3", "enemy": "torre" },
+    { "id": "torre-4", "enemy": "torre" },
+    { "id": "torre-5", "enemy": "boss_torre", "boss": true }
+  ] },
+  { "id": "nuvem", "name": "PICOS DA NUVEM", "tag": "ENDGAME", "minLevel": 12, "description": "Região de auto-scaling infinito. Conteúdo de fim de jogo.", "path": [
+    { "id": "nuvem-1", "enemy": "nuvem" },
+    { "id": "nuvem-2", "enemy": "nuvem" },
+    { "id": "nuvem-3", "enemy": "nuvem" },
+    { "id": "nuvem-4", "enemy": "nuvem" },
+    { "id": "nuvem-5", "enemy": "boss_nuvem", "boss": true }
+  ] }
 ]

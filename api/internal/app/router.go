@@ -43,7 +43,7 @@ func NewRouter(d Deps) *chi.Mux {
 	h := func(fn httpx.HandlerFunc) http.HandlerFunc { return httpx.Handle(d.Logger, fn) }
 	sessions := auth.Sessions{Pool: d.Pool}
 	authH := &auth.Handlers{Config: d.Auth, Sessions: sessions, Logger: d.Logger}
-	playerH := &player.Handlers{Pool: d.Pool, Catalog: d.Catalog}
+	playerH := &player.Handlers{Pool: d.Pool, Catalog: d.Catalog, Look: avatar.Choose}
 	worldH := &world.Handlers{Pool: d.Pool, Catalog: d.Catalog}
 	now := d.Now
 	if now == nil {
@@ -76,6 +76,9 @@ func NewRouter(d Deps) *chi.Mux {
 		pr.Post("/api/me/deploys", h(deployH.Start))
 		pr.Post("/api/me/deploys/{type}/claim", h(deployH.Claim))
 		pr.Post("/api/me/skills/{id}/unlock", h(skillsH.Unlock))
+		pr.Post("/api/me/skills/{id}/equip", h(skillsH.Equip))
+		pr.Post("/api/me/skills/{id}/unequip", h(skillsH.Unequip))
+		pr.Post("/api/me/skills/{id}/upgrade", h(skillsH.Upgrade))
 		pr.Get("/api/me/battle", h(battleH.Get))
 		pr.Post("/api/me/battle", h(battleH.Start))
 		pr.Post("/api/me/battle/commands", h(battleH.Command))

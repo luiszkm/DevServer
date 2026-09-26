@@ -1,0 +1,710 @@
+{
+ "name": "region-mercado",
+ "category": "background",
+ "size": [
+  320,
+  180
+ ],
+ "_design": "Mercado path: market stalls, crates, warm awnings; lighter stone trail on dirt ground.",
+ "layers": [
+  {
+   "bands": [
+    0,
+    0,
+    320,
+    120
+   ],
+   "colors": [
+    "sky.2",
+    "sky.3",
+    "sky.4"
+   ],
+   "dither": 3
+  },
+  {
+   "ellipse": [
+    160,
+    20,
+    14,
+    5
+   ],
+   "color": "cloud.2"
+  },
+  {
+   "rect": [
+    148,
+    23,
+    28,
+    2
+   ],
+   "color": "cloud.1"
+  },
+  {
+   "ridge": [
+    0,
+    55,
+    320,
+    55
+   ],
+   "mode": "blocks",
+   "heights": [
+    16,
+    48
+   ],
+   "widths": [
+    8,
+    16
+   ],
+   "color": "sky.1",
+   "seed": 17,
+   "lights": {
+    "color": "net.3",
+    "density": 0.1
+   }
+  },
+  {
+   "ridge": [
+    0,
+    78,
+    320,
+    36
+   ],
+   "mode": "blocks",
+   "heights": [
+    10,
+    28
+   ],
+   "widths": [
+    10,
+    20
+   ],
+   "color": "sky.0",
+   "seed": 19
+  },
+  {
+   "rect": [
+    0,
+    108,
+    320,
+    16
+   ],
+   "color": "stone.2"
+  },
+  {
+   "rect": [
+    0,
+    108,
+    320,
+    1
+   ],
+   "color": "stone.3"
+  },
+  {
+   "rect": [
+    0,
+    122,
+    320,
+    36
+   ],
+   "color": "dirt.2"
+  },
+  {
+   "rect": [
+    0,
+    122,
+    320,
+    2
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "scatter": [
+    0,
+    125,
+    320,
+    32
+   ],
+   "colors": [
+    "dirt.1",
+    "dirt.3"
+   ],
+   "density": 0.08,
+   "seed": 5
+  },
+  {
+   "rect": [
+    0,
+    156,
+    320,
+    24
+   ],
+   "color": "soil.3"
+  },
+  {
+   "rect": [
+    4,
+    88,
+    3,
+    34
+   ],
+   "color": "wood.2"
+  },
+  {
+   "rect": [
+    40,
+    88,
+    3,
+    34
+   ],
+   "color": "wood.2"
+  },
+  {
+   "rect": [
+    2,
+    108,
+    44,
+    14
+   ],
+   "color": "wood.3"
+  },
+  {
+   "rect": [
+    2,
+    80,
+    8,
+    10
+   ],
+   "color": "red.2"
+  },
+  {
+   "rect": [
+    10,
+    80,
+    8,
+    10
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "rect": [
+    18,
+    80,
+    8,
+    10
+   ],
+   "color": "red.2"
+  },
+  {
+   "rect": [
+    26,
+    80,
+    8,
+    10
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "rect": [
+    34,
+    80,
+    8,
+    10
+   ],
+   "color": "red.2"
+  },
+  {
+   "rect": [
+    274,
+    88,
+    3,
+    34
+   ],
+   "color": "wood.2"
+  },
+  {
+   "rect": [
+    310,
+    88,
+    3,
+    34
+   ],
+   "color": "wood.2"
+  },
+  {
+   "rect": [
+    272,
+    108,
+    44,
+    14
+   ],
+   "color": "wood.3"
+  },
+  {
+   "rect": [
+    272,
+    80,
+    8,
+    10
+   ],
+   "color": "gold.2"
+  },
+  {
+   "rect": [
+    280,
+    80,
+    8,
+    10
+   ],
+   "color": "wood.4"
+  },
+  {
+   "rect": [
+    288,
+    80,
+    8,
+    10
+   ],
+   "color": "gold.2"
+  },
+  {
+   "rect": [
+    296,
+    80,
+    8,
+    10
+   ],
+   "color": "wood.4"
+  },
+  {
+   "rect": [
+    304,
+    80,
+    8,
+    10
+   ],
+   "color": "gold.2"
+  },
+  {
+   "poly": [
+    [
+     34,
+     157
+    ],
+    [
+     62,
+     135
+    ],
+    [
+     49,
+     120
+    ],
+    [
+     21,
+     142
+    ]
+   ],
+   "color": "stone.1"
+  },
+  {
+   "poly": [
+    [
+     61,
+     136
+    ],
+    [
+     115,
+     104
+    ],
+    [
+     104,
+     87
+    ],
+    [
+     50,
+     119
+    ]
+   ],
+   "color": "stone.1"
+  },
+  {
+   "poly": [
+    [
+     105,
+     105
+    ],
+    [
+     163,
+     133
+    ],
+    [
+     172,
+     114
+    ],
+    [
+     114,
+     86
+    ]
+   ],
+   "color": "stone.1"
+  },
+  {
+   "poly": [
+    [
+     174,
+     131
+    ],
+    [
+     226,
+     85
+    ],
+    [
+     213,
+     70
+    ],
+    [
+     161,
+     116
+    ]
+   ],
+   "color": "stone.1"
+  },
+  {
+   "poly": [
+    [
+     224,
+     86
+    ],
+    [
+     280,
+     56
+    ],
+    [
+     271,
+     39
+    ],
+    [
+     215,
+     69
+    ]
+   ],
+   "color": "stone.1"
+  },
+  {
+   "poly": [
+    [
+     32,
+     156
+    ],
+    [
+     60,
+     134
+    ],
+    [
+     51,
+     121
+    ],
+    [
+     23,
+     143
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "poly": [
+    [
+     60,
+     134
+    ],
+    [
+     114,
+     102
+    ],
+    [
+     105,
+     89
+    ],
+    [
+     51,
+     121
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "poly": [
+    [
+     106,
+     103
+    ],
+    [
+     164,
+     131
+    ],
+    [
+     171,
+     116
+    ],
+    [
+     113,
+     88
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "poly": [
+    [
+     173,
+     129
+    ],
+    [
+     225,
+     83
+    ],
+    [
+     214,
+     72
+    ],
+    [
+     162,
+     118
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "poly": [
+    [
+     223,
+     85
+    ],
+    [
+     279,
+     55
+    ],
+    [
+     272,
+     40
+    ],
+    [
+     216,
+     70
+    ]
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    28,
+    150,
+    10,
+    8
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    56,
+    128,
+    10,
+    8
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    110,
+    96,
+    10,
+    8
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    168,
+    124,
+    10,
+    8
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    220,
+    78,
+    10,
+    8
+   ],
+   "color": "stone.3"
+  },
+  {
+   "ellipse": [
+    276,
+    48,
+    22,
+    16
+   ],
+   "color": "dirt.2"
+  },
+  {
+   "ellipse": [
+    276,
+    48,
+    18,
+    13
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "scatter": [
+    10,
+    30,
+    300,
+    140
+   ],
+   "colors": [
+    "stone.1",
+    "stone.3"
+   ],
+   "density": 0.04,
+   "seed": 73,
+   "on": "stone.3"
+  },
+  {
+   "use": "../tile/tile-areia.json",
+   "at": [
+    32,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-areia.json",
+   "at": [
+    64,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-areia.json",
+   "at": [
+    192,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-areia.json",
+   "at": [
+    224,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-areia.json",
+   "at": [
+    256,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-areia.json",
+   "at": [
+    288,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    0,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    32,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    64,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    96,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    128,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    160,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    192,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    224,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    256,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    288,
+    160
+   ]
+  },
+  {
+   "use": "../sprite/build-tenda.json",
+   "at": [
+    2,
+    90
+   ]
+  },
+  {
+   "use": "../sprite/prop-caixa-aberta.json",
+   "at": [
+    280,
+    100
+   ]
+  },
+  {
+   "use": "../sprite/prop-caixa.json",
+   "at": [
+    300,
+    100
+   ],
+   "flip": "h"
+  }
+ ]
+}

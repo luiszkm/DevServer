@@ -17,7 +17,7 @@ test.describe("desktop", () => {
       boxes.push((await link.boundingBox())!);
       const icon = link.locator(".tab-icon");
       const ib = (await icon.boundingBox())!;
-      expect([ib.width, ib.height]).toEqual([44, 44]);
+      expect([ib.width, ib.height]).toEqual([22, 22]);
       await expect.poll(() => icon.locator("img").evaluate((img: HTMLImageElement) => (img.complete ? img.naturalWidth : 0))).toBe(16);
     }
     expect(new Set(boxes.map((b) => b.y)).size).toBe(1);
@@ -94,9 +94,18 @@ for (const viewport of [
   });
 }
 
-// C24 (added after verification round 1): number in the corner, label below, glow on the active slot
-async function expectArrangement(page: Page, activeLabel: string) {
-  const slots = await nav(page)
+type SlotBox = { x: number; y: number; w: number; h: number };
+type SlotLayout = {
+  text: string;
+  slot: SlotBox;
+  num: SlotBox;
+  icon: SlotBox;
+  label: SlotBox;
+  shadow: string;
+};
+
+async function slotLayouts(page: Page): Promise<SlotLayout[]> {
+  return nav(page)
     .getByRole("link")
     .evaluateAll((ls) =>
       ls.map((l) => {
@@ -114,30 +123,36 @@ async function expectArrangement(page: Page, activeLabel: string) {
         };
       }),
     );
+}
+
+function expectActiveGlow(slots: SlotLayout[], activeLabel: string) {
   expect(slots).toHaveLength(9);
   for (const s of slots) {
-    expect(s.num.x + s.num.w, s.text).toBeLessThanOrEqual(s.icon.x);
-    expect(s.num.y, s.text).toBeLessThan(s.icon.y);
-    expect(s.num.x, s.text).toBeGreaterThanOrEqual(s.slot.x);
-    expect(s.num.y, s.text).toBeGreaterThanOrEqual(s.slot.y);
-    expect(s.num.x + s.num.w, s.text).toBeLessThanOrEqual(s.slot.x + s.slot.w);
-    expect(s.num.y + s.num.h, s.text).toBeLessThanOrEqual(s.slot.y + s.slot.h);
-    expect(s.label.y, s.text).toBeGreaterThanOrEqual(s.icon.y + s.icon.h);
     if (s.text.includes(activeLabel)) expect(s.shadow, s.text).toContain("rgb(255, 224, 138)");
     else expect(s.shadow, s.text).not.toContain("rgb(255, 224, 138)");
   }
 }
 
+// C24 desktop: one short row — number, icon and label side by side.
 test.describe("arrangement desktop", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
   test("C24 arrangement 1280", async ({ page }) => {
     await newDev(page);
     await page.goto("/server");
     await expect(page.getByText("LOJA DE COMPONENTES")).toBeVisible();
-    await expectArrangement(page, "SERVER");
+    const slots = await slotLayouts(page);
+    expectActiveGlow(slots, "SERVER");
+    for (const s of slots) {
+      expect(s.num.x + s.num.w, s.text).toBeLessThanOrEqual(s.icon.x + 1);
+      expect(s.icon.x + s.icon.w, s.text).toBeLessThanOrEqual(s.label.x + 1);
+      expect(Math.abs(s.num.y - s.icon.y), s.text).toBeLessThanOrEqual(8);
+      expect(Math.abs(s.icon.y - s.label.y), s.text).toBeLessThanOrEqual(8);
+      expect(s.slot.h, s.text).toBeLessThanOrEqual(48);
+    }
   });
 });
 
+// C24 phone: stacked card — number in the corner, label under the icon (unchanged).
 test.describe("arrangement phone", () => {
   test.use({ viewport: { width: 390, height: 844 } });
   test("C24 arrangement 390", async ({ page }) => {
@@ -145,6 +160,16 @@ test.describe("arrangement phone", () => {
     await page.goto("/loja");
     await expect(page.getByText("LOJA DEVSERVER")).toBeVisible();
     await page.getByRole("button", { name: /^MENU/ }).click();
-    await expectArrangement(page, "LOJA");
+    const slots = await slotLayouts(page);
+    expectActiveGlow(slots, "LOJA");
+    for (const s of slots) {
+      expect(s.num.x + s.num.w, s.text).toBeLessThanOrEqual(s.icon.x);
+      expect(s.num.y, s.text).toBeLessThan(s.icon.y);
+      expect(s.num.x, s.text).toBeGreaterThanOrEqual(s.slot.x);
+      expect(s.num.y, s.text).toBeGreaterThanOrEqual(s.slot.y);
+      expect(s.num.x + s.num.w, s.text).toBeLessThanOrEqual(s.slot.x + s.slot.w);
+      expect(s.num.y + s.num.h, s.text).toBeLessThanOrEqual(s.slot.y + s.slot.h);
+      expect(s.label.y, s.text).toBeGreaterThanOrEqual(s.icon.y + s.icon.h);
+    }
   });
 });

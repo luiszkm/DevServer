@@ -20,6 +20,15 @@ import { useGame } from "./GameContext";
 import { HeroAvatar } from "./HeroAvatar";
 
 type Selection = { kind: "item" | "gear" | "skin" | "look" | "recipe"; id: string };
+type ShopTab = "pocoes" | "equip" | "skins" | "estilos" | "forja";
+
+const SHOP_TABS: { id: ShopTab; label: string; title: string }[] = [
+  { id: "pocoes", label: "POÇÕES", title: "POÇÕES" },
+  { id: "equip", label: "EQUIP", title: "EQUIPAMENTOS DO DEV" },
+  { id: "skins", label: "SKINS", title: "SKINS DO AVATAR" },
+  { id: "estilos", label: "ESTILOS", title: "ESTILOS DO AVATAR" },
+  { id: "forja", label: "FORJA", title: "FORJA" },
+];
 
 // What a forge recipe can do for this player, in the button's priority order.
 function forgeState(player: Player, r: Recipe) {
@@ -32,6 +41,7 @@ function forgeState(player: Player, r: Recipe) {
 export function ShopScene() {
   const { player, catalog, setPlayer } = useGame();
   const forSale = catalog.items.filter((i): i is Item & { price: Price } => !!i.price);
+  const [tab, setTab] = useState<ShopTab>("pocoes");
   const [sel, setSel] = useState<Selection>({ kind: "item", id: forSale[0]?.id ?? "" });
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -74,6 +84,32 @@ export function ShopScene() {
     const st = forgeState(player, r);
     return st.owned ? "JÁ POSSUI" : st.ready ? "PRONTO" : "FALTAM MATERIAIS";
   };
+  const current = SHOP_TABS.find((t) => t.id === tab)!;
+
+  function firstOf(next: ShopTab): Selection {
+    switch (next) {
+      case "pocoes":
+        return { kind: "item", id: forSale[0]?.id ?? "" };
+      case "equip":
+        return { kind: "gear", id: catalog.gear[0]?.id ?? "" };
+      case "skins":
+        return { kind: "skin", id: catalog.skins[0]?.id ?? "" };
+      case "estilos":
+        return { kind: "look", id: looks[0]?.id ?? "" };
+      case "forja":
+        return { kind: "recipe", id: catalog.recipes[0]?.id ?? "" };
+      default: {
+        const unreachable: never = next;
+        return unreachable;
+      }
+    }
+  }
+
+  function openTab(next: ShopTab) {
+    if (next === tab) return;
+    setTab(next);
+    setSel(firstOf(next));
+  }
 
   return (
     <section className="scene shop" aria-label="LOJA" style={{ backgroundImage: "url(/art/background/scene-dungeon.png)" }}>
@@ -86,8 +122,41 @@ export function ShopScene() {
           <span className="pixel">LOJA DEVSERVER</span>
           <span className="pixel shop-gems">{`GEMS: ${player.gems}`}</span>
         </div>
-        <div className="panel shop-section" role="region" aria-label="POÇÕES">
-          <span className="pixel shop-section-title">POÇÕES</span>
+        <div className="shop-tabs" role="tablist" aria-label="categorias da loja">
+          {SHOP_TABS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              className="shop-tab pixel"
+              aria-selected={tab === t.id}
+              aria-controls={`shop-panel-${t.id}`}
+              onClick={() => openTab(t.id)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+        <div id={`shop-panel-${tab}`} className="panel shop-section" role="tabpanel" aria-label={current.title}>
+          <span className="pixel shop-section-title">{current.title}</span>
+          {list()}
+        </div>
+      </div>
+      <div className="shop-side">
+        <div className="panel shop-detail" role="region" aria-label="detalhe">
+          {detail()}
+        </div>
+        <div className="panel shop-message term" role="status">
+          {message ?? "Skins são recolors do mesmo sprite — a troca reflete no AVATAR e no Bug Fight."}
+        </div>
+      </div>
+    </section>
+  );
+
+  function list() {
+    switch (tab) {
+      case "pocoes":
+        return (
           <div className="shop-grid shop-grid-2">
             {forSale.map((it) => (
               <button
@@ -109,9 +178,9 @@ export function ShopScene() {
               </button>
             ))}
           </div>
-        </div>
-        <div className="panel shop-section" role="region" aria-label="EQUIPAMENTOS DO DEV">
-          <span className="pixel shop-section-title">EQUIPAMENTOS DO DEV</span>
+        );
+      case "equip":
+        return (
           <div className="shop-grid shop-grid-3">
             {catalog.gear.map((g) => (
               <button
@@ -133,9 +202,9 @@ export function ShopScene() {
               </button>
             ))}
           </div>
-        </div>
-        <div className="panel shop-section" role="region" aria-label="SKINS DO AVATAR">
-          <span className="pixel shop-section-title">SKINS DO AVATAR</span>
+        );
+      case "skins":
+        return (
           <div className="shop-grid shop-grid-4">
             {catalog.skins.map((s) => (
               <button
@@ -153,9 +222,9 @@ export function ShopScene() {
               </button>
             ))}
           </div>
-        </div>
-        <div className="panel shop-section" role="region" aria-label="ESTILOS DO AVATAR">
-          <span className="pixel shop-section-title">ESTILOS DO AVATAR</span>
+        );
+      case "estilos":
+        return (
           <div className="shop-grid shop-grid-4">
             {looks.map((o) => (
               <button
@@ -173,9 +242,9 @@ export function ShopScene() {
               </button>
             ))}
           </div>
-        </div>
-        <div className="panel shop-section" role="region" aria-label="FORJA">
-          <span className="pixel shop-section-title">FORJA</span>
+        );
+      case "forja":
+        return (
           <div className="shop-grid shop-grid-3">
             {catalog.recipes.map((r) => {
               const out = output(r);
@@ -199,18 +268,13 @@ export function ShopScene() {
               );
             })}
           </div>
-        </div>
-      </div>
-      <div className="shop-side">
-        <div className="panel shop-detail" role="region" aria-label="detalhe">
-          {detail()}
-        </div>
-        <div className="panel shop-message term" role="status">
-          {message ?? "Skins são recolors do mesmo sprite — a troca reflete no AVATAR e no Bug Fight."}
-        </div>
-      </div>
-    </section>
-  );
+        );
+      default: {
+        const unreachable: never = tab;
+        return unreachable;
+      }
+    }
+  }
 
   function detail() {
     if (sel.kind === "item") {

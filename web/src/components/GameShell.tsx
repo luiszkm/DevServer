@@ -78,16 +78,16 @@ export function GameShell({ children }: { children: React.ReactNode }) {
     case "loading":
       return (
         <Frame>
-          <div className="scene" />
           <Hud />
+          <div className="scene" />
         </Frame>
       );
     case "ready":
       return (
         <GameContext.Provider value={{ player: state.player, catalog: state.catalog, setPlayer }}>
           <Frame>
-            {children}
             <Hud player={state.player} catalog={state.catalog} onLogout={logout} />
+            {children}
           </Frame>
         </GameContext.Provider>
       );

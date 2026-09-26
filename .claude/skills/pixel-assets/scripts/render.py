@@ -36,7 +36,7 @@ PALETTE_PATH = os.path.join(HERE, "..", "references", "palette.json")
 # because a boss or a panorama can legitimately break the grid.
 SIZES = {
     "icon": {(16, 16), (24, 24)},
-    "sprite": {(32, 32), (32, 48), (48, 48), (48, 64), (64, 64), (96, 96), (160, 64)},
+    "sprite": {(32, 32), (32, 48), (48, 48), (48, 64), (64, 64), (96, 96), (128, 128), (160, 64)},
     "background": {(320, 180), (480, 180), (640, 180)},
     "ui": {(24, 24), (48, 24), (48, 48)},
     "fx": {(128, 32)},

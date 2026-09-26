@@ -189,7 +189,7 @@ class SpriteSizeTest(unittest.TestCase):
         return [[(0, 0, 0, 0)] * w for _ in range(h)]
 
     def test_sprite_size_new_sizes_have_no_size_warning(self):
-        for w, h in ((96, 96), (64, 64), (160, 64)):
+        for w, h in ((96, 96), (64, 64), (128, 128), (160, 64)):
             _, warnings = render.check(self.rows(w, h), "sprite", PALETTE, "s")
             self.assertEqual(size_warnings(warnings), [], (w, h))
 
@@ -237,6 +237,73 @@ class HeroAnimTest(unittest.TestCase):
             self.assertIn("cape", out.getvalue())
             self.assertNotIn("body", out.getvalue().split(":")[-1])
             self.assertEqual([f for f in os.listdir(os.path.join(d, "anim")) if not f.startswith("_")], [])
+
+
+class TraceTest(unittest.TestCase):
+    def image(self, w, h, fill, paint):
+        rows = [[fill + (255,)] * w for _ in range(h)]
+        for x, y, rgb in paint:
+            rows[y][x] = rgb + (255,)
+        return rows
+
+    def test_trace_snaps_to_nearest_palette_key_and_knocks_out_the_border(self):
+        import trace
+        navy = (7, 11, 17)
+        # Closer to gold.2 (#f8b818) than to gold.1 or gold.3.
+        near_gold = (0xF0, 0xB0, 0x18)
+        rows = self.image(12, 12, navy, [(x, y, near_gold) for x in range(3, 9) for y in range(3, 9)])
+        cells, stats = trace.trace_image(rows, (0, 0, 12, 12), (4, 4), PALETTE, "edge", 32)
+        self.assertEqual(stats["knockout_cells"], 12)
+        self.assertEqual(cells[0], [None, None, None, None])
+        self.assertEqual(cells[1][1], "gold.2")
+        self.assertEqual(cells[2][2], "gold.2")
+        self.assertLess(stats["mean_distance"], 24)
+
+    def test_trace_keeps_a_cell_that_is_only_half_backdrop(self):
+        import trace
+        navy = (7, 11, 17)
+        white = PALETTE["white"]
+        # 6x6 source, 3x3 cells of 2x2. The border is navy. The centre cell is half navy, half white.
+        rows = self.image(6, 6, navy, [(3, 2, white), (3, 3, white)])
+        cells, stats = trace.trace_image(rows, (0, 0, 6, 6), (3, 3), PALETTE, "edge", 32)
+        self.assertEqual(stats["knockout_cells"], 8)
+        self.assertEqual(cells[1][1], "white")
+
+    def test_trace_knockout_none_keeps_the_border_colour(self):
+        import trace
+        ink = PALETTE["ink"]
+        rows = self.image(4, 4, ink, [])
+        cells, stats = trace.trace_image(rows, (0, 0, 4, 4), (2, 2), PALETTE, "none", 32)
+        self.assertEqual(stats["knockout_cells"], 0)
+        self.assertEqual(cells, [["ink", "ink"], ["ink", "ink"]])
+
+    def test_trace_spec_renders_back_to_the_same_cells(self):
+        import trace
+        navy = (7, 11, 17)
+        white = PALETTE["white"]
+        rows = self.image(8, 8, navy, [(x, y, white) for x in range(2, 6) for y in range(2, 6)])
+        cells, _ = trace.trace_image(rows, (0, 0, 8, 8), (4, 4), PALETTE, "edge", 32)
+        spec = trace.spec_from("blob", "sprite", (4, 4), cells, "traced from test")
+        with tempfile.TemporaryDirectory() as d:
+            painted = render.render_spec(write_spec(d, "blob", spec), PALETTE).px
+        for y, row in enumerate(cells):
+            for x, key in enumerate(row):
+                expect = None if key is None else PALETTE[key]
+                self.assertEqual(painted[y][x], expect, (x, y))
+
+    def test_trace_box_outside_the_image_is_an_error(self):
+        import trace
+        with tempfile.TemporaryDirectory() as d:
+            png_path = os.path.join(d, "src.png")
+            render.png.write(png_path, [[(0, 0, 0, 255)]])
+            code = trace.main([png_path, "0,0,4,4", "--size", "2x2", "--name", "x",
+                               "--category", "sprite", "--out", os.path.join(d, "x.json")])
+        self.assertEqual(code, 1)
+
+    def test_trace_rejects_a_bad_box(self):
+        import trace
+        self.assertEqual(trace.main(["img.png", "1,2", "--size", "32x32", "--name", "x",
+                                     "--category", "sprite", "--out", "x.json"]), 1)
 
 
 if __name__ == "__main__":

@@ -34,6 +34,12 @@ type Player struct {
 	Skin         string `json:"skin"`
 	// Skills are the unlocked skill ids in catalog order; never nil so it serializes as [].
 	Skills []string `json:"skills"`
+	// SkillLevels has every unlocked skill id with its level (1..3); never nil.
+	SkillLevels map[string]int `json:"skillLevels"`
+	// Loadout has every catalog skill slot, with the equipped skill id or null (AD-019).
+	Loadout []*string `json:"loadout"`
+	// Power is the power bar, 0..combat.power.max (limit-break door 1).
+	Power int `json:"power"`
 	// Inventory lists the items held, quantity > 0 only, in catalog order.
 	Inventory []catalog.ItemQuantity `json:"inventory"`
 	// Gear is the owned gear ids in catalog order; never nil.
@@ -51,6 +57,8 @@ type Player struct {
 	Appearance map[string]string `json:"appearance"`
 	// Looks is the bought avatar option ids in catalog order; never nil.
 	Looks []string `json:"looks"`
+	// Progress is how many path nodes each region has been cleared; no row means 0. Never nil (AD-021).
+	Progress map[string]int `json:"progress"`
 	// picks is players.appearance: only the parts the player chose, saved by WithLocked.
 	picks map[string]string
 }
@@ -79,6 +87,8 @@ func emptyOffice() map[string][]*string {
 
 func emptyRack() []*string { return make([]*string, catalog.Default().Rack.Slots) }
 
+func emptyLoadout() []*string { return make([]*string, catalog.Default().SkillSlots) }
+
 // Classes are the onboarding classes. Each one unlocks only the skill tree whose class matches (AD-018).
 var Classes = []string{"FRONTEND", "BACKEND", "DEVOPS", "FULLSTACK"}
 
@@ -97,10 +107,12 @@ func newPlayer(githubUserID int64, devName, class, body string) *Player {
 		GithubUserID: githubUserID, DevName: devName, Class: class, Body: body,
 		Level: 1, XP: 0, XPMax: 500, HP: 100, HPMax: 100,
 		Coins: 100, Gems: 20, SkillPoints: 1, Region: "vila", Skin: "default", Skills: []string{},
+		SkillLevels: map[string]int{}, Loadout: emptyLoadout(),
 		Inventory: []catalog.ItemQuantity{},
 		Gear:      []string{}, Equipment: emptyEquipment(), Skins: []string{DefaultSkin},
 		Office: emptyOffice(), Rack: emptyRack(),
 		Appearance: ResolveAppearance(catalog.Default(), body, nil), Looks: []string{}, picks: map[string]string{},
+		Progress: map[string]int{},
 	}
 }
 
@@ -161,12 +173,12 @@ func SuggestDevName(login string) string {
 }
 
 const columns = `id, github_user_id, dev_name, class, level, xp, xp_max, hp, hp_max,
-	coins, gems, skill_points, region, skin, appearance, body`
+	coins, gems, skill_points, region, skin, appearance, body, power`
 
 func scan(row pgx.Row) (*Player, error) {
 	p := &Player{}
 	err := row.Scan(&p.ID, &p.GithubUserID, &p.DevName, &p.Class, &p.Level, &p.XP, &p.XPMax,
-		&p.HP, &p.HPMax, &p.Coins, &p.Gems, &p.SkillPoints, &p.Region, &p.Skin, &p.picks, &p.Body)
+		&p.HP, &p.HPMax, &p.Coins, &p.Gems, &p.SkillPoints, &p.Region, &p.Skin, &p.picks, &p.Body, &p.Power)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, httpx.ErrPlayerNotFound
 	}
@@ -206,7 +218,10 @@ func Get(ctx context.Context, q querier, githubUserID int64) (*Player, error) {
 	if err := LoadRack(ctx, q, p); err != nil {
 		return nil, err
 	}
-	return p, LoadLooks(ctx, q, p)
+	if err := LoadLooks(ctx, q, p); err != nil {
+		return nil, err
+	}
+	return p, loadProgress(ctx, q, p)
 }
 
 // LoadLooks reads the bought avatar options into p.Looks, in catalog order like LoadGear.
@@ -352,18 +367,35 @@ func AddItem(ctx context.Context, tx pgx.Tx, p *Player, item string, delta int) 
 	return loadInventory(ctx, tx, p)
 }
 
+// loadSkills reads the unlocked skills, their levels and the loadout. A row at a slot the catalog
+// no longer has counts as unequipped, like LoadRack.
 func loadSkills(ctx context.Context, q querier, p *Player) error {
-	rows, err := q.Query(ctx, `SELECT skill_id FROM player_skills WHERE player_id = $1`, p.ID)
+	rows, err := q.Query(ctx, `SELECT skill_id, level, slot FROM player_skills WHERE player_id = $1`, p.ID)
 	if err != nil {
 		return err
 	}
-	ids, err := pgx.CollectRows(rows, pgx.RowTo[string])
-	if err != nil {
+	p.Skills, p.SkillLevels, p.Loadout = []string{}, map[string]int{}, emptyLoadout()
+	var id string
+	var level int
+	var slot *int
+	if _, err := pgx.ForEachRow(rows, []any{&id, &level, &slot}, func() error {
+		p.Skills = append(p.Skills, id)
+		p.SkillLevels[id] = level
+		if slot != nil && *slot < len(p.Loadout) {
+			s := id
+			p.Loadout[*slot] = &s
+		}
+		return nil
+	}); err != nil {
 		return err
 	}
-	p.Skills = ids
 	SortSkills(p)
 	return nil
+}
+
+// Equipped reports whether a skill is in the loadout.
+func (p *Player) Equipped(skill string) bool {
+	return slices.ContainsFunc(p.Loadout, func(id *string) bool { return id != nil && *id == skill })
 }
 
 // SortSkills puts p.Skills in catalog order (door 4 of the skills plan).
@@ -407,16 +439,57 @@ func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn 
 	if err := LoadLooks(ctx, tx, p); err != nil {
 		return nil, err
 	}
+	if err := loadProgress(ctx, tx, p); err != nil {
+		return nil, err
+	}
 	if err := fn(tx, p); err != nil {
 		return nil, err
 	}
 	_, err = tx.Exec(ctx, `UPDATE players SET level = $2, xp = $3, xp_max = $4, hp = $5, hp_max = $6,
-		coins = $7, gems = $8, skill_points = $9, region = $10, skin = $11, appearance = $12, body = $13 WHERE id = $1`,
-		p.ID, p.Level, p.XP, p.XPMax, p.HP, p.HPMax, p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin, p.picks, p.Body)
+		coins = $7, gems = $8, skill_points = $9, region = $10, skin = $11, appearance = $12, body = $13,
+		power = $14 WHERE id = $1`,
+		p.ID, p.Level, p.XP, p.XPMax, p.HP, p.HPMax, p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin, p.picks, p.Body,
+		p.Power)
 	if err != nil {
 		return nil, err
 	}
 	return p, tx.Commit(ctx)
+}
+
+// loadProgress reads how many path nodes each region has been cleared. No row means 0, and the map is never nil.
+func loadProgress(ctx context.Context, q querier, p *Player) error {
+	rows, err := q.Query(ctx, `SELECT region, cleared FROM region_progress WHERE player_id = $1`, p.ID)
+	if err != nil {
+		return err
+	}
+	p.Progress = map[string]int{}
+	var region string
+	var cleared int
+	_, err = pgx.ForEachRow(rows, []any{&region, &cleared}, func() error {
+		p.Progress[region] = cleared
+		return nil
+	})
+	return err
+}
+
+// AdvanceProgress records a win of the node at index when that index is the frontier
+// (cleared == index). A replay, or a row already ahead, changes nothing.
+func AdvanceProgress(ctx context.Context, tx pgx.Tx, p *Player, region string, index int) error {
+	if p.Progress[region] != index {
+		return nil
+	}
+	next := index + 1
+	tag, err := tx.Exec(ctx, `INSERT INTO region_progress (player_id, region, cleared)
+		VALUES ($1, $2, $3)
+		ON CONFLICT (player_id, region) DO UPDATE SET cleared = EXCLUDED.cleared
+		WHERE region_progress.cleared = $4`, p.ID, region, next, index)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 1 {
+		p.Progress[region] = next
+	}
+	return nil
 }
 
 // GainXP adds xp and applies every level-up it pays for; it is the only level-up rule (AD-009).
@@ -434,6 +507,13 @@ func GainXP(p *Player, xp int) int {
 		levels++
 	}
 	return levels
+}
+
+// ChangeHP applies an hp bonus that starts (delta > 0) or stops (delta < 0) counting to both
+// hpMax and hp, keeping hp at least 1 (shop door 5). Gear, skins and equipped skills share it.
+func ChangeHP(p *Player, delta int) {
+	p.HPMax += delta
+	p.HP = max(1, p.HP+delta)
 }
 
 // Pay takes price from the balance of its currency; a balance equal to the price pays.
@@ -463,11 +543,12 @@ func (p *Player) OwnsLook(option string) bool { return slices.Contains(p.Looks, 
 func (p *Player) OwnsSkin(skin string) bool { return slices.Contains(p.Skins, skin) }
 
 // Bonus is the one bonus rule (AD-012, AD-013, AD-014): the bonus of one type ("hp", "sp", "dmg",
-// "xp", "deploy", "spregen", "coins") summed over the unlocked skills, the equipped gear, the worn
-// skin, the installed furniture and the rack's stats. Owned but unequipped gear adds nothing; "deploy" is capped at the
+// "xp", "deploy", "spregen", "coins") summed over the equipped skills at their level (AD-019), the
+// equipped gear, the worn skin, the installed furniture and the rack's stats. Unlocked but
+// unequipped skills and owned but unequipped gear add nothing; "deploy" is capped at the
 // catalog's MaxDeployCut.
 func Bonus(cat *catalog.Catalog, p *Player, bonusType string) int {
-	sum := cat.SkillBonus(p.Skills, bonusType)
+	sum := cat.SkillBonus(p.Loadout, p.SkillLevels, bonusType)
 	for _, id := range p.Equipment {
 		if id == nil {
 			continue

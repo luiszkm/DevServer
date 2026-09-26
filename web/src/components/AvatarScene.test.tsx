@@ -25,10 +25,12 @@ const detail = () => screen.getByRole("region", { name: "detalhe do item" });
 const detailButton = (name: string) => within(detail()).getByRole("button", { name });
 const strip = (id: string) => document.querySelector(`[data-strip="${id}"]`) as HTMLButtonElement;
 
-// skills f2, f3; macbook, cafe and moletom equipped; shadow worn; hpMax 125.
+// skills fe1, be2 equipped; macbook, cafe and moletom equipped; shadow worn; hpMax 125.
 const geared = (overrides: Partial<Player> = {}) =>
   player({
     skills: ["fe1", "be2"],
+    skillLevels: { fe1: 1, be2: 1 },
+    loadout: ["fe1", "be2", null, null],
     hp: 125,
     hpMax: 125,
     gear: ["macbook", "cafe", "moletom"],

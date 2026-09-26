@@ -1,0 +1,111 @@
+{
+ "name": "skill-do6",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CANARY (devops canary release): a small yellow bird facing right with an orange beak.",
+ "layers": [
+  {
+   "ellipse": [
+    7,
+    9,
+    5,
+    4
+   ],
+   "color": "gold.3"
+  },
+  {
+   "ellipse": [
+    11,
+    6,
+    3,
+    3
+   ],
+   "color": "gold.3"
+  },
+  {
+   "poly": [
+    [
+     2,
+     8
+    ],
+    [
+     1,
+     12
+    ],
+    [
+     5,
+     10
+    ]
+   ],
+   "color": "gold.2"
+  },
+  {
+   "ellipse": [
+    6,
+    10,
+    3,
+    2
+   ],
+   "color": "gold.2"
+  },
+  {
+   "poly": [
+    [
+     14,
+     6
+    ],
+    [
+     15,
+     7
+    ],
+    [
+     14,
+     8
+    ]
+   ],
+   "color": "bronze.3"
+  },
+  {
+   "rect": [
+    11,
+    5,
+    1,
+    1
+   ],
+   "color": "ink.0"
+  },
+  {
+   "rect": [
+    8,
+    4,
+    1,
+    1
+   ],
+   "color": "gold.4"
+  },
+  {
+   "rect": [
+    6,
+    13,
+    1,
+    2
+   ],
+   "color": "bronze.2"
+  },
+  {
+   "rect": [
+    9,
+    13,
+    1,
+    2
+   ],
+   "color": "bronze.2"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

@@ -1,26 +1,34 @@
 {
   "name": "laptop-macbook",
   "category": "sprite",
-  "size": [48, 64],
-  "_design": "Slim silver laptop (metal + white), single-pixel deck, no logo. Gear 'macbook'.",
-  "legend": {"o": "ink", "n": "metal.2", "M": "metal.3", "N": "white"},
+  "size": [
+    48,
+    64
+  ],
+  "_design": "Open slim silver laptop: full lid, single-pixel deck, no logo. Gear 'macbook'.",
+  "legend": {
+    "o": "ink",
+    "M": "metal.3",
+    "N": "white"
+  },
   "layers": [
-    {"grid": [
-      "............ooooo..",
-      "...........oNNNNNo.",
-      "...........oNMMMMMo",
-      "..........oNMMMMMno",
-      "..........oNMMMMMno",
-      ".........oNMMMMMMno",
-      ".........oNMMMMMMno",
-      ".........oNMMMMMMno",
-      ".........oNMMMMMMno",
-      ".........oNMMMMMMno",
-      ".........oNMMMMMMno",
-      ".oooooooooNMMMMMMno",
-      "oMMMMMMMMMMMMMMMMno",
-      "ooooooooooooooooooo",
-      "oooooooooooooooooo."
-    ], "at": [24, 28]}
+    {
+      "grid": [
+        "......oooooooooooo",
+        "......oNNNNNNNNNNo",
+        "......oMMMMMMMMMMo",
+        "......oMMMMMMMMMMo",
+        "......oMMMMMMMMMMo",
+        "......oMMMMMMMMMMo",
+        "......oMMMMMMMMMMo",
+        "oooooooooooooooooo",
+        "oMMMMMMMMMMMMMMMMo",
+        "oooooooooooooooooo"
+      ],
+      "at": [
+        28,
+        33
+      ]
+    }
   ]
 }

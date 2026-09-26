@@ -1,0 +1,93 @@
+{
+ "name": "skill-do4",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "BACKUP (devops): a blue floppy disk with a metal shutter and a white label.",
+ "layers": [
+  {
+   "poly": [
+    [
+     2,
+     2
+    ],
+    [
+     12,
+     2
+    ],
+    [
+     14,
+     4
+    ],
+    [
+     14,
+     14
+    ],
+    [
+     2,
+     14
+    ]
+   ],
+   "color": "net.1"
+  },
+  {
+   "rect": [
+    5,
+    2,
+    6,
+    4
+   ],
+   "color": "metal.3"
+  },
+  {
+   "rect": [
+    8,
+    3,
+    2,
+    2
+   ],
+   "color": "metal.1"
+  },
+  {
+   "rect": [
+    4,
+    9,
+    8,
+    5
+   ],
+   "color": "white"
+  },
+  {
+   "line": [
+    5,
+    10,
+    10,
+    10
+   ],
+   "color": "metal.2"
+  },
+  {
+   "line": [
+    5,
+    12,
+    10,
+    12
+   ],
+   "color": "metal.2"
+  },
+  {
+   "rect": [
+    3,
+    3,
+    1,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

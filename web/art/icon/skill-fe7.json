@@ -1,0 +1,104 @@
+{
+ "name": "skill-fe7",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "SERVICE WORKER (frontend): a steel cog with a green core, the worker that runs in the background.",
+ "layers": [
+  {
+   "rect": [
+    7,
+    1,
+    2,
+    14
+   ],
+   "color": "metal.2"
+  },
+  {
+   "rect": [
+    1,
+    7,
+    14,
+    2
+   ],
+   "color": "metal.2"
+  },
+  {
+   "line": [
+    3,
+    3,
+    12,
+    12
+   ],
+   "color": "metal.2"
+  },
+  {
+   "line": [
+    3,
+    12,
+    12,
+    3
+   ],
+   "color": "metal.2"
+  },
+  {
+   "line": [
+    4,
+    3,
+    12,
+    11
+   ],
+   "color": "metal.2"
+  },
+  {
+   "line": [
+    3,
+    11,
+    11,
+    3
+   ],
+   "color": "metal.2"
+  },
+  {
+   "ellipse": [
+    8,
+    8,
+    5,
+    5
+   ],
+   "color": "metal.2"
+  },
+  {
+   "ellipse": [
+    7,
+    7,
+    3,
+    3
+   ],
+   "color": "metal.3"
+  },
+  {
+   "ellipse": [
+    8,
+    8,
+    2,
+    2
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    7,
+    7,
+    1,
+    1
+   ],
+   "color": "code.4"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

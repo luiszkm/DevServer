@@ -153,7 +153,7 @@ describe("Tabs hotbar", () => {
         img?.className.split(/\s+/).includes("pixelated"),
       ];
     });
-    expect(got).toEqual(SLOTS.map(([num, label, href, icon]) => [num, label, href, `/art/icon/menu-${icon}.png`, "", "32", true]));
+    expect(got).toEqual(SLOTS.map(([num, label, href, icon]) => [num, label, href, `/art/icon/menu-${icon}.png`, "", "16", true]));
   });
 
   it("slot icon fallback", () => {

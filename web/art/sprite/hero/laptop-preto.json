@@ -1,26 +1,38 @@
 {
   "name": "laptop-preto",
   "category": "sprite",
-  "size": [48, 64],
-  "_design": "Black laptop (roof) on the traced lid/deck, net-blue LED. Fixed.",
-  "legend": {"o": "ink", "m": "roof.0", "n": "roof.1", "M": "roof.2", "N": "roof.3", "l": "net.3", "w": "roof.3"},
+  "size": [
+    48,
+    64
+  ],
+  "_design": "Open black laptop on the full lid and deck, net-blue power LED on the front lip. Fixed.",
+  "legend": {
+    "o": "ink",
+    "m": "roof.0",
+    "n": "roof.1",
+    "M": "roof.2",
+    "N": "roof.3",
+    "l": "net.3"
+  },
   "layers": [
-    {"grid": [
-      "............ooooo..",
-      "...........oNNNNNo.",
-      "...........oNMMMMMo",
-      "..........oNMnnnnmo",
-      "..........oNMnnnnmo",
-      ".........oNMnnnnwmo",
-      ".........oNMnnnMnMo",
-      ".........oNMnnnnnmo",
-      ".........oNMnnnnnmo",
-      ".........oNMnnnnnmo",
-      ".........oNMnnnnnmo",
-      ".oooooooooNMnnnnnmo",
-      "onnnnnnnnnnMnnnnnmo",
-      "ommmmmmmmmmmmmmmlmo",
-      "oooooooooooooooooo."
-    ], "at": [24, 28]}
+    {
+      "grid": [
+        "......oooooooooooo",
+        "......oNNNNNNNNNNo",
+        "......oNMMMMMMMMMo",
+        "......oNMMMMMMMMMo",
+        "......oNMMMMMMMMMo",
+        "......oNMMMMMMMMMo",
+        "......oNMMMMMMMMMo",
+        "oooooooooooooooooo",
+        "onnnnnnnnnnnnnnnno",
+        "ommmmmmmmmmmmmmmlo",
+        "oooooooooooooooooo"
+      ],
+      "at": [
+        28,
+        32
+      ]
+    }
   ]
 }

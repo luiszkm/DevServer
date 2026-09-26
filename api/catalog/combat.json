@@ -8,7 +8,13 @@
     { "id": "caverna", "region": "caverna", "name": "EXCEÇÃO SELVAGEM", "level": 10, "hp": 110, "sp": 70, "weakness": "catch ausente", "drop": "wild_trace", "glyph": "{!!}" },
     { "id": "monstro", "region": "caverna", "name": "BUG DE PRODUÇÃO", "level": 9, "hp": 100, "sp": 65, "weakness": "hotfix", "drop": "wild_trace", "glyph": "{>_<}" },
     { "id": "torre", "region": "torre", "name": "RACE CONDITION", "level": 15, "hp": 160, "sp": 85, "weakness": "mutex ausente", "drop": "race_core", "glyph": "//=//" },
-    { "id": "nuvem", "region": "nuvem", "name": "MEMORY LEAK ANCESTRAL", "level": 22, "hp": 220, "sp": 100, "weakness": "garbage collector", "drop": "memory_crystal", "glyph": "^^^^" }
+    { "id": "nuvem", "region": "nuvem", "name": "MEMORY LEAK ANCESTRAL", "level": 22, "hp": 220, "sp": 100, "weakness": "garbage collector", "drop": "memory_crystal", "glyph": "^^^^" },
+    { "id": "boss_vila", "region": "vila", "name": "SEGFAULT", "level": 5, "hp": 95, "sp": 70, "weakness": "ponteiro nulo", "drop": "null_shard", "glyph": "SEGV", "boss": true },
+    { "id": "boss_floresta", "region": "floresta", "name": "LOG INFINITO", "level": 7, "hp": 110, "sp": 75, "weakness": "tail -f", "drop": "log_essence", "glyph": "LOG~", "boss": true },
+    { "id": "boss_mercado", "region": "mercado", "name": "LEFT-PAD", "level": 9, "hp": 130, "sp": 80, "weakness": "versão travada", "drop": "corrupt_dep", "glyph": "PAD!", "boss": true },
+    { "id": "boss_caverna", "region": "caverna", "name": "HEISENBUG", "level": 12, "hp": 165, "sp": 85, "weakness": "log de debug", "drop": "wild_trace", "glyph": "???", "boss": true },
+    { "id": "boss_torre", "region": "torre", "name": "DEADLOCK SUPREMO", "level": 17, "hp": 240, "sp": 90, "weakness": "ordem de lock", "drop": "race_core", "glyph": "X|X", "boss": true },
+    { "id": "boss_nuvem", "region": "nuvem", "name": "KERNEL PANIC", "level": 25, "hp": 330, "sp": 100, "weakness": "reboot", "drop": "memory_crystal", "glyph": "PANIC", "boss": true }
   ],
   "commands": [
     { "id": "fix", "label": "FIX", "hint": "corrige o bug · 14-20 dano", "cost": 10, "damage": [14, 20] },
@@ -18,15 +24,39 @@
     { "id": "fe1", "label": "</> HOTFIX", "hint": "cura 26 HP", "cost": 12, "heal": 26, "skill": "fe1" },
     { "id": "fe2", "label": "{} PAIR", "hint": "expõe a fraqueza e recupera 4 SP", "cost": 10, "exposesWeakness": true, "spGain": 4, "skill": "fe2" },
     { "id": "fe3", "label": "~ DESIGN", "hint": "cura 32 HP e recupera 8 SP", "cost": 18, "heal": 32, "spGain": 8, "skill": "fe3" },
+    { "id": "fe4", "label": "<a> A11Y", "hint": "escuda e cura 20 HP", "cost": 14, "heal": 20, "shield": true, "skill": "fe4" },
+    { "id": "fe5", "label": "@ MEDIA", "hint": "recupera 16 SP", "cost": 6, "spGain": 16, "skill": "fe5" },
+    { "id": "fe6", "label": "# LIGHTHOUSE", "hint": "expõe a fraqueza e cura 12 HP", "cost": 12, "heal": 12, "exposesWeakness": true, "skill": "fe6" },
+    { "id": "fe7", "label": "* WORKER", "hint": "cura 40 HP", "cost": 20, "heal": 40, "skill": "fe7" },
+    { "id": "fe8", "label": "& HYDRATE", "hint": "cura 45 HP e recupera 12 SP", "cost": 26, "heal": 45, "spGain": 12, "skill": "fe8" },
     { "id": "be1", "label": "$_ ENDPOINT", "hint": "golpe forte · 18-24 dano", "cost": 12, "damage": [18, 24], "skill": "be1" },
     { "id": "be2", "label": "[] QUERY", "hint": "query pesada · 24-32", "cost": 16, "damage": [24, 32], "skill": "be2" },
     { "id": "be3", "label": "## DEADLOCK", "hint": "deadlock · 32-42", "cost": 22, "damage": [32, 42], "skill": "be3" },
+    { "id": "be4", "label": "% CACHE", "hint": "golpe rápido · 12-16 e recupera 6 SP", "cost": 10, "damage": [12, 16], "spGain": 6, "skill": "be4" },
+    { "id": "be5", "label": "=> MIGRATE", "hint": "expõe a fraqueza · 10-14", "cost": 14, "damage": [10, 14], "exposesWeakness": true, "skill": "be5" },
+    { "id": "be6", "label": "&& THREADS", "hint": "golpes paralelos · 34-42", "cost": 24, "damage": [34, 42], "skill": "be6" },
+    { "id": "be7", "label": "!! HOTPATH", "hint": "caminho quente · 36-46", "cost": 28, "damage": [36, 46], "skill": "be7" },
+    { "id": "be8", "label": ">> SHARD", "hint": "sharding · 40-50", "cost": 30, "damage": [40, 50], "skill": "be8" },
     { "id": "do1", "label": ">_ HEALTHCHECK", "hint": "escuda e cura 10 HP", "cost": 10, "heal": 10, "shield": true, "skill": "do1" },
     { "id": "do2", "label": ":: FIREWALL", "hint": "escuda e cura 16 HP", "cost": 14, "heal": 16, "shield": true, "skill": "do2" },
     { "id": "do3", "label": "^ CIRCUIT", "hint": "escuda e recupera 6 SP", "cost": 12, "shield": true, "spGain": 6, "skill": "do3" },
+    { "id": "do4", "label": "[+] BACKUP", "hint": "cura 30 HP", "cost": 16, "heal": 30, "skill": "do4" },
+    { "id": "do5", "label": "<> BALANCE", "hint": "escuda e recupera 10 SP", "cost": 8, "shield": true, "spGain": 10, "skill": "do5" },
+    { "id": "do6", "label": "@@ CANARY", "hint": "escuda e expõe a fraqueza", "cost": 12, "shield": true, "exposesWeakness": true, "skill": "do6" },
+    { "id": "do7", "label": "|| REPLICA", "hint": "escuda e cura 28 HP", "cost": 20, "heal": 28, "shield": true, "skill": "do7" },
+    { "id": "do8", "label": "{#} TERRAFORM", "hint": "escuda e golpeia · 20-26", "cost": 22, "damage": [20, 26], "shield": true, "skill": "do8" },
     { "id": "fs1", "label": "</> SNACK", "hint": "cura 22 HP", "cost": 12, "heal": 22, "skill": "fs1" },
     { "id": "fs2", "label": "$_ SCRIPT", "hint": "golpe · 16-22 dano", "cost": 12, "damage": [16, 22], "skill": "fs2" },
     { "id": "fs3", "label": ":: PAGER", "hint": "escuda e cura 8 HP", "cost": 10, "heal": 8, "shield": true, "skill": "fs3" },
+    { "id": "fs4", "label": "? OVERFLOW", "hint": "expõe a fraqueza e recupera 3 SP", "cost": 9, "exposesWeakness": true, "spGain": 3, "skill": "fs4" },
+    { "id": "fs5", "label": "$$ FREELA", "hint": "entrega · 20-28 dano", "cost": 16, "damage": [20, 28], "skill": "fs5" },
+    { "id": "fs6", "label": "++ CRUD", "hint": "12-16 dano e cura 12 HP", "cost": 16, "damage": [12, 16], "heal": 12, "skill": "fs6" },
+    { "id": "fs7", "label": "~> SEXTA", "hint": "deploy na sexta · 28-38", "cost": 22, "damage": [28, 38], "skill": "fs7" },
+    { "id": "fs8", "label": "<$> MVP", "hint": "escuda, cura 20 HP e recupera 6 SP", "cost": 20, "heal": 20, "shield": true, "spGain": 6, "skill": "fs8" },
+    { "id": "hot_reload", "label": "HOT RELOAD", "hint": "especial · 40 dano, cura 60 HP e recupera 50 SP", "cost": 0, "damage": [40, 40], "heal": 60, "spGain": 50, "limit": true, "class": "FRONTEND" },
+    { "id": "ship", "label": "SHIP IT", "hint": "o deploy que resolve · 80 dano", "cost": 0, "damage": [80, 80], "limit": true, "class": "BACKEND" },
+    { "id": "zero_downtime", "label": "ZERO DOWNTIME", "hint": "especial · escuda, cura 60 HP e 50 dano", "cost": 0, "damage": [50, 50], "heal": 60, "shield": true, "limit": true, "class": "DEVOPS" },
+    { "id": "monolito", "label": "MONOLITO", "hint": "especial · 60 dano e cura 30 HP", "cost": 0, "damage": [60, 60], "heal": 30, "limit": true, "class": "FULLSTACK" },
     { "id": "rollback", "label": "ROLLBACK", "hint": "volta para o mapa", "cost": 0, "flee": true }
   ],
   "items": [
@@ -49,6 +79,7 @@
     "dropChance": 65,
     "potionChance": 30,
     "potion": "sp_potion",
-    "startingItems": [{ "item": "sp_potion", "quantity": 2 }]
+    "startingItems": [{ "item": "sp_potion", "quantity": 2 }],
+    "power": { "max": 100, "perHit": 10, "perCrit": 20 }
   }
 }

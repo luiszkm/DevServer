@@ -1,0 +1,86 @@
+{
+ "name": "skill-fe4",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "ACESSIBILIDADE (frontend): a blue accessibility badge, a round disc with a white person, arms open.",
+ "layers": [
+  {
+   "ellipse": [
+    8,
+    7,
+    6,
+    6
+   ],
+   "color": "net.1"
+  },
+  {
+   "ellipse": [
+    7,
+    6,
+    5,
+    5
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    5,
+    3,
+    2,
+    1
+   ],
+   "color": "net.4"
+  },
+  {
+   "rect": [
+    7,
+    3,
+    2,
+    2
+   ],
+   "color": "white"
+  },
+  {
+   "rect": [
+    4,
+    6,
+    8,
+    1
+   ],
+   "color": "white"
+  },
+  {
+   "rect": [
+    7,
+    7,
+    2,
+    3
+   ],
+   "color": "white"
+  },
+  {
+   "line": [
+    7,
+    10,
+    5,
+    12
+   ],
+   "color": "white"
+  },
+  {
+   "line": [
+    8,
+    10,
+    10,
+    12
+   ],
+   "color": "white"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

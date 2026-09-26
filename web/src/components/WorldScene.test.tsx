@@ -6,6 +6,9 @@ import { CATALOG, REGIONS, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
 import { WorldScene } from "./WorldScene";
 
+const { push } = vi.hoisted(() => ({ push: vi.fn() }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+
 function renderWorld(p: Player, catalog: Catalog = CATALOG) {
   return render(
     <GameContext.Provider value={{ player: p, catalog, setPlayer: vi.fn() }}>
@@ -17,28 +20,42 @@ function renderWorld(p: Player, catalog: Catalog = CATALOG) {
 const marker = (id: string) => document.querySelector(`[data-region="${id}"] .node-marker`) as HTMLElement;
 const LOCKED = "grayscale(1) brightness(.6)";
 
-const button = (regionName: string) =>
-  within(screen.getByRole("article", { name: regionName })).getByRole("button");
+async function openPanel(regionName: string) {
+  await userEvent.click(screen.getByRole("button", { name: regionName }));
+  // jsdom has no CSS transitionend; finish the walk so ENTRAR unlocks.
+  const hero = document.querySelector(".map-hero");
+  if (hero) fireEvent.transitionEnd(hero, { propertyName: "left" });
+  return screen.getByRole("dialog", { name: regionName });
+}
+
+const enterBtn = (dialog: HTMLElement) => within(dialog).getByRole("button", { name: /ENTRAR|EXPLORAR|REQUER NÍVEL/ });
 
 describe("WorldScene", () => {
   // C33
-  it("min levels come from catalog", () => {
-    const catalog = { ...CATALOG, regions: REGIONS.map((r) => (r.id === "vila" ? { ...r, minLevel: 3 } : r)) };
+  it("min levels come from catalog", async () => {
+    const catalog = { ...CATALOG, regions: REGIONS.map((r) => (r.id === "floresta" ? { ...r, minLevel: 3 } : r)) };
     renderWorld(player({ level: 1 }), catalog);
-    expect(button("VILA LOCALHOST")).toHaveTextContent("REQUER NÍVEL 3");
-    expect(button("VILA LOCALHOST")).toBeDisabled();
+    const dialog = await openPanel("FLORESTA DE LOGS");
+    expect(enterBtn(dialog)).toHaveTextContent("REQUER NÍVEL 3");
+    expect(enterBtn(dialog)).toBeDisabled();
   });
 
   // C34
-  it("locks regions above player level", () => {
+  it("locks regions above player level", async () => {
     renderWorld(player({ level: 1 }));
-    for (const name of ["VILA LOCALHOST", "FLORESTA DE LOGS"]) {
-      expect(button(name)).toHaveTextContent("VIAJAR ATÉ AQUI");
-      expect(button(name)).toBeEnabled();
-    }
+    const vila = await openPanel("VILA LOCALHOST");
+    expect(enterBtn(vila)).toHaveTextContent("EXPLORAR");
+    expect(enterBtn(vila)).toBeEnabled();
+    await userEvent.click(within(vila).getByRole("button", { name: "FECHAR" }));
+    const floresta = await openPanel("FLORESTA DE LOGS");
+    expect(enterBtn(floresta)).toHaveTextContent("ENTRAR");
+    expect(enterBtn(floresta)).toBeEnabled();
+    await userEvent.click(within(floresta).getByRole("button", { name: "FECHAR" }));
     for (const [name, min] of [["MERCADO DE PACOTES", 2], ["CAVERNA DOS BUGS", 5], ["TORRE DE DEPLOY", 8], ["PICOS DA NUVEM", 12]]) {
-      expect(button(name as string)).toHaveTextContent(`REQUER NÍVEL ${min}`);
-      expect(button(name as string)).toBeDisabled();
+      const dialog = await openPanel(name as string);
+      expect(enterBtn(dialog)).toHaveTextContent(`REQUER NÍVEL ${min}`);
+      expect(enterBtn(dialog)).toBeDisabled();
+      await userEvent.click(within(dialog).getByRole("button", { name: "FECHAR" }));
     }
   });
 
@@ -53,9 +70,9 @@ describe("WorldScene", () => {
 
   it("renders regions in catalog order", () => {
     const reversed = { ...CATALOG, regions: [...REGIONS].reverse() };
-    renderWorld(player(), reversed);
-    const names = screen.getAllByRole("article").map((a) => a.getAttribute("aria-label"));
-    expect(names).toEqual([...REGIONS].reverse().map((r) => r.name));
+    const { container } = renderWorld(player(), reversed);
+    const ids = [...container.querySelectorAll("[data-region]")].map((n) => n.getAttribute("data-region"));
+    expect(ids).toEqual([...REGIONS].reverse().map((r) => r.id));
   });
 
   it("shows the api message when travel is refused and keeps the player", async () => {
@@ -66,7 +83,8 @@ describe("WorldScene", () => {
         <WorldScene />
       </GameContext.Provider>,
     );
-    await userEvent.click(button("FLORESTA DE LOGS"));
+    const dialog = await openPanel("FLORESTA DE LOGS");
+    await userEvent.click(within(dialog).getByRole("button", { name: "ENTRAR" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("nível insuficiente para esta região");
     expect(setPlayer).not.toHaveBeenCalled();
   });
@@ -74,27 +92,32 @@ describe("WorldScene", () => {
   it("shows SERVIDOR FORA DO AR when travel hits a network error", async () => {
     mockFetch({ "POST /api/me/travel": () => Promise.reject(new TypeError("Failed to fetch")) });
     renderWorld(player());
-    await userEvent.click(button("FLORESTA DE LOGS"));
+    const dialog = await openPanel("FLORESTA DE LOGS");
+    await userEvent.click(within(dialog).getByRole("button", { name: "ENTRAR" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("SERVIDOR FORA DO AR");
   });
 
   it("falls back to a generic message when a travel error has no body", async () => {
     mockFetch({ "POST /api/me/travel": new Response(null, { status: 502 }) });
     renderWorld(player());
-    await userEvent.click(button("FLORESTA DE LOGS"));
+    const dialog = await openPanel("FLORESTA DE LOGS");
+    await userEvent.click(within(dialog).getByRole("button", { name: "ENTRAR" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("erro ao viajar");
   });
 
   it("disables travel buttons while a travel is pending", async () => {
     mockFetch({ "POST /api/me/travel": () => new Promise<Response>(() => {}) });
     renderWorld(player());
-    await userEvent.click(button("FLORESTA DE LOGS"));
-    expect(button("VILA LOCALHOST")).toBeDisabled();
-    expect(button("FLORESTA DE LOGS")).toBeDisabled();
+    const dialog = await openPanel("FLORESTA DE LOGS");
+    await userEvent.click(within(dialog).getByRole("button", { name: "ENTRAR" }));
+    expect(within(dialog).getByRole("button", { name: "ENTRAR" })).toBeDisabled();
+    expect(within(dialog).getByRole("button", { name: "FECHAR" })).toBeDisabled();
+    expect(marker("vila")).toBeDisabled();
+    expect(marker("floresta")).toBeDisabled();
   });
 
   it("places a region unknown to the map and names an unknown current region by its id", () => {
-    const extra = { id: "lua", name: "LUA", tag: "NOVO", minLevel: 1, description: "nova" };
+    const extra = { id: "lua", name: "LUA", tag: "NOVO", minLevel: 1, description: "nova", path: [] };
     const { container } = renderWorld(player({ region: "lua" }), { ...CATALOG, regions: [...REGIONS, extra] });
     const node = container.querySelector('[data-region="lua"]') as HTMLElement;
     expect(node.style.left).toBe("50%");
@@ -161,13 +184,16 @@ function expectIcon(img: Element | null | undefined, src: string, width = 16) {
 
 describe("WorldScene assets", () => {
   // assets C19
-  it("lock icon", () => {
+  it("lock icon", async () => {
     renderWorld(player({ level: 1, region: "vila" }));
-    const locked = button("CAVERNA DOS BUGS");
+    const dialog = await openPanel("CAVERNA DOS BUGS");
+    const locked = enterBtn(dialog);
     expect(locked).toHaveTextContent("REQUER NÍVEL 5");
     expectIcon(locked.firstElementChild, "/art/icon/ic-lock.png");
     expect(locked.firstChild).toBe(locked.firstElementChild);
-    expect(button("FLORESTA DE LOGS").querySelector('img[src="/art/icon/ic-lock.png"]')).toBeNull();
+    await userEvent.click(within(dialog).getByRole("button", { name: "FECHAR" }));
+    const open = await openPanel("FLORESTA DE LOGS");
+    expect(enterBtn(open).querySelector('img[src="/art/icon/ic-lock.png"]')).toBeNull();
   });
 });
 
@@ -186,7 +212,8 @@ describe("WorldScene world pieces", () => {
   it("teleport after a 200 travel", async () => {
     mockFetch({ "POST /api/me/travel": json(200, { player: player({ region: "floresta" }) }) });
     renderWorld(player({ region: "vila" }));
-    await userEvent.click(button("FLORESTA DE LOGS"));
+    const dialog = await openPanel("FLORESTA DE LOGS");
+    await userEvent.click(within(dialog).getByRole("button", { name: "ENTRAR" }));
     await waitFor(() => expect(document.querySelector('[data-fx="teleport"]')).not.toBeNull());
     const fx = document.querySelector('[data-fx="teleport"]') as HTMLElement;
     expect(fx.closest("[data-region]")!.getAttribute("data-region")).toBe("floresta");
@@ -197,7 +224,8 @@ describe("WorldScene world pieces", () => {
   it("teleport only on success (travel error)", async () => {
     mockFetch({ "POST /api/me/travel": json(422, { error: { code: "level_too_low", message: "nível insuficiente para esta região" } }) });
     renderWorld(player({ region: "vila" }));
-    await userEvent.click(button("FLORESTA DE LOGS"));
+    const dialog = await openPanel("FLORESTA DE LOGS");
+    await userEvent.click(within(dialog).getByRole("button", { name: "ENTRAR" }));
     expect(await screen.findByText("nível insuficiente para esta região")).toBeInTheDocument();
     expect(document.querySelector('[data-fx="teleport"]')).toBeNull();
   });
@@ -205,19 +233,76 @@ describe("WorldScene world pieces", () => {
 
 describe("WorldScene hero anim", () => {
   // assets C48
-  const hero = () => document.querySelector("[data-region] canvas") as HTMLCanvasElement;
+  const hero = () => document.querySelector(".map-hero canvas") as HTMLCanvasElement;
   it("hero anim: idle beside the current marker", () => {
     renderWorld(player({ region: "floresta" }));
-    expect(document.querySelectorAll("[data-region] canvas")).toHaveLength(1);
-    expect(hero().closest("[data-region]")!.getAttribute("data-region")).toBe("floresta");
+    expect(document.querySelectorAll(".map-hero canvas")).toHaveLength(1);
+    const wrap = hero().closest(".map-hero") as HTMLElement;
+    expect(wrap.style.left).toBe("40%");
+    expect(wrap.style.top).toBe("34%");
     expect(hero().dataset.anim).toBe("idle");
   });
 
   it("hero anim: walk while the travel is pending", async () => {
     mockFetch({ "POST /api/me/travel": () => new Promise<Response>(() => {}) });
     renderWorld(player({ region: "vila" }));
-    await userEvent.click(button("FLORESTA DE LOGS"));
+    const dialog = await openPanel("FLORESTA DE LOGS");
+    await userEvent.click(within(dialog).getByRole("button", { name: "ENTRAR" }));
     expect(hero().dataset.anim).toBe("walk");
+  });
+
+  it("map click walks the hero to the marker and opens the region panel", async () => {
+    renderWorld(player({ region: "vila" }));
+    await userEvent.click(screen.getByRole("button", { name: "FLORESTA DE LOGS" }));
+    const dialog = await screen.findByRole("dialog", { name: "FLORESTA DE LOGS" });
+    expect(dialog).toHaveTextContent("logs");
+    expect(within(dialog).getByRole("button", { name: "ENTRAR" })).toBeDisabled();
+    await waitFor(() => {
+      const wrap = hero().closest(".map-hero") as HTMLElement;
+      expect(wrap.style.left).toBe("40%");
+      expect(wrap.style.top).toBe("34%");
+    });
+    expect(hero().dataset.anim).toBe("walk");
+    fireEvent.transitionEnd(document.querySelector(".map-hero")!, { propertyName: "left" });
+    expect(within(dialog).getByRole("button", { name: "ENTRAR" })).toBeEnabled();
+    expect(hero().dataset.anim).toBe("idle");
+  });
+
+  it("map panel ENTRAR travels to the focused region", async () => {
+    mockFetch({ "POST /api/me/travel": json(200, { player: player({ region: "floresta" }) }) });
+    const setPlayer = vi.fn();
+    render(
+      <GameContext.Provider value={{ player: player({ region: "vila" }), catalog: CATALOG, setPlayer }}>
+        <WorldScene />
+      </GameContext.Provider>,
+    );
+    await userEvent.click(screen.getByRole("button", { name: "FLORESTA DE LOGS" }));
+    // Finish the walk so ENTRAR unlocks (jsdom has no CSS transitionend).
+    fireEvent.transitionEnd(document.querySelector(".map-hero")!, { propertyName: "left" });
+    await userEvent.click(within(screen.getByRole("dialog", { name: "FLORESTA DE LOGS" })).getByRole("button", { name: "ENTRAR" }));
+    await waitFor(() => expect(setPlayer).toHaveBeenCalled());
+    expect(setPlayer.mock.calls[0][0].region).toBe("floresta");
+    expect(document.querySelector('[data-fx="teleport"]')).not.toBeNull();
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/mundo/floresta"));
+  });
+
+  it("ENTRAR opens the region map", async () => {
+    push.mockClear();
+    mockFetch({ "POST /api/me/travel": json(200, { player: player({ region: "floresta" }) }) });
+    renderWorld(player({ region: "vila" }));
+    const dialog = await openPanel("FLORESTA DE LOGS");
+    await userEvent.click(within(dialog).getByRole("button", { name: "ENTRAR" }));
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/mundo/floresta"));
+  });
+
+  it("EXPLORAR skips travel", async () => {
+    push.mockClear();
+    const fetchMock = mockFetch({});
+    renderWorld(player({ region: "vila" }));
+    const dialog = await openPanel("VILA LOCALHOST");
+    await userEvent.click(within(dialog).getByRole("button", { name: "EXPLORAR" }));
+    expect(push).toHaveBeenCalledWith("/mundo/vila");
+    expect(fetchMock.calls("POST /api/me/travel")).toBe(0);
   });
 });
 
@@ -232,19 +317,24 @@ function expectFirstIcon(el: Element | null | undefined, src: string) {
 
 describe("WorldScene applied assets", () => {
   // assets-apply C12
-  it("button icon on VIAJAR ATÉ AQUI", () => {
+  it("button icon on ENTRAR", async () => {
     renderWorld(player({ level: 1, region: "vila" }));
-    expectFirstIcon(button("FLORESTA DE LOGS"), "/art/icon/btn-start.png");
-    expect(button("FLORESTA DE LOGS")).toHaveAccessibleName("VIAJAR ATÉ AQUI");
-    expect(button("CAVERNA DOS BUGS").querySelector('img[src="/art/icon/btn-start.png"]')).toBeNull();
+    const open = await openPanel("FLORESTA DE LOGS");
+    expectFirstIcon(enterBtn(open), "/art/icon/btn-start.png");
+    expect(enterBtn(open)).toHaveAccessibleName("ENTRAR");
+    await userEvent.click(within(open).getByRole("button", { name: "FECHAR" }));
+    const locked = await openPanel("CAVERNA DOS BUGS");
+    expect(enterBtn(locked).querySelector('img[src="/art/icon/btn-start.png"]')).toBeNull();
   });
 
   // assets-apply C13: the crown marks the CHEFE and ENDGAME tags only
   it.each([
     ["torre", true], ["nuvem", true], ["vila", false], ["floresta", false], ["mercado", false], ["caverna", false],
-  ])("generic icon: crown on tag of %s = %s", (id, crowned) => {
+  ])("generic icon: crown on tag of %s = %s", async (id, crowned) => {
     renderWorld(player({ level: 1, region: "vila" }));
-    const chip = screen.getByText(REGIONS.find((r) => r.id === id)!.tag, { selector: ".chip" });
+    const name = REGIONS.find((r) => r.id === id)!.name;
+    const dialog = await openPanel(name);
+    const chip = within(dialog).getByText(REGIONS.find((r) => r.id === id)!.tag, { selector: ".chip" });
     if (crowned) expectFirstIcon(chip, "/art/icon/ic-crown.png");
     else expect(chip.querySelector("img")).toBeNull();
   });

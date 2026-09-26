@@ -111,65 +111,67 @@ func TestCatalog_ServesDeploys(t *testing.T) {
 	}
 }
 
-var descriptions = map[string]string{
-	"fe1": "+8 SP máximo em combate", "fe2": "+10 HP máximo permanente", "fe3": "+12 SP máximo em combate",
-	"be1": "+8% de dano em todos os ataques", "be2": "+10% de dano em todos os ataques", "be3": "+12% de dano em todos os ataques",
-	"do1": "+15 HP máximo permanente", "do2": "+12 HP máximo permanente", "do3": "+18 HP máximo permanente",
-	"fs1": "+6 SP máximo em combate", "fs2": "+6% de dano em todos os ataques", "fs3": "+10 HP máximo permanente",
+// skill-loadout AC 1: every node by value - id, glyph, name, bonus type and the three levels.
+var skillNodes = map[string][][4]string{
+	"frontend": {{"fe1", "</>", "HOTFIX DE CSS", "sp 8/12/16"}, {"fe2", "{}", "PAIR REVIEW", "hp 10/15/20"}, {"fe3", "~", "DESIGN SYSTEM", "sp 12/18/24"},
+		{"fe4", "<a>", "ACESSIBILIDADE", "hp 12/18/24"}, {"fe5", "@", "MEDIA QUERY", "sp 10/15/20"}, {"fe6", "#", "LIGHTHOUSE", "dmg 6/9/12"},
+		{"fe7", "*", "SERVICE WORKER", "hp 15/23/30"}, {"fe8", "&", "HYDRATION", "sp 16/24/32"}},
+	"backend": {{"be1", "$_", "ENDPOINT", "dmg 8/12/16"}, {"be2", "[]", "QUERY PESADA", "dmg 10/15/20"}, {"be3", "##", "DEADLOCK", "dmg 12/18/24"},
+		{"be4", "%", "CACHE HIT", "sp 8/12/16"}, {"be5", "=>", "MIGRATION", "dmg 8/12/16"}, {"be6", "&&", "THREAD POOL", "dmg 10/15/20"},
+		{"be7", "!!", "HOT PATH", "hp 10/15/20"}, {"be8", ">>", "SHARDING", "dmg 14/21/28"}},
+	"devops": {{"do1", ">_", "HEALTHCHECK", "hp 15/23/30"}, {"do2", "::", "FIREWALL", "hp 12/18/24"}, {"do3", "^", "CIRCUIT BREAKER", "hp 18/27/36"},
+		{"do4", "[+]", "BACKUP", "hp 14/21/28"}, {"do5", "<>", "LOAD BALANCER", "sp 10/15/20"}, {"do6", "@@", "CANARY", "hp 16/24/32"},
+		{"do7", "||", "RÉPLICA", "hp 20/30/40"}, {"do8", "{#}", "TERRAFORM", "dmg 8/12/16"}},
+	"fullstack": {{"fs1", "</>", "SNACK DE CSS", "sp 6/9/12"}, {"fs2", "$_", "SCRIPT", "dmg 6/9/12"}, {"fs3", "::", "PAGER", "hp 10/15/20"},
+		{"fs4", "?", "STACK OVERFLOW", "sp 8/12/16"}, {"fs5", "$$", "FREELA", "dmg 8/12/16"}, {"fs6", "++", "CRUD", "hp 12/18/24"},
+		{"fs7", "~>", "DEPLOY NA SEXTA", "dmg 10/15/20"}, {"fs8", "<$>", "MVP", "hp 15/23/30"}},
 }
 
-// C12
+// C12, skill-loadout AC 1
 func TestCatalog_ServesSkillTrees(t *testing.T) {
 	env := apptest.New(t)
 	type node struct {
 		ID, Glyph, Name, Description string
-		Bonus                        struct {
-			Type   string
-			Amount int
-		}
+		Bonus                        map[string]any
+		Levels                       []struct{ Cost, Bonus, Scale int }
 	}
 	b := apptest.Decode[struct {
+		SkillSlots int `json:"skillSlots"`
 		SkillTrees []struct {
 			ID, Name, Class, Role string
 			Nodes                 []node
 		} `json:"skillTrees"`
 	}](t, env.Do(http.MethodGet, "/api/catalog", nil))
-	want := []struct {
-		id, name, class, role string
-		nodes                 [][5]string
-	}{
-		{"frontend", "FRONTEND", "FRONTEND", "SUPORTE", [][5]string{{"fe1", "</>", "HOTFIX DE CSS", "sp", "8"}, {"fe2", "{}", "PAIR REVIEW", "hp", "10"}, {"fe3", "~", "DESIGN SYSTEM", "sp", "12"}}},
-		{"backend", "BACKEND", "BACKEND", "ATAQUE", [][5]string{{"be1", "$_", "ENDPOINT", "dmg", "8"}, {"be2", "[]", "QUERY PESADA", "dmg", "10"}, {"be3", "##", "DEADLOCK", "dmg", "12"}}},
-		{"devops", "DEVOPS", "DEVOPS", "DEFESA", [][5]string{{"do1", ">_", "HEALTHCHECK", "hp", "15"}, {"do2", "::", "FIREWALL", "hp", "12"}, {"do3", "^", "CIRCUIT BREAKER", "hp", "18"}}},
-		{"fullstack", "FULLSTACK", "FULLSTACK", "HÍBRIDO", [][5]string{{"fs1", "</>", "SNACK DE CSS", "sp", "6"}, {"fs2", "$_", "SCRIPT", "dmg", "6"}, {"fs3", "::", "PAGER", "hp", "10"}}},
+	if b.SkillSlots != 4 {
+		t.Errorf("skillSlots = %d, want 4", b.SkillSlots)
 	}
-	gone := []string{"infra", "f1", "f2", "f3", "b1", "b2", "b3", "i1", "i2", "i3"}
+	want := [][4]string{{"frontend", "FRONTEND", "FRONTEND", "SUPORTE"}, {"backend", "BACKEND", "BACKEND", "ATAQUE"},
+		{"devops", "DEVOPS", "DEVOPS", "DEFESA"}, {"fullstack", "FULLSTACK", "FULLSTACK", "HÍBRIDO"}}
 	if len(b.SkillTrees) != 4 {
 		t.Fatalf("skillTrees = %d, want 4", len(b.SkillTrees))
 	}
 	for i, w := range want {
 		tr := b.SkillTrees[i]
-		if tr.ID != w.id || tr.Name != w.name || tr.Class != w.class || tr.Role != w.role || len(tr.Nodes) != 3 {
-			t.Errorf("tree %d = %s/%s/%s/%s with %d nodes", i, tr.ID, tr.Name, tr.Class, tr.Role, len(tr.Nodes))
+		if [4]string{tr.ID, tr.Name, tr.Class, tr.Role} != w || len(tr.Nodes) != 8 {
+			t.Errorf("tree %d = %s/%s/%s/%s with %d nodes, want %v with 8", i, tr.ID, tr.Name, tr.Class, tr.Role, len(tr.Nodes), w)
 			continue
 		}
-		for _, id := range gone {
-			if tr.ID == id {
-				t.Errorf("removed tree %s is still served", id)
-			}
-		}
-		for j, wn := range w.nodes {
+		for j, wn := range skillNodes[w[0]] {
 			n := tr.Nodes[j]
-			got := [5]string{n.ID, n.Glyph, n.Name, n.Bonus.Type, fmt.Sprint(n.Bonus.Amount)}
-			if got != wn {
-				t.Errorf("node %s = %v, want %v", wn[0], got, wn)
+			if len(n.Levels) != 3 {
+				t.Errorf("node %s levels = %d, want 3", wn[0], len(n.Levels))
+				continue
 			}
-			if n.Description != descriptions[wn[0]] {
-				t.Errorf("node %s description = %q, want %q", wn[0], n.Description, descriptions[wn[0]])
+			if _, ok := n.Bonus["amount"]; ok || len(n.Bonus) != 1 {
+				t.Errorf("node %s bonus = %v, want only its type", wn[0], n.Bonus)
 			}
-			for _, id := range gone {
-				if n.ID == id {
-					t.Errorf("removed node %s is still served", id)
+			bonus := fmt.Sprintf("%v %d/%d/%d", n.Bonus["type"], n.Levels[0].Bonus, n.Levels[1].Bonus, n.Levels[2].Bonus)
+			if got := [4]string{n.ID, n.Glyph, n.Name, bonus}; got != wn || n.Description == "" {
+				t.Errorf("node %d.%d = %v (description %q), want %v", i, j, got, n.Description, wn)
+			}
+			for k, l := range n.Levels {
+				if l.Cost != k+1 || l.Scale != []int{100, 125, 150}[k] {
+					t.Errorf("node %s level %d = cost %d scale %d, want cost %d scale %d", n.ID, k+1, l.Cost, l.Scale, k+1, []int{100, 125, 150}[k])
 				}
 			}
 		}
@@ -179,13 +181,55 @@ func TestCatalog_ServesSkillTrees(t *testing.T) {
 // C27 (own layer): catalog position of skill ids, unknown ids last.
 func TestCatalog_SkillPosition(t *testing.T) {
 	c := catalog.Default()
-	for i, id := range []string{"fe1", "fe2", "fe3", "be1", "be2", "be3", "do1", "do2", "do3", "fs1", "fs2", "fs3"} {
-		if got := c.SkillPosition(id); got != i {
-			t.Errorf("SkillPosition(%s) = %d, want %d", id, got, i)
+	i := 0
+	for _, tree := range []string{"frontend", "backend", "devops", "fullstack"} {
+		for _, n := range skillNodes[tree] {
+			if got := c.SkillPosition(n[0]); got != i {
+				t.Errorf("SkillPosition(%s) = %d, want %d", n[0], got, i)
+			}
+			i++
 		}
 	}
-	if got := c.SkillPosition("zz"); got != 12 {
-		t.Errorf("SkillPosition(unknown) = %d, want 12 (after every node)", got)
+	if got := c.SkillPosition("zz"); got != 32 {
+		t.Errorf("SkillPosition(unknown) = %d, want 32 (after every node)", got)
+	}
+}
+
+// skill-loadout: Level clamps to the node's levels, and a node without levels plays at 100%.
+func TestSkillNode_Level(t *testing.T) {
+	n := catalog.SkillNode{Levels: []catalog.SkillLevel{{Cost: 1, Bonus: 8, Scale: 100}, {Cost: 2, Bonus: 12, Scale: 125}, {Cost: 3, Bonus: 16, Scale: 150}}}
+	for _, tc := range []struct{ level, bonus int }{{0, 8}, {1, 8}, {2, 12}, {3, 16}, {4, 16}} {
+		if got := n.Level(tc.level).Bonus; got != tc.bonus {
+			t.Errorf("Level(%d).Bonus = %d, want %d", tc.level, got, tc.bonus)
+		}
+	}
+	if got := (catalog.SkillNode{}).Level(1); got.Scale != 100 || got.Bonus != 0 {
+		t.Errorf("Level on a node without levels = %+v, want scale 100 bonus 0", got)
+	}
+}
+
+// skill-loadout AC 15 (own layer): only equipped ids count, each at its level; nil and unknown add nothing.
+func TestCatalog_SkillBonus(t *testing.T) {
+	c := catalog.Default()
+	s := func(id string) *string { return &id }
+	for _, tc := range []struct {
+		name    string
+		loadout []*string
+		levels  map[string]int
+		typ     string
+		want    int
+	}{
+		{"empty", []*string{nil, nil, nil, nil}, nil, "dmg", 0},
+		{"one at level 1", []*string{s("be1"), nil, nil, nil}, map[string]int{"be1": 1}, "dmg", 8},
+		{"one at level 2", []*string{s("be1"), nil, nil, nil}, map[string]int{"be1": 2}, "dmg", 12},
+		{"one at level 3", []*string{s("be1"), nil, nil, nil}, map[string]int{"be1": 3}, "dmg", 16},
+		{"two summed", []*string{s("be1"), s("be8"), nil, nil}, map[string]int{"be1": 1, "be8": 3}, "dmg", 36},
+		{"other type ignored", []*string{s("be7"), s("be1"), nil, nil}, map[string]int{"be7": 1, "be1": 1}, "hp", 10},
+		{"unknown id", []*string{s("zz"), nil, nil, nil}, map[string]int{"zz": 1}, "dmg", 0},
+	} {
+		if got := c.SkillBonus(tc.loadout, tc.levels, tc.typ); got != tc.want {
+			t.Errorf("%s: SkillBonus = %d, want %d", tc.name, got, tc.want)
+		}
 	}
 }
 
@@ -198,10 +242,10 @@ func TestCatalog_ServesCombat(t *testing.T) {
 			Level, HP, SP                           int
 		} `json:"enemies"`
 		Commands []struct {
-			ID, Label, Hint, Skill        string
-			Cost, Heal, SPGain            int
-			Damage                        []int
-			ExposesWeakness, Shield, Flee bool
+			ID, Label, Hint, Skill, Class        string
+			Cost, Heal, SPGain                   int
+			Damage                               []int
+			ExposesWeakness, Shield, Flee, Limit bool
 		} `json:"commands"`
 		Items []struct {
 			ID, Name, Glyph, Rarity, Description string
@@ -222,6 +266,7 @@ func TestCatalog_ServesCombat(t *testing.T) {
 				Item     string
 				Quantity int
 			}
+			Power struct{ Max, PerHit, PerCrit int }
 		} `json:"combat"`
 	}
 	if err := json.Unmarshal(env.Do(http.MethodGet, "/api/catalog", nil).Body.Bytes(), &b); err != nil {
@@ -239,8 +284,8 @@ func TestCatalog_ServesCombat(t *testing.T) {
 		"torre|torre|RACE CONDITION|15|160|85|mutex ausente|race_core",
 		"nuvem|nuvem|MEMORY LEAK ANCESTRAL|22|220|100|garbage collector|memory_crystal",
 	}
-	if len(b.Enemies) != 9 {
-		t.Fatalf("enemies = %d", len(b.Enemies))
+	if len(b.Enemies) != 15 {
+		t.Fatalf("enemies = %d, want 15", len(b.Enemies))
 	}
 	glyphs := map[string]string{"slime": "(o.o)", "slime_verde": "(-.-)", "monstro": "{>_<}"}
 	for _, e := range b.Enemies {
@@ -249,7 +294,7 @@ func TestCatalog_ServesCombat(t *testing.T) {
 		}
 	}
 	ids := map[string]bool{}
-	for i, e := range b.Enemies {
+	for i, e := range b.Enemies[:len(enemies)] {
 		if ids[e.ID] {
 			t.Errorf("enemy id %q repeated", e.ID)
 		}
@@ -262,23 +307,43 @@ func TestCatalog_ServesCombat(t *testing.T) {
 		"fix|FIX|10|14-20|0|false|false|0|false|", "test|TEST|8||0|true|false|0|false|",
 		"refactor|REFACTOR|14||18|false|false|0|false|", "plain|PLAIN|0||0|false|true|3|false|",
 		"fe1|</> HOTFIX|12||26|false|false|0|false|fe1", "fe2|{} PAIR|10||0|true|false|4|false|fe2",
-		"fe3|~ DESIGN|18||32|false|false|8|false|fe3", "be1|$_ ENDPOINT|12|18-24|0|false|false|0|false|be1",
-		"be2|[] QUERY|16|24-32|0|false|false|0|false|be2", "be3|## DEADLOCK|22|32-42|0|false|false|0|false|be3",
+		"fe3|~ DESIGN|18||32|false|false|8|false|fe3", "fe4|<a> A11Y|14||20|false|true|0|false|fe4",
+		"fe5|@ MEDIA|6||0|false|false|16|false|fe5", "fe6|# LIGHTHOUSE|12||12|true|false|0|false|fe6",
+		"fe7|* WORKER|20||40|false|false|0|false|fe7", "fe8|& HYDRATE|26||45|false|false|12|false|fe8",
+		"be1|$_ ENDPOINT|12|18-24|0|false|false|0|false|be1", "be2|[] QUERY|16|24-32|0|false|false|0|false|be2",
+		"be3|## DEADLOCK|22|32-42|0|false|false|0|false|be3", "be4|% CACHE|10|12-16|0|false|false|6|false|be4",
+		"be5|=> MIGRATE|14|10-14|0|true|false|0|false|be5", "be6|&& THREADS|24|34-42|0|false|false|0|false|be6",
+		"be7|!! HOTPATH|28|36-46|0|false|false|0|false|be7", "be8|>> SHARD|30|40-50|0|false|false|0|false|be8",
 		"do1|>_ HEALTHCHECK|10||10|false|true|0|false|do1", "do2|:: FIREWALL|14||16|false|true|0|false|do2",
-		"do3|^ CIRCUIT|12||0|false|true|6|false|do3", "fs1|</> SNACK|12||22|false|false|0|false|fs1",
-		"fs2|$_ SCRIPT|12|16-22|0|false|false|0|false|fs2", "fs3|:: PAGER|10||8|false|true|0|false|fs3",
+		"do3|^ CIRCUIT|12||0|false|true|6|false|do3", "do4|[+] BACKUP|16||30|false|false|0|false|do4",
+		"do5|<> BALANCE|8||0|false|true|10|false|do5", "do6|@@ CANARY|12||0|true|true|0|false|do6",
+		"do7||| REPLICA|20||28|false|true|0|false|do7", "do8|{#} TERRAFORM|22|20-26|0|false|true|0|false|do8",
+		"fs1|</> SNACK|12||22|false|false|0|false|fs1", "fs2|$_ SCRIPT|12|16-22|0|false|false|0|false|fs2",
+		"fs3|:: PAGER|10||8|false|true|0|false|fs3", "fs4|? OVERFLOW|9||0|true|false|3|false|fs4",
+		"fs5|$$ FREELA|16|20-28|0|false|false|0|false|fs5", "fs6|++ CRUD|16|12-16|12|false|false|0|false|fs6",
+		"fs7|~> SEXTA|22|28-38|0|false|false|0|false|fs7", "fs8|<$> MVP|20||20|false|true|6|false|fs8",
+		"hot_reload|HOT RELOAD|0|40-40|60|false|false|50|false|", "ship|SHIP IT|0|80-80|0|false|false|0|false|",
+		"zero_downtime|ZERO DOWNTIME|0|50-50|60|false|true|0|false|", "monolito|MONOLITO|0|60-60|30|false|false|0|false|",
 		"rollback|ROLLBACK|0||0|false|false|0|true|",
 	}
 	hints := []string{
 		"corrige o bug · 14-20 dano", "expõe a fraqueza · crítico", "recupera 18 HP", "defende e recupera 3 SP",
 		"cura 26 HP", "expõe a fraqueza e recupera 4 SP", "cura 32 HP e recupera 8 SP",
+		"escuda e cura 20 HP", "recupera 16 SP", "expõe a fraqueza e cura 12 HP", "cura 40 HP", "cura 45 HP e recupera 12 SP",
 		"golpe forte · 18-24 dano", "query pesada · 24-32", "deadlock · 32-42",
+		"golpe rápido · 12-16 e recupera 6 SP", "expõe a fraqueza · 10-14", "golpes paralelos · 34-42", "caminho quente · 36-46", "sharding · 40-50",
 		"escuda e cura 10 HP", "escuda e cura 16 HP", "escuda e recupera 6 SP",
+		"cura 30 HP", "escuda e recupera 10 SP", "escuda e expõe a fraqueza", "escuda e cura 28 HP", "escuda e golpeia · 20-26",
 		"cura 22 HP", "golpe · 16-22 dano", "escuda e cura 8 HP",
+		"expõe a fraqueza e recupera 3 SP", "entrega · 20-28 dano", "12-16 dano e cura 12 HP", "deploy na sexta · 28-38", "escuda, cura 20 HP e recupera 6 SP",
+		"especial · 40 dano, cura 60 HP e recupera 50 SP", "o deploy que resolve · 80 dano",
+		"especial · escuda, cura 60 HP e 50 dano", "especial · 60 dano e cura 30 HP",
 		"volta para o mapa",
 	}
-	if len(b.Commands) != 17 {
-		t.Fatalf("commands = %d", len(b.Commands))
+	// skill-loadout AC 2: one limit command per class, no skill, after the skill commands.
+	limits := map[string]string{"hot_reload": "FRONTEND", "ship": "BACKEND", "zero_downtime": "DEVOPS", "monolito": "FULLSTACK"}
+	if len(b.Commands) != len(commands) {
+		t.Fatalf("commands = %d, want %d", len(b.Commands), len(commands))
 	}
 	for i, c := range b.Commands {
 		dmg := ""
@@ -289,6 +354,12 @@ func TestCatalog_ServesCombat(t *testing.T) {
 		if got != commands[i] || c.Hint != hints[i] {
 			t.Errorf("command %d = %s (hint %q), want %s (hint %q)", i, got, c.Hint, commands[i], hints[i])
 		}
+		if c.Limit != (limits[c.ID] != "") || c.Class != limits[c.ID] {
+			t.Errorf("command %s limit %v class %q, want limit %v class %q", c.ID, c.Limit, c.Class, limits[c.ID] != "", limits[c.ID])
+		}
+	}
+	if p := b.Combat.Power; p.Max != 100 || p.PerHit != 10 || p.PerCrit != 20 {
+		t.Errorf("combat.power = %+v, want max 100 perHit 10 perCrit 20", p)
 	}
 	items := []string{
 		"null_shard|FRAGMENTO NULL|0x0|COMUM|", "log_essence|ESSÊNCIA DE LOG|</>|COMUM|",
@@ -1137,6 +1208,93 @@ func TestCatalog_AvatarBodyRules(t *testing.T) {
 	} {
 		if got := c.AvatarDefault(tc.body, tc.part); got != tc.want {
 			t.Errorf("%s: AvatarDefault(%s, %s) = %q, want %q", tc.name, tc.body, tc.part, got, tc.want)
+		}
+	}
+}
+
+func TestCatalog_RegionPaths(t *testing.T) {
+	cat := catalog.Default()
+	want := map[string][]string{
+		"vila":     {"slime", "slime", "vila", "vila", "boss_vila"},
+		"floresta": {"slime_verde", "slime_verde", "floresta", "floresta", "boss_floresta"},
+		"mercado":  {"mercado", "mercado", "mercado", "mercado", "boss_mercado"},
+		"caverna":  {"monstro", "monstro", "caverna", "caverna", "boss_caverna"},
+		"torre":    {"torre", "torre", "torre", "torre", "boss_torre"},
+		"nuvem":    {"nuvem", "nuvem", "nuvem", "nuvem", "boss_nuvem"},
+	}
+	if len(cat.Regions) != len(want) {
+		t.Fatalf("regions = %d, want %d", len(cat.Regions), len(want))
+	}
+	seen := map[string]bool{}
+	for _, r := range cat.Regions {
+		enemies, ok := want[r.ID]
+		if !ok {
+			t.Fatalf("unexpected region %s", r.ID)
+		}
+		seen[r.ID] = true
+		if len(r.Path) != 5 {
+			t.Fatalf("%s path = %d nodes, want 5", r.ID, len(r.Path))
+		}
+		for i, n := range r.Path {
+			if n.ID != fmt.Sprintf("%s-%d", r.ID, i+1) {
+				t.Errorf("%s node %d id = %s", r.ID, i, n.ID)
+			}
+			if n.Enemy != enemies[i] {
+				t.Errorf("%s node %d enemy = %s, want %s", r.ID, i, n.Enemy, enemies[i])
+			}
+			if n.Boss != (i == 4) {
+				t.Errorf("%s node %d boss = %v, want %v", r.ID, i, n.Boss, i == 4)
+			}
+			e, ok := cat.Enemy(n.Enemy)
+			if !ok || e.Region != r.ID {
+				t.Errorf("%s node %s enemy %s: found %v region %s", r.ID, n.ID, n.Enemy, ok, e.Region)
+			}
+		}
+	}
+	if len(seen) != len(want) {
+		t.Fatalf("regions seen = %d, want %d", len(seen), len(want))
+	}
+}
+
+func TestCatalog_Bosses(t *testing.T) {
+	cat := catalog.Default()
+	want := []catalog.Enemy{
+		{ID: "boss_vila", Region: "vila", Name: "SEGFAULT", Level: 5, HP: 95, SP: 70, Weakness: "ponteiro nulo", Drop: "null_shard", Glyph: "SEGV", Boss: true},
+		{ID: "boss_floresta", Region: "floresta", Name: "LOG INFINITO", Level: 7, HP: 110, SP: 75, Weakness: "tail -f", Drop: "log_essence", Glyph: "LOG~", Boss: true},
+		{ID: "boss_mercado", Region: "mercado", Name: "LEFT-PAD", Level: 9, HP: 130, SP: 80, Weakness: "versão travada", Drop: "corrupt_dep", Glyph: "PAD!", Boss: true},
+		{ID: "boss_caverna", Region: "caverna", Name: "HEISENBUG", Level: 12, HP: 165, SP: 85, Weakness: "log de debug", Drop: "wild_trace", Glyph: "???", Boss: true},
+		{ID: "boss_torre", Region: "torre", Name: "DEADLOCK SUPREMO", Level: 17, HP: 240, SP: 90, Weakness: "ordem de lock", Drop: "race_core", Glyph: "X|X", Boss: true},
+		{ID: "boss_nuvem", Region: "nuvem", Name: "KERNEL PANIC", Level: 25, HP: 330, SP: 100, Weakness: "reboot", Drop: "memory_crystal", Glyph: "PANIC", Boss: true},
+	}
+	for _, w := range want {
+		got, ok := cat.Enemy(w.ID)
+		if !ok || got != w {
+			t.Errorf("enemy %s = %+v, want %+v", w.ID, got, w)
+		}
+	}
+}
+
+func TestCatalog_EnemiesInSkipsBosses(t *testing.T) {
+	cat := catalog.Default()
+	want := map[string][]string{
+		"vila":     {"vila", "slime"},
+		"floresta": {"floresta", "slime_verde"},
+		"mercado":  {"mercado"},
+		"caverna":  {"caverna", "monstro"},
+		"torre":    {"torre"},
+		"nuvem":    {"nuvem"},
+	}
+	for region, ids := range want {
+		got := cat.EnemiesIn(region)
+		var have []string
+		for _, e := range got {
+			have = append(have, e.ID)
+			if e.Boss {
+				t.Errorf("%s: EnemiesIn included boss %s", region, e.ID)
+			}
+		}
+		if !reflect.DeepEqual(have, ids) {
+			t.Errorf("%s: EnemiesIn = %v, want %v", region, have, ids)
 		}
 	}
 }

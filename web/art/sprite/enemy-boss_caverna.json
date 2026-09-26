@@ -1,0 +1,52 @@
+{
+  "name": "enemy-boss_caverna",
+  "category": "sprite",
+  "size": [48, 48],
+  "_design": "HEISENBUG: a cave bug that will not sit still — two overlapping offset silhouettes (corrupt ghost + stone/red body), curly antennae, yellow warning eyes.",
+  "_source": "traced from web/public/assests_keyart.png 805,905,55,50 (monstro) at 48x48, redesigned with double silhouette",
+  "layers": [
+    {"ellipse": [28, 26, 12, 9], "color": "corrupt.1"},
+    {"ellipse": [27, 24, 10, 7], "color": "corrupt.2"},
+    {"ellipse": [34, 24, 5, 5], "color": "corrupt.0"},
+    {"rect": [32, 20, 4, 2], "color": "corrupt.2"},
+    {"line": [18, 26, 38, 26], "color": "corrupt.0"},
+    {"rect": [20, 34, 2, 4], "color": "corrupt.0"},
+    {"rect": [28, 34, 2, 4], "color": "corrupt.0"},
+    {"rect": [34, 34, 2, 3], "color": "corrupt.0"},
+    {"ellipse": [20, 28, 13, 10], "color": "stone.2"},
+    {"ellipse": [19, 26, 11, 8], "color": "red.2"},
+    {"ellipse": [16, 22, 7, 4], "color": "red.3"},
+    {"rect": [12, 20, 2, 1], "color": "red.4"},
+    {"rect": [11, 19, 1, 1], "color": "white"},
+    {"ellipse": [32, 28, 5, 5], "color": "red.0"},
+    {"rect": [30, 24, 3, 1], "color": "red.1"},
+    {"line": [10, 28, 32, 28], "color": "red.0"},
+    {"grid": [
+      "...oo.oo",
+      "..o..o..",
+      "..o..o..",
+      ".o..o...",
+      "..o..o..",
+      "...o..o."
+    ], "legend": {"o": "red.3"}, "at": [30, 12]},
+    {"grid": [
+      "y..y",
+      "y..y",
+      "y..y",
+      "....",
+      "y..y"
+    ], "legend": {"y": "lamp.2"}, "at": [16, 20]},
+    {"rect": [34, 26, 2, 2], "color": "lamp.3"},
+    {"rect": [35, 26, 1, 1], "color": "white"},
+    {"rect": [14, 22, 2, 2], "color": "ink"},
+    {"rect": [20, 22, 2, 2], "color": "ink"},
+    {"rect": [14, 22, 1, 1], "color": "white"},
+    {"rect": [20, 22, 1, 1], "color": "white"},
+    {"rect": [12, 36, 2, 4], "color": "red.0"},
+    {"rect": [20, 37, 2, 4], "color": "red.0"},
+    {"rect": [28, 36, 2, 4], "color": "red.0"},
+    {"rect": [0, 44, 48, 4], "color": null},
+    {"rect": [0, 0, 48, 2], "color": null},
+    {"outline": "ink"}
+  ]
+}

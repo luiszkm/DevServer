@@ -16,23 +16,23 @@ function Bar({ value, max, color }: { value: number; max: number; color: string 
 export function Hud({ player, catalog, onLogout }: Props) {
   if (!player) {
     return (
-      <footer className="hud" aria-label="HUD">
+      <header className="hud" aria-label="HUD">
         <div className="hud-card hud-loading">
           <LoadingFx />
           CARREGANDO...
         </div>
-      </footer>
+      </header>
     );
   }
   return (
-    <footer className="hud" aria-label="HUD">
+    <header className="hud" aria-label="HUD">
       <div className="hud-card hud-grow">
         <span className="pixel hud-title">
           <GameArt kind="btn" id="rank" scale={1} alt="" fallback="" className="inline-icon" />
           {`LEVEL ${player.level}`}
         </span>
         <div className="hud-row">
-          <GameArt kind="hud" id="xp" scale={2} alt="" fallback="" />
+          <GameArt kind="hud" id="xp" scale={1} alt="" fallback="" />
           <span className="chip chip-green">XP</span>
           <Bar value={player.xp} max={player.xpMax} color="var(--green)" />
           <span className="term">{`${player.xp}/${player.xpMax}`}</span>
@@ -40,24 +40,24 @@ export function Hud({ player, catalog, onLogout }: Props) {
       </div>
       <div className="hud-card hud-grow">
         <div className="hud-row">
-          <GameArt kind="hud" id="heart" scale={2} alt="" fallback="" />
+          <GameArt kind="hud" id="heart" scale={1} alt="" fallback="" />
           <span className="pixel hud-title">{`HP ${player.hp}/${player.hpMax}`}</span>
+          <Bar value={player.hp} max={player.hpMax} color="var(--red)" />
         </div>
-        <Bar value={player.hp} max={player.hpMax} color="var(--red)" />
       </div>
       <div className="hud-card">
         <div className="hud-row">
-          <GameArt kind="hud" id="coin" scale={2} alt="" fallback="" />
+          <GameArt kind="hud" id="coin" scale={1} alt="" fallback="" />
           <span className="pixel hud-label">COINS</span>
+          <span className="pixel hud-value" style={{ color: "var(--yellow)" }}>{player.coins}</span>
         </div>
-        <span className="pixel hud-value" style={{ color: "var(--yellow)" }}>{player.coins}</span>
       </div>
       <div className="hud-card">
         <div className="hud-row">
-          <GameArt kind="hud" id="gem" scale={2} alt="" fallback="" />
+          <GameArt kind="hud" id="gem" scale={1} alt="" fallback="" />
           <span className="pixel hud-label">GEMS</span>
+          <span className="pixel hud-value" style={{ color: "var(--cyan)" }}>{player.gems}</span>
         </div>
-        <span className="pixel hud-value" style={{ color: "var(--cyan)" }}>{player.gems}</span>
       </div>
       <div className="hud-card">
         <span className="pixel hud-label">
@@ -66,7 +66,7 @@ export function Hud({ player, catalog, onLogout }: Props) {
         </span>
         <div className="hud-row">
           <span className="pixel hud-value" style={{ color: "var(--purple)" }}>{player.skillPoints}</span>
-          {catalog && <ActiveSkillGlyphs skills={player.skills} catalog={catalog} />}
+          {catalog && <ActiveSkillGlyphs loadout={player.loadout} catalog={catalog} />}
         </div>
       </div>
       <div className="hud-card">
@@ -78,18 +78,20 @@ export function Hud({ player, catalog, onLogout }: Props) {
           </button>
         )}
       </div>
-    </footer>
+    </header>
   );
 }
 
-function ActiveSkillGlyphs({ skills, catalog }: { skills: string[]; catalog: Catalog }) {
-  const nodes = catalog.skillTrees.flatMap((t) => t.nodes).filter((n) => skills.includes(n.id));
+/** The equipped skills, in loadout order. */
+function ActiveSkillGlyphs({ loadout, catalog }: { loadout: (string | null)[]; catalog: Catalog }) {
+  const all = catalog.skillTrees.flatMap((t) => t.nodes);
+  const nodes = loadout.flatMap((id) => all.filter((n) => n.id === id));
   if (nodes.length === 0) return <span className="term hud-skills-empty">sem habilidades ativas</span>;
   return (
     <span className="hud-skills" aria-label="habilidades ativas">
       {nodes.map((n) => (
         <span key={n.id} className="pixel skill-chip">
-          <GameArt kind="skill" id={n.id} scale={2} alt={n.name} fallback={n.glyph} />
+          <GameArt kind="skill" id={n.id} scale={1} alt={n.name} fallback={n.glyph} />
         </span>
       ))}
     </span>

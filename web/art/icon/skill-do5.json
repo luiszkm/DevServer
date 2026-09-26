@@ -1,0 +1,128 @@
+{
+ "name": "skill-do5",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "LOAD BALANCER (devops): a gold balance scale with two even pans.",
+ "layers": [
+  {
+   "rect": [
+    7,
+    2,
+    2,
+    11
+   ],
+   "color": "gold.2"
+  },
+  {
+   "rect": [
+    2,
+    4,
+    12,
+    1
+   ],
+   "color": "gold.3"
+  },
+  {
+   "poly": [
+    [
+     1,
+     9
+    ],
+    [
+     6,
+     9
+    ],
+    [
+     5,
+     11
+    ],
+    [
+     2,
+     11
+    ]
+   ],
+   "color": "gold.2"
+  },
+  {
+   "poly": [
+    [
+     10,
+     9
+    ],
+    [
+     15,
+     9
+    ],
+    [
+     14,
+     11
+    ],
+    [
+     11,
+     11
+    ]
+   ],
+   "color": "gold.2"
+  },
+  {
+   "line": [
+    3,
+    5,
+    2,
+    8
+   ],
+   "color": "gold.1"
+  },
+  {
+   "line": [
+    4,
+    5,
+    5,
+    8
+   ],
+   "color": "gold.1"
+  },
+  {
+   "line": [
+    12,
+    5,
+    11,
+    8
+   ],
+   "color": "gold.1"
+  },
+  {
+   "line": [
+    13,
+    5,
+    14,
+    8
+   ],
+   "color": "gold.1"
+  },
+  {
+   "rect": [
+    5,
+    13,
+    6,
+    2
+   ],
+   "color": "gold.1"
+  },
+  {
+   "rect": [
+    7,
+    1,
+    2,
+    1
+   ],
+   "color": "gold.4"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

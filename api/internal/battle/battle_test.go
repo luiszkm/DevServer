@@ -32,6 +32,7 @@ type battleJSON struct {
 	SPMax      int    `json:"spMax"`
 	Weakness   bool   `json:"weakness"`
 	Status     string `json:"status"`
+	Node       string `json:"node,omitempty"`
 }
 
 type eventJSON struct {

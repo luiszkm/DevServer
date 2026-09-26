@@ -5,7 +5,8 @@ import { post } from "@/lib/api";
 import type { AvatarAnim } from "@/lib/avatar";
 import { beatOf, type Beat } from "@/lib/battleFx";
 import { eventText } from "@/lib/battleLog";
-import type { Battle, BattleEvent, Player } from "@/lib/types";
+import { baseCommands, classSpecial, commandForSkill, levelOf, skillLevel } from "@/lib/skills";
+import type { Battle, BattleEvent, Command, Player } from "@/lib/types";
 import { GameArt, nativeSize } from "./GameArt";
 import { FxOnce, LoadingFx } from "./LoadingFx";
 import { useGame } from "./GameContext";
@@ -20,7 +21,7 @@ type Shown = { heroHp?: number; enemyHp?: number };
 const reducedMotion = () => typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // The hero's strip for the beat on stage (plan assumptions: anim per screen); a won fight jumps.
-const BEAT_ANIM: Partial<Record<Beat["hero"] & string, AvatarAnim>> = { lunge: "run", cast: "interact" };
+const BEAT_ANIM: Partial<Record<Beat["hero"] & string, AvatarAnim>> = { lunge: "run", cast: "interact", special: "interact" };
 function heroAnim(beat: Beat | null, status: Battle["status"]): AvatarAnim {
   return (beat?.hero && BEAT_ANIM[beat.hero]) || (status === "won" ? "jump" : "idle");
 }
@@ -92,6 +93,7 @@ export function BattleScene() {
     }
     const { events, player: next, battle: nextBattle } = r.data;
     const lines = events.map((e) => eventText(e, enemy, catalog));
+    const limitLabel = (e: BattleEvent) => catalog.commands.find((c) => c.limit && c.id === e.command)?.label;
     const finish = () => {
       stopPlayback();
       setPlayer(next);
@@ -107,7 +109,7 @@ export function BattleScene() {
     let enemyHp = battle.enemyHp;
     let at = 0;
     events.forEach((e, i) => {
-      const b = beatOf(e);
+      const b = beatOf(e, limitLabel(e));
       heroHp = Math.min(player.hpMax, Math.max(0, heroHp + (b.heroHp ?? 0)));
       enemyHp = Math.max(0, enemyHp + (b.enemyHp ?? 0));
       const hp = { heroHp, enemyHp };
@@ -146,9 +148,15 @@ export function BattleScene() {
   }
 
   const active = battle?.status === "active";
-  const commands = catalog.commands.filter((c) => !c.skill || player.skills.includes(c.skill));
+  // Loadout grid (AD-019), always-known base kit, and class special (AD-020) — separate groups.
+  const kit = baseCommands(catalog);
+  const special = classSpecial(catalog, player);
+  const power = catalog.combat.power;
+  const ready = player.power >= power.max;
   const potions = catalog.items.filter((i) => i.restore);
   const qty = (id: string) => player.inventory.find((i) => i.item === id)?.quantity ?? 0;
+  const blocked = (c: Command) => pending || !active || (battle?.sp ?? 0) < c.cost || (!!c.limit && !ready);
+  const fire = (c: Command) => act("/api/me/battle/commands", { command: c.id });
 
   return (
     <section
@@ -177,6 +185,11 @@ export function BattleScene() {
               NOVO ENCONTRO
             </button>
           )}
+          {battle?.status === "won" && battle.node && (
+            <a className="btn btn-dark" href={`/mundo/${battle.region}`}>
+              VOLTAR AO MAPA
+            </a>
+          )}
         </div>
         <div className="battle-side">
           <span className="pixel battle-log-title">
@@ -190,18 +203,57 @@ export function BattleScene() {
               </div>
             ))}
           </div>
-          <div className="battle-commands">
-            {commands.map((c) => (
+          <div className="battle-commands" aria-label="loadout">
+            {player.loadout.map((id, i) => {
+              const c = id ? commandForSkill(catalog, id) : undefined;
+              if (!c) {
+                return (
+                  <div key={i} className="battle-command battle-command-empty" data-slot={i}>
+                    <span className="pixel">VAZIO</span>
+                  </div>
+                );
+              }
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  className="battle-command"
+                  data-command={c.id}
+                  data-slot={i}
+                  disabled={blocked(c)}
+                  onClick={() => fire(c)}
+                >
+                  <span className="pixel">{c.label}</span>
+                  <span className="term">{commandHint(c)}</span>
+                </button>
+              );
+            })}
+          </div>
+          {special && (
+            <button
+              type="button"
+              className="battle-command battle-command-limit"
+              data-command={special.id}
+              disabled={blocked(special)}
+              onClick={() => fire(special)}
+            >
+              <span className="pixel">{special.label}</span>
+              <span className="term">{commandHint(special)}</span>
+            </button>
+          )}
+          <div className="battle-base" aria-label="comandos base">
+            {kit.map((c) => (
               <button
                 key={c.id}
                 type="button"
-                className="battle-command"
+                className="battle-command battle-command-base"
                 data-command={c.id}
-                disabled={pending || !active || (battle?.sp ?? 0) < c.cost}
-                onClick={() => act("/api/me/battle/commands", { command: c.id })}
+                title={commandHint(c)}
+                disabled={blocked(c)}
+                onClick={() => fire(c)}
               >
                 <span className="pixel">{c.label}</span>
-                <span className="term">{`${c.hint} · ${c.cost ? `${c.cost} SP` : "grátis"}`}</span>
+                <span className="term">{commandCost(c)}</span>
               </button>
             ))}
           </div>
@@ -234,9 +286,25 @@ export function BattleScene() {
             {`SP ${battle.sp}/${battle.spMax}`}
           </span>
         )}
+        <div className="bar battle-power-bar" data-ready={ready}>
+          <div style={{ width: `${(Math.min(player.power, power.max) / power.max) * 100}%`, background: "var(--yellow)" }} />
+        </div>
+        <span className="term battle-power">{`PODER ${player.power}/${power.max}`}</span>
       </div>
     </section>
   );
+
+  function commandCost(c: Command) {
+    return c.limit ? "PODER" : c.cost ? `${c.cost} SP` : "grátis";
+  }
+
+  // "<hint> · <cost>", with the level and scale of an upgraded skill, and PODER for a special.
+  function commandHint(c: Command) {
+    const level = c.skill ? skillLevel(player, c.skill) : 0;
+    const node = level > 1 ? catalog.skillTrees.flatMap((t) => t.nodes).find((n) => n.id === c.skill) : undefined;
+    const tag = node ? ` · Nv ${level} ${levelOf(node, level).scale}%` : "";
+    return `${c.hint}${tag} · ${commandCost(c)}`;
+  }
 
   // A plain render function, not a nested component: a component declared here would remount on
   // every render and bring a failed enemy image back.
@@ -270,7 +338,7 @@ export function BattleScene() {
     const enemy = enemyOf(battle);
     const down = enemyDown || battle.status === "won";
     return (
-      <div className={`battle-stage${beat?.shake ? " is-shake" : ""}`}>
+      <div className={`battle-stage${beat?.shake ? " is-shake" : ""}${beat?.limit ? " is-limit" : ""}`}>
         <div className={`battle-actor battle-hero-actor${beat?.hero ? ` anim-${beat.hero}` : ""}`} aria-label="herói na arena">
           <HeroAvatar look={player} scale={2} className="battle-hero-sprite" anim={heroAnim(beat, battle.status)} />
           {effects("hero")}
@@ -292,7 +360,7 @@ export function BattleScene() {
     return (
       <>
         {beat.fx?.on === on && (
-          <span key={`fx-${beat.key}`} className="battle-fx" data-fx={beat.fx.id} style={{ backgroundImage: `url(/art/fx/${beat.fx.id}.png)` }} aria-hidden="true" />
+          <span key={`fx-${beat.key}`} className={`battle-fx${beat.limit ? " battle-fx-limit" : ""}`} data-fx={beat.fx.id} style={{ backgroundImage: `url(/art/fx/${beat.fx.id}.png)` }} aria-hidden="true" />
         )}
         {beat.float?.on === on && (
           <span key={`float-${beat.key}`} className={`pixel battle-float tone-${beat.float.tone}`} aria-hidden="true">

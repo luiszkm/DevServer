@@ -1,5 +1,5 @@
 {
-  "_about": "Ramps sampled from web/public/keyart.png, index 0 = darkest. Reference a color as 'ramp.index' (e.g. 'gold.2'); a bare ramp name means index 0. 'ui' mirrors the CSS tokens in web/src/app/globals.css so art and chrome match.",
+  "_about": "Ramps sampled from the keyarts, index 0 = darkest. Reference a color as 'ramp.index' (e.g. 'gold.2'); a bare ramp name means index 0. Most ramps come from web/public/keyart.png. 'corrupt' is the boss-screen magenta, sampled from web/public/boss_screen_keyart. 'ui' mirrors the CSS tokens in web/src/app/globals.css so art and chrome match.",
   "ink":    ["#060612", "#12121e", "#1e1e2a"],
   "white":  ["#f8f8f8"],
   "sky":    ["#0a4f80", "#0666a2", "#0672ba", "#1296d2", "#96d2de"],
@@ -16,7 +16,8 @@
   "bronze": ["#5a2a1e", "#8a361e", "#c65a2a", "#ea7236", "#f68a4e"],
   "gem":    ["#082848", "#0878c8", "#08b8e8", "#68e8f8", "#e8fcff"],
   "slime":  ["#4a1e78", "#682898", "#9838a8", "#b848a8", "#d878c8"],
-  "red":    ["#5a1020", "#9a2034", "#c62a42", "#e05252", "#f59090"],
+  "red":     ["#5a1020", "#9a2034", "#c62a42", "#e05252", "#f59090"],
+  "corrupt": ["#2a0a28", "#6a0c38", "#b40c44", "#e81058", "#fc4878"],
   "lamp":   ["#d88818", "#f8a818", "#f8c828", "#fff0a0"],
   "code":   ["#1f5a08", "#3f8a10", "#42ae1e", "#6bd425", "#b6f070"],
   "net":    ["#0e4a80", "#1e6fb0", "#2aaeea", "#4ec6f6", "#a8e4ff"],

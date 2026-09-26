@@ -1,4 +1,5 @@
 import { rackBonus } from "./rack";
+import { loadoutBonus } from "./skills";
 import type { Bonus, Catalog, Player, Price } from "./types";
 
 /** Short bonus for a card: "+8% DMG", "+20 SP", "+15 HP" or "sem bônus". */
@@ -39,12 +40,9 @@ export function isEquipped(player: Player, gearId: string, slot: string): boolea
   return player.equipment[slot] === gearId;
 }
 
-/** Total bonus of one type over skills, equipped gear, the worn skin and the rack, as the api sums it (AD-012, AD-014). */
+/** Total bonus of one type over equipped skills, equipped gear, the worn skin and the rack, as the api sums it (AD-012, AD-014, AD-019). */
 export function totalBonus(catalog: Catalog, player: Player, type: Bonus["type"]): number {
-  const skills = catalog.skillTrees
-    .flatMap((t) => t.nodes)
-    .filter((n) => player.skills.includes(n.id) && n.bonus.type === type)
-    .reduce((sum, n) => sum + n.bonus.amount, 0);
+  const skills = loadoutBonus(catalog, player, type);
   const gear = catalog.gear
     .filter((g) => player.equipment[g.slot] === g.id && g.bonus.type === type)
     .reduce((sum, g) => sum + g.bonus.amount, 0);

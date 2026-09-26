@@ -1,0 +1,104 @@
+{
+ "name": "skill-be8",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "SHARDING (backend): a blue database split into three separated slices.",
+ "layers": [
+  {
+   "rect": [
+    3,
+    2,
+    10,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "ellipse": [
+    8,
+    2,
+    5,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    3,
+    7,
+    10,
+    3
+   ],
+   "color": "net.1"
+  },
+  {
+   "rect": [
+    3,
+    12,
+    10,
+    3
+   ],
+   "color": "net.2"
+  },
+  {
+   "rect": [
+    4,
+    3,
+    1,
+    1
+   ],
+   "color": "white"
+  },
+  {
+   "rect": [
+    4,
+    8,
+    1,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    4,
+    13,
+    1,
+    1
+   ],
+   "color": "net.3"
+  },
+  {
+   "rect": [
+    11,
+    3,
+    1,
+    1
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    11,
+    8,
+    1,
+    1
+   ],
+   "color": "code.3"
+  },
+  {
+   "rect": [
+    11,
+    13,
+    1,
+    1
+   ],
+   "color": "code.3"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

@@ -1,9 +1,9 @@
 import type { BattleEvent } from "./types";
 
-export type HeroAnim = "lunge" | "hit" | "cast" | "fall" | "flee";
+export type HeroAnim = "lunge" | "hit" | "cast" | "fall" | "flee" | "special";
 export type EnemyAnim = "lunge" | "hit" | "defeat";
 /** A 4-frame strip at `/art/fx/<id>.png`. */
-export type FxId = "slash" | "impact" | "code" | "data" | "bolt" | "scan" | "heal" | "shield";
+export type FxId = "slash" | "impact" | "code" | "data" | "bolt" | "scan" | "heal" | "shield" | "ship";
 export type Tone = "damage" | "crit" | "heal" | "sp" | "info" | "reward";
 export type Side = "hero" | "enemy";
 
@@ -17,6 +17,8 @@ export type Beat = {
   fx?: { id: FxId; on: Side };
   float?: { text: string; tone: Tone; on: Side; item?: string };
   shake?: boolean;
+  /** A limit command's hit: the long 128px strip and the gold stage flash. */
+  limit?: boolean;
   heroHp?: number;
   enemyHp?: number;
   ms: number;
@@ -37,11 +39,28 @@ export function fxOf(command?: string): FxId {
 
 const HIT_MS = 600;
 const BEAT_MS = 450;
+const LIMIT_MS = 1200;
 
-export function beatOf(e: BattleEvent): Beat {
+/**
+ * `limitLabel` is the label of the command when it is a limit command (a class special): its
+ * damage plays the `ship` strip for 1.2s with the label in the float.
+ */
+export function beatOf(e: BattleEvent, limitLabel?: string): Beat {
   const n = e.amount ?? 0;
   switch (e.type) {
     case "damage":
+      if (limitLabel) {
+        return {
+          hero: "special",
+          enemy: "hit",
+          fx: { id: "ship", on: "enemy" },
+          float: { text: `-${n} ${limitLabel}!`, tone: "crit", on: "enemy" },
+          shake: true,
+          limit: true,
+          enemyHp: -n,
+          ms: LIMIT_MS,
+        };
+      }
       return {
         hero: "lunge",
         enemy: "hit",

@@ -1,13 +1,17 @@
 import { vi } from "vitest";
-import type { Catalog, Player } from "@/lib/types";
+import type { Catalog, Player, SkillLevel } from "@/lib/types";
+
+function trail(region: string, enemies: [string, string, string, string, string]): Catalog["regions"][number]["path"] {
+  return enemies.map((enemy, i) => ({ id: `${region}-${i + 1}`, enemy, ...(i === 4 ? { boss: true } : {}) }));
+}
 
 export const REGIONS: Catalog["regions"] = [
-  { id: "vila", name: "VILA LOCALHOST", tag: "HUB", minLevel: 1, description: "hub" },
-  { id: "floresta", name: "FLORESTA DE LOGS", tag: "EXPLORAR", minLevel: 1, description: "logs" },
-  { id: "mercado", name: "MERCADO DE PACOTES", tag: "LOJA", minLevel: 2, description: "pacotes" },
-  { id: "caverna", name: "CAVERNA DOS BUGS", tag: "COMBATE", minLevel: 5, description: "bugs" },
-  { id: "torre", name: "TORRE DE DEPLOY", tag: "CHEFE", minLevel: 8, description: "torre" },
-  { id: "nuvem", name: "PICOS DA NUVEM", tag: "ENDGAME", minLevel: 12, description: "nuvem" },
+  { id: "vila", name: "VILA LOCALHOST", tag: "HUB", minLevel: 1, description: "hub", path: trail("vila", ["slime", "slime", "vila", "vila", "boss_vila"]) },
+  { id: "floresta", name: "FLORESTA DE LOGS", tag: "EXPLORAR", minLevel: 1, description: "logs", path: trail("floresta", ["slime_verde", "slime_verde", "floresta", "floresta", "boss_floresta"]) },
+  { id: "mercado", name: "MERCADO DE PACOTES", tag: "LOJA", minLevel: 2, description: "pacotes", path: trail("mercado", ["mercado", "mercado", "mercado", "mercado", "boss_mercado"]) },
+  { id: "caverna", name: "CAVERNA DOS BUGS", tag: "COMBATE", minLevel: 5, description: "bugs", path: trail("caverna", ["monstro", "monstro", "caverna", "caverna", "boss_caverna"]) },
+  { id: "torre", name: "TORRE DE DEPLOY", tag: "CHEFE", minLevel: 8, description: "torre", path: trail("torre", ["torre", "torre", "torre", "torre", "boss_torre"]) },
+  { id: "nuvem", name: "PICOS DA NUVEM", tag: "ENDGAME", minLevel: 12, description: "nuvem", path: trail("nuvem", ["nuvem", "nuvem", "nuvem", "nuvem", "boss_nuvem"]) },
 ];
 
 export const DEPLOY_TYPES: Catalog["deployTypes"] = [
@@ -26,32 +30,45 @@ export const DEPLOY_LEVELS: Catalog["deployLevels"] = [
   { level: 5, minLevel: 15, minutes: 360, xp: 700, coins: 300, gems: 8 },
 ];
 
+const levels = (b: number): SkillLevel[] => [
+  { cost: 1, bonus: b, scale: 100 },
+  { cost: 2, bonus: Math.round(b * 1.5), scale: 125 },
+  { cost: 3, bonus: b * 2, scale: 150 },
+];
+
 export const SKILL_TREES: Catalog["skillTrees"] = [
   { id: "frontend", name: "FRONTEND", class: "FRONTEND", role: "SUPORTE", nodes: [
-    { id: "fe1", glyph: "</>", name: "HOTFIX DE CSS", description: "+8 SP máximo em combate", bonus: { type: "sp", amount: 8 } },
-    { id: "fe2", glyph: "{}", name: "PAIR REVIEW", description: "+10 HP máximo permanente", bonus: { type: "hp", amount: 10 } },
-    { id: "fe3", glyph: "~", name: "DESIGN SYSTEM", description: "+12 SP máximo em combate", bonus: { type: "sp", amount: 12 } },
+    { id: "fe1", glyph: "</>", name: "HOTFIX DE CSS", description: "um ajuste de estilo que salva a sprint", bonus: { type: "sp" }, levels: levels(8) },
+    { id: "fe2", glyph: "{}", name: "PAIR REVIEW", description: "dois olhos acham o bug mais rápido", bonus: { type: "hp" }, levels: levels(10) },
+    { id: "fe3", glyph: "~", name: "DESIGN SYSTEM", description: "componentes prontos, menos retrabalho", bonus: { type: "sp" }, levels: levels(12) },
   ] },
   { id: "backend", name: "BACKEND", class: "BACKEND", role: "ATAQUE", nodes: [
-    { id: "be1", glyph: "$_", name: "ENDPOINT", description: "+8% de dano em todos os ataques", bonus: { type: "dmg", amount: 8 } },
-    { id: "be2", glyph: "[]", name: "QUERY PESADA", description: "+10% de dano em todos os ataques", bonus: { type: "dmg", amount: 10 } },
-    { id: "be3", glyph: "##", name: "DEADLOCK", description: "+12% de dano em todos os ataques", bonus: { type: "dmg", amount: 12 } },
+    { id: "be1", glyph: "$_", name: "ENDPOINT", description: "uma rota direta ao ponto fraco", bonus: { type: "dmg" }, levels: levels(8) },
+    { id: "be2", glyph: "[]", name: "QUERY PESADA", description: "um JOIN que derruba qualquer um", bonus: { type: "dmg" }, levels: levels(10) },
+    { id: "be3", glyph: "##", name: "DEADLOCK", description: "trava o bug no lugar", bonus: { type: "dmg" }, levels: levels(12) },
+    { id: "be4", glyph: "%", name: "CACHE HIT", description: "golpe rápido que devolve fôlego", bonus: { type: "sp" }, levels: levels(8) },
+    { id: "be5", glyph: "=>", name: "MIGRATION", description: "muda o schema e deixa a fraqueza à mostra", bonus: { type: "dmg" }, levels: levels(8) },
+    { id: "be6", glyph: "&&", name: "THREAD POOL", description: "muitos golpes em paralelo", bonus: { type: "dmg" }, levels: levels(10) },
+    { id: "be7", glyph: "!!", name: "HOT PATH", description: "otimiza o caminho quente e aguenta a carga", bonus: { type: "hp" }, levels: levels(10) },
   ] },
   { id: "devops", name: "DEVOPS", class: "DEVOPS", role: "DEFESA", nodes: [
-    { id: "do1", glyph: ">_", name: "HEALTHCHECK", description: "+15 HP máximo permanente", bonus: { type: "hp", amount: 15 } },
-    { id: "do2", glyph: "::", name: "FIREWALL", description: "+12 HP máximo permanente", bonus: { type: "hp", amount: 12 } },
-    { id: "do3", glyph: "^", name: "CIRCUIT BREAKER", description: "+18 HP máximo permanente", bonus: { type: "hp", amount: 18 } },
+    { id: "do1", glyph: ">_", name: "HEALTHCHECK", description: "sabe quando algo vai cair", bonus: { type: "hp" }, levels: levels(15) },
+    { id: "do2", glyph: "::", name: "FIREWALL", description: "bloqueia o tráfego malicioso", bonus: { type: "hp" }, levels: levels(12) },
+    { id: "do3", glyph: "^", name: "CIRCUIT BREAKER", description: "corta a falha antes que ela se espalhe", bonus: { type: "hp" }, levels: levels(18) },
   ] },
   { id: "fullstack", name: "FULLSTACK", class: "FULLSTACK", role: "HÍBRIDO", nodes: [
-    { id: "fs1", glyph: "</>", name: "SNACK DE CSS", description: "+6 SP máximo em combate", bonus: { type: "sp", amount: 6 } },
-    { id: "fs2", glyph: "$_", name: "SCRIPT", description: "+6% de dano em todos os ataques", bonus: { type: "dmg", amount: 6 } },
-    { id: "fs3", glyph: "::", name: "PAGER", description: "+10 HP máximo permanente", bonus: { type: "hp", amount: 10 } },
+    { id: "fs1", glyph: "</>", name: "SNACK DE CSS", description: "um lanche rápido entre deploys", bonus: { type: "sp" }, levels: levels(6) },
+    { id: "fs2", glyph: "$_", name: "SCRIPT", description: "automatiza o golpe", bonus: { type: "dmg" }, levels: levels(6) },
+    { id: "fs3", glyph: "::", name: "PAGER", description: "acorda na hora certa", bonus: { type: "hp" }, levels: levels(10) },
   ] },
 ];
 
 export const ENEMIES: Catalog["enemies"] = [
   { id: "vila", region: "vila", name: "NULL SLIME", level: 3, hp: 60, sp: 50, weakness: "null-check", drop: "null_shard", glyph: "(0x0)" },
+  { id: "slime", region: "vila", name: "SLIME DE CACHE", level: 2, hp: 45, sp: 40, weakness: "cache invalidado", drop: "null_shard", glyph: "(o.o)" },
   { id: "floresta", region: "floresta", name: "LOG WISP", level: 5, hp: 70, sp: 55, weakness: "referência circular", drop: "log_essence", glyph: "(~.~)" },
+  { id: "slime_verde", region: "floresta", name: "SLIME DE LOG", level: 4, hp: 55, sp: 45, weakness: "log rotacionado", drop: "log_essence", glyph: "(-.-)" },
+  { id: "boss_floresta", region: "floresta", name: "LOG INFINITO", level: 7, hp: 110, sp: 75, weakness: "tail -f", drop: "log_essence", glyph: "LOG~", boss: true },
 ];
 
 export const COMMANDS: Catalog["commands"] = [
@@ -61,6 +78,9 @@ export const COMMANDS: Catalog["commands"] = [
   { id: "plain", label: "PLAIN", hint: "defende e recupera 3 SP", cost: 0, shield: true, spGain: 3 },
   { id: "fe1", label: "</> HOTFIX", hint: "cura 26 HP", cost: 12, heal: 26, skill: "fe1" },
   { id: "be1", label: "$_ ENDPOINT", hint: "golpe forte · 18-24 dano", cost: 12, damage: [18, 24], skill: "be1" },
+  { id: "be2", label: "[] QUERY", hint: "query pesada · 24-32", cost: 16, damage: [24, 32], skill: "be2" },
+  { id: "hot_reload", label: "HOT RELOAD", hint: "especial · 40 dano, cura 60 HP e recupera 50 SP", cost: 0, damage: [40, 40], heal: 60, spGain: 50, limit: true, class: "FRONTEND" },
+  { id: "ship", label: "SHIP IT", hint: "o deploy que resolve · 80 dano", cost: 0, damage: [80, 80], limit: true, class: "BACKEND" },
   { id: "rollback", label: "ROLLBACK", hint: "volta para o mapa", cost: 0, flee: true },
 ];
 
@@ -258,17 +278,17 @@ export const AVATAR: Catalog["avatar"] = {
 };
 
 export const CATALOG: Catalog = {
-  version: "v1", regions: REGIONS, deployTypes: DEPLOY_TYPES, deployLevels: DEPLOY_LEVELS, skillTrees: SKILL_TREES,
+  version: "v1", regions: REGIONS, deployTypes: DEPLOY_TYPES, deployLevels: DEPLOY_LEVELS, skillTrees: SKILL_TREES, skillSlots: 4,
   enemies: ENEMIES, commands: COMMANDS, items: ITEMS,
-  combat: { counter: [7, 14], spRegen: 5, weaknessMultiplier: 1.8, victory: { xp: 90, coins: 40, gems: 1 }, dropChance: 65, potionChance: 30, potion: "sp_potion" },
+  combat: { counter: [7, 14], spRegen: 5, weaknessMultiplier: 1.8, victory: { xp: 90, coins: 40, gems: 1 }, dropChance: 65, potionChance: 30, potion: "sp_potion", power: { max: 100, perHit: 10, perCrit: 20 } },
   gearSlots: GEAR_SLOTS, gear: GEAR, skins: SKINS, avatar: AVATAR, office: OFFICE, rack: RACK, recipes: RECIPES,
 };
 
 export function player(overrides: Partial<Player> = {}): Player {
   return {
     devName: "DEV_01", class: "BACKEND", level: 1, xp: 0, xpMax: 500, hp: 100, hpMax: 100,
-    coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], inventory: [{ item: "sp_potion", quantity: 2 }],
-    gear: [], equipment: { setup: null, bebida: null, vestuario: null, acessorio: null }, skins: ["default"], office: room(), rack: rack(), body: "masculino", appearance: { ...AVATAR.defaults }, looks: [], ...overrides,
+    coins: 100, gems: 20, skillPoints: 1, region: "vila", skin: "default", skills: [], skillLevels: {}, loadout: [null, null, null, null], power: 0, inventory: [{ item: "sp_potion", quantity: 2 }],
+    gear: [], equipment: { setup: null, bebida: null, vestuario: null, acessorio: null }, skins: ["default"], office: room(), rack: rack(), body: "masculino", appearance: { ...AVATAR.defaults }, looks: [], progress: {}, ...overrides,
   };
 }
 

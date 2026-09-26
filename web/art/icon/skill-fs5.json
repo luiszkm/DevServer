@@ -1,0 +1,104 @@
+{
+ "name": "skill-fs5",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "FREELA (fullstack): a gold coin stamped with a dollar sign, paid by the job.",
+ "layers": [
+  {
+   "ellipse": [
+    8,
+    8,
+    6,
+    6
+   ],
+   "color": "gold.1"
+  },
+  {
+   "ellipse": [
+    8,
+    8,
+    5,
+    5
+   ],
+   "color": "gold.2"
+  },
+  {
+   "ellipse": [
+    7,
+    7,
+    4,
+    4
+   ],
+   "color": "gold.3"
+  },
+  {
+   "rect": [
+    5,
+    5,
+    1,
+    1
+   ],
+   "color": "gold.4"
+  },
+  {
+   "rect": [
+    7,
+    4,
+    1,
+    8
+   ],
+   "color": "gold.0"
+  },
+  {
+   "rect": [
+    6,
+    5,
+    3,
+    1
+   ],
+   "color": "gold.0"
+  },
+  {
+   "rect": [
+    6,
+    6,
+    1,
+    1
+   ],
+   "color": "gold.0"
+  },
+  {
+   "rect": [
+    6,
+    7,
+    3,
+    1
+   ],
+   "color": "gold.0"
+  },
+  {
+   "rect": [
+    8,
+    8,
+    1,
+    1
+   ],
+   "color": "gold.0"
+  },
+  {
+   "rect": [
+    6,
+    9,
+    3,
+    1
+   ],
+   "color": "gold.0"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

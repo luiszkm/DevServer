@@ -137,7 +137,7 @@ test.describe("phone S", () => {
     test(`C9 360 ${s.route}`, async ({ page }) => {
       await newDev(page);
       await openScene(page, s);
-      const boxes = await controls(page, [scene(s), "footer.hud"]);
+      const boxes = await controls(page, [scene(s), "header.hud"]);
       expect(boxes.length).toBeGreaterThan(0);
       expect(outside(boxes, PHONE_S.width)).toEqual([]);
     });
@@ -145,7 +145,7 @@ test.describe("phone S", () => {
     test(`C10 360 ${s.route}`, async ({ page }) => {
       await newDev(page);
       await openScene(page, s);
-      const boxes = await controls(page, [scene(s), "footer.hud", ".tabs-bar"], ".title-art a");
+      const boxes = await controls(page, [scene(s), "header.hud", ".tabs-bar"], ".title-art a");
       const small = boxes.filter((b) => b.width < 24 || b.height < 24).map((b) => `${b.name} ${b.width}x${b.height}`);
       expect(small).toEqual([]);
     });
@@ -162,7 +162,7 @@ test.describe("phone S", () => {
 
   test("C12 hud", async ({ page }) => {
     await newDev(page);
-    const cards = page.locator("footer.hud .hud-card");
+    const cards = page.locator("header.hud .hud-card");
     await expect(cards).toHaveCount(6);
     for (const card of await cards.all()) {
       await expect(card).toBeVisible();
@@ -320,7 +320,10 @@ test.describe("phone S states", () => {
     await newDev(page);
     await fail(page, "/api/me/travel", 500, { error: { code: "internal", message: "erro de teste" } });
     await openScene(page, SCENES[1]);
-    await page.getByRole("button", { name: "VIAJAR ATÉ AQUI" }).nth(1).click();
+    await page.getByRole("button", { name: "FLORESTA DE LOGS" }).click();
+    const dialog = page.getByRole("dialog", { name: "FLORESTA DE LOGS" });
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole("button", { name: "ENTRAR" }).click();
     await fitsWith(page, page.locator(scene(SCENES[1])).getByRole("alert"));
   });
 
@@ -358,8 +361,8 @@ test.describe("phone S states", () => {
     {
       route: "/skills",
       fill: async (page) => {
-        await page.locator('[data-skill="be1"]').click();
-        await expect(page.locator('[data-skill="be1"]')).toHaveAttribute("data-state", "ATIVA");
+        await page.locator('[data-skill="be1"] [data-action="unlock"]').click();
+        await expect(page.locator('[data-skill="be1"]')).toHaveAttribute("data-state", "Nv 1");
       },
     },
     {
@@ -393,7 +396,7 @@ test.describe("phone S states", () => {
   async function fitsPopulated(page: Page, s: (typeof SCENES)[number]) {
     const { scrollWidth, innerWidth } = await horizontalScroll(page);
     expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
-    const boxes = await controls(page, [scene(s), "footer.hud"]);
+    const boxes = await controls(page, [scene(s), "header.hud"]);
     expect(boxes.length).toBeGreaterThan(0);
     expect(outside(boxes, PHONE_S.width)).toEqual([]);
     const small = boxes.filter((b) => b.width < 24 || b.height < 24).map((b) => `${b.name} ${b.width}x${b.height}`);

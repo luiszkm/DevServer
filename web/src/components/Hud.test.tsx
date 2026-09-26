@@ -10,7 +10,7 @@ describe("Hud", () => {
   // C23
   it("renders player values", () => {
     render(<Hud player={player({ level: 3, xp: 40, xpMax: 1000, hp: 80, hpMax: 140, coins: 55, gems: 7, skillPoints: 2 })} />);
-    const hud = screen.getByRole("contentinfo", { name: "HUD" });
+    const hud = screen.getByRole("banner", { name: "HUD" });
     for (const text of ["LEVEL 3", "40/1000", "HP 80/140", "55", "7", "2"]) {
       expect(within(hud).getByText(text)).toBeInTheDocument();
     }
@@ -23,7 +23,7 @@ describe("Hud", () => {
   it("pending shows CARREGANDO", () => {
     vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
     render(<GameShell><p>cena</p></GameShell>);
-    const hud = screen.getByRole("contentinfo", { name: "HUD" });
+    const hud = screen.getByRole("banner", { name: "HUD" });
     expect(within(hud).getByText("CARREGANDO...")).toBeInTheDocument();
     expect(hud.textContent).not.toMatch(/\d/);
   });
@@ -36,20 +36,23 @@ describe("Hud", () => {
   });
 
   // C22
+  // skill-loadout AC 22: the HUD shows the loadout in slot order; unlocked but unequipped skills are not active.
   it.each([
-    [["be1", "fe1"], ["HOTFIX DE CSS", "ENDPOINT"]],
-    [[], []],
-  ])("shows active skill glyphs (%j)", (skills, names) => {
-    render(<Hud player={player({ skills })} catalog={CATALOG} />);
-    const hud = screen.getByRole("contentinfo", { name: "HUD" });
+    [["be1", "fe1"], ["be1", "fe1"], ["ENDPOINT", "HOTFIX DE CSS"]],
+    [["be1", "fe1"], [null, "fe1", null, "be1"], ["HOTFIX DE CSS", "ENDPOINT"]],
+    [["be1", "fe1"], [], []],
+    [[], [], []],
+  ])("shows active skill glyphs (skills %j, loadout %j)", (skills, loadout, names) => {
+    render(<Hud player={player({ skills, loadout })} catalog={CATALOG} />);
+    const hud = screen.getByRole("banner", { name: "HUD" });
     const card = within(hud).getByText("SKILL PTS").parentElement!;
-    if (skills.length) expect(within(within(card).getByLabelText("habilidades ativas")).getAllByRole("img").map((i) => i.getAttribute("alt"))).toEqual(names);
+    if (names.length) expect(within(within(card).getByLabelText("habilidades ativas")).getAllByRole("img").map((i) => i.getAttribute("alt"))).toEqual(names);
     else expect(within(card).getByText("sem habilidades ativas")).toBeInTheDocument();
   });
 
   it("shows active skill glyphs only with a catalog (none without one)", () => {
-    render(<Hud player={player({ skills: ["be1"] })} />);
-    const hud = screen.getByRole("contentinfo", { name: "HUD" });
+    render(<Hud player={player({ skills: ["be1"], loadout: ["be1"] })} />);
+    const hud = screen.getByRole("banner", { name: "HUD" });
     expect(within(hud).queryByLabelText("habilidades ativas")).not.toBeInTheDocument();
     expect(within(hud).queryByText("sem habilidades ativas")).not.toBeInTheDocument();
     expect(within(hud).getByText("SKILL PTS")).toBeInTheDocument();
@@ -57,27 +60,27 @@ describe("Hud", () => {
 
   // game-art C19
   it.each([[["be1"]], [["fe1", "be1", "be2"]]])("skill art (%j)", (skills) => {
-    render(<Hud player={player({ skills })} catalog={CATALOG} />);
+    render(<Hud player={player({ skills, loadout: skills })} catalog={CATALOG} />);
     const chips = screen.getByLabelText("habilidades ativas");
     const imgs = within(chips).getAllByRole("img");
     const names: Record<string, string> = { be1: "ENDPOINT", be2: "QUERY PESADA", fe1: "HOTFIX DE CSS" };
     expect(imgs.map((i) => i.getAttribute("src"))).toEqual(skills.map((id) => `/art/icon/skill-${id}.png`));
     expect(imgs.map((i) => i.getAttribute("alt"))).toEqual(skills.map((id) => names[id]));
     for (const img of imgs) {
-      expect(img.getAttribute("width")).toBe("32");
+      expect(img.getAttribute("width")).toBe("16");
       expect(img).toHaveClass("pixelated");
     }
   });
 
   it("skill art (none active)", () => {
     render(<Hud player={player({ skills: [] })} catalog={CATALOG} />);
-    const hud = screen.getByRole("contentinfo", { name: "HUD" });
+    const hud = screen.getByRole("banner", { name: "HUD" });
     expect(within(hud).getByText("sem habilidades ativas")).toBeInTheDocument();
     expect(hud.querySelector('img[src^="/art/icon/skill-"]')).toBeNull();
   });
 
   it("skill art falls back to the glyph", () => {
-    render(<Hud player={player({ skills: ["fe1"] })} catalog={CATALOG} />);
+    render(<Hud player={player({ skills: ["fe1"], loadout: ["fe1"] })} catalog={CATALOG} />);
     const chips = screen.getByLabelText("habilidades ativas");
     fireEvent.error(within(chips).getByRole("img"));
     expect(within(chips).queryByRole("img")).toBeNull();
@@ -96,7 +99,7 @@ describe("Hud", () => {
     const img = card.querySelector(`img[src="/art/icon/${icon}.png"]`)!;
     expect(img).not.toBeNull();
     expect(img.getAttribute("alt")).toBe("");
-    expect(img.getAttribute("width")).toBe("32");
+    expect(img.getAttribute("width")).toBe("16");
     expect(img).toHaveClass("pixelated");
   });
 });

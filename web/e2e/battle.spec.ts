@@ -35,5 +35,5 @@ test("fight to victory", async ({ page }) => {
   }
   await expect(page.getByText("RESOLVIDO", { exact: true })).toBeVisible();
   await expect(page.getByRole("log")).toContainText(`${name} resolvido`);
-  await expect(page.getByRole("contentinfo", { name: "HUD" })).toContainText("90/500");
+  await expect(page.getByRole("banner", { name: "HUD" })).toContainText("90/500");
 });

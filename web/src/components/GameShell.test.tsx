@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { CATALOG, json, mockFetch, player } from "@/test/helpers";
@@ -55,9 +55,11 @@ describe("GameShell", () => {
       "POST /api/me/travel": json(200, { player: player({ coins: 999, region: "floresta" }) }),
     });
     render(<GameShell><WorldScene /></GameShell>);
-    const card = await screen.findByRole("article", { name: "FLORESTA DE LOGS" });
-    await userEvent.click(within(card).getByRole("button", { name: "VIAJAR ATÉ AQUI" }));
-    const hud = screen.getByRole("contentinfo", { name: "HUD" });
+    const card = await screen.findByRole("button", { name: "FLORESTA DE LOGS" });
+    await userEvent.click(card);
+    fireEvent.transitionEnd(document.querySelector(".map-hero")!, { propertyName: "left" });
+    await userEvent.click(within(screen.getByRole("dialog", { name: "FLORESTA DE LOGS" })).getByRole("button", { name: "ENTRAR" }));
+    const hud = screen.getByRole("banner", { name: "HUD" });
     expect(await within(hud).findByText("999")).toBeInTheDocument();
     expect(f.calls("GET /api/me")).toBe(1);
   });
@@ -94,7 +96,7 @@ describe("GameShell", () => {
     render(<GameShell><p>cena</p></GameShell>);
     await createDev();
     expect(await screen.findByText("cena")).toBeInTheDocument();
-    expect(within(screen.getByRole("contentinfo", { name: "HUD" })).getByText("NEO")).toBeInTheDocument();
+    expect(within(screen.getByRole("banner", { name: "HUD" })).getByText("NEO")).toBeInTheDocument();
   });
 
   it.each([
@@ -125,14 +127,27 @@ describe("GameShell", () => {
     expect(f.calls("POST /api/auth/logout")).toBe(1);
   });
 
+  it("places the HUD above the scene", async () => {
+    mockFetch({
+      "GET /api/me": json(200, { player: player() }),
+      "GET /api/catalog": json(200, CATALOG),
+    });
+    render(<GameShell><p className="scene">cena</p></GameShell>);
+    await screen.findByText("cena");
+    const frame = document.querySelector(".frame")!;
+    expect(frame.children[0]).toHaveClass("hud");
+    expect(frame.children[0]).toHaveAttribute("aria-label", "HUD");
+    expect(frame.children[1]).toHaveTextContent("cena");
+  });
+
   it("gives the HUD the catalog so it shows active skill glyphs", async () => {
     mockFetch({
-      "GET /api/me": json(200, { player: player({ skills: ["be1"] }) }),
+      "GET /api/me": json(200, { player: player({ skills: ["be1"], loadout: ["be1", null, null, null] }) }),
       "GET /api/catalog": json(200, CATALOG),
     });
     render(<GameShell><p>cena</p></GameShell>);
     await screen.findByText("cena");
-    const hud = screen.getByRole("contentinfo", { name: "HUD" });
+    const hud = screen.getByRole("banner", { name: "HUD" });
     const chip = within(within(hud).getByLabelText("habilidades ativas")).getByRole("img");
     expect(chip.getAttribute("src")).toBe("/art/icon/skill-be1.png");
     expect(chip.getAttribute("alt")).toBe("ENDPOINT");

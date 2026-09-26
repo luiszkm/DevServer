@@ -15,6 +15,6 @@ export async function newDev(page: Page, body = "masculino", className = "BACKEN
   await page.getByRole("button", { name: className }).click();
   await page.locator(`[data-body="${body}"]`).click();
   await page.getByRole("button", { name: "CRIAR DEV" }).click();
-  await expect(page.getByRole("contentinfo", { name: "HUD" })).toContainText("LEVEL 1");
+  await expect(page.getByRole("banner", { name: "HUD" })).toContainText("LEVEL 1");
   return devName;
 }

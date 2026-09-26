@@ -61,7 +61,10 @@ python3 $S/render.py web/art --out web/public/art                       # everyt
 python3 $S/render.py web/art/sprite/slime.json --out web/public/art \
         --preview /tmp/preview.png                                      # one, plus a 4x sheet
 python3 $S/render.py --check some.png --category icon                   # check a PNG not built from a spec
-python3 $S/sample_colors.py web/public/keyart.png 1245,755,45,60        # pull tones from the key art
+python3 $S/sample_colors.py web/public/keyart.png 1245,755,45,60        # pull tones from a keyart
+python3 $S/trace.py web/public/assests_keyart.png 40,80,70,70 \
+        --size 32x32 --name mob-slime --category sprite \
+        --out web/art/sprite/mob-slime.json --preview /tmp/trace.png  # crop -> palette grid
 python3 $S/hero_anim.py && python3 $S/render.py web/art/sprite/hero/anim --out web/public/art
                                                                         # hero strips: regenerate after a new hero layer or a rig change
 ```

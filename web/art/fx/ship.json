@@ -1,0 +1,40 @@
+{
+  "name": "ship",
+  "category": "fx",
+  "size": [128, 32],
+  "_design": "Class special (SHIP IT and the other limit commands): a green deploy arrow launches, bursts into a big code-green starburst with one white core pixel, leaves a ring, then a few specks. Drawn at 128px for 1.2s.",
+  "layers": [
+    {"poly": [[16, 6], [9, 15], [13, 15], [13, 27], [19, 27], [19, 15], [23, 15]], "color": "code.1"},
+    {"poly": [[16, 8], [11, 14], [14, 14], [14, 26], [18, 26], [18, 14], [21, 14]], "color": "code.3"},
+    {"rect": [15, 10, 1, 15], "color": "code.4"},
+    {"rect": [12, 28, 2, 2], "color": "code.2"},
+    {"rect": [19, 28, 2, 2], "color": "code.2"},
+    {"rect": [16, 29, 1, 1], "color": "code.4"},
+
+    {"line": [34, 2, 62, 30], "color": "code.2"},
+    {"line": [62, 2, 34, 30], "color": "code.2"},
+    {"rect": [47, 1, 3, 30], "color": "code.2"},
+    {"rect": [33, 15, 30, 3], "color": "code.2"},
+    {"ellipse": [48, 16, 11, 11], "color": "code.1"},
+    {"ellipse": [48, 16, 9, 9], "color": "code.2"},
+    {"ellipse": [48, 16, 6, 6], "color": "code.3"},
+    {"ellipse": [48, 16, 3, 3], "color": "code.4"},
+    {"rect": [48, 16, 1, 1], "color": "white"},
+
+    {"ellipse": [80, 16, 13, 13], "color": "code.1"},
+    {"ellipse": [80, 16, 11, 11], "color": "code.3"},
+    {"ellipse": [80, 16, 9, 9], "color": null},
+    {"rect": [79, 15, 3, 3], "color": "code.4"},
+    {"rect": [68, 4, 2, 2], "color": "code.4"},
+    {"rect": [91, 26, 2, 2], "color": "code.4"},
+    {"rect": [92, 5, 1, 1], "color": "code.2"},
+    {"rect": [67, 27, 1, 1], "color": "code.2"},
+
+    {"rect": [102, 8, 1, 1], "color": "code.3"},
+    {"rect": [120, 11, 1, 1], "color": "code.2"},
+    {"rect": [110, 22, 2, 1], "color": "code.4"},
+    {"rect": [117, 26, 1, 1], "color": "code.1"},
+    {"rect": [104, 25, 1, 1], "color": "code.2"},
+    {"rect": [112, 16, 1, 1], "color": "code.3"}
+  ]
+}

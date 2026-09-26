@@ -24,6 +24,8 @@ type State struct {
 	SPMax      int    `json:"spMax"`
 	Weak       bool   `json:"weakness"`
 	Status     string `json:"status"`
+	// Node is the path node this fight was started from. Empty for a random encounter (AD-021).
+	Node string `json:"node,omitempty"`
 }
 
 // Event is one thing that happened in a turn, rendered by the web.
@@ -79,19 +81,42 @@ func Hit(st *State, base int, r Rules) (dmg int, usedWeakness bool) {
 // Shielded halves a counter, rounding half up.
 func Shielded(counter int) int { return round(float64(counter) / 2) }
 
+// Scaled is cmd at a skill level's scale, in percent: both damage bounds, the heal and the SP gain,
+// each rounded (skill-loadout AC 14). The catalog's command is not modified.
+func Scaled(cmd catalog.Command, scale int) catalog.Command {
+	f := func(v int) int { return round(float64(v*scale) / 100) }
+	if len(cmd.Damage) == 2 {
+		cmd.Damage = []int{f(cmd.Damage[0]), f(cmd.Damage[1])}
+	}
+	cmd.Heal, cmd.SPGain = f(cmd.Heal), f(cmd.SPGain)
+	return cmd
+}
+
 // ApplyCommand plays the player's side of a turn, then the rest of the turn via EndTurn.
-// The caller has already checked the cost and that the command is unlocked.
+// The caller has already checked the cost, that the command is equipped and, for a limit command,
+// that the power bar is full. A limit command empties the bar before its hit and does not refill
+// it; any other hit adds PerHit, or PerCrit when it consumed the weakness, capped at Max.
 func ApplyCommand(st *State, p *player.Player, cmd catalog.Command, r Rules, rnd Rand) Outcome {
 	if cmd.Flee {
 		return Outcome{Events: []Event{{Type: "fled"}}, Fled: true}
 	}
 	var events []Event
 	st.SP = clamp(st.SP-cmd.Cost, st.SPMax)
+	if cmd.Limit {
+		p.Power = 0
+	}
 	if len(cmd.Damage) == 2 {
 		base := cmd.Damage[0] + rnd.IntN(cmd.Damage[1]-cmd.Damage[0]+1)
 		dmg, weak := Hit(st, base, r)
 		st.EnemyHP = max(0, st.EnemyHP-dmg)
 		events = append(events, Event{Type: "damage", Command: cmd.ID, Amount: dmg, Weakness: weak})
+		if !cmd.Limit {
+			gain := r.Combat.Power.PerHit
+			if weak {
+				gain = r.Combat.Power.PerCrit
+			}
+			p.Power = min(r.Combat.Power.Max, p.Power+gain)
+		}
 	}
 	if cmd.Heal > 0 {
 		p.HP = min(p.HPMax, p.HP+cmd.Heal)

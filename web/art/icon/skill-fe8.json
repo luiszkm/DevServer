@@ -1,0 +1,100 @@
+{
+ "name": "skill-fe8",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "HYDRATION (frontend): a bright cyan water drop with a white shine.",
+ "layers": [
+  {
+   "poly": [
+    [
+     8,
+     1
+    ],
+    [
+     3,
+     9
+    ],
+    [
+     4,
+     12
+    ],
+    [
+     6,
+     14
+    ],
+    [
+     10,
+     14
+    ],
+    [
+     12,
+     12
+    ],
+    [
+     13,
+     9
+    ]
+   ],
+   "color": "gem.1"
+  },
+  {
+   "ellipse": [
+    8,
+    10,
+    4,
+    4
+   ],
+   "color": "gem.1"
+  },
+  {
+   "ellipse": [
+    7,
+    9,
+    3,
+    3
+   ],
+   "color": "gem.2"
+  },
+  {
+   "poly": [
+    [
+     8,
+     2
+    ],
+    [
+     5,
+     8
+    ],
+    [
+     8,
+     8
+    ]
+   ],
+   "color": "gem.3"
+  },
+  {
+   "rect": [
+    5,
+    9,
+    1,
+    2
+   ],
+   "color": "white"
+  },
+  {
+   "rect": [
+    6,
+    8,
+    1,
+    1
+   ],
+   "color": "gem.4"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

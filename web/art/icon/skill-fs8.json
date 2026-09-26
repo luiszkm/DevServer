@@ -1,0 +1,98 @@
+{
+ "name": "skill-fs8",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MVP (fullstack): a gold trophy cup with handles, the minimum that wins.",
+ "layers": [
+  {
+   "poly": [
+    [
+     4,
+     2
+    ],
+    [
+     12,
+     2
+    ],
+    [
+     11,
+     8
+    ],
+    [
+     5,
+     8
+    ]
+   ],
+   "color": "gold.2"
+  },
+  {
+   "ellipse": [
+    8,
+    7,
+    3,
+    2
+   ],
+   "color": "gold.2"
+  },
+  {
+   "rect": [
+    7,
+    9,
+    2,
+    3
+   ],
+   "color": "gold.1"
+  },
+  {
+   "rect": [
+    5,
+    12,
+    6,
+    2
+   ],
+   "color": "gold.1"
+  },
+  {
+   "rect": [
+    2,
+    3,
+    2,
+    3
+   ],
+   "color": "gold.2"
+  },
+  {
+   "rect": [
+    12,
+    3,
+    2,
+    3
+   ],
+   "color": "gold.2"
+  },
+  {
+   "rect": [
+    5,
+    3,
+    2,
+    3
+   ],
+   "color": "gold.4"
+  },
+  {
+   "rect": [
+    6,
+    13,
+    4,
+    1
+   ],
+   "color": "gold.3"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

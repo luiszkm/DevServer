@@ -14,7 +14,8 @@
         "No semi-transparent pixels",
         "A reproducible source (spec or script) was saved next to the PNG",
         "Asset sits on a transparent background",
-        "Outline is at least 90% ink (#060612), like the key art"
+        "Outline is at least 90% ink (#060612), like the key art",
+        "The silhouette was traced from a crop of the matching keyart, then cleaned"
       ]
     },
     {
@@ -31,6 +32,7 @@
         "A reproducible source (spec or script) was saved next to the PNG",
         "Asset sits on a transparent background",
         "Outline is at least 90% ink (#060612), like the key art",
+        "The silhouette was traced from a crop of the matching keyart, then cleaned",
         "Three icons were produced, all the same size"
       ]
     },

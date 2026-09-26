@@ -1,0 +1,101 @@
+{
+ "name": "skill-be5",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MIGRATION (backend): a grey database cylinder with a green arrow moving the schema forward.",
+ "layers": [
+  {
+   "rect": [
+    2,
+    4,
+    9,
+    9
+   ],
+   "color": "metal.2"
+  },
+  {
+   "ellipse": [
+    6,
+    4,
+    4,
+    2
+   ],
+   "color": "metal.3"
+  },
+  {
+   "ellipse": [
+    6,
+    12,
+    4,
+    2
+   ],
+   "color": "metal.2"
+  },
+  {
+   "line": [
+    2,
+    8,
+    10,
+    8
+   ],
+   "color": "metal.1"
+  },
+  {
+   "rect": [
+    3,
+    5,
+    1,
+    6
+   ],
+   "color": "metal.3"
+  },
+  {
+   "poly": [
+    [
+     9,
+     7
+    ],
+    [
+     12,
+     7
+    ],
+    [
+     12,
+     5
+    ],
+    [
+     15,
+     9
+    ],
+    [
+     12,
+     13
+    ],
+    [
+     12,
+     11
+    ],
+    [
+     9,
+     11
+    ]
+   ],
+   "color": "code.2"
+  },
+  {
+   "rect": [
+    12,
+    7,
+    1,
+    1
+   ],
+   "color": "code.4"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

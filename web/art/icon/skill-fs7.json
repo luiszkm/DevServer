@@ -1,0 +1,125 @@
+{
+ "name": "skill-fs7",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "DEPLOY NA SEXTA (fullstack): a white rocket with a red nose and a fire trail, launched on a friday.",
+ "layers": [
+  {
+   "poly": [
+    [
+     13,
+     2
+    ],
+    [
+     8,
+     4
+    ],
+    [
+     5,
+     9
+    ],
+    [
+     7,
+     11
+    ],
+    [
+     12,
+     8
+    ]
+   ],
+   "color": "cloud.3"
+  },
+  {
+   "poly": [
+    [
+     13,
+     2
+    ],
+    [
+     10,
+     3
+    ],
+    [
+     12,
+     5
+    ]
+   ],
+   "color": "red.2"
+  },
+  {
+   "ellipse": [
+    9,
+    7,
+    1,
+    1
+   ],
+   "color": "net.2"
+  },
+  {
+   "poly": [
+    [
+     5,
+     9
+    ],
+    [
+     3,
+     9
+    ],
+    [
+     6,
+     6
+    ]
+   ],
+   "color": "red.2"
+  },
+  {
+   "poly": [
+    [
+     7,
+     11
+    ],
+    [
+     7,
+     13
+    ],
+    [
+     10,
+     10
+    ]
+   ],
+   "color": "red.2"
+  },
+  {
+   "poly": [
+    [
+     5,
+     11
+    ],
+    [
+     2,
+     14
+    ],
+    [
+     4,
+     12
+    ]
+   ],
+   "color": "gold.2"
+  },
+  {
+   "rect": [
+    3,
+    12,
+    2,
+    1
+   ],
+   "color": "bronze.3"
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

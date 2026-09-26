@@ -45,13 +45,6 @@ func hpOf(b *catalog.Bonus) int {
 	return 0
 }
 
-// changeHP applies an hp bonus that starts (delta > 0) or stops (delta < 0) counting to both
-// hpMax and hp, keeping hp at least 1 (door 5).
-func changeHP(p *player.Player, delta int) {
-	p.HPMax += delta
-	p.HP = max(1, p.HP+delta)
-}
-
 // equip puts an owned piece in its slot, replacing whatever was there.
 func (h *Handlers) equip(ctx context.Context, tx pgx.Tx, p *player.Player, g catalog.Gear) error {
 	old := p.Equipment[g.Slot]
@@ -68,7 +61,7 @@ func (h *Handlers) equip(ctx context.Context, tx pgx.Tx, p *player.Player, g cat
 		ON CONFLICT (player_id, slot) DO UPDATE SET gear_id = EXCLUDED.gear_id`, p.ID, g.Slot, g.ID); err != nil {
 		return err
 	}
-	changeHP(p, delta)
+	player.ChangeHP(p, delta)
 	return player.LoadGear(ctx, tx, p)
 }
 
@@ -82,7 +75,7 @@ func (h *Handlers) wear(p *player.Player, s catalog.Skin) {
 		delta -= hpOf(prev.Bonus)
 	}
 	p.Skin = s.ID
-	changeHP(p, delta)
+	player.ChangeHP(p, delta)
 }
 
 func (h *Handlers) BuyItem(w http.ResponseWriter, r *http.Request) error {
@@ -168,7 +161,7 @@ func (h *Handlers) UnequipGear(w http.ResponseWriter, r *http.Request) error {
 		if _, err := tx.Exec(ctx, `DELETE FROM player_equipment WHERE player_id = $1 AND slot = $2`, p.ID, g.Slot); err != nil {
 			return err
 		}
-		changeHP(p, -hpOf(&g.Bonus))
+		player.ChangeHP(p, -hpOf(&g.Bonus))
 		return player.LoadGear(ctx, tx, p)
 	})
 }

@@ -61,23 +61,123 @@ describe("BattleScene", () => {
     expect(f.calls("POST /api/me/battle")).toBe(1);
   });
 
-  // C42
-  it("lists the class command with costs", async () => {
-    const p = player({ skills: ["be1"] });
+  // C42: loadout grid, base kit row, and class special are separate; costs come from the catalog.
+  it("lists the loadout, base kit and special with costs", async () => {
+    const p = player({ skills: ["be1"], skillLevels: { be1: 1 }, loadout: ["be1", null, null, null] });
     mockFetch({ "POST /api/me/battle": startWith(battle({ sp: 11 }), p) });
     renderScene({ p });
     await screen.findByLabelText("inimigo");
-    const ids = Array.from(document.querySelectorAll<HTMLElement>("[data-command]")).map((b) => b.dataset.command);
-    expect(ids).toEqual(["fix", "test", "refactor", "plain", "be1", "rollback"]);
+    const grid = document.querySelector(".battle-commands") as HTMLElement;
+    const base = screen.getByLabelText("comandos base");
+    expect(Array.from(grid.querySelectorAll("[data-command]")).map((b) => (b as HTMLElement).dataset.command)).toEqual(["be1"]);
+    expect(grid.querySelectorAll(".battle-command-empty")).toHaveLength(3);
+    expect(Array.from(base.querySelectorAll("[data-command]")).map((b) => (b as HTMLElement).dataset.command)).toEqual([
+      "fix",
+      "test",
+      "refactor",
+      "plain",
+      "rollback",
+    ]);
+    expect(command("ship").closest(".battle-commands")).toBeNull();
+    expect(command("ship").closest(".battle-base")).toBeNull();
     expect(document.querySelector('[data-command="fe1"]')).toBeNull();
-    const costs: Record<string, string> = { fix: "10 SP", test: "8 SP", refactor: "14 SP", plain: "grátis", be1: "12 SP", rollback: "grátis" };
+    const costs: Record<string, string> = { fix: "10 SP", test: "8 SP", refactor: "14 SP", plain: "grátis", be1: "12 SP", ship: "PODER", rollback: "grátis" };
     for (const [id, cost] of Object.entries(costs)) expect(command(id)).toHaveTextContent(cost);
-    for (const c of COMMANDS.filter((c) => !c.skill || c.skill === "be1")) {
+    for (const c of COMMANDS.filter((c) => !c.skill && !c.limit)) {
+      expect(command(c.id)).toHaveTextContent(c.label);
+      expect(command(c.id)).not.toHaveTextContent(c.hint);
+      expect(command(c.id)).toHaveAttribute("title", `${c.hint} · ${costs[c.id]}`);
+    }
+    for (const c of COMMANDS.filter((c) => c.skill === "be1" || c.id === "ship")) {
       expect(command(c.id)).toHaveTextContent(c.label);
       expect(command(c.id)).toHaveTextContent(c.hint);
     }
-    for (const id of ["refactor", "be1"]) expect(command(id)).toBeDisabled();
+    for (const id of ["refactor", "be1", "ship"]) expect(command(id)).toBeDisabled();
     for (const id of ["fix", "test", "plain", "rollback"]) expect(command(id)).toBeEnabled();
+  });
+
+  // skill-loadout AC 24: only equipped skills and the class's own special are offered.
+  it.each([
+    ["BACKEND", ["be1", "be2"], ["be2", null, null, null], ["be2", "ship"], ["be1", "fe1", "hot_reload"]],
+    ["BACKEND", ["be1", "be2"], [null, null, null, null], ["ship"], ["be1", "be2", "hot_reload"]],
+    ["FRONTEND", ["fe1"], ["fe1", null, null, null], ["fe1", "hot_reload"], ["be1", "be2", "ship"]],
+  ])("offers the loadout and the special (%s, loadout %j)", async (cls, skills, loadout, shown, hidden) => {
+    const p = player({ class: cls, skills, skillLevels: Object.fromEntries(skills.map((id) => [id, 1])), loadout });
+    mockFetch({ "POST /api/me/battle": startWith(battle(), p) });
+    renderScene({ p });
+    await screen.findByLabelText("inimigo");
+    const grid = document.querySelector(".battle-commands") as HTMLElement;
+    for (const id of shown.filter((id) => !COMMANDS.find((c) => c.id === id)?.limit)) {
+      expect(grid.querySelector(`[data-command="${id}"]`)).not.toBeNull();
+    }
+    for (const id of shown) expect(command(id)).not.toBeNull();
+    for (const id of hidden) expect(command(id)).toBeNull();
+    // Base kit stays outside the loadout grid and remains clickable.
+    for (const id of ["fix", "test", "refactor", "plain", "rollback"]) {
+      expect(grid.querySelector(`[data-command="${id}"]`)).toBeNull();
+      expect(command(id)).not.toBeNull();
+    }
+  });
+
+  // skill-loadout AC 24: an upgraded skill shows its level and scale; level 1 shows neither.
+  it.each([
+    [1, "golpe forte · 18-24 dano · 12 SP"],
+    [2, "golpe forte · 18-24 dano · Nv 2 125% · 12 SP"],
+    [3, "golpe forte · 18-24 dano · Nv 3 150% · 12 SP"],
+  ])("skill level %i in the hint", async (level, hint) => {
+    const p = player({ skills: ["be1"], skillLevels: { be1: level }, loadout: ["be1", null, null, null] });
+    mockFetch({ "POST /api/me/battle": startWith(battle(), p) });
+    renderScene({ p });
+    await screen.findByLabelText("inimigo");
+    expect(command("be1").querySelector(".term")!.textContent).toBe(hint);
+  });
+
+  // limit-break AC 21–24
+  it.each([
+    ["empty bar", 0, battle({ sp: 0 }), CATALOG, "PODER 0/100", "0%", false],
+    ["99 of 100", 99, battle({ sp: 0 }), CATALOG, "PODER 99/100", "99%", false],
+    ["full, SP 0", 100, battle({ sp: 0 }), CATALOG, "PODER 100/100", "100%", true],
+    ["full, fight won", 100, battle({ status: "won", enemyHp: 0 }), CATALOG, "PODER 100/100", "100%", false],
+    ["catalog max 40, full", 40, battle(), { ...CATALOG, combat: { ...CATALOG.combat, power: { max: 40, perHit: 10, perCrit: 20 } } }, "PODER 40/40", "100%", true],
+    ["catalog max 40, half", 20, battle(), { ...CATALOG, combat: { ...CATALOG.combat, power: { max: 40, perHit: 10, perCrit: 20 } } }, "PODER 20/40", "50%", false],
+  ])("power bar and special (%s)", async (_n, power, b, catalog, text, width, enabled) => {
+    const p = player({ power });
+    mockFetch({ "POST /api/me/battle": startWith(b, p) });
+    renderScene({ p, catalog });
+    const hero = await screen.findByLabelText("dev em combate");
+    expect(hero).toHaveTextContent(text);
+    expect((hero.querySelector(".battle-power-bar > div") as HTMLElement).style.width).toBe(width);
+    if (enabled) expect(command("ship")).toBeEnabled();
+    else expect(command("ship")).toBeDisabled();
+  });
+
+  it("power bar stays after the encounter ends", async () => {
+    const p = player({ power: 30 });
+    mockFetch({ "POST /api/me/battle": startWith(battle(), p), "POST /api/me/battle/commands": turn(null, [{ type: "fled" }], p) });
+    renderScene({ p });
+    await screen.findByLabelText("inimigo");
+    await userEvent.click(command("rollback"));
+    await screen.findByText("ENCONTRO ENCERRADO", { selector: ".battle-head span" });
+    expect(screen.getByLabelText("dev em combate")).toHaveTextContent("PODER 30/100");
+  });
+
+  // limit-break AC 26
+  it("a refused special logs the api message and keeps the bar", async () => {
+    const p = player({ power: 100 });
+    const f = mockFetch({
+      "POST /api/me/battle": startWith(battle({ sp: 0 }), p),
+      "POST /api/me/battle/commands": json(409, { error: { code: "power_not_ready", message: "a barra de poder ainda não encheu" } }),
+    });
+    const setPlayer = vi.fn();
+    renderScene({ p, setPlayer });
+    await screen.findByLabelText("inimigo");
+    setPlayer.mockClear();
+    await userEvent.click(command("ship"));
+    await screen.findByText("> a barra de poder ainda não encheu");
+    const [, init] = f.fn.mock.calls.find(([u]) => String(u) === "/api/me/battle/commands")!;
+    expect(JSON.parse(init!.body as string)).toEqual({ command: "ship" });
+    expect(setPlayer).not.toHaveBeenCalled();
+    expect(screen.getByLabelText("dev em combate")).toHaveTextContent("PODER 100/100");
   });
 
   // C57
@@ -166,6 +266,22 @@ describe("BattleScene", () => {
   });
 
   // C46
+  it("won node links back to the region", async () => {
+    mockFetch({
+      "POST /api/me/battle": startWith(battle({ node: "floresta-1", region: "floresta", enemy: "slime_verde", status: "won", enemyHp: 0 })),
+    });
+    renderScene();
+    const link = await screen.findByRole("link", { name: "VOLTAR AO MAPA" });
+    expect(link).toHaveAttribute("href", "/mundo/floresta");
+  });
+
+  it("a random win has no map link", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ status: "won", enemyHp: 0 })) });
+    renderScene();
+    expect(await screen.findByText("RESOLVIDO")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "VOLTAR AO MAPA" })).not.toBeInTheDocument();
+  });
+
   it("won shows RESOLVIDO and new encounter", async () => {
     let starts = 0;
     const f = mockFetch({
@@ -498,6 +614,56 @@ describe("BattleScene turn playback", () => {
     expect(fx()).toBeNull();
     expect(heroActor().className).not.toMatch(/anim-/);
     expect(command("fix")).toBeEnabled();
+  });
+
+  // limit-break AC 25, 28: the special's long beat; the bar keeps its value until the last beat.
+  it("a special plays the ship strip at 128px and lands after 1.2s", async () => {
+    const p = player({ power: 100 });
+    const next = player({ power: 0, hp: 93 });
+    const setPlayer = vi.fn();
+    mockFetch({
+      "POST /api/me/battle": startWith(battle({ enemyHp: 60, sp: 0 }), p),
+      "POST /api/me/battle/commands": turn(battle({ enemyHp: 5, sp: 5 }), [{ type: "damage", command: "ship", amount: 55 }, { type: "counter", amount: 7 }], next),
+    });
+    renderScene({ p, setPlayer });
+    await screen.findByLabelText("inimigo");
+    setPlayer.mockClear();
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    fireEvent.click(command("ship"));
+    await act(() => vi.advanceTimersByTimeAsync(0));
+    expect(fx()!.dataset.fx).toBe("ship");
+    expect(fx()).toHaveClass("battle-fx-limit");
+    expect(fx()!.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/ship.png)");
+    expect(document.querySelector(".battle-stage")).toHaveClass("is-limit");
+    expect(heroActor()).toHaveClass("anim-special");
+    expect(float()).toHaveTextContent("-55 SHIP IT!");
+    expect(lines().at(-1)).toBe("> SHIP IT: 55 de dano");
+    expect(screen.getByLabelText("dev em combate")).toHaveTextContent("PODER 100/100");
+    act(() => vi.advanceTimersByTime(1199));
+    expect(fx()!.dataset.fx).toBe("ship");
+    act(() => vi.advanceTimersByTime(1));
+    expect(fx()!.dataset.fx).toBe("impact");
+    expect(setPlayer).not.toHaveBeenCalled();
+    act(() => vi.advanceTimersByTime(600));
+    expect(setPlayer).toHaveBeenCalledWith(next);
+  });
+
+  // limit-break AC 30
+  it("a special under reduced motion logs the damage and lands at once", async () => {
+    motion(true);
+    const p = player({ power: 100 });
+    const next = player({ power: 0 });
+    const setPlayer = vi.fn();
+    mockFetch({
+      "POST /api/me/battle": startWith(battle({ sp: 0 }), p),
+      "POST /api/me/battle/commands": turn(battle({ enemyHp: 1 }), [{ type: "damage", command: "ship", amount: 59 }], next),
+    });
+    renderScene({ p, setPlayer });
+    await screen.findByLabelText("inimigo");
+    await userEvent.click(command("ship"));
+    await screen.findByText("> SHIP IT: 59 de dano");
+    expect(fx()).toBeNull();
+    expect(setPlayer).toHaveBeenLastCalledWith(next);
   });
 
   it("unmount mid-turn drops the rest of the playback", async () => {

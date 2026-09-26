@@ -1,11 +1,13 @@
 package battle
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
+	"io"
 	"math/rand/v2"
 	"net/http"
-	"slices"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -35,9 +37,9 @@ type querier interface {
 
 func load(ctx context.Context, q querier, playerID int64) (*State, error) {
 	st := &State{}
-	err := q.QueryRow(ctx, `SELECT enemy, region, enemy_hp, enemy_hp_max, sp, sp_max, weak, status
+	err := q.QueryRow(ctx, `SELECT enemy, region, enemy_hp, enemy_hp_max, sp, sp_max, weak, status, COALESCE(node, '')
 		FROM battles WHERE player_id = $1`, playerID).
-		Scan(&st.Enemy, &st.Region, &st.EnemyHP, &st.EnemyHPMax, &st.SP, &st.SPMax, &st.Weak, &st.Status)
+		Scan(&st.Enemy, &st.Region, &st.EnemyHP, &st.EnemyHPMax, &st.SP, &st.SPMax, &st.Weak, &st.Status, &st.Node)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, httpx.ErrBattleNotFound
 	}
@@ -45,12 +47,12 @@ func load(ctx context.Context, q querier, playerID int64) (*State, error) {
 }
 
 func save(ctx context.Context, tx pgx.Tx, playerID int64, st *State) error {
-	_, err := tx.Exec(ctx, `INSERT INTO battles (player_id, enemy, region, enemy_hp, enemy_hp_max, sp, sp_max, weak, status)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	_, err := tx.Exec(ctx, `INSERT INTO battles (player_id, enemy, region, enemy_hp, enemy_hp_max, sp, sp_max, weak, status, node)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NULLIF($10, ''))
 		ON CONFLICT (player_id) DO UPDATE SET enemy = EXCLUDED.enemy, region = EXCLUDED.region, enemy_hp = EXCLUDED.enemy_hp,
 			enemy_hp_max = EXCLUDED.enemy_hp_max, sp = EXCLUDED.sp, sp_max = EXCLUDED.sp_max,
-			weak = EXCLUDED.weak, status = EXCLUDED.status`,
-		playerID, st.Enemy, st.Region, st.EnemyHP, st.EnemyHPMax, st.SP, st.SPMax, st.Weak, st.Status)
+			weak = EXCLUDED.weak, status = EXCLUDED.status, node = EXCLUDED.node`,
+		playerID, st.Enemy, st.Region, st.EnemyHP, st.EnemyHPMax, st.SP, st.SPMax, st.Weak, st.Status, st.Node)
 	return err
 }
 
@@ -81,7 +83,39 @@ func (h *Handlers) Get(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+// readNode reads the optional path node. No body, a blank body and {} mean a random encounter.
+func readNode(r *http.Request) (string, error) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		return "", httpx.ErrInvalidBody
+	}
+	if len(bytes.TrimSpace(body)) == 0 {
+		return "", nil
+	}
+	var in struct {
+		Node string `json:"node"`
+	}
+	if err := json.Unmarshal(body, &in); err != nil {
+		return "", httpx.ErrInvalidBody
+	}
+	return in.Node, nil
+}
+
 func (h *Handlers) Start(w http.ResponseWriter, r *http.Request) error {
+	nodeID, err := readNode(r)
+	if err != nil {
+		return err
+	}
+	var nodeRegion string
+	var nodeIndex int
+	var node catalog.PathNode
+	if nodeID != "" {
+		var ok bool
+		nodeRegion, nodeIndex, node, ok = h.Catalog.PathNode(nodeID)
+		if !ok {
+			return httpx.ErrUnknownNode
+		}
+	}
 	ctx := r.Context()
 	var st *State
 	p, err := player.WithLocked(ctx, h.Pool, auth.IdentityFrom(ctx).GithubUserID, func(tx pgx.Tx, p *player.Player) error {
@@ -89,22 +123,37 @@ func (h *Handlers) Start(w http.ResponseWriter, r *http.Request) error {
 		if err != nil && !errors.Is(err, httpx.ErrBattleNotFound) {
 			return err
 		}
+		if nodeID != "" && nodeRegion != p.Region {
+			return httpx.ErrWrongRegion
+		}
 		if cur != nil && cur.Region == p.Region && cur.Status == "active" {
 			st = cur
 			return nil
 		}
-		// Several enemies share a region (AD-017): draw one, and only when there is a choice, so a
-		// single-enemy region keeps the rules' draw order (AD-011).
-		enemies := h.Catalog.EnemiesIn(p.Region)
-		if len(enemies) == 0 {
-			return errors.New("no enemy for region " + p.Region)
-		}
-		enemy := enemies[0]
-		if len(enemies) > 1 {
-			enemy = enemies[h.Rand.IntN(len(enemies))]
+		var enemy catalog.Enemy
+		if nodeID != "" {
+			if nodeIndex > p.Progress[p.Region] {
+				return httpx.ErrNodeLocked
+			}
+			var ok bool
+			enemy, ok = h.Catalog.Enemy(node.Enemy)
+			if !ok {
+				return errors.New("no enemy for node " + nodeID)
+			}
+		} else {
+			// Several enemies share a region (AD-017): draw one, and only when there is a choice, so a
+			// single-enemy region keeps the rules' draw order (AD-011). Bosses stay out of EnemiesIn.
+			enemies := h.Catalog.EnemiesIn(p.Region)
+			if len(enemies) == 0 {
+				return errors.New("no enemy for region " + p.Region)
+			}
+			enemy = enemies[0]
+			if len(enemies) > 1 {
+				enemy = enemies[h.Rand.IntN(len(enemies))]
+			}
 		}
 		spMax := enemy.SP + player.Bonus(h.Catalog, p, "sp")
-		st = &State{Enemy: enemy.ID, Region: p.Region, EnemyHP: enemy.HP, EnemyHPMax: enemy.HP, SP: spMax, SPMax: spMax, Status: "active"}
+		st = &State{Enemy: enemy.ID, Region: p.Region, Node: nodeID, EnemyHP: enemy.HP, EnemyHPMax: enemy.HP, SP: spMax, SPMax: spMax, Status: "active"}
 		return save(ctx, tx, p.ID, st)
 	})
 	if err != nil {
@@ -145,6 +194,13 @@ func (h *Handlers) turn(w http.ResponseWriter, r *http.Request, check func(*play
 				return err
 			}
 		}
+		if out.Won && st.Node != "" {
+			if region, index, _, ok := h.Catalog.PathNode(st.Node); ok {
+				if err := player.AdvanceProgress(ctx, tx, p, region, index); err != nil {
+					return err
+				}
+			}
+		}
 		if out.Fled || out.Defeated {
 			return end(ctx, tx, p.ID)
 		}
@@ -172,15 +228,25 @@ func (h *Handlers) Command(w http.ResponseWriter, r *http.Request) error {
 		return httpx.ErrUnknownCommand
 	}
 	return h.turn(w, r, func(p *player.Player, st *State) error {
-		if cmd.Skill != "" && !slices.Contains(p.Skills, cmd.Skill) {
+		if cmd.Limit && cmd.Class != p.Class {
 			return httpx.ErrCommandLocked
+		}
+		if cmd.Skill != "" && !p.Equipped(cmd.Skill) {
+			return httpx.ErrCommandLocked
+		}
+		if cmd.Limit && p.Power < h.Catalog.Combat.Power.Max {
+			return httpx.ErrPowerNotReady
 		}
 		if st.SP < cmd.Cost {
 			return httpx.ErrNotEnoughSP
 		}
 		return nil
 	}, func(_ pgx.Tx, p *player.Player, st *State, rules Rules) (Outcome, error) {
-		return ApplyCommand(st, p, cmd, rules, h.Rand), nil
+		played := cmd
+		if node, _, _, ok := h.Catalog.Skill(cmd.Skill); ok {
+			played = Scaled(cmd, node.Level(p.SkillLevels[cmd.Skill]).Scale)
+		}
+		return ApplyCommand(st, p, played, rules, h.Rand), nil
 	})
 }
 

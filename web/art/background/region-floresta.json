@@ -1,0 +1,703 @@
+{
+ "name": "region-floresta",
+ "category": "background",
+ "size": [
+  320,
+  180
+ ],
+ "_design": "Floresta path: dark stack-trace trees, green fog, log trunks; dirt trail through nodes to boss clearing.",
+ "layers": [
+  {
+   "bands": [
+    0,
+    0,
+    320,
+    110
+   ],
+   "colors": [
+    "sky.0",
+    "sky.1"
+   ],
+   "dither": 3
+  },
+  {
+   "ridge": [
+    0,
+    20,
+    320,
+    80
+   ],
+   "mode": "round",
+   "heights": [
+    40,
+    75
+   ],
+   "radii": [
+    10,
+    18
+   ],
+   "color": "leaf.0",
+   "seed": 11
+  },
+  {
+   "rect": [
+    0,
+    90,
+    320,
+    30
+   ],
+   "color": "leaf.0"
+  },
+  {
+   "rect": [
+    14,
+    70,
+    6,
+    50
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    48,
+    70,
+    5,
+    50
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    250,
+    70,
+    6,
+    50
+   ],
+   "color": "wood.1"
+  },
+  {
+   "rect": [
+    300,
+    70,
+    5,
+    50
+   ],
+   "color": "wood.1"
+  },
+  {
+   "ridge": [
+    0,
+    60,
+    320,
+    50
+   ],
+   "mode": "round",
+   "heights": [
+    20,
+    45
+   ],
+   "radii": [
+    8,
+    14
+   ],
+   "color": "leaf.1",
+   "seed": 13
+  },
+  {
+   "poly": [
+    [
+     0,
+     0
+    ],
+    [
+     70,
+     0
+    ],
+    [
+     55,
+     14
+    ],
+    [
+     30,
+     22
+    ],
+    [
+     0,
+     26
+    ]
+   ],
+   "color": "leaf.1"
+  },
+  {
+   "poly": [
+    [
+     250,
+     0
+    ],
+    [
+     320,
+     0
+    ],
+    [
+     320,
+     28
+    ],
+    [
+     292,
+     20
+    ],
+    [
+     266,
+     12
+    ]
+   ],
+   "color": "leaf.1"
+  },
+  {
+   "ellipse": [
+    20,
+    8,
+    26,
+    12
+   ],
+   "color": "leaf.2"
+  },
+  {
+   "ellipse": [
+    300,
+    6,
+    24,
+    11
+   ],
+   "color": "leaf.2"
+  },
+  {
+   "scatter": [
+    0,
+    40,
+    320,
+    80
+   ],
+   "colors": [
+    "code.4",
+    "code.3"
+   ],
+   "density": 0.004,
+   "seed": 8
+  },
+  {
+   "rect": [
+    0,
+    118,
+    320,
+    40
+   ],
+   "color": "grass.1"
+  },
+  {
+   "rect": [
+    0,
+    118,
+    320,
+    2
+   ],
+   "color": "grass.2"
+  },
+  {
+   "scatter": [
+    0,
+    121,
+    320,
+    36
+   ],
+   "colors": [
+    "grass.0",
+    "grass.2"
+   ],
+   "density": 0.07,
+   "seed": 3
+  },
+  {
+   "rect": [
+    0,
+    156,
+    320,
+    24
+   ],
+   "color": "soil.2"
+  },
+  {
+   "rect": [
+    0,
+    156,
+    320,
+    2
+   ],
+   "color": "grass.0"
+  },
+  {
+   "rect": [
+    4,
+    140,
+    40,
+    8
+   ],
+   "color": "wood.3"
+  },
+  {
+   "rect": [
+    4,
+    140,
+    40,
+    2
+   ],
+   "color": "wood.4"
+  },
+  {
+   "rect": [
+    270,
+    142,
+    44,
+    8
+   ],
+   "color": "wood.3"
+  },
+  {
+   "rect": [
+    270,
+    142,
+    44,
+    2
+   ],
+   "color": "wood.4"
+  },
+  {
+   "poly": [
+    [
+     34,
+     157
+    ],
+    [
+     62,
+     135
+    ],
+    [
+     49,
+     120
+    ],
+    [
+     21,
+     142
+    ]
+   ],
+   "color": "dirt.1"
+  },
+  {
+   "poly": [
+    [
+     61,
+     136
+    ],
+    [
+     115,
+     104
+    ],
+    [
+     104,
+     87
+    ],
+    [
+     50,
+     119
+    ]
+   ],
+   "color": "dirt.1"
+  },
+  {
+   "poly": [
+    [
+     105,
+     105
+    ],
+    [
+     163,
+     133
+    ],
+    [
+     172,
+     114
+    ],
+    [
+     114,
+     86
+    ]
+   ],
+   "color": "dirt.1"
+  },
+  {
+   "poly": [
+    [
+     174,
+     131
+    ],
+    [
+     226,
+     85
+    ],
+    [
+     213,
+     70
+    ],
+    [
+     161,
+     116
+    ]
+   ],
+   "color": "dirt.1"
+  },
+  {
+   "poly": [
+    [
+     224,
+     86
+    ],
+    [
+     280,
+     56
+    ],
+    [
+     271,
+     39
+    ],
+    [
+     215,
+     69
+    ]
+   ],
+   "color": "dirt.1"
+  },
+  {
+   "poly": [
+    [
+     32,
+     156
+    ],
+    [
+     60,
+     134
+    ],
+    [
+     51,
+     121
+    ],
+    [
+     23,
+     143
+    ]
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "poly": [
+    [
+     60,
+     134
+    ],
+    [
+     114,
+     102
+    ],
+    [
+     105,
+     89
+    ],
+    [
+     51,
+     121
+    ]
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "poly": [
+    [
+     106,
+     103
+    ],
+    [
+     164,
+     131
+    ],
+    [
+     171,
+     116
+    ],
+    [
+     113,
+     88
+    ]
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "poly": [
+    [
+     173,
+     129
+    ],
+    [
+     225,
+     83
+    ],
+    [
+     214,
+     72
+    ],
+    [
+     162,
+     118
+    ]
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "poly": [
+    [
+     223,
+     85
+    ],
+    [
+     279,
+     55
+    ],
+    [
+     272,
+     40
+    ],
+    [
+     216,
+     70
+    ]
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "ellipse": [
+    28,
+    150,
+    10,
+    8
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "ellipse": [
+    56,
+    128,
+    10,
+    8
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "ellipse": [
+    110,
+    96,
+    10,
+    8
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "ellipse": [
+    168,
+    124,
+    10,
+    8
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "ellipse": [
+    220,
+    78,
+    10,
+    8
+   ],
+   "color": "dirt.3"
+  },
+  {
+   "ellipse": [
+    276,
+    48,
+    22,
+    16
+   ],
+   "color": "wood.4"
+  },
+  {
+   "ellipse": [
+    276,
+    48,
+    18,
+    13
+   ],
+   "color": "dirt.2"
+  },
+  {
+   "scatter": [
+    10,
+    30,
+    300,
+    140
+   ],
+   "colors": [
+    "dirt.1",
+    "dirt.3"
+   ],
+   "density": 0.04,
+   "seed": 72,
+   "on": "dirt.3"
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    32,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    64,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    192,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    224,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    256,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-grama-topo.json",
+   "at": [
+    288,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    0,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    32,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    64,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    96,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    128,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    160,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    192,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    224,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    256,
+    160
+   ]
+  },
+  {
+   "use": "../tile/tile-terra.json",
+   "at": [
+    288,
+    160
+   ]
+  },
+  {
+   "use": "../sprite/tile-arvore-grande.json",
+   "at": [
+    0,
+    60
+   ]
+  },
+  {
+   "use": "../sprite/tile-arvore.json",
+   "at": [
+    290,
+    90
+   ]
+  },
+  {
+   "use": "../sprite/tile-arbusto.json",
+   "at": [
+    130,
+    140
+   ]
+  },
+  {
+   "use": "../sprite/build-placa.json",
+   "at": [
+    185,
+    135
+   ]
+  }
+ ]
+}
