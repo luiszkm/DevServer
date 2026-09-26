@@ -567,7 +567,7 @@ describe("ShopScene applied assets", () => {
   });
 
   // the decision's other rows: a label that neither buys nor forges carries no icon
-  it("button icon absent on EQUIPAR, EQUIPADO and a price shortfall", async () => {
+  it("button icon absent on EQUIPADO and a price shortfall", async () => {
     renderShop(player({ gems: 0, coins: 0, gear: ["cafe"], equipment: { bebida: "cafe" } }));
     await userEvent.click(card("cafe"));
     expect(detailButton("EQUIPADO").querySelector("img")).toBeNull();

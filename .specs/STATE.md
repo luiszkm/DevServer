@@ -24,10 +24,10 @@
 
 ## Handoff
 
-**Feature**: assets
-**Where**: C1–C48 fechados; Verifier round 4 PASS (rounds 1–3 FAIL: mutantes em HeroAvatar stale load, ordem ícone/preço, regras de strip de tile e guarda de forma; round 4 autorizado pelo usuário além do limite de 3)
+**Feature**: assets-apply
+**Where**: C1–C27 fechados; Verifier round 2 PASS (round 1 FAIL: asserções faltando em C12/C13 - FORJAR E EQUIPAR, btn-settings 16px, ic-gear alt)
 **In progress**: nenhum
-**Next step**: push e PR de `feat/assets` (e das branches anteriores) quando o usuário pedir
+**Next step**: push e PR de `feat/assets` e `feat/assets-apply` quando o usuário pedir
 **Blockers**: none
 **Uncommitted**: none
-**Branch**: feat/assets (sobre feat/forge)
+**Branch**: feat/assets-apply (sobre feat/assets)

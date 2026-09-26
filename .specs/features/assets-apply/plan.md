@@ -115,12 +115,12 @@ Quando isto for entregue:
 
 | ID | Slice | Criteria | Status |
 | --- | --- | --- | --- |
-| APL-01 | S1 | 1, 2, 3, 4, 5, 6 | Pending |
-| APL-02 | S1 | 7 | Pending |
-| APL-03 | S2 | 8, 9, 10, 11, 12 | Pending |
-| APL-04 | S3 | 13, 14, 15 | Pending |
-| APL-05 | S4 | 16, 17, 18 | Pending |
-| APL-06 | S5 | 19 | Pending |
+| APL-01 | S1 | 1, 2, 3, 4, 5, 6 | Verified |
+| APL-02 | S1 | 7 | Verified |
+| APL-03 | S2 | 8, 9, 10, 11, 12 | Verified |
+| APL-04 | S3 | 13, 14, 15 | Verified |
+| APL-05 | S4 | 16, 17, 18 | Verified |
+| APL-06 | S5 | 19 | Verified |
 
 ## Observable
 

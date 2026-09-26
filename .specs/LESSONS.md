@@ -254,6 +254,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: .claude/skills/pixel-assets/scripts/test_render.py (pixel-assets)
 - last seen: 2026-09-26T02:33:59Z
 
+### L-041 - A check listing several labels (FORJAR and FORJAR E EQUIPAR) needs one fixture per label; one recipe only reaches one branch of startsWith.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `web/components` · harmful: 0
+- features: assets-apply
+- evidence: web/src/components/ShopScene.test.tsx:555 (web/components)
+- last seen: 2026-09-26T12:12:49Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

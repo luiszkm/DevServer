@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 41,
+  "next_id": 42,
   "lessons": [
     {
       "id": "L-001",
@@ -724,6 +724,24 @@
       ],
       "created": "2026-09-26T02:33:59Z",
       "last_seen": "2026-09-26T02:33:59Z"
+    },
+    {
+      "id": "L-041",
+      "key": "ac_gap::a check listing several labels forjar and forjar e equipar needs one fixture per label one recipe only reaches one branch of startswith",
+      "text": "A check listing several labels (FORJAR and FORJAR E EQUIPAR) needs one fixture per label; one recipe only reaches one branch of startsWith.",
+      "signal": "ac_gap",
+      "scope": "web/components",
+      "status": "candidate",
+      "features": [
+        "assets-apply"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "web/src/components/ShopScene.test.tsx:555 (web/components)"
+      ],
+      "created": "2026-09-26T12:12:49Z",
+      "last_seen": "2026-09-26T12:12:49Z"
     }
   ]
 }
