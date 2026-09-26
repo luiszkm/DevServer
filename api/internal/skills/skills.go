@@ -22,11 +22,14 @@ type Handlers struct {
 
 func (h *Handlers) Unlock(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
-	node, previous, ok := h.Catalog.Skill(chi.URLParam(r, "id"))
+	node, previous, class, ok := h.Catalog.Skill(chi.URLParam(r, "id"))
 	if !ok {
 		return httpx.ErrUnknownSkill
 	}
 	p, err := player.WithLocked(ctx, h.Pool, auth.IdentityFrom(ctx).GithubUserID, func(tx pgx.Tx, p *player.Player) error {
+		if class != p.Class {
+			return httpx.ErrSkillWrongClass
+		}
 		if slices.Contains(p.Skills, node.ID) {
 			return httpx.ErrSkillUnlocked
 		}

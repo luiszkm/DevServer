@@ -28,7 +28,7 @@ const strip = (id: string) => document.querySelector(`[data-strip="${id}"]`) as 
 // skills f2, f3; macbook, cafe and moletom equipped; shadow worn; hpMax 125.
 const geared = (overrides: Partial<Player> = {}) =>
   player({
-    skills: ["f2", "f3"],
+    skills: ["fe1", "be2"],
     hp: 125,
     hpMax: 125,
     gear: ["macbook", "cafe", "moletom"],
@@ -58,7 +58,7 @@ describe("AvatarScene", () => {
     expect(document.querySelector(".avatar-skin-name")).toHaveTextContent("DEV SOMBRIO");
     const stats = screen.getByLabelText("atributos");
     expect(within(stats).getByText("HP máx 125")).toBeInTheDocument();
-    // dmg: f3 10 + macbook 8; sp: f2 8 + cafe 12 + shadow 10
+    // dmg: be2 10 + macbook 8; sp: fe1 8 + cafe 12 + shadow 10
     expect(within(stats).getByText("dano +18%")).toBeInTheDocument();
     expect(within(stats).getByText("SP +30")).toBeInTheDocument();
     expect(screen.queryByText("EM BREVE")).not.toBeInTheDocument();

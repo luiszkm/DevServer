@@ -112,9 +112,10 @@ func TestCatalog_ServesDeploys(t *testing.T) {
 }
 
 var descriptions = map[string]string{
-	"f1": "+10 HP máximo permanente", "f2": "+8 SP máximo em combate", "f3": "+10% de dano em todos os ataques",
-	"b1": "+10 HP máximo permanente", "b2": "+10 SP máximo em combate", "b3": "+12% de dano em todos os ataques",
-	"i1": "+8 SP máximo em combate", "i2": "+15 HP máximo permanente", "i3": "+15% de dano em todos os ataques",
+	"fe1": "+8 SP máximo em combate", "fe2": "+10 HP máximo permanente", "fe3": "+12 SP máximo em combate",
+	"be1": "+8% de dano em todos os ataques", "be2": "+10% de dano em todos os ataques", "be3": "+12% de dano em todos os ataques",
+	"do1": "+15 HP máximo permanente", "do2": "+12 HP máximo permanente", "do3": "+18 HP máximo permanente",
+	"fs1": "+6 SP máximo em combate", "fs2": "+6% de dano em todos os ataques", "fs3": "+10 HP máximo permanente",
 }
 
 // C12
@@ -129,26 +130,33 @@ func TestCatalog_ServesSkillTrees(t *testing.T) {
 	}
 	b := apptest.Decode[struct {
 		SkillTrees []struct {
-			ID, Name string
-			Nodes    []node
+			ID, Name, Class, Role string
+			Nodes                 []node
 		} `json:"skillTrees"`
 	}](t, env.Do(http.MethodGet, "/api/catalog", nil))
 	want := []struct {
-		id, name string
-		nodes    [][5]string
+		id, name, class, role string
+		nodes                 [][5]string
 	}{
-		{"frontend", "FRONTEND", [][5]string{{"f1", "</>", "MARKUP SEMÂNTICO", "hp", "10"}, {"f2", "{}", "GRID MASTER", "sp", "8"}, {"f3", "~", "MOTION", "dmg", "10"}}},
-		{"backend", "BACKEND", [][5]string{{"b1", "$_", "API REST", "hp", "10"}, {"b2", "[]", "CAMADA DE CACHE", "sp", "10"}, {"b3", "##", "FILA DE EVENTOS", "dmg", "12"}}},
-		{"infra", "INFRA", [][5]string{{"i1", ">_", "SHELL SCRIPT", "sp", "8"}, {"i2", "::", "CONTAINERS", "hp", "15"}, {"i3", "^", "AUTO-SCALING", "dmg", "15"}}},
+		{"frontend", "FRONTEND", "FRONTEND", "SUPORTE", [][5]string{{"fe1", "</>", "HOTFIX DE CSS", "sp", "8"}, {"fe2", "{}", "PAIR REVIEW", "hp", "10"}, {"fe3", "~", "DESIGN SYSTEM", "sp", "12"}}},
+		{"backend", "BACKEND", "BACKEND", "ATAQUE", [][5]string{{"be1", "$_", "ENDPOINT", "dmg", "8"}, {"be2", "[]", "QUERY PESADA", "dmg", "10"}, {"be3", "##", "DEADLOCK", "dmg", "12"}}},
+		{"devops", "DEVOPS", "DEVOPS", "DEFESA", [][5]string{{"do1", ">_", "HEALTHCHECK", "hp", "15"}, {"do2", "::", "FIREWALL", "hp", "12"}, {"do3", "^", "CIRCUIT BREAKER", "hp", "18"}}},
+		{"fullstack", "FULLSTACK", "FULLSTACK", "HÍBRIDO", [][5]string{{"fs1", "</>", "SNACK DE CSS", "sp", "6"}, {"fs2", "$_", "SCRIPT", "dmg", "6"}, {"fs3", "::", "PAGER", "hp", "10"}}},
 	}
-	if len(b.SkillTrees) != 3 {
-		t.Fatalf("skillTrees = %d, want 3", len(b.SkillTrees))
+	gone := []string{"infra", "f1", "f2", "f3", "b1", "b2", "b3", "i1", "i2", "i3"}
+	if len(b.SkillTrees) != 4 {
+		t.Fatalf("skillTrees = %d, want 4", len(b.SkillTrees))
 	}
 	for i, w := range want {
 		tr := b.SkillTrees[i]
-		if tr.ID != w.id || tr.Name != w.name || len(tr.Nodes) != 3 {
-			t.Errorf("tree %d = %s/%s with %d nodes", i, tr.ID, tr.Name, len(tr.Nodes))
+		if tr.ID != w.id || tr.Name != w.name || tr.Class != w.class || tr.Role != w.role || len(tr.Nodes) != 3 {
+			t.Errorf("tree %d = %s/%s/%s/%s with %d nodes", i, tr.ID, tr.Name, tr.Class, tr.Role, len(tr.Nodes))
 			continue
+		}
+		for _, id := range gone {
+			if tr.ID == id {
+				t.Errorf("removed tree %s is still served", id)
+			}
 		}
 		for j, wn := range w.nodes {
 			n := tr.Nodes[j]
@@ -159,6 +167,11 @@ func TestCatalog_ServesSkillTrees(t *testing.T) {
 			if n.Description != descriptions[wn[0]] {
 				t.Errorf("node %s description = %q, want %q", wn[0], n.Description, descriptions[wn[0]])
 			}
+			for _, id := range gone {
+				if n.ID == id {
+					t.Errorf("removed node %s is still served", id)
+				}
+			}
 		}
 	}
 }
@@ -166,13 +179,13 @@ func TestCatalog_ServesSkillTrees(t *testing.T) {
 // C27 (own layer): catalog position of skill ids, unknown ids last.
 func TestCatalog_SkillPosition(t *testing.T) {
 	c := catalog.Default()
-	for i, id := range []string{"f1", "f2", "f3", "b1", "b2", "b3", "i1", "i2", "i3"} {
+	for i, id := range []string{"fe1", "fe2", "fe3", "be1", "be2", "be3", "do1", "do2", "do3", "fs1", "fs2", "fs3"} {
 		if got := c.SkillPosition(id); got != i {
 			t.Errorf("SkillPosition(%s) = %d, want %d", id, got, i)
 		}
 	}
-	if got := c.SkillPosition("zz"); got != 9 {
-		t.Errorf("SkillPosition(unknown) = %d, want 9 (after every node)", got)
+	if got := c.SkillPosition("zz"); got != 12 {
+		t.Errorf("SkillPosition(unknown) = %d, want 12 (after every node)", got)
 	}
 }
 
@@ -182,7 +195,7 @@ func TestCatalog_ServesCombat(t *testing.T) {
 	var b struct {
 		Enemies []struct {
 			ID, Region, Name, Weakness, Drop, Glyph string
-			Level, HP, SP                       int
+			Level, HP, SP                           int
 		} `json:"enemies"`
 		Commands []struct {
 			ID, Label, Hint, Skill        string
@@ -248,13 +261,23 @@ func TestCatalog_ServesCombat(t *testing.T) {
 	commands := []string{
 		"fix|FIX|10|14-20|0|false|false|0|false|", "test|TEST|8||0|true|false|0|false|",
 		"refactor|REFACTOR|14||18|false|false|0|false|", "plain|PLAIN|0||0|false|true|3|false|",
-		"f1|</> MARKUP|12|12-14|0|false|false|0|false|f1", "f2|{} GRID|16|16-20|0|false|false|0|false|f2",
-		"f3|~ MOTION|20|20-25|0|false|false|0|false|f3", "b1|$_ API|12|13-17|0|false|false|0|false|b1",
-		"b2|[] CACHE|16||24|false|false|0|false|b2", "b3|## FILA|20|22-28|0|false|false|0|false|b3",
-		"i1|>_ SHELL|10|8-10|0|true|false|0|false|i1", "i2|:: CONTAINER|14||0|false|true|0|false|i2",
-		"i3|^ SCALING|24|28-34|0|false|false|0|false|i3", "rollback|ROLLBACK|0||0|false|false|0|true|",
+		"fe1|</> HOTFIX|12||26|false|false|0|false|fe1", "fe2|{} PAIR|10||0|true|false|4|false|fe2",
+		"fe3|~ DESIGN|18||32|false|false|8|false|fe3", "be1|$_ ENDPOINT|12|18-24|0|false|false|0|false|be1",
+		"be2|[] QUERY|16|24-32|0|false|false|0|false|be2", "be3|## DEADLOCK|22|32-42|0|false|false|0|false|be3",
+		"do1|>_ HEALTHCHECK|10||10|false|true|0|false|do1", "do2|:: FIREWALL|14||16|false|true|0|false|do2",
+		"do3|^ CIRCUIT|12||0|false|true|6|false|do3", "fs1|</> SNACK|12||22|false|false|0|false|fs1",
+		"fs2|$_ SCRIPT|12|16-22|0|false|false|0|false|fs2", "fs3|:: PAGER|10||8|false|true|0|false|fs3",
+		"rollback|ROLLBACK|0||0|false|false|0|true|",
 	}
-	if len(b.Commands) != 14 {
+	hints := []string{
+		"corrige o bug · 14-20 dano", "expõe a fraqueza · crítico", "recupera 18 HP", "defende e recupera 3 SP",
+		"cura 26 HP", "expõe a fraqueza e recupera 4 SP", "cura 32 HP e recupera 8 SP",
+		"golpe forte · 18-24 dano", "query pesada · 24-32", "deadlock · 32-42",
+		"escuda e cura 10 HP", "escuda e cura 16 HP", "escuda e recupera 6 SP",
+		"cura 22 HP", "golpe · 16-22 dano", "escuda e cura 8 HP",
+		"volta para o mapa",
+	}
+	if len(b.Commands) != 17 {
 		t.Fatalf("commands = %d", len(b.Commands))
 	}
 	for i, c := range b.Commands {
@@ -263,8 +286,8 @@ func TestCatalog_ServesCombat(t *testing.T) {
 			dmg = fmt.Sprintf("%d-%d", c.Damage[0], c.Damage[1])
 		}
 		got := fmt.Sprintf("%s|%s|%d|%s|%d|%v|%v|%d|%v|%s", c.ID, c.Label, c.Cost, dmg, c.Heal, c.ExposesWeakness, c.Shield, c.SPGain, c.Flee, c.Skill)
-		if got != commands[i] || c.Hint == "" {
-			t.Errorf("command %d = %s (hint %q), want %s", i, got, c.Hint, commands[i])
+		if got != commands[i] || c.Hint != hints[i] {
+			t.Errorf("command %d = %s (hint %q), want %s (hint %q)", i, got, c.Hint, commands[i], hints[i])
 		}
 	}
 	items := []string{

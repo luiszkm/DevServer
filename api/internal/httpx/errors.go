@@ -40,6 +40,7 @@ var (
 	ErrSkillUnlocked      = &Error{http.StatusConflict, "skill_already_unlocked", "habilidade já está ativa"}
 	ErrNoSkillPoints      = &Error{http.StatusConflict, "no_skill_points", "sem pontos de habilidade. suba de nível com deploys"}
 	ErrUnknownSkill       = &Error{http.StatusUnprocessableEntity, "unknown_skill", "habilidade desconhecida"}
+	ErrSkillWrongClass    = &Error{http.StatusConflict, "skill_wrong_class", "essa habilidade é de outra classe"}
 	ErrBattleNotFound     = &Error{http.StatusNotFound, "battle_not_found", "nenhum encontro em andamento"}
 	ErrBattleOver         = &Error{http.StatusConflict, "battle_over", "o bug já foi resolvido. comece um novo encontro"}
 	ErrNotEnoughSP        = &Error{http.StatusConflict, "not_enough_sp", "SP insuficiente. use uma poção"}

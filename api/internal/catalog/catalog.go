@@ -54,6 +54,8 @@ type SkillNode struct {
 type SkillTree struct {
 	ID    string      `json:"id"`
 	Name  string      `json:"name"`
+	Class string      `json:"class"`
+	Role  string      `json:"role"`
 	Nodes []SkillNode `json:"nodes"`
 }
 
@@ -472,19 +474,20 @@ func (c *Catalog) DeployLevel(level int) (DeployLevel, bool) {
 	return DeployLevel{}, false
 }
 
-// Skill finds a node and the node before it in the same tree (nil for a tree's first node).
-func (c *Catalog) Skill(id string) (node SkillNode, previous *SkillNode, ok bool) {
+// Skill finds a node, the node before it in the same tree (nil for a tree's first node),
+// and the class that tree belongs to.
+func (c *Catalog) Skill(id string) (node SkillNode, previous *SkillNode, class string, ok bool) {
 	for _, t := range c.SkillTrees {
 		for i, n := range t.Nodes {
 			if n.ID == id {
 				if i > 0 {
 					previous = &t.Nodes[i-1]
 				}
-				return n, previous, true
+				return n, previous, t.Class, true
 			}
 		}
 	}
-	return SkillNode{}, nil, false
+	return SkillNode{}, nil, "", false
 }
 
 // SkillPosition orders skill ids as the catalog lists them; unknown ids sort last.
@@ -676,7 +679,7 @@ func (c *Catalog) AvatarOptionPosition(id string) int {
 func (c *Catalog) SkillBonus(skills []string, bonusType string) int {
 	sum := 0
 	for _, id := range skills {
-		if n, _, ok := c.Skill(id); ok && n.Bonus.Type == bonusType {
+		if n, _, _, ok := c.Skill(id); ok && n.Bonus.Type == bonusType {
 			sum += n.Bonus.Amount
 		}
 	}

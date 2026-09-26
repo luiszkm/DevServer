@@ -37,7 +37,7 @@ describe("Hud", () => {
 
   // C22
   it.each([
-    [["f1", "b1"], ["MARKUP SEMÂNTICO", "API REST"]],
+    [["be1", "fe1"], ["HOTFIX DE CSS", "ENDPOINT"]],
     [[], []],
   ])("shows active skill glyphs (%j)", (skills, names) => {
     render(<Hud player={player({ skills })} catalog={CATALOG} />);
@@ -48,7 +48,7 @@ describe("Hud", () => {
   });
 
   it("shows active skill glyphs only with a catalog (none without one)", () => {
-    render(<Hud player={player({ skills: ["f1"] })} />);
+    render(<Hud player={player({ skills: ["be1"] })} />);
     const hud = screen.getByRole("contentinfo", { name: "HUD" });
     expect(within(hud).queryByLabelText("habilidades ativas")).not.toBeInTheDocument();
     expect(within(hud).queryByText("sem habilidades ativas")).not.toBeInTheDocument();
@@ -56,11 +56,11 @@ describe("Hud", () => {
   });
 
   // game-art C19
-  it.each([[["f1"]], [["f1", "b2", "i3"]]])("skill art (%j)", (skills) => {
+  it.each([[["be1"]], [["fe1", "be1", "be2"]]])("skill art (%j)", (skills) => {
     render(<Hud player={player({ skills })} catalog={CATALOG} />);
     const chips = screen.getByLabelText("habilidades ativas");
     const imgs = within(chips).getAllByRole("img");
-    const names: Record<string, string> = { f1: "MARKUP SEMÂNTICO", b2: "CAMADA DE CACHE", i3: "AUTO-SCALING" };
+    const names: Record<string, string> = { be1: "ENDPOINT", be2: "QUERY PESADA", fe1: "HOTFIX DE CSS" };
     expect(imgs.map((i) => i.getAttribute("src"))).toEqual(skills.map((id) => `/art/icon/skill-${id}.png`));
     expect(imgs.map((i) => i.getAttribute("alt"))).toEqual(skills.map((id) => names[id]));
     for (const img of imgs) {
@@ -77,7 +77,7 @@ describe("Hud", () => {
   });
 
   it("skill art falls back to the glyph", () => {
-    render(<Hud player={player({ skills: ["f1"] })} catalog={CATALOG} />);
+    render(<Hud player={player({ skills: ["fe1"] })} catalog={CATALOG} />);
     const chips = screen.getByLabelText("habilidades ativas");
     fireEvent.error(within(chips).getByRole("img"));
     expect(within(chips).queryByRole("img")).toBeNull();

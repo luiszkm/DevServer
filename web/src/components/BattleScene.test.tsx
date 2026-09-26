@@ -62,22 +62,22 @@ describe("BattleScene", () => {
   });
 
   // C42
-  it("lists commands with costs", async () => {
-    const p = player({ skills: ["f1"] });
+  it("lists the class command with costs", async () => {
+    const p = player({ skills: ["be1"] });
     mockFetch({ "POST /api/me/battle": startWith(battle({ sp: 11 }), p) });
     renderScene({ p });
     await screen.findByLabelText("inimigo");
     const ids = Array.from(document.querySelectorAll<HTMLElement>("[data-command]")).map((b) => b.dataset.command);
-    expect(ids).toEqual(["fix", "test", "refactor", "plain", "f1", "rollback"]);
-    const costs: Record<string, string> = { fix: "10 SP", test: "8 SP", refactor: "14 SP", plain: "grátis", f1: "12 SP", rollback: "grátis" };
+    expect(ids).toEqual(["fix", "test", "refactor", "plain", "be1", "rollback"]);
+    expect(document.querySelector('[data-command="fe1"]')).toBeNull();
+    const costs: Record<string, string> = { fix: "10 SP", test: "8 SP", refactor: "14 SP", plain: "grátis", be1: "12 SP", rollback: "grátis" };
     for (const [id, cost] of Object.entries(costs)) expect(command(id)).toHaveTextContent(cost);
-    for (const c of COMMANDS.filter((c) => !c.skill || c.skill === "f1")) {
+    for (const c of COMMANDS.filter((c) => !c.skill || c.skill === "be1")) {
       expect(command(c.id)).toHaveTextContent(c.label);
       expect(command(c.id)).toHaveTextContent(c.hint);
     }
-    for (const id of ["refactor", "f1"]) expect(command(id)).toBeDisabled();
+    for (const id of ["refactor", "be1"]) expect(command(id)).toBeDisabled();
     for (const id of ["fix", "test", "plain", "rollback"]) expect(command(id)).toBeEnabled();
-    expect(document.querySelector('[data-command="b2"]')).toBeNull();
   });
 
   // C57
@@ -423,15 +423,15 @@ describe("BattleScene turn playback", () => {
 
   it("plays the turn one event at a time", async () => {
     const { setPlayer, next } = await fightOneTurn(
-      [{ type: "damage", command: "f1", amount: 20 }, { type: "counter", amount: 9 }],
+      [{ type: "damage", command: "be1", amount: 20 }, { type: "counter", amount: 9 }],
       battle({ enemyHp: 40, sp: 40 }),
     );
     // beat 1: the dev's hit
-    expect(lines().at(-1)).toBe("> </> MARKUP: 20 de dano");
+    expect(lines().at(-1)).toBe("> $_ ENDPOINT: 20 de dano");
     expect(heroActor()).toHaveClass("anim-lunge");
     expect(enemyActor()).toHaveClass("anim-hit");
-    expect(fx()!.dataset.fx).toBe("code");
-    expect(fx()!.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/code.png)");
+    expect(fx()!.dataset.fx).toBe("data");
+    expect(fx()!.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/data.png)");
     expect(within(enemyActor()).getByText("-20")).toBeInTheDocument();
     expect(screen.getByLabelText("inimigo")).toHaveTextContent("HP 40/60");
     expect(screen.getByLabelText("dev em combate")).toHaveTextContent("HP 100/100");

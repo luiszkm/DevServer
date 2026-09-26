@@ -7,7 +7,7 @@ describe("GameArt", () => {
   it.each<[ArtKind, string, number, string, number]>([
     ["item", "hp_potion", 2, "/art/icon/item-hp_potion.png", 32],
     ["gear", "macbook", 4, "/art/icon/gear-macbook.png", 64],
-    ["skill", "f1", 2, "/art/icon/skill-f1.png", 32],
+    ["skill", "be1", 2, "/art/icon/skill-be1.png", 32],
     ["deploy", "backend", 2, "/art/icon/deploy-backend.png", 32],
     ["rack", "gpu", 3, "/art/icon/rack-gpu.png", 48],
     ["office", "mesa", 2, "/art/icon/office-mesa.png", 32],

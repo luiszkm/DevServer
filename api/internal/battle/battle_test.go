@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -189,8 +190,16 @@ func TestStart_SPMaxIncludesSkillBonus(t *testing.T) {
 	for _, tc := range []struct {
 		skills []string
 		spMax  int
-	}{{nil, 55}, {[]string{"f1", "f2"}, 63}, {[]string{"f1", "f2", "b1", "b2", "i1"}, 81}} {
+		class  string
+	}{
+		{nil, 55, ""},
+		{[]string{"fe1"}, 63, "FRONTEND"},
+		{[]string{"fe1", "fe2", "fe3"}, 75, "FRONTEND"},
+	} {
 		f := newFixture(t)
+		if tc.class != "" {
+			f.sql(`UPDATE players SET class = $1`, tc.class)
+		}
 		f.unlock(tc.skills...)
 		f.sql(`UPDATE players SET region = 'floresta'`)
 		if got := f.start().Battle; got.SPMax != tc.spMax || got.SP != tc.spMax {
@@ -256,18 +265,19 @@ func TestCommand_WeaknessMultipliesOnce(t *testing.T) {
 // C9
 func TestCommand_DamageBonusFromSkills(t *testing.T) {
 	f := newFixture(t)
-	f.unlock("f1", "f2", "f3")
+	f.sql(`UPDATE players SET class = 'BACKEND'`)
+	f.unlock("be1")
 	f.sql(`UPDATE players SET hp = 1000, hp_max = 1000`)
 	f.start()
 	f.sql(`UPDATE battles SET enemy_hp = 500, enemy_hp_max = 500, sp = 999, sp_max = 999`)
 	f.env.Rand.Push(6, 0)
 	if e := f.turn(f.cmd("fix")).Events[0]; e.Amount != 22 {
-		t.Fatalf("fix with 10%% bonus = %d, want 22", e.Amount)
+		t.Fatalf("fix with 8%% bonus = %d, want 22", e.Amount)
 	}
 	f.turn(f.cmd("test"))
 	f.env.Rand.Push(6, 0)
-	if e := f.turn(f.cmd("fix")).Events[0]; e.Amount != 40 {
-		t.Fatalf("fix with weakness and 10%% bonus = %d, want 40", e.Amount)
+	if e := f.turn(f.cmd("fix")).Events[0]; e.Amount != 39 {
+		t.Fatalf("fix with weakness and 8%% bonus = %d, want 39", e.Amount)
 	}
 }
 
@@ -390,9 +400,26 @@ func TestCommand_NotEnoughSP(t *testing.T) {
 func TestCommand_SkillCommandNeedsSkill(t *testing.T) {
 	f := newFixture(t)
 	f.start()
-	f.status(f.cmd("f1"), 409, "command_locked")
-	f.unlock("f1")
-	f.turn(f.cmd("f1"))
+	var hp, sp int
+	if err := f.env.Pool.QueryRow(context.Background(), `SELECT hp FROM players`).Scan(&hp); err != nil {
+		t.Fatal(err)
+	}
+	if err := f.env.Pool.QueryRow(context.Background(), `SELECT sp FROM battles`).Scan(&sp); err != nil {
+		t.Fatal(err)
+	}
+	f.status(f.cmd("be1"), 409, "command_locked")
+	var hp2, sp2 int
+	if err := f.env.Pool.QueryRow(context.Background(), `SELECT hp FROM players`).Scan(&hp2); err != nil {
+		t.Fatal(err)
+	}
+	if err := f.env.Pool.QueryRow(context.Background(), `SELECT sp FROM battles`).Scan(&sp2); err != nil {
+		t.Fatal(err)
+	}
+	if hp2 != hp || sp2 != sp {
+		t.Fatalf("locked command changed hp %d→%d sp %d→%d", hp, hp2, sp, sp2)
+	}
+	f.unlock("be1")
+	f.turn(f.cmd("be1"))
 }
 
 // C17
@@ -470,50 +497,68 @@ func TestCommand_ConcurrentTurnsSerialize(t *testing.T) {
 // C23
 func TestCommand_EverySkillCommand(t *testing.T) {
 	cases := []struct {
-		id       string
-		cost     int
-		min, max int
-		heal     int
-		weak     bool
-		shield   bool
+		class        string
+		chain        []string
+		cost         int
+		min, max     int
+		bonus        int
+		heal, spGain int
+		weak, shield bool
 	}{
-		{"f1", 12, 12, 14, 0, false, false}, {"f2", 16, 16, 20, 0, false, false}, {"f3", 20, 20, 25, 0, false, false},
-		{"b1", 12, 13, 17, 0, false, false}, {"b2", 16, 0, 0, 24, false, false}, {"b3", 20, 22, 28, 0, false, false},
-		{"i1", 10, 8, 10, 0, true, false}, {"i2", 14, 0, 0, 0, false, true}, {"i3", 24, 28, 34, 0, false, false},
+		{"FRONTEND", []string{"fe1"}, 12, 0, 0, 0, 26, 0, false, false},
+		{"FRONTEND", []string{"fe1", "fe2"}, 10, 0, 0, 0, 0, 4, true, false},
+		{"FRONTEND", []string{"fe1", "fe2", "fe3"}, 18, 0, 0, 0, 32, 8, false, false},
+		{"BACKEND", []string{"be1"}, 12, 18, 24, 8, 0, 0, false, false},
+		{"BACKEND", []string{"be1", "be2"}, 16, 24, 32, 18, 0, 0, false, false},
+		{"BACKEND", []string{"be1", "be2", "be3"}, 22, 32, 42, 30, 0, 0, false, false},
+		{"DEVOPS", []string{"do1"}, 10, 0, 0, 0, 10, 0, false, true},
+		{"DEVOPS", []string{"do1", "do2"}, 14, 0, 0, 0, 16, 0, false, true},
+		{"DEVOPS", []string{"do1", "do2", "do3"}, 12, 0, 0, 0, 0, 6, false, true},
+		{"FULLSTACK", []string{"fs1"}, 12, 0, 0, 0, 22, 0, false, false},
+		{"FULLSTACK", []string{"fs1", "fs2"}, 12, 16, 22, 6, 0, 0, false, false},
+		{"FULLSTACK", []string{"fs1", "fs2", "fs3"}, 10, 0, 0, 0, 8, 0, false, true},
 	}
 	for _, tc := range cases {
+		id := tc.chain[len(tc.chain)-1]
 		f := newFixture(t)
-		f.unlock("f1", "f2", "f3", "b1", "b2", "b3", "i1", "i2", "i3")
+		f.sql(`UPDATE players SET class = $1`, tc.class)
+		f.unlock(tc.chain...)
 		f.start()
-		for _, draw := range []int{0, tc.max - tc.min} {
+		draws := []int{0}
+		if tc.min > 0 {
+			draws = []int{0, tc.max - tc.min}
+		}
+		for _, draw := range draws {
 			f.sql(`UPDATE battles SET sp = 200, sp_max = 200, enemy_hp = 500, enemy_hp_max = 500, weak = false`)
 			f.sql(`UPDATE players SET hp = 10, hp_max = 1000`)
 			if tc.min > 0 {
 				f.env.Rand.Push(draw)
 			}
 			f.env.Rand.Push(0)
-			got := f.turn(f.cmd(tc.id))
-			if got.Battle.SP != 200-tc.cost+5 {
-				t.Errorf("%s: sp %d, want %d", tc.id, got.Battle.SP, 200-tc.cost+5)
+			got := f.turn(f.cmd(id))
+			wantSP := 200 - tc.cost + tc.spGain + 5
+			if got.Battle.SP != wantSP {
+				t.Errorf("%s: sp %d, want %d", id, got.Battle.SP, wantSP)
 			}
 			if tc.min > 0 {
-				// f3 (10%) + b3 (12%) + i3 (15%) = 37% damage bonus with every skill unlocked.
-				want := int(float64(tc.min+draw)*1.37 + 0.5)
+				base := tc.min + draw
+				want := int(math.Round(float64(base) * (1 + float64(tc.bonus)/100)))
 				if got.Events[0].Type != "damage" || got.Events[0].Amount != want {
-					t.Errorf("%s draw %d: %+v, want damage %d", tc.id, draw, got.Events[0], want)
+					t.Errorf("%s draw %d: %+v, want damage %d", id, draw, got.Events[0], want)
 				}
 			}
-			if tc.heal > 0 && got.Player.HP != 10+tc.heal-7 {
-				t.Errorf("%s: hp %d, want %d", tc.id, got.Player.HP, 10+tc.heal-7)
+			counter := 7
+			if tc.shield {
+				counter = 4
+			}
+			if tc.heal > 0 && got.Player.HP != 10+tc.heal-counter {
+				t.Errorf("%s: hp %d, want %d", id, got.Player.HP, 10+tc.heal-counter)
 			}
 			if got.Battle.Weakness != tc.weak {
-				t.Errorf("%s: weakness %v, want %v", tc.id, got.Battle.Weakness, tc.weak)
+				t.Errorf("%s: weakness %v, want %v", id, got.Battle.Weakness, tc.weak)
 			}
-			if c := got.Events[len(got.Events)-1]; c.Blocked != tc.shield {
-				t.Errorf("%s: counter blocked %v, want %v", tc.id, c.Blocked, tc.shield)
-			}
-			if tc.min == 0 {
-				break
+			if c := got.Events[len(got.Events)-1]; c.Blocked != tc.shield || c.Amount != counter {
+				t.Errorf("%s: counter %+v, want blocked %v amount %d", id, c, tc.shield, counter)
 			}
 		}
 	}
@@ -911,7 +956,7 @@ func TestLockedMutation_InventoryLoadError(t *testing.T) {
 	}
 	// A guard-first mutation (no points, so the guard would answer 409) must still fail on the load.
 	f.sql(`UPDATE players SET skill_points = 0`)
-	f.status(f.do(http.MethodPost, "/api/me/skills/f1/unlock", nil), 500, "internal")
+	f.status(f.do(http.MethodPost, "/api/me/skills/be1/unlock", nil), 500, "internal")
 }
 
 // C56
@@ -933,7 +978,8 @@ func TestCreatePlayer_StartingItemsFromCatalog(t *testing.T) {
 // shop-inventory-avatar C16
 func TestStart_SPMaxIncludesGearAndSkin(t *testing.T) {
 	f := newFixture(t)
-	f.unlock("f1", "f2")
+	f.sql(`UPDATE players SET class = 'FRONTEND'`)
+	f.unlock("fe1")
 	f.sql(`UPDATE players SET gems = 1000, coins = 1000`)
 	for _, path := range []string{"/api/me/shop/gear/monitor", "/api/me/gear/monitor/unequip", "/api/me/shop/gear/cafe", "/api/me/shop/skins/shadow"} {
 		if rec := f.do(http.MethodPost, path, nil); rec.Code != 200 {
@@ -941,7 +987,7 @@ func TestStart_SPMaxIncludesGearAndSkin(t *testing.T) {
 		}
 	}
 	if got := f.start().Battle; got.SP != 80 || got.SPMax != 80 {
-		t.Fatalf("sp = %d/%d, want 80/80 (50 + f2 8 + cafe 12 + shadow 10, monitor not equipped)", got.SP, got.SPMax)
+		t.Fatalf("sp = %d/%d, want 80/80 (50 + fe1 8 + cafe 12 + shadow 10, monitor not equipped)", got.SP, got.SPMax)
 	}
 }
 
@@ -1119,3 +1165,169 @@ func TestRoutes_BattleCarriesEnemy(t *testing.T) {
 	}
 }
 
+func TestCommand_FrontendHeal(t *testing.T) {
+	for _, hp := range []int{50, 90} {
+		f := newFixture(t)
+		f.sql(`UPDATE players SET class = 'FRONTEND'`)
+		f.unlock("fe1")
+		f.start()
+		f.sql(`UPDATE players SET hp = $1, hp_max = 100`, hp)
+		f.sql(`UPDATE battles SET enemy_hp = 500, enemy_hp_max = 500, sp = 100, sp_max = 100`)
+		f.env.Rand.Push(0)
+		got := f.turn(f.cmd("fe1"))
+		if got.Events[0].Type != "heal" || got.Events[0].Amount != 26 {
+			t.Fatalf("hp %d: heal event %+v, want amount 26", hp, got.Events[0])
+		}
+		want := hp + 26 - 7
+		if hp == 90 {
+			want = 93
+		}
+		if got.Player.HP != want {
+			t.Fatalf("hp %d: final %d, want %d", hp, got.Player.HP, want)
+		}
+	}
+}
+
+func TestCommand_BackendDamage(t *testing.T) {
+	f := newFixture(t)
+	f.unlock("be1")
+	f.start()
+	f.sql(`UPDATE players SET hp = 1000, hp_max = 1000`)
+	f.sql(`UPDATE battles SET enemy_hp = 500, enemy_hp_max = 500, sp = 100, sp_max = 100, weak = false`)
+	f.env.Rand.Push(0, 0)
+	if e := f.turn(f.cmd("be1")).Events[0]; e.Type != "damage" || e.Amount != 19 {
+		t.Fatalf("base 18: %+v, want 19", e)
+	}
+	f.sql(`UPDATE battles SET weak = false, enemy_hp = 500`)
+	f.env.Rand.Push(6, 0)
+	if e := f.turn(f.cmd("be1")).Events[0]; e.Type != "damage" || e.Amount != 26 {
+		t.Fatalf("base 24: %+v, want 26", e)
+	}
+}
+
+func TestCommand_DevopsShield(t *testing.T) {
+	f := newFixture(t)
+	f.sql(`UPDATE players SET class = 'DEVOPS'`)
+	f.unlock("do1")
+	f.start()
+	f.sql(`UPDATE players SET hp = 50, hp_max = 200`)
+	f.sql(`UPDATE battles SET enemy_hp = 500, enemy_hp_max = 500, sp = 100, sp_max = 100`)
+	f.env.Rand.Push(0)
+	got := f.turn(f.cmd("do1"))
+	var heal, shield bool
+	for _, e := range got.Events {
+		if e.Type == "heal" && e.Amount == 10 {
+			heal = true
+		}
+		if e.Type == "shield" {
+			shield = true
+		}
+		if e.Type == "counter" && (e.Amount != 4 || !e.Blocked) {
+			t.Fatalf("counter %+v, want 4 blocked", e)
+		}
+	}
+	if !heal || !shield {
+		t.Fatalf("events %+v, want heal 10 and shield", got.Events)
+	}
+	if got.Player.HP != 56 {
+		t.Fatalf("hp %d, want 56", got.Player.HP)
+	}
+}
+
+func TestCommand_FullstackDamage(t *testing.T) {
+	f := newFixture(t)
+	f.sql(`UPDATE players SET class = 'FULLSTACK'`)
+	f.unlock("fs1", "fs2")
+	f.start()
+	f.sql(`UPDATE players SET hp = 1000, hp_max = 1000`)
+	f.sql(`UPDATE battles SET enemy_hp = 500, enemy_hp_max = 500, sp = 100, sp_max = 100, weak = false`)
+	f.env.Rand.Push(0, 0)
+	if e := f.turn(f.cmd("fs2")).Events[0]; e.Type != "damage" || e.Amount != 17 {
+		t.Fatalf("base 16: %+v, want 17", e)
+	}
+	f.sql(`UPDATE battles SET weak = false, enemy_hp = 500`)
+	f.env.Rand.Push(6, 0)
+	if e := f.turn(f.cmd("fs2")).Events[0]; e.Type != "damage" || e.Amount != 23 {
+		t.Fatalf("base 22: %+v, want 23", e)
+	}
+}
+
+func TestMigration_RefundsClassSkills(t *testing.T) {
+	ctx := context.Background()
+	base := os.Getenv("TEST_DATABASE_URL")
+	if base == "" {
+		base = "postgres://devserver:devserver@localhost:5433/devserver_test?sslmode=disable"
+	}
+	admin, err := db.Open(ctx, base)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer admin.Close()
+	schema := fmt.Sprintf("m_%d", time.Now().UnixNano())
+	if _, err := admin.Exec(ctx, "CREATE SCHEMA "+schema); err != nil {
+		t.Fatal(err)
+	}
+	defer admin.Exec(ctx, "DROP SCHEMA "+schema+" CASCADE")
+	u, _ := url.Parse(base)
+	q := u.Query()
+	q.Set("search_path", schema)
+	u.RawQuery = q.Encode()
+	if err := db.MigrateTo(ctx, u.String(), 10); err != nil {
+		t.Fatal(err)
+	}
+	pool, err := db.Open(ctx, u.String())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+	insert := func(name string, github int64, hp, hpMax, points int, skills ...string) {
+		t.Helper()
+		var id int64
+		err := pool.QueryRow(ctx, `INSERT INTO players (github_user_id, dev_name, class, level, xp, xp_max, hp, hp_max,
+			coins, gems, skill_points, region, skin) VALUES ($1, $2, 'BACKEND', 4, 0, 500, $3, $4, 0, 0, $5, 'vila', 'default')
+			RETURNING id`, github, name, hp, hpMax, points).Scan(&id)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, skill := range skills {
+			if _, err := pool.Exec(ctx, `INSERT INTO player_skills (player_id, skill_id) VALUES ($1, $2)`, id, skill); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	insert("OLD_A", 1, 80, 135, 1, "f1", "b1", "i2")
+	insert("OLD_B", 2, 100, 140, 2, "f3")
+	insert("OLD_C", 3, 90, 120, 3)
+	insert("OLD_D", 4, 5, 20, 0, "f1", "b1", "i2")
+	if err := db.MigrateTo(ctx, u.String(), 11); err != nil {
+		t.Fatal(err)
+	}
+	type row struct {
+		hp, hpMax, points, skills int
+	}
+	got := map[string]row{}
+	rows, err := pool.Query(ctx, `SELECT dev_name, hp, hp_max, skill_points,
+		(SELECT count(*) FROM player_skills s WHERE s.player_id = p.id)
+		FROM players p`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var name string
+		var r row
+		if err := rows.Scan(&name, &r.hp, &r.hpMax, &r.points, &r.skills); err != nil {
+			t.Fatal(err)
+		}
+		got[name] = r
+	}
+	want := map[string]row{
+		"OLD_A": {45, 100, 4, 0},
+		"OLD_B": {100, 140, 3, 0},
+		"OLD_C": {90, 120, 3, 0},
+		"OLD_D": {1, 1, 3, 0},
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("after migration = %+v, want %+v", got, want)
+	}
+}

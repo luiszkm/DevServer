@@ -106,6 +106,10 @@ describe("catalog art on disk", () => {
   // C13
   it("skill icons per skills.json tree nodes, 16x16", () => {
     expectAssets(icons(skills.trees.flatMap((t) => t.nodes).map((n) => `skill-${n.id}`)));
+    for (const id of ["f1", "f2", "f3", "b1", "b2", "b3", "i1", "i2", "i3"]) {
+      expect(existsSync(`${ROOT}web/art/icon/skill-${id}.json`)).toBe(false);
+      expect(existsSync(`${ROOT}web/public/art/icon/skill-${id}.png`)).toBe(false);
+    }
   });
 
   // C14
@@ -545,7 +549,16 @@ describe("library consumers", () => {
     const sources = [
       ...files(`${ROOT}web/src`, (f) => /\.(tsx?|css)$/.test(f) && !/\.test\.tsx?$/.test(f) && !f.includes("/test/")),
     ].map((f) => readFileSync(f, "utf8"));
-    const reached = reachedFrom([...backgrounds, ...enemies]);
+    const named = files(`${ROOT}web/art`, (f) => f.endsWith(".json")).filter((p) => {
+      const name = p.split("/").pop()!.replace(/\.json$/, "");
+      const folder = p.split("/").at(-2);
+      const dash = name.indexOf("-");
+      return sources.some((src) => {
+        if (src.includes(`/art/${folder}/${name}.png`)) return true;
+        return dash > 0 && src.includes(`"${name.slice(0, dash)}"`) && src.includes(`"${name.slice(dash + 1)}"`);
+      });
+    });
+    const reached = reachedFrom([...backgrounds, ...enemies, ...named]);
     const names = Object.entries(LIBRARY).flatMap(([folder, list]) => list.map((name) => ({ folder, name })));
     expect(names.length).toBe(101);
     expect(orphans(names, sources, reached)).toEqual([]);

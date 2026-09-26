@@ -24,15 +24,15 @@ func TestBonus_SumsSources(t *testing.T) {
 		typ    string
 		amount int
 	}{
-		{"only skill f3", player.Player{Skills: []string{"f3"}, Equipment: equip(), Skin: "default"}, "dmg", 10},
+		{"only skill be2", player.Player{Skills: []string{"be2"}, Equipment: equip(), Skin: "default"}, "dmg", 10},
 		{"only macbook equipped", player.Player{Gear: []string{"macbook"}, Equipment: equip("setup", "macbook"), Skin: "default"}, "dmg", 8},
 		{"only skin neon", player.Player{Equipment: equip(), Skin: "neon"}, "dmg", 5},
-		{"f2 + cafe + shadow", player.Player{Skills: []string{"f1", "f2"}, Gear: []string{"cafe"}, Equipment: equip("bebida", "cafe"), Skin: "shadow"}, "sp", 30},
-		{"moletom + golden + f1", player.Player{Skills: []string{"f1"}, Gear: []string{"moletom"}, Equipment: equip("vestuario", "moletom"), Skin: "golden"}, "hp", 45},
+		{"fe1 + cafe + shadow", player.Player{Skills: []string{"fe1"}, Gear: []string{"cafe"}, Equipment: equip("bebida", "cafe"), Skin: "shadow"}, "sp", 30},
+		{"moletom + golden + fe2", player.Player{Skills: []string{"fe2"}, Gear: []string{"moletom"}, Equipment: equip("vestuario", "moletom"), Skin: "golden"}, "hp", 45},
 		{"owned, not equipped", player.Player{Gear: []string{"macbook", "monitor", "cafe"}, Equipment: equip(), Skin: "default"}, "dmg", 0},
 		{"owned, not equipped (sp)", player.Player{Gear: []string{"monitor", "cafe"}, Equipment: equip(), Skin: "default"}, "sp", 0},
 		{"skin default", player.Player{Equipment: equip(), Skin: "default"}, "hp", 0},
-		{"other type ignored", player.Player{Skills: []string{"f3"}, Gear: []string{"macbook"}, Equipment: equip("setup", "macbook"), Skin: "neon"}, "sp", 0},
+		{"other type ignored", player.Player{Skills: []string{"be2"}, Gear: []string{"macbook"}, Equipment: equip("setup", "macbook"), Skin: "neon"}, "sp", 0},
 	} {
 		if got := player.Bonus(cat, &tc.p, tc.typ); got != tc.amount {
 			t.Errorf("%s: Bonus(%s) = %d, want %d", tc.name, tc.typ, got, tc.amount)
@@ -64,7 +64,7 @@ func TestBonus_Office(t *testing.T) {
 	allBonus := room([]string{"mesa", "cadeira_gamer", "setup2", "rack", "cafeteira", "estante", "planta", "tapete"}, "neon", "poster", "kanban", "janela")
 	macbook, cafe, moletom := "macbook", "cafe", "moletom"
 	otherSources := player.Player{
-		Skills: []string{"f1", "f2", "f3"}, Gear: []string{"macbook", "cafe", "moletom"},
+		Skills: []string{"fe1", "fe2", "be2"}, Gear: []string{"macbook", "cafe", "moletom"},
 		Equipment: map[string]*string{"setup": &macbook, "bebida": &cafe, "vestuario": &moletom, "acessorio": nil},
 		Skin:      "golden", Office: room(nil),
 	}
@@ -112,7 +112,7 @@ func TestBonus_Rack(t *testing.T) {
 	six := func(id string) player.Player { return rack(id, id, id, id, id, id) }
 	macbook := "macbook"
 	withOthers := rack("gpu", "ram")
-	withOthers.Skills = []string{"f2", "f3"}
+	withOthers.Skills = []string{"fe1", "be2"}
 	withOthers.Gear = []string{"macbook"}
 	withOthers.Equipment = map[string]*string{"setup": &macbook, "bebida": nil, "vestuario": nil, "acessorio": nil}
 	skinned := rack("gpu")

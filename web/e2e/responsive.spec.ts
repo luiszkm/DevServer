@@ -358,14 +358,15 @@ test.describe("phone S states", () => {
     {
       route: "/skills",
       fill: async (page) => {
-        await page.locator('[data-skill="f1"]').click();
-        await expect(page.locator('[data-skill="f1"]')).toHaveAttribute("data-state", "ATIVA");
+        await page.locator('[data-skill="be1"]').click();
+        await expect(page.locator('[data-skill="be1"]')).toHaveAttribute("data-state", "ATIVA");
       },
     },
     {
       route: "/avatar",
       fill: async (page) => {
         await page.goto("/loja");
+        await page.getByRole("tab", { name: "EQUIP" }).click();
         await page.locator('[data-card="cafe"]').click();
         await page.getByRole("region", { name: "detalhe" }).getByRole("button", { name: "COMPRAR E EQUIPAR" }).click();
         await expect(page.getByRole("status")).toHaveText("ITEM COMPRADO E EQUIPADO");
@@ -416,6 +417,7 @@ test.describe("phone S states", () => {
     const s = SCENES.find((x) => x.route === "/loja")!;
     await newDev(page);
     await openScene(page, s);
+    await page.getByRole("tab", { name: "EQUIP" }).click();
     await page.locator('[data-card="cafe"]').click();
     const detail = page.getByRole("region", { name: "detalhe" });
     await detail.getByRole("button", { name: "COMPRAR E EQUIPAR" }).click();

@@ -58,7 +58,7 @@ export type SkillNode = {
   bonus: Bonus;
 };
 
-export type SkillTree = { id: string; name: string; nodes: SkillNode[] };
+export type SkillTree = { id: string; name: string; class: string; role: string; nodes: SkillNode[] };
 
 export type Enemy = { id: string; region: string; name: string; level: number; hp: number; sp: number; weakness: string; drop: string; glyph: string };
 

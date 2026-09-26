@@ -1,11 +1,11 @@
 {
- "name": "skill-f1",
+ "name": "skill-fe1",
  "category": "icon",
  "size": [
   16,
   16
  ],
- "_design": "MARKUP SEMÂNTICO (frontend): a paper page with a folded corner and nested, indented blue markup lines.",
+ "_design": "MARKUP SEM\u00c2NTICO (frontend): a paper page with a folded corner and nested, indented blue markup lines.",
  "legend": {
   "o": "ink",
   "h": "cloud.3",

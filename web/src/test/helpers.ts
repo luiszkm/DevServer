@@ -27,20 +27,25 @@ export const DEPLOY_LEVELS: Catalog["deployLevels"] = [
 ];
 
 export const SKILL_TREES: Catalog["skillTrees"] = [
-  { id: "frontend", name: "FRONTEND", nodes: [
-    { id: "f1", glyph: "</>", name: "MARKUP SEMÂNTICO", description: "+10 HP máximo permanente", bonus: { type: "hp", amount: 10 } },
-    { id: "f2", glyph: "{}", name: "GRID MASTER", description: "+8 SP máximo em combate", bonus: { type: "sp", amount: 8 } },
-    { id: "f3", glyph: "~", name: "MOTION", description: "+10% de dano em todos os ataques", bonus: { type: "dmg", amount: 10 } },
+  { id: "frontend", name: "FRONTEND", class: "FRONTEND", role: "SUPORTE", nodes: [
+    { id: "fe1", glyph: "</>", name: "HOTFIX DE CSS", description: "+8 SP máximo em combate", bonus: { type: "sp", amount: 8 } },
+    { id: "fe2", glyph: "{}", name: "PAIR REVIEW", description: "+10 HP máximo permanente", bonus: { type: "hp", amount: 10 } },
+    { id: "fe3", glyph: "~", name: "DESIGN SYSTEM", description: "+12 SP máximo em combate", bonus: { type: "sp", amount: 12 } },
   ] },
-  { id: "backend", name: "BACKEND", nodes: [
-    { id: "b1", glyph: "$_", name: "API REST", description: "+10 HP máximo permanente", bonus: { type: "hp", amount: 10 } },
-    { id: "b2", glyph: "[]", name: "CAMADA DE CACHE", description: "+10 SP máximo em combate", bonus: { type: "sp", amount: 10 } },
-    { id: "b3", glyph: "##", name: "FILA DE EVENTOS", description: "+12% de dano em todos os ataques", bonus: { type: "dmg", amount: 12 } },
+  { id: "backend", name: "BACKEND", class: "BACKEND", role: "ATAQUE", nodes: [
+    { id: "be1", glyph: "$_", name: "ENDPOINT", description: "+8% de dano em todos os ataques", bonus: { type: "dmg", amount: 8 } },
+    { id: "be2", glyph: "[]", name: "QUERY PESADA", description: "+10% de dano em todos os ataques", bonus: { type: "dmg", amount: 10 } },
+    { id: "be3", glyph: "##", name: "DEADLOCK", description: "+12% de dano em todos os ataques", bonus: { type: "dmg", amount: 12 } },
   ] },
-  { id: "infra", name: "INFRA", nodes: [
-    { id: "i1", glyph: ">_", name: "SHELL SCRIPT", description: "+8 SP máximo em combate", bonus: { type: "sp", amount: 8 } },
-    { id: "i2", glyph: "::", name: "CONTAINERS", description: "+15 HP máximo permanente", bonus: { type: "hp", amount: 15 } },
-    { id: "i3", glyph: "^", name: "AUTO-SCALING", description: "+15% de dano em todos os ataques", bonus: { type: "dmg", amount: 15 } },
+  { id: "devops", name: "DEVOPS", class: "DEVOPS", role: "DEFESA", nodes: [
+    { id: "do1", glyph: ">_", name: "HEALTHCHECK", description: "+15 HP máximo permanente", bonus: { type: "hp", amount: 15 } },
+    { id: "do2", glyph: "::", name: "FIREWALL", description: "+12 HP máximo permanente", bonus: { type: "hp", amount: 12 } },
+    { id: "do3", glyph: "^", name: "CIRCUIT BREAKER", description: "+18 HP máximo permanente", bonus: { type: "hp", amount: 18 } },
+  ] },
+  { id: "fullstack", name: "FULLSTACK", class: "FULLSTACK", role: "HÍBRIDO", nodes: [
+    { id: "fs1", glyph: "</>", name: "SNACK DE CSS", description: "+6 SP máximo em combate", bonus: { type: "sp", amount: 6 } },
+    { id: "fs2", glyph: "$_", name: "SCRIPT", description: "+6% de dano em todos os ataques", bonus: { type: "dmg", amount: 6 } },
+    { id: "fs3", glyph: "::", name: "PAGER", description: "+10 HP máximo permanente", bonus: { type: "hp", amount: 10 } },
   ] },
 ];
 
@@ -54,8 +59,8 @@ export const COMMANDS: Catalog["commands"] = [
   { id: "test", label: "TEST", hint: "expõe a fraqueza", cost: 8, exposesWeakness: true },
   { id: "refactor", label: "REFACTOR", hint: "recupera 18 HP", cost: 14, heal: 18 },
   { id: "plain", label: "PLAIN", hint: "defende e recupera 3 SP", cost: 0, shield: true, spGain: 3 },
-  { id: "f1", label: "</> MARKUP", hint: "golpe limpo", cost: 12, damage: [12, 14], skill: "f1" },
-  { id: "b2", label: "[] CACHE", hint: "recupera 24 HP", cost: 16, heal: 24, skill: "b2" },
+  { id: "fe1", label: "</> HOTFIX", hint: "cura 26 HP", cost: 12, heal: 26, skill: "fe1" },
+  { id: "be1", label: "$_ ENDPOINT", hint: "golpe forte · 18-24 dano", cost: 12, damage: [18, 24], skill: "be1" },
   { id: "rollback", label: "ROLLBACK", hint: "volta para o mapa", cost: 0, flee: true },
 ];
 

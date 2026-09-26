@@ -21,13 +21,14 @@
 | AD-015 | UI pt-BR com identidade visual do protótipo; layout desktop 1200px a partir de 1200px de largura, abaixo disso uma coluna com menu hambúrguer (max-width: 1199px) | jogar pelo celular em retrato (decisão do usuário: reflow + menu hambúrguer); substitui a parte de layout de AD-007 | active | 2026-09-24 |
 | AD-016 | Forja: receitas são catálogo (`api/catalog/forge.json`, servidas como `recipes`) aplicadas em `shop`; `Gear.price` ausente = gear só da forja, `BuyGear` responde `422 not_for_sale`; gear forjado sai equipado pela mesma regra `equip` | drops tinham só descarte; uma regra de equipar e uma de preço opcional, como `Item.price` (decisão do usuário: itens + gear exclusivo, seção na LOJA) | active | 2026-09-24 |
 | AD-017 | Uma região pode ter vários inimigos (`combat.json` `enemies[].id`, os seis originais com `id` = região); `battle.Start` sorteia com `Deps.Rand.IntN(n)` só quando `n > 1`, na ordem do catálogo, e a batalha guarda `battles.enemy`; batalha ativa retoma o mesmo inimigo | mobs novos como inimigos de verdade (decisão do usuário); estende AD-011 sem mudar a ordem de sorteio das regiões de um inimigo | active | 2026-09-26 |
+| AD-018 | A classe escolhida no onboarding é a única trilha de skills que o jogador desbloqueia (`skillTrees[].class` = `player.class`); trocar de classe no futuro tem de devolver os pontos e o HP gravado dos nós, como a migração das skills antigas | pedido do usuário: cada classe tem a sua árvore; a classe deixa de ser cosmética | active | 2026-09-26 |
 
 ## Handoff
 
-**Feature**: assets-apply
-**Where**: C1–C27 fechados; Verifier round 2 PASS (round 1 FAIL: asserções faltando em C12/C13 - FORJAR E EQUIPAR, btn-settings 16px, ic-gear alt)
-**In progress**: nenhum
-**Next step**: push e PR de `feat/assets` e `feat/assets-apply` quando o usuário pedir
+**Feature**: class-skills
+**Where**: C1–C39 implemented; api `go test ./...` and web `vitest run` green; e2e `unlock persists` green
+**In progress**: none
+**Next step**: dispatch a fresh Verifier over the feature range with every check
 **Blockers**: none
 **Uncommitted**: none
-**Branch**: feat/assets-apply (sobre feat/assets)
+**Branch**: main

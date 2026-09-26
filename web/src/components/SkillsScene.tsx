@@ -10,16 +10,16 @@ import { useGame } from "./GameContext";
 type NodeState = "ATIVA" | "1 PT" | "BLOQ.";
 
 // Icon before each tree name (assets-apply assumptions).
-const TREE_ICON: Record<string, string> = { frontend: "code", backend: "server", infra: "cloud" };
+const TREE_ICON: Record<string, string> = { frontend: "code", backend: "server", devops: "shield", fullstack: "laptop" };
 
 export function SkillsScene() {
   const { player, catalog, setPlayer } = useGame();
-  const [message, setMessage] = useState("> gaste pontos para desbloquear a primeira camada de cada trilha.");
+  const [message, setMessage] = useState("> gaste pontos na trilha da sua classe.");
   const [pending, setPending] = useState(false);
-  // The node just unlocked with 200; `key` replays its sparkle strip.
   const [sparkled, setSparkled] = useState<{ id: string; key: number } | null>(null);
 
-  const active = catalog.skillTrees.flatMap((t) => t.nodes).filter((n) => player.skills.includes(n.id));
+  const tree = catalog.skillTrees.find((t) => t.class === player.class);
+  const active = (tree?.nodes ?? []).filter((n) => player.skills.includes(n.id));
   const bonus = (type: SkillNode["bonus"]["type"]) =>
     active.filter((n) => n.bonus.type === type).reduce((sum, n) => sum + n.bonus.amount, 0);
 
@@ -46,11 +46,11 @@ export function SkillsScene() {
         <span className="pixel skills-points">{`PONTOS: ${player.skillPoints}`}</span>
       </div>
       <div className="skills-trees">
-        {catalog.skillTrees.map((tree) => (
-          <div key={tree.id} className="panel skills-tree" role="group" aria-label={tree.name}>
+        {tree && (
+          <div key={tree.id} className="panel skills-tree" role="group" aria-label={`${tree.name} · ${tree.role}`}>
             <div className="pixel skills-tree-name">
               {TREE_ICON[tree.id] && <GameArt kind="ic" id={TREE_ICON[tree.id]} scale={1} alt="" fallback="" className="inline-icon" />}
-              {tree.name}
+              {`${tree.name} · ${tree.role}`}
             </div>
             {tree.nodes.map((node, i) => {
               const state: NodeState = player.skills.includes(node.id)
@@ -84,7 +84,7 @@ export function SkillsScene() {
               );
             })}
           </div>
-        ))}
+        )}
       </div>
       <div className="panel skills-foot">
         <span className="term skills-message" role="status">

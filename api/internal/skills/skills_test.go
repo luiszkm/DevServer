@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"reflect"
 	"sort"
 	"strings"
@@ -69,13 +70,13 @@ func playerRow(t *testing.T, env *apptest.Env) map[string]any {
 func TestUnlock_SpendsPointAndRecords(t *testing.T) {
 	env := apptest.New(t)
 	c := env.NewPlayer(1, "DEV_01", "BACKEND")
-	rec := unlock(env, c, "f1")
+	rec := unlock(env, c, "be1")
 	mustStatus(t, rec, http.StatusOK, "")
 	if p := apptest.Decode[apptest.PlayerBody](t, rec).Player; p.SkillPoints != 0 {
 		t.Errorf("skillPoints = %d, want 0", p.SkillPoints)
 	}
-	if got := skillsOf(t, rec); !reflect.DeepEqual(got, []string{"f1"}) {
-		t.Errorf("skills = %v, want [f1]", got)
+	if got := skillsOf(t, rec); !reflect.DeepEqual(got, []string{"be1"}) {
+		t.Errorf("skills = %v, want [be1]", got)
 	}
 	if n := env.Count("player_skills"); n != 1 {
 		t.Errorf("player_skills rows = %d, want 1", n)
@@ -84,41 +85,73 @@ func TestUnlock_SpendsPointAndRecords(t *testing.T) {
 
 // C2
 func TestUnlock_HPBonus(t *testing.T) {
-	env := apptest.New(t)
-	c := env.NewPlayer(1, "DEV_01", "BACKEND")
-	points(t, env, 10)
-	hp, hpMax := 100, 100
-	for _, step := range []struct {
-		id    string
-		bonus int
-	}{{"f1", 10}, {"b1", 10}, {"i1", 0}, {"i2", 15}} {
-		rec := unlock(env, c, step.id)
-		mustStatus(t, rec, http.StatusOK, "")
-		hp, hpMax = hp+step.bonus, hpMax+step.bonus
-		p := apptest.Decode[apptest.PlayerBody](t, rec).Player
-		if p.HP != hp || p.HPMax != hpMax {
-			t.Errorf("after %s: hp %d/%d, want %d/%d", step.id, p.HP, p.HPMax, hp, hpMax)
+	chains := []struct {
+		class string
+		steps []struct {
+			id    string
+			bonus int
+		}
+	}{
+		{"FRONTEND", []struct {
+			id    string
+			bonus int
+		}{{"fe1", 0}, {"fe2", 10}}},
+		{"DEVOPS", []struct {
+			id    string
+			bonus int
+		}{{"do1", 15}, {"do2", 12}, {"do3", 18}}},
+		{"FULLSTACK", []struct {
+			id    string
+			bonus int
+		}{{"fs1", 0}, {"fs2", 0}, {"fs3", 10}}},
+	}
+	for i, chain := range chains {
+		env := apptest.New(t)
+		c := env.NewPlayer(int64(i+1), fmt.Sprintf("DEV_%02d", i+1), chain.class)
+		points(t, env, 10)
+		hp, hpMax := 100, 100
+		for _, step := range chain.steps {
+			rec := unlock(env, c, step.id)
+			mustStatus(t, rec, http.StatusOK, "")
+			hp, hpMax = hp+step.bonus, hpMax+step.bonus
+			p := apptest.Decode[apptest.PlayerBody](t, rec).Player
+			if p.HP != hp || p.HPMax != hpMax {
+				t.Errorf("%s after %s: hp %d/%d, want %d/%d", chain.class, step.id, p.HP, p.HPMax, hp, hpMax)
+			}
 		}
 	}
 }
 
 // C3
-func TestUnlock_NonHPBonusChangesOnlyPoints(t *testing.T) {
-	env := apptest.New(t)
-	c := env.NewPlayer(1, "DEV_01", "BACKEND")
-	points(t, env, 5)
-	mustStatus(t, unlock(env, c, "f1"), http.StatusOK, "")
-	for _, id := range []string{"f2", "f3"} {
-		before := playerRow(t, env)
-		mustStatus(t, unlock(env, c, id), http.StatusOK, "")
-		after := playerRow(t, env)
-		if after["skill_points"].(float64) != before["skill_points"].(float64)-1 {
-			t.Errorf("%s: skill_points %v -> %v, want -1", id, before["skill_points"], after["skill_points"])
-		}
-		delete(before, "skill_points")
-		delete(after, "skill_points")
-		if !reflect.DeepEqual(before, after) {
-			t.Errorf("%s changed more than skill_points:\n%v\n%v", id, before, after)
+func TestUnlock_NonHPBonus(t *testing.T) {
+	chains := []struct {
+		class string
+		ids   []string
+	}{
+		{"FRONTEND", []string{"fe1", "fe2", "fe3"}},
+		{"BACKEND", []string{"be1", "be2", "be3"}},
+		{"FULLSTACK", []string{"fs1", "fs2"}},
+	}
+	nonHP := map[string]bool{"fe1": true, "fe3": true, "be1": true, "be2": true, "be3": true, "fs1": true, "fs2": true}
+	for i, chain := range chains {
+		env := apptest.New(t)
+		c := env.NewPlayer(int64(i+1), fmt.Sprintf("DEV_%02d", i+1), chain.class)
+		points(t, env, 5)
+		for _, id := range chain.ids {
+			before := playerRow(t, env)
+			mustStatus(t, unlock(env, c, id), http.StatusOK, "")
+			if !nonHP[id] {
+				continue
+			}
+			after := playerRow(t, env)
+			if after["skill_points"].(float64) != before["skill_points"].(float64)-1 {
+				t.Errorf("%s: skill_points %v -> %v, want -1", id, before["skill_points"], after["skill_points"])
+			}
+			delete(before, "skill_points")
+			delete(after, "skill_points")
+			if !reflect.DeepEqual(before, after) {
+				t.Errorf("%s changed more than skill_points:\n%v\n%v", id, before, after)
+			}
 		}
 	}
 }
@@ -128,11 +161,11 @@ func TestUnlock_PreviousRequired(t *testing.T) {
 	env := apptest.New(t)
 	c := env.NewPlayer(1, "DEV_01", "BACKEND")
 	points(t, env, 3)
-	mustStatus(t, unlock(env, c, "f2"), http.StatusConflict, "skill_locked")
-	mustStatus(t, unlock(env, c, "i1"), http.StatusOK, "")
-	mustStatus(t, unlock(env, c, "i3"), http.StatusConflict, "skill_locked")
+	mustStatus(t, unlock(env, c, "be2"), http.StatusConflict, "skill_locked")
+	mustStatus(t, unlock(env, c, "be1"), http.StatusOK, "")
+	mustStatus(t, unlock(env, c, "be3"), http.StatusConflict, "skill_locked")
 	if p := playerRow(t, env); p["skill_points"].(float64) != 2 {
-		t.Fatalf("skill_points = %v, want 2 (only i1 charged)", p["skill_points"])
+		t.Fatalf("skill_points = %v, want 2 (only be1 charged)", p["skill_points"])
 	}
 }
 
@@ -141,8 +174,8 @@ func TestUnlock_AlreadyUnlocked(t *testing.T) {
 	env := apptest.New(t)
 	c := env.NewPlayer(1, "DEV_01", "BACKEND")
 	points(t, env, 3)
-	mustStatus(t, unlock(env, c, "f1"), http.StatusOK, "")
-	mustStatus(t, unlock(env, c, "f1"), http.StatusConflict, "skill_already_unlocked")
+	mustStatus(t, unlock(env, c, "be1"), http.StatusOK, "")
+	mustStatus(t, unlock(env, c, "be1"), http.StatusConflict, "skill_already_unlocked")
 	if p := playerRow(t, env); p["skill_points"].(float64) != 2 {
 		t.Fatalf("skill_points = %v, want 2", p["skill_points"])
 	}
@@ -153,7 +186,7 @@ func TestUnlock_NoPoints(t *testing.T) {
 	env := apptest.New(t)
 	c := env.NewPlayer(1, "DEV_01", "BACKEND")
 	points(t, env, 0)
-	mustStatus(t, unlock(env, c, "f1"), http.StatusConflict, "no_skill_points")
+	mustStatus(t, unlock(env, c, "be1"), http.StatusConflict, "no_skill_points")
 	if n := env.Count("player_skills"); n != 0 {
 		t.Fatalf("player_skills rows = %d, want 0", n)
 	}
@@ -179,7 +212,7 @@ func TestUnlock_ConcurrentOnce(t *testing.T) {
 		go func(i int) {
 			defer wg.Done()
 			<-gate
-			rec := unlock(env, c, "f1")
+			rec := unlock(env, c, "be1")
 			out[i] = fmt.Sprint(rec.Code)
 			if rec.Code >= 400 {
 				out[i] += " " + apptest.ErrorCode(t, rec)
@@ -229,10 +262,10 @@ func TestPlayerSkills_InEveryPlayerInCatalogOrder(t *testing.T) {
 		t.Fatalf("GET /api/me skills = %v, want []", got)
 	}
 	points(t, env, 2)
-	mustStatus(t, unlock(env, c, "b1"), http.StatusOK, "")
-	rec = unlock(env, c, "f1")
+	mustStatus(t, unlock(env, c, "be1"), http.StatusOK, "")
+	rec = unlock(env, c, "be2")
 	mustStatus(t, rec, http.StatusOK, "")
-	want := []string{"f1", "b1"}
+	want := []string{"be1", "be2"}
 	if got := skillsOf(t, rec); !reflect.DeepEqual(got, want) {
 		t.Errorf("unlock response skills = %v, want %v", got, want)
 	}
@@ -247,14 +280,14 @@ func TestPlayerSkills_InEveryPlayerInCatalogOrder(t *testing.T) {
 // C11
 func TestUnlockRoute_SessionPlayerAndUnexpected(t *testing.T) {
 	env := apptest.New(t)
-	mustStatus(t, env.Do(http.MethodPost, "/api/me/skills/f1/unlock", nil), http.StatusUnauthorized, "unauthenticated")
-	mustStatus(t, unlock(env, env.Session(9, "ghost"), "f1"), http.StatusNotFound, "player_not_found")
+	mustStatus(t, env.Do(http.MethodPost, "/api/me/skills/be1/unlock", nil), http.StatusUnauthorized, "unauthenticated")
+	mustStatus(t, unlock(env, env.Session(9, "ghost"), "be1"), http.StatusNotFound, "player_not_found")
 
 	c := env.NewPlayer(1, "DEV_01", "BACKEND")
 	if _, err := env.Pool.Exec(context.Background(), `ALTER TABLE player_skills RENAME TO player_skills_gone`); err != nil {
 		t.Fatal(err)
 	}
-	rec := unlock(env, c, "f1")
+	rec := unlock(env, c, "be1")
 	mustStatus(t, rec, http.StatusInternalServerError, "internal")
 	if id := rec.Header().Get(httpx.RequestIDHeader); !strings.Contains(env.Logs.String(), `"request_id":"`+id+`"`) {
 		t.Fatalf("log lacks request id %s", id)
@@ -276,7 +309,7 @@ func TestUnlock_SerializesOnPlayerRowLock(t *testing.T) {
 		t.Fatal(err)
 	}
 	done := make(chan int, 1)
-	go func() { done <- unlock(env, c, "f1").Code }()
+	go func() { done <- unlock(env, c, "be1").Code }()
 	select {
 	case code := <-done:
 		t.Fatalf("unlock answered %d while the row was locked", code)
@@ -326,8 +359,100 @@ func TestUnlock_InsertError(t *testing.T) {
 		}
 	}
 	before := playerRow(t, env)
-	mustStatus(t, unlock(env, c, "f1"), http.StatusInternalServerError, "internal")
+	mustStatus(t, unlock(env, c, "be1"), http.StatusInternalServerError, "internal")
 	if after := playerRow(t, env); !reflect.DeepEqual(before, after) {
 		t.Fatalf("player changed after a failed unlock:\n%v\n%v", before, after)
+	}
+}
+
+func TestUnlock_OwnClassFirstNode(t *testing.T) {
+	for i, tc := range []struct{ class, id string }{
+		{"FRONTEND", "fe1"}, {"BACKEND", "be1"}, {"DEVOPS", "do1"}, {"FULLSTACK", "fs1"},
+	} {
+		env := apptest.New(t)
+		c := env.NewPlayer(int64(i+1), fmt.Sprintf("DEV_%02d", i+1), tc.class)
+		rec := unlock(env, c, tc.id)
+		mustStatus(t, rec, http.StatusOK, "")
+		if p := apptest.Decode[apptest.PlayerBody](t, rec).Player; p.SkillPoints != 0 {
+			t.Errorf("%s: skillPoints = %d, want 0", tc.class, p.SkillPoints)
+		}
+		if got := skillsOf(t, rec); !reflect.DeepEqual(got, []string{tc.id}) {
+			t.Errorf("%s: skills = %v, want [%s]", tc.class, got, tc.id)
+		}
+		if n := env.Count("player_skills"); n != 1 {
+			t.Errorf("%s: player_skills rows = %d, want 1", tc.class, n)
+		}
+	}
+}
+
+func TestUnlock_WrongClass(t *testing.T) {
+	first := map[string]string{"FRONTEND": "fe1", "BACKEND": "be1", "DEVOPS": "do1", "FULLSTACK": "fs1"}
+	second := map[string]string{"FRONTEND": "fe2", "BACKEND": "be2", "DEVOPS": "do2", "FULLSTACK": "fs2"}
+	classes := []string{"FRONTEND", "BACKEND", "DEVOPS", "FULLSTACK"}
+	n := 0
+	for _, class := range classes {
+		for _, other := range classes {
+			if other == class {
+				continue
+			}
+			n++
+			env := apptest.New(t)
+			c := env.NewPlayer(int64(n), fmt.Sprintf("DEV_%02d", n), class)
+			points(t, env, 0)
+			before := playerRow(t, env)
+			rec := unlock(env, c, first[other])
+			mustStatus(t, rec, http.StatusConflict, "skill_wrong_class")
+			var body struct {
+				Error struct{ Message string } `json:"error"`
+			}
+			if err := json.Unmarshal(rec.Body.Bytes(), &body); err != nil || body.Error.Message != "essa habilidade é de outra classe" {
+				t.Fatalf("%s unlocking %s: message %q", class, first[other], rec.Body.String())
+			}
+			if after := playerRow(t, env); !reflect.DeepEqual(before, after) || env.Count("player_skills") != 0 {
+				t.Fatalf("%s unlocking %s changed the player", class, first[other])
+			}
+		}
+	}
+	if n != 12 {
+		t.Fatalf("pairs = %d, want 12", n)
+	}
+	env := apptest.New(t)
+	c := env.NewPlayer(99, "DEV_99", "BACKEND")
+	points(t, env, 0)
+	mustStatus(t, unlock(env, c, second["FRONTEND"]), http.StatusConflict, "skill_wrong_class")
+}
+
+func TestUnlock_Order(t *testing.T) {
+	env := apptest.New(t)
+	c := env.NewPlayer(1, "DEV_01", "BACKEND")
+	points(t, env, 0)
+	mustStatus(t, unlock(env, c, "nope"), http.StatusUnprocessableEntity, "unknown_skill")
+	mustStatus(t, unlock(env, c, "fe1"), http.StatusConflict, "skill_wrong_class")
+
+	points(t, env, 1)
+	mustStatus(t, unlock(env, c, "be1"), http.StatusOK, "")
+	points(t, env, 0)
+	mustStatus(t, unlock(env, c, "be1"), http.StatusConflict, "skill_already_unlocked")
+
+	env = apptest.New(t)
+	c = env.NewPlayer(2, "DEV_02", "BACKEND")
+	points(t, env, 0)
+	mustStatus(t, unlock(env, c, "be2"), http.StatusConflict, "skill_locked")
+	mustStatus(t, unlock(env, c, "be1"), http.StatusConflict, "no_skill_points")
+}
+
+func TestState_AD018(t *testing.T) {
+	raw, err := os.ReadFile("../../../.specs/STATE.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var row string
+	for _, line := range strings.Split(string(raw), "\n") {
+		if strings.Contains(line, "AD-018") {
+			row = line
+		}
+	}
+	if row == "" || !strings.Contains(row, "única trilha") || !strings.Contains(row, "active") || !strings.Contains(row, "pontos") || !strings.Contains(row, "HP") {
+		t.Fatalf("AD-018 row = %q", row)
 	}
 }

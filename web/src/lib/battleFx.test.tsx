@@ -11,8 +11,8 @@ describe("beatOf", () => {
     ],
     [
       "damage crit",
-      { type: "damage", command: "f2", amount: 36, weakness: true },
-      { hero: "lunge", enemy: "hit", fx: { id: "code", on: "enemy" }, float: { text: "-36 CRÍTICO!", tone: "crit", on: "enemy" }, shake: true, enemyHp: -36, ms: 600 },
+      { type: "damage", command: "be1", amount: 36, weakness: true },
+      { hero: "lunge", enemy: "hit", fx: { id: "data", on: "enemy" }, float: { text: "-36 CRÍTICO!", tone: "crit", on: "enemy" }, shake: true, enemyHp: -36, ms: 600 },
     ],
     ["heal", { type: "heal", amount: 18 }, { hero: "cast", fx: { id: "heal", on: "hero" }, float: { text: "+18 HP", tone: "heal", on: "hero" }, heroHp: 18, ms: 450 }],
     ["weakness", { type: "weakness" }, { hero: "cast", fx: { id: "scan", on: "enemy" }, float: { text: "FRAQUEZA!", tone: "info", on: "enemy" }, ms: 450 }],
@@ -51,13 +51,14 @@ describe("beatOf", () => {
 describe("fxOf", () => {
   it.each<[string | undefined, FxId]>([
     ["fix", "slash"],
-    ["f1", "code"],
-    ["f2", "code"],
-    ["f3", "code"],
-    ["b1", "data"],
-    ["b3", "data"],
-    ["i1", "scan"],
-    ["i3", "bolt"],
+    ["be1", "data"],
+    ["be2", "data"],
+    ["be3", "data"],
+    ["fs2", "data"],
+    ["fe1", "slash"],
+    ["f1", "slash"],
+    ["b1", "slash"],
+    ["i3", "slash"],
     ["unknown", "slash"],
     [undefined, "slash"],
   ])("%s", (command, fx) => {

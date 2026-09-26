@@ -79,7 +79,7 @@ func emptyOffice() map[string][]*string {
 
 func emptyRack() []*string { return make([]*string, catalog.Default().Rack.Slots) }
 
-// Classes are the cosmetic classes offered at onboarding.
+// Classes are the onboarding classes. Each one unlocks only the skill tree whose class matches (AD-018).
 var Classes = []string{"FRONTEND", "BACKEND", "DEVOPS", "FULLSTACK"}
 
 func validClass(c string) bool {

@@ -25,13 +25,10 @@ export type Beat = {
 // Damage commands grouped by skill tree; anything else lands a plain slash.
 const COMMAND_FX: Record<string, FxId> = {
   fix: "slash",
-  f1: "code",
-  f2: "code",
-  f3: "code",
-  b1: "data",
-  b3: "data",
-  i1: "scan",
-  i3: "bolt",
+  be1: "data",
+  be2: "data",
+  be3: "data",
+  fs2: "data",
 };
 
 export function fxOf(command?: string): FxId {
