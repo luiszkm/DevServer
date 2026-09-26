@@ -101,6 +101,13 @@ class TileTest(unittest.TestCase):
         self.assertEqual(warnings, ["frame 2 is empty"])
 
 
+    def test_tile_strip_of_the_wrong_shape_warns_the_shape(self):
+        rows = rows_of({"category": "tile", "size": [128, 48], "layers": [{"fill": "net.1"}]})
+        _, warnings = render.check(rows, "tile", PALETTE, "t")
+        self.assertIn("strip must be N frames of 32x32 side by side", warnings)
+        self.assertFalse([w for w in warnings if "identical" in w], warnings)
+
+
 class AnimStripTest(unittest.TestCase):
     def check(self, frames):
         return render.check(rows_of(strip(48, 64, frames, "anim")), "anim", PALETTE, "a")
@@ -120,6 +127,12 @@ class AnimStripTest(unittest.TestCase):
         self.assertEqual(len(warnings), 1, warnings)
         self.assertIn("frame 1", warnings[0])
         self.assertIn("margin", warnings[0])
+
+    def test_anim_strip_of_the_wrong_shape_warns_the_shape(self):
+        rows = rows_of({"category": "anim", "size": [100, 64], "layers": [{"rect": [4, 4, 6, 6], "color": "gold.2"}]})
+        _, warnings = render.check(rows, "anim", PALETTE, "a")
+        self.assertIn("strip must be N frames of 48x64 side by side", warnings)
+        self.assertFalse([w for w in warnings if "identical" in w or "empty" in w], warnings)
 
     def test_anim_empty_frame_warns(self):
         _, warnings = self.check({0: None, 1: None, 3: None})
