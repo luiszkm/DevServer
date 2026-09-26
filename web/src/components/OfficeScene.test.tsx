@@ -355,9 +355,11 @@ describe("OfficeScene assets", () => {
     const coins = card("mesa").querySelector(".office-tag")!;
     expect(coins.textContent).toBe("60C");
     expectIcon(coins.firstElementChild, "/art/icon/hud-coin.png");
+    expect(coins.firstChild).toBe(coins.firstElementChild);
     const gems = card("janela").querySelector(".office-tag")!;
     expect(gems.textContent).toBe("60G");
     expectIcon(gems.firstElementChild, "/art/icon/hud-gem.png");
+    expect(gems.firstChild).toBe(gems.firstElementChild);
   });
 
   // assets C24: comfort 0 / 30 / 75 / 120 / 190 reach levels 1..5 (janela = 15, setup2 = 14)

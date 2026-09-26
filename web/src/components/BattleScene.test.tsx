@@ -386,6 +386,8 @@ describe("BattleScene turn playback", () => {
     ["lunge", [{ type: "damage", command: "fix", amount: 20 }], "run"],
     ["cast", [{ type: "heal", amount: 10 }], "interact"],
     ["hit", [{ type: "counter", amount: 9 }], "idle"],
+    ["fall", [{ type: "defeat" }], "idle"],
+    ["flee", [{ type: "fled" }], "idle"],
   ])("hero anim on beat %s", async (_beat, events, anim) => {
     await fightOneTurn(events, battle({ enemyHp: 40 }));
     expect(heroAnim()).toBe(anim);

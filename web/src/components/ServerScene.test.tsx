@@ -312,6 +312,7 @@ describe("ServerScene assets", () => {
     const price = card("cpu").querySelector(".server-card-price")!;
     expect(price.textContent).toBe("80C");
     expectIcon(price.firstElementChild, "/art/icon/hud-coin.png");
+    expect(price.firstChild).toBe(price.firstElementChild);
   });
 
   // assets C25

@@ -216,6 +216,8 @@ Proof: `cd web && npx vitest run src/components/WorldScene.test.tsx -t "hero ani
 | `HeroAvatar` modes (5) | anim C42 · anim change C43 · strip failure C44 · reduced motion C45 · no anim C46 | - |
 | Bug Fight beat → anim (5) | `lunge` C47 · `cast` C47 · `won` C47 · none C47 · `hit` C47 | - |
 | other anim sites (5) | AVATAR idle C48 · DEPLOY running C48 · DEPLOY ready C48 · MUNDO idle C48 · MUNDO pending C48 | - |
+| tile strip rules (3), added after verification round 1 | margin skipped C1 · identical frames C1 · single 32x32 tile runs none C1 | - |
+| Bug Fight beats that stay idle (2), added after verification round 1 | `fall` C47 · `flee` C47 | - |
 | Landing doors (6) | 1 C8-C12, C28-C29, C37-C38 · 2 C1, C2, C5 · 3 C40 · 4 C7 · 5 C42-C46 · 6 C13, C14 | - |
 
 - Claims about a computed style (`border-image`, `animation`, `background-size`): C13, C14, C31, C39 - each has a browser proof, because jsdom never loads `globals.css`

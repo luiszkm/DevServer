@@ -7,6 +7,8 @@ import type { HeroAvatar as HeroAvatarType } from "./HeroAvatar";
 // assets C42-C46. jsdom has no canvas and never loads images, so the test gives the canvas a 2d context
 // that records drawImage calls and an Image that loads (or fails, for FAIL) on the next tick.
 const FAIL = new Set<string>();
+// srcs matching SLOW load after 1000 ms instead of on the next tick
+let SLOW: RegExp | null = null;
 const loaded: string[] = [];
 const draws: { src: string; sx: number }[] = [];
 
@@ -20,7 +22,7 @@ class FakeImage {
   set src(v: string) {
     this._src = v;
     loaded.push(v);
-    setTimeout(() => (FAIL.has(v) ? this.onerror?.() : this.onload?.()), 0);
+    setTimeout(() => (FAIL.has(v) ? this.onerror?.() : this.onload?.()), SLOW?.test(v) ? 1000 : 0);
   }
 }
 
@@ -51,6 +53,7 @@ beforeEach(async () => {
   ({ HeroAvatar } = await import("./HeroAvatar"));
   vi.useFakeTimers();
   FAIL.clear();
+  SLOW = null;
   loaded.length = 0;
   draws.length = 0;
   vi.stubGlobal("Image", FakeImage);
@@ -71,6 +74,7 @@ describe("HeroAvatar anim", () => {
   });
 
   it("restarts at frame 0 when the anim changes", async () => {
+    SLOW = /-walk\.png$/;
     const view = render(<HeroAvatar look={look} catalog={CATALOG} anim="walk" />);
     await act(async () => void (await vi.advanceTimersByTimeAsync(166 * 2)));
     expect(canvas().dataset.frame).toBe("2");
@@ -81,6 +85,9 @@ describe("HeroAvatar anim", () => {
     expect(canvas().dataset.frame).toBe("0");
     await flush();
     expect(draws.length).toBeGreaterThan(0);
+    // now the walk loads started before the switch resolve: they must paint nothing
+    await act(async () => void (await vi.advanceTimersByTimeAsync(1000)));
+    expect(loaded.some((src) => src.endsWith("-walk.png"))).toBe(true);
     expect(draws.every((d) => d.src.endsWith("-run.png"))).toBe(true);
   });
 

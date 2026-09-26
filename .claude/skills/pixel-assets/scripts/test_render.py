@@ -3,6 +3,8 @@
     python3 .claude/skills/pixel-assets/scripts/test_render.py            # all
     python3 .claude/skills/pixel-assets/scripts/test_render.py -k anim    # one group
 """
+import contextlib
+import io
 import json
 import os
 import subprocess
@@ -61,6 +63,22 @@ class TileTest(unittest.TestCase):
                                  capture_output=True, text=True)
         self.assertEqual(run.returncode, 1)
         self.assertIn("ERROR", run.stdout)
+
+
+    def test_tile_strip_skips_the_margin_but_warns_identical_frames(self):
+        # an animated tile fills its 32x32 cells edge to edge: no margin warning, but frames must change
+        moving = {"category": "tile", "size": [128, 32], "layers": [{"fill": "net.1"}] +
+                  [{"rect": [32 * i + 4 + 3 * i, 8, 4, 1], "color": "net.3"} for i in range(4)]}
+        errors, warnings = render.check(rows_of(moving), "tile", PALETTE, "t")
+        self.assertEqual((errors, warnings), ([], []))
+        still = {"category": "tile", "size": [128, 32], "layers": [{"fill": "net.1"}]}
+        _, warnings = render.check(rows_of(still), "tile", PALETTE, "t")
+        self.assertEqual(len(warnings), 6, warnings)
+        self.assertTrue(all("identical" in w for w in warnings), warnings)
+
+    def test_tile_single_32px_tile_runs_no_strip_rules(self):
+        _, warnings = render.check(rows_of({"category": "tile", "size": [32, 32], "layers": [{"fill": "grass.2"}]}), "tile", PALETTE, "t")
+        self.assertEqual(warnings, [])
 
 
 class AnimStripTest(unittest.TestCase):
@@ -180,7 +198,11 @@ class HeroAnimTest(unittest.TestCase):
         import hero_anim
         with tempfile.TemporaryDirectory() as d:
             self.hero_dir(d, ["body", "cape"])
-            self.assertEqual(hero_anim.main(["--hero", d]), 1)
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out):
+                self.assertEqual(hero_anim.main(["--hero", d]), 1)
+            self.assertIn("cape", out.getvalue())
+            self.assertNotIn("body", out.getvalue().split(":")[-1])
             self.assertEqual([f for f in os.listdir(os.path.join(d, "anim")) if not f.startswith("_")], [])
 
 

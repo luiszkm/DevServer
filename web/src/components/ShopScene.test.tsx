@@ -497,9 +497,11 @@ describe("ShopScene assets", () => {
     const gemPrice = card("hp_potion").querySelector(".shop-price")!;
     expect(gemPrice.textContent).toBe("12g");
     expectIcon(gemPrice.firstElementChild, "/art/icon/hud-gem.png");
+    expect(gemPrice.firstChild).toBe(gemPrice.firstElementChild);
     const coinPrice = card("cafe").querySelector(".shop-status")!;
     expect(coinPrice.textContent).toBe("50c");
     expectIcon(coinPrice.firstElementChild, "/art/icon/hud-coin.png");
+    expect(coinPrice.firstChild).toBe(coinPrice.firstElementChild);
   });
 });
 
