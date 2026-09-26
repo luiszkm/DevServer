@@ -2384,6 +2384,135 @@
     2
    ],
    "color": "wood.1"
+  },
+  {
+   "rect": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "color": null,
+   "_": "assets-apply: pieces below come from the asset library"
+  },
+  {
+   "use": "../tile/tile-tabua.json",
+   "at": [
+    0,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-tabua.json",
+   "at": [
+    32,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-tabua.json",
+   "at": [
+    64,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-tabua.json",
+   "at": [
+    96,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-tabua.json",
+   "at": [
+    128,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-tabua.json",
+   "at": [
+    160,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-tabua.json",
+   "at": [
+    192,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-tabua.json",
+   "at": [
+    224,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-tabua.json",
+   "at": [
+    256,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-tabua.json",
+   "at": [
+    288,
+    148
+   ]
+  },
+  {
+   "use": "../tile/tile-parede-madeira.json",
+   "at": [
+    282,
+    23
+   ]
+  },
+  {
+   "use": "../sprite/prop-planta.json",
+   "at": [
+    84,
+    116
+   ]
+  },
+  {
+   "use": "../sprite/prop-caneca.json",
+   "at": [
+    58,
+    94
+   ]
+  },
+  {
+   "use": "../sprite/prop-livros.json",
+   "at": [
+    104,
+    118
+   ]
+  },
+  {
+   "use": "../sprite/prop-laptop.json",
+   "at": [
+    136,
+    118
+   ]
+  },
+  {
+   "use": "../sprite/prop-monitor.json",
+   "at": [
+    168,
+    116
+   ]
+  },
+  {
+   "use": "../sprite/prop-macbook.json",
+   "at": [
+    204,
+    118
+   ]
   }
  ]
 }

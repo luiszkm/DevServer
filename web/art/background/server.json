@@ -8278,6 +8278,58 @@
     168
    ],
    "color": "code.1"
+  },
+  {
+   "rect": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "color": null,
+   "_": "assets-apply: pieces below come from the asset library"
+  },
+  {
+   "use": "../sprite/prop-torre.json",
+   "at": [
+    96,
+    118
+   ]
+  },
+  {
+   "use": "../sprite/prop-rack.json",
+   "at": [
+    124,
+    118
+   ]
+  },
+  {
+   "use": "../sprite/build-rack.json",
+   "at": [
+    150,
+    118
+   ]
+  },
+  {
+   "use": "../sprite/prop-roteador.json",
+   "at": [
+    178,
+    118
+   ]
+  },
+  {
+   "use": "../sprite/prop-modem.json",
+   "at": [
+    204,
+    118
+   ]
+  },
+  {
+   "use": "../sprite/prop-terminal.json",
+   "at": [
+    230,
+    118
+   ]
   }
  ]
 }

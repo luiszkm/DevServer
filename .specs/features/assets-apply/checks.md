@@ -76,14 +76,14 @@ Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "rarity 
 
 ### S3 - cenários montados · ~40 specs + OfficeScene · ~15k
 
-**C16** - Each prop, `build-*` (except `build-flag`), `extra-*` (except `extra-bau`, `extra-bau-aberto`), tile and tile decal of the door 1 list of `assets` is reached by at least one spec in `web/art/background/**`, following `use` transitively (APL-04, AC 13)
+**C16** - Each prop, `build-*` (except `build-flag`), `extra-*` (except `extra-bau`, `extra-bau-aberto`), tile and tile decal of the door 1 list of `assets` is reached by at least one spec in `web/art/background/**`, following `use` transitively (APL-04, AC 13) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "scene pieces"`
 
 **C17** - In the OFFICE, the PAREDE zone has inline `background-image` `url(/art/tile/tile-parede-madeira.png)` and the PISO zone has `url(/art/tile/tile-tabua.png)`. In the browser both have `background-size` `64px 64px` and `background-repeat` `repeat` (APL-04, AC 14)
 Proof: `cd web && npx vitest run src/components/OfficeScene.test.tsx -t "tiled zones"`
 Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "tiled office"`
 
-**C18** - `make art-check` exits `0` and prints `art ok` (APL-04, AC 15)
+**C18** - `make art-check` exits `0` and prints `art ok` (APL-04, AC 15) ✅
 Proof: `make art-check`
 
 ### S4 - efeitos restantes · BattleScene, SkillsScene, WorldScene · ~8k
@@ -105,7 +105,7 @@ Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "fire loops"`
 **C23** - Every asset of the door 1 literal list of `assets` has at least one consumer, meaning its name is referenced by a file under `web/src` or it is reached from a spec in `web/art/background/**`. The test prints the orphans, and the count is `0` (APL-06, AC 19)
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "no orphan"`
 
-**C24** - The consumer test fails on a library asset with no consumer: its own orphan function returns `["x"]` for a fixture asset `x` that nothing references (APL-06, AC 19)
+**C24** - The consumer test fails on a library asset with no consumer: its own orphan function returns `["x"]` for a fixture asset `x` that nothing references (APL-06, AC 19) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "orphan detector"`
 
 ### Regression across the feature

@@ -1,5 +1,6 @@
 // @vitest-environment node
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { inflateSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -458,3 +459,107 @@ describe("asset sheet on disk", () => {
     }
   });
 });
+
+// assets-apply C16, C23, C24: every library asset has a consumer.
+// door 1 of `assets`, literal (the same names the "asset sheet on disk" tests check)
+const LIBRARY = {
+  ui: ["ui-panel", "ui-panel-wood", "ui-btn-wood", "ui-btn-wood-press", "ui-btn-dark", "ui-btn-dark-press", "ui-btn-green", "ui-btn-green-press", "ui-bubble", "ui-bar"],
+  icon: [
+    ...["build", "deploy", "play", "rank", "start", "settings", "shop", "exit"].map((k) => `btn-${k}`),
+    ...["code", "cloud", "server", "gear", "trophy", "star", "crown", "laptop", "database", "shield", "lock", "file", "wrench", "chart", "sp"].map((k) => `ic-${k}`),
+    ...["bronze", "prata", "ouro", "azul", "roxo", "rubi"].map((k) => `medal-${k}`),
+  ],
+  sprite: [
+    "logo",
+    ...["laptop", "macbook", "rack", "caixa", "caixa-aberta", "monitor", "roteador", "planta", "caneca", "livros", "bloco-grama", "terminal", "torre", "gema-pedestal", "modem"].map((k) => `prop-${k}`),
+    ...["server-hut", "rack", "tenda", "antena", "placa-code", "flag", "placa"].map((k) => `build-${k}`),
+    "mob-slime", "mob-slime-verde", "mob-monstro", "mob-robo", "npc-dev",
+    ...["placa", "fogueira", "lampada", "banco", "bau", "bau-aberto", "bandeira"].map((k) => `extra-${k}`),
+    ...["arbusto", "flor", "arvore", "arvore-grande", "cerca"].map((k) => `tile-${k}`),
+  ],
+  fx: ["dust", "sparkle", "teleport", "fire", "loading", "collect"],
+  background: ["dia", "noite", "floresta", "dungeon"].map((k) => `scene-${k}`),
+  tile: ["grama-topo", "grama", "grama-borda", "terra", "pedra", "tijolo", "tabua", "parede-madeira", "areia", "agua", "agua-funda", "cachoeira"].map((k) => `tile-${k}`),
+};
+
+/** Spec names reached from `roots` by following `use` (paths relative to each spec). */
+function reachedFrom(roots: string[]): Set<string> {
+  const seen = new Set<string>();
+  const walk = (path: string) => {
+    if (seen.has(path) || !existsSync(path)) return;
+    seen.add(path);
+    const spec = JSON.parse(readFileSync(path, "utf8")) as { layers?: { use?: string }[] };
+    for (const op of spec.layers ?? []) if (op.use) walk(resolve(dirname(path), op.use));
+  };
+  roots.forEach(walk);
+  return new Set([...seen].map((p) => p.split("/").pop()!.replace(/\.json$/, "")));
+}
+
+/**
+ * The assets nothing consumes. A name is consumed when it is reached by `use` from a consumed spec, or
+ * a source file quotes its PNG path or its full name next to "/art/", or quotes both its kind and its
+ * key (`kind="ic" id="lock"`, `{ power: "chart" }` beside `kind="ic"`), or, for an effect, its id beside
+ * `FxOnce` or `/art/fx/`.
+ */
+export function orphans(names: { folder: string; name: string }[], sources: string[], reached: Set<string>): string[] {
+  const quoted = (src: string, word: string) => src.includes(`"${word}"`);
+  return names
+    .filter(({ folder, name }) => {
+      if (reached.has(name)) return false;
+      return !sources.some((src) => {
+        if (src.includes(`/art/${folder}/${name}.png`)) return true;
+        if (quoted(src, name) && src.includes("/art/")) return true;
+        if (folder === "fx") return quoted(src, name) && (src.includes("FxOnce") || src.includes("/art/fx/"));
+        const dash = name.indexOf("-");
+        if (dash < 0) return false;
+        return quoted(src, name.slice(0, dash)) && quoted(src, name.slice(dash + 1));
+      });
+    })
+    .map(({ name }) => name);
+}
+
+function files(dir: string, keep: (f: string) => boolean): string[] {
+  return readdirSync(dir).flatMap((f) => {
+    const p = join(dir, f);
+    return statSync(p).isDirectory() ? files(p, keep) : keep(p) ? [p] : [];
+  });
+}
+
+describe("library consumers", () => {
+  const backgrounds = files(`${ROOT}web/art/background`, (f) => f.endsWith(".json"));
+  const enemies = catalog<Combat>("combat.json").enemies.map((e) => `${ROOT}web/art/sprite/enemy-${e.id}.json`);
+
+  // assets-apply C16
+  it("scene pieces are reached from the backgrounds", () => {
+    const reached = reachedFrom(backgrounds);
+    const pieces = [
+      ...LIBRARY.sprite.filter((n) => /^(prop|build|extra|tile)-/.test(n) && !["build-flag", "extra-bau", "extra-bau-aberto"].includes(n)),
+      ...LIBRARY.tile,
+    ];
+    expect(pieces.length).toBe(15 + 6 + 5 + 5 + 12);
+    for (const n of pieces) expect.soft(reached.has(n), n).toBe(true);
+  });
+
+  // assets-apply C23
+  it("no orphan in the library", () => {
+    const sources = [
+      ...files(`${ROOT}web/src`, (f) => /\.(tsx?|css)$/.test(f) && !/\.test\.tsx?$/.test(f) && !f.includes("/test/")),
+    ].map((f) => readFileSync(f, "utf8"));
+    const reached = reachedFrom([...backgrounds, ...enemies]);
+    const names = Object.entries(LIBRARY).flatMap(([folder, list]) => list.map((name) => ({ folder, name })));
+    expect(names.length).toBe(101);
+    expect(orphans(names, sources, reached)).toEqual([]);
+  });
+
+  // assets-apply C24
+  it("orphan detector flags what nothing references", () => {
+    const x = [{ folder: "sprite", name: "prop-x" }];
+    expect(orphans(x, [], new Set())).toEqual(["prop-x"]);
+    expect(orphans(x, ['<GameArt kind="prop" id="y" />'], new Set())).toEqual(["prop-x"]);
+    expect(orphans(x, ['<GameArt kind="prop" id="x" />'], new Set())).toEqual([]);
+    expect(orphans(x, [], new Set(["prop-x"]))).toEqual([]);
+    expect(orphans([{ folder: "fx", name: "boom" }], ['<FxOnce id="boom" />'], new Set())).toEqual([]);
+    expect(orphans([{ folder: "tile", name: "tile-z" }], ['const T = "tile-z"; url(/art/tile/'], new Set())).toEqual([]);
+  });
+});
+
