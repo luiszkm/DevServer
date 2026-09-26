@@ -68,10 +68,10 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "medal"`
 **C12** - `sprite/logo` has spec and a 160x64 PNG (AST-02, AC 7) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "logo"`
 
-**C13** - in the browser, `.panel` and `.hud-card` have computed `border-image-source` containing `/art/ui/ui-panel.png`, `.btn-yellow` `ui-btn-wood.png`, `.btn-dark` `ui-btn-dark.png`, `.btn-green` `ui-btn-green.png`; each has `border-image-slice` `8 fill` and `image-rendering` `pixelated` (AST-02, AC 8; door 6)
+**C13** - in the browser, `.panel` and `.hud-card` have computed `border-image-source` containing `/art/ui/ui-panel.png`, `.btn-yellow` `ui-btn-wood.png`, `.btn-dark` `ui-btn-dark.png`, `.btn-green` `ui-btn-green.png`; each has `border-image-slice` `8 fill` and `image-rendering` `pixelated` (AST-02, AC 8; door 6) ✅
 Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "chrome 9-slice"`
 
-**C14** - with the mouse held down on a `.btn-yellow`, `.btn-dark` and `.btn-green`, computed `border-image-source` contains `ui-btn-wood-press.png`, `ui-btn-dark-press.png`, `ui-btn-green-press.png` respectively (AST-02, AC 9; door 6)
+**C14** - with the mouse held down on a `.btn-yellow`, `.btn-dark` and `.btn-green`, computed `border-image-source` contains `ui-btn-wood-press.png`, `ui-btn-dark-press.png`, `ui-btn-green-press.png` respectively (AST-02, AC 9; door 6) ✅
 Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "pressed"`
 
 **C15** - `GameShell` header shows `img` `alt="DevServer"` `src="/art/sprite/logo.png"` `width=160` `height=64` with class `pixelated`, and no text `DEV`/`SERVER` (AST-02, AC 10) ✅
@@ -128,7 +128,7 @@ Proof: `cd web && npx vitest run src/components/BattleScene.test.tsx -t "loading
 Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx -t "loading fx"`
 Proof: `cd web && npx vitest run src/components/Onboarding.test.tsx -t "loading fx"`
 
-**C31** - in the browser, `.fx-loading` has computed `animation-iteration-count` `infinite` and `image-rendering` `pixelated`; with `prefers-reduced-motion: reduce` its `animation-name` is `none` (AST-04, AC 18; AC 32)
+**C31** - in the browser, `.fx-loading` has computed `animation-iteration-count` `infinite` and `image-rendering` `pixelated`; with `prefers-reduced-motion: reduce` its `animation-name` is `none` (AST-04, AC 18; AC 32) ✅
 Proof: `cd web && npx playwright test e2e/assets.spec.ts -g "loading loops"`
 
 **C32** - DEPLOY: WHILE a job is ready, `COLETAR RECOMPENSA` keeps its accessible name and holds `img` `src="/art/sprite/extra-bau.png"` `alt=""` `width=32` (AST-04, AC 19) ✅
@@ -155,7 +155,7 @@ Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "new scene"`
 **C38** - each tile of the door 1 table has spec and PNG in `tile/` (32x32, or 128x32 for `agua`, `agua-funda`, `cachoeira`) with every pixel alpha `255`, and each tile decal has spec and PNG in `sprite/` at its size (AST-06, AC 25) ✅
 Proof: `cd web && npx vitest run src/lib/art.test.tsx -t "tileset"`
 
-**C39** - `section.scene` has inline `background-image` `url(/art/background/scene-dia.png)` on DEPLOY, `scene-noite` on SKILLS, `scene-floresta` on AVATAR, `scene-dungeon` on LOJA; in the browser each has `background-size` `1280px 720px` and `image-rendering` `pixelated` (AST-06, AC 26)
+**C39** - `section.scene` has inline `background-image` `url(/art/background/scene-dia.png)` on DEPLOY, `scene-noite` on SKILLS, `scene-floresta` on AVATAR, `scene-dungeon` on LOJA; in the browser each has `background-size` `1280px 720px` and `image-rendering` `pixelated` (AST-06, AC 26) ✅
 Proof: `cd web && npx vitest run src/components/DeployScene.test.tsx -t "scene background"`
 Proof: `cd web && npx vitest run src/components/SkillsScene.test.tsx -t "scene background"`
 Proof: `cd web && npx vitest run src/components/AvatarScene.test.tsx -t "scene background"`
@@ -259,3 +259,8 @@ Cost: 7 Python tests across 1 new file; one new `HeroAvatar.test.tsx`; one new `
 Intended split, with the arithmetic, written before any code:
 
 - S1 = ~14k (render.py 25 KB, references 20 KB, GameArt + tests 9 KB); S2-S4 = ~58k (globals.css + 11 scenes + 10 tests + e2e = 228 KB, read once and shared); S5 = ~14k (HeroAvatar, AvatarScene, Onboarding, avatar.ts, battleFx.ts + tests = 56 KB). Total ~86k plus art specs and previews, under the 150k budget -> one builder, no handoff
+
+- **Boundary:** C1-C48 closed on `feat/assets`, S1-S5 in one builder, as planned
+- **Settled mid-build:** the renderer proofs run as `python3 .claude/skills/pixel-assets/scripts/test_render.py -k ...` (`python3 -m unittest <path>` cannot import a path under `.claude`: "Empty module name"), same tests and selectors; e2e needed the user's own `next dev` stopped (user allowed it); `e2e/avatar.spec.ts` now runs with reduced motion because the AVATAR preview plays `idle` (C48) and its probes are about the static grid (C45); old fallback assertions scoped to the art's own box where a card or marker now also carries a price icon or the flag; new `bronze` palette ramp sampled from the sheet's medal
+- **Abandoned:** leaning the torso forward in `run` (the feminine laptop reached the strip's cell margin); moving any region up in the rig (hair already sits 1px from the top), so `jump` lifts the canvas in CSS on its airborne frames
+

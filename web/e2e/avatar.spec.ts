@@ -7,6 +7,11 @@ import { newDev } from "./helpers";
 const CHEEK = [22, 19] as const;
 const CHEST = [17, 39] as const;
 
+// The AVATAR preview plays the idle strip (assets C48), which moves the head and torso a pixel or two per
+// frame. These probes are about the static grid's colours and draw order, so they run with reduced
+// motion, where the preview draws the static layers (assets C45).
+test.use({ reducedMotion: "reduce" });
+
 async function pixel(page: Page, [x, y]: readonly [number, number]) {
   const hero = page.locator(".avatar-hero");
   await expect(hero).toBeVisible();

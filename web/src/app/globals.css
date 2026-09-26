@@ -237,8 +237,8 @@ button { font-family: inherit; }
 .hero-avatar[data-anim="jump"][data-frame="2"] { transform: translateY(-12%); }
 .hero-avatar[data-anim="jump"][data-frame="3"] { transform: translateY(-4%); }
 .deploy-claimed { position: relative; display: flex; justify-content: center; }
-.shop-npc { position: absolute; right: 18px; top: 12px; z-index: 2; display: flex; align-items: flex-start; gap: 6px; pointer-events: none; }
-.shop-bubble { max-width: 220px; margin: 0; padding: 8px 10px 14px; font-size: 8px; line-height: 1.6; color: var(--edge); border: 3px solid transparent; border-image: url(/art/ui/ui-bubble.png) 8 fill / 24px round; image-rendering: pixelated; order: -1; }
+.shop-npc { position: absolute; left: 250px; top: 4px; z-index: 2; display: flex; align-items: center; gap: 6px; pointer-events: none; }
+.shop-bubble { margin: 0; padding: 8px 10px 14px; font-size: 8px; line-height: 1.6; color: var(--edge); border: 3px solid transparent; border-image: url(/art/ui/ui-bubble.png) 8 fill / 24px round; image-rendering: pixelated; white-space: nowrap; }
 .server-terminal-row { display: flex; align-items: flex-end; gap: 10px; }
 .server-terminal-row .server-terminal { flex: 1; }
 @keyframes float-up { from { transform: translate(-50%, 0); opacity: 1; } 70% { opacity: 1; } to { transform: translate(-50%, -40px); opacity: 0; } }
@@ -439,6 +439,9 @@ button { font-family: inherit; }
 
 /* Below 1200px every scene is one column and the tabs collapse behind MENU (AD-015). Grouped per scene, in the order above. */
 @media (max-width: 1199px) {
+  .shop-npc { position: static; justify-content: center; }
+  .shop-bubble { white-space: normal; }
+  .map-hero { display: none; }
   .page { width: auto; padding: 12px 8px 24px; gap: 10px; }
   .tabs-bar { display: flex; flex-direction: column; gap: 6px; }
   .tabs-bar .menu-btn { display: flex; gap: 10px; }

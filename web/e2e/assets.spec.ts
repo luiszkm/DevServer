@@ -12,6 +12,8 @@ async function probe(page: Page, className: string, tag = "div") {
       el.className = cls;
       el.textContent = "PROBE";
       el.setAttribute("data-probe", cls);
+      // top-left, above the Next dev overlay, so a pointer can press it
+      el.style.cssText = "position: fixed; left: 40px; top: 40px; z-index: 2147483647;";
       document.body.appendChild(el);
       return cls;
     },
@@ -54,3 +56,18 @@ for (const [cls, tag, piece] of chrome.filter(([c]) => c.startsWith("btn"))) {
     expect(s.source).toContain(piece.replace(".png", "-press.png"));
   });
 }
+
+// assets C31
+test("loading loops", async ({ page }) => {
+  await probe(page, "fx-loading", "span");
+  const read = () =>
+    page.locator('[data-probe="fx-loading"]').evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { count: s.animationIterationCount, name: s.animationName, rendering: s.imageRendering };
+    });
+  const moving = await read();
+  expect(moving.count).toBe("infinite");
+  expect(moving.rendering).toBe("pixelated");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  expect((await read()).name).toBe("none");
+});
