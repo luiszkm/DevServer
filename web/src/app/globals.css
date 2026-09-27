@@ -685,6 +685,7 @@ button { font-family: inherit; }
   .office { flex-direction: column; padding: 10px; gap: 10px; }
   .office-left { width: auto; }
   .office-catalog { max-height: 360px; }
+  .office-filters { grid-template-columns: repeat(3, 1fr); }
   .office-room-panel { grid-template-columns: 1fr; padding: 10px; }
   .office-room { padding: 10px; }
   .office-cells { gap: 4px; }
