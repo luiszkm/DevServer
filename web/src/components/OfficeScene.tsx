@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { post } from "@/lib/api";
 import { CONNECTION_FAILED, canPay, insufficient, priceLong, priceShort } from "@/lib/gear";
-import { furnitureBonus, officeLevel, officeStats, refundText } from "@/lib/office";
-import type { Furniture, Player } from "@/lib/types";
+import { furnitureBonus, officeLevel, officeStats, refundText, templatePrice } from "@/lib/office";
+import type { Furniture, OfficeLight, OfficeTemplate, Player } from "@/lib/types";
 import { GameArt, PriceArt } from "./GameArt";
 import { useGame } from "./GameContext";
 
@@ -18,7 +18,7 @@ const ZONE_TILE: Record<string, string> = { parede: "tile-parede-madeira", piso:
 
 export function OfficeScene() {
   const { player, catalog, setPlayer } = useGame();
-  const { zones, furniture } = catalog.office;
+  const { zones, furniture, categories, lights, templates } = catalog.office;
   const [filter, setFilter] = useState<Filter>("all");
   const [selId, setSelId] = useState(furniture[0]?.id ?? "");
   const [message, setMessage] = useState<string | null>(null);
@@ -29,7 +29,7 @@ export function OfficeScene() {
   const zoneName = (id: string) => zones.find((z) => z.id === id)?.name ?? id;
   const stats = officeStats(catalog, player);
   const { level, next } = officeLevel(catalog, stats.comfort);
-  const shown = furniture.filter((f) => filter === "all" || f.zone === filter);
+  const shown = furniture.filter((f) => filter === "all" || f.category === filter);
 
   async function run(path: string, body: unknown, done: string) {
     setPending(true);
@@ -62,7 +62,10 @@ export function OfficeScene() {
   const detailText = (f: Furniture) =>
     `${f.description} · ${zoneName(f.zone)} · conforto +${f.comfort}` + (f.bonus ? ` · ${furnitureBonus(f.bonus)}` : "");
 
-  const filters: [Filter, string][] = [["all", "TODOS"], ...zones.map((z): [Filter, string] => [z.id, z.name])];
+  const filters: [Filter, string][] = [["all", "TODOS"], ...categories.map((c): [Filter, string] => [c.id, c.name])];
+
+  const setLight = (l: OfficeLight) => run("/api/me/office/light", { light: l.id }, `LUZ ${l.name}`);
+  const applyTemplate = (t: OfficeTemplate) => run("/api/me/office/template", { template: t.id }, `LAYOUT ${t.name} APLICADO`);
 
   return (
     <section className="scene office" aria-label="OFFICE">
@@ -126,7 +129,7 @@ export function OfficeScene() {
             </span>
             <span className="term office-count">{`${stats.count} móveis instalados`}</span>
           </div>
-          <div className="office-room" role="region" aria-label="sala" style={{ backgroundImage: "url(/art/background/office.png)" }}>
+          <div className="office-room" role="region" aria-label="sala" data-light={player.officeLight} style={{ backgroundImage: "url(/art/background/office.png)" }}>
             {zones.map((z) => (
               <div key={z.id} className="office-zone" role="group" aria-label={z.name} style={{ backgroundImage: `url(/art/tile/${ZONE_TILE[z.id]}.png)` }}>
                 <span className="pixel office-zone-name">{z.name}</span>
@@ -157,12 +160,52 @@ export function OfficeScene() {
           <div className="term office-foot">
             {`${next ? `faltam ${next.min - stats.comfort} de conforto para ${next.name}` : "escritório no nível máximo de conforto"} · clicar num móvel já instalado guarda ele e devolve metade do valor.`}
           </div>
+          <div className="office-templates" role="region" aria-label="templates de layout">
+            <span className="pixel office-section-title">TEMPLATES DE LAYOUT</span>
+            <div className="office-template-cards">
+              {templates.map((t) => (
+                <div key={t.id} className="office-template" data-template={t.id}>
+                  <span className="pixel office-template-name">{t.name}</span>
+                  <span className="term office-template-desc">{t.description}</span>
+                  <span className="office-template-pieces">
+                    {t.pieces.map((p) => (
+                      <GameArt key={`${p.zone}-${p.position}`} kind="office" id={p.furniture} scale={1} alt="" fallback="" />
+                    ))}
+                  </span>
+                  <span className="term office-template-price">{templatePrice(catalog, t)}</span>
+                  <button type="button" className="office-template-apply" disabled={pending} onClick={() => applyTemplate(t)}>
+                    APLICAR
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
         <div className="office-stats" role="region" aria-label="bônus do escritório">
           <Stat label="CONFORTO" value={String(stats.comfort)} tone="purple" />
           <Stat label="XP DE DEPLOY" value={`+${stats.xp}%`} tone="green" />
           <Stat label="TEMPO DE DEPLOY" value={`-${stats.deploy}%`} tone="yellow" />
           <Stat label="SP POR TURNO" value={`+${stats.spregen}`} tone="cyan" />
+          <div className="office-lights" role="group" aria-label="ILUMINAÇÃO">
+            <span className="pixel office-section-title">ILUMINAÇÃO</span>
+            {lights.map((l) => {
+              const locked = stats.comfort < l.comfort;
+              return (
+                <button
+                  key={l.id}
+                  type="button"
+                  className="office-light"
+                  data-light-option={l.id}
+                  aria-pressed={player.officeLight === l.id}
+                  disabled={pending || locked}
+                  onClick={() => setLight(l)}
+                >
+                  <span className="pixel">{l.name}</span>
+                  {locked && <span className="term office-light-lock">{`conforto ${l.comfort}`}</span>}
+                </button>
+              );
+            })}
+          </div>
           <div className="panel office-message term" role="status">
             {message}
           </div>

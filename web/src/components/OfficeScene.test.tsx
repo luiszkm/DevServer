@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import OfficePage from "@/app/(game)/office/page";
@@ -25,6 +25,11 @@ const filter = (name: string) => screen.getByRole("button", { name });
 const stat = (label: string) => document.querySelector(`[data-stat="${label}"] .office-stat-value`)?.textContent;
 const foot = () => document.querySelector(".office-foot")?.textContent;
 const level = () => document.querySelector(".office-level")?.textContent;
+const MOVEIS = ["mesa", "cadeira_gamer", "monitor", "laptop", "estante", "sofa", "puff", "cama", "gaveteiro", "prateleira", "planta", "luminaria", "setup2", "cafeteira"];
+const DECORACOES = ["quadro", "poster", "relogio", "trofeu", "guitarra", "estatua", "livros", "almofada", "tapete", "caixa", "camiseta", "boneco", "neon", "kanban", "janela"];
+const TECNOLOGIAS = ["servidor", "pc", "nas", "router", "nuvem", "painel", "monitor_ops", "rack"];
+const MASCOTES = ["github", "python", "java", "go", "nodejs", "react", "rust", "docker"];
+const ALL = [...MOVEIS, ...DECORACOES, ...TECNOLOGIAS, ...MASCOTES];
 const HINT = " · clicar num móvel já instalado guarda ele e devolve metade do valor.";
 
 afterEach(() => vi.unstubAllGlobals());
@@ -35,9 +40,7 @@ describe("OfficeScene", () => {
     renderOffice();
     expect(screen.getByText("CATÁLOGO")).toBeInTheDocument();
     expect(screen.getByText("escolha e clique num espaço da sala")).toBeInTheDocument();
-    expect(cardIds()).toEqual([
-      "mesa", "cadeira_gamer", "setup2", "rack", "cafeteira", "estante", "planta", "tapete", "neon", "poster", "kanban", "janela",
-    ]);
+    expect(cardIds()).toEqual(ALL);
     const want: [string, string][] = [
       ["mesa", "60C"], ["cadeira_gamer", "40G"], ["setup2", "90G"], ["rack", "70G"],
       ["cafeteira", "55C"], ["estante", "45C"], ["planta", "25C"], ["tapete", "30C"],
@@ -47,25 +50,36 @@ describe("OfficeScene", () => {
       expect(card(id).querySelector(".office-glyph img")?.getAttribute("src")).toBe(`/art/icon/office-${id}.png`);
       expect(card(id).querySelector(".office-tag")).toHaveTextContent(tag);
     }
-    expect(filter("TODOS")).toHaveAttribute("aria-pressed", "true");
-    expect(filter("PAREDE")).toHaveAttribute("aria-pressed", "false");
-    expect(filter("PISO")).toHaveAttribute("aria-pressed", "false");
     expect(card("mesa")).toHaveAttribute("aria-pressed", "true");
     expect(cardIds().filter((id) => card(id!).getAttribute("aria-pressed") === "true")).toEqual(["mesa"]);
     expect(detail()).toHaveTextContent("MESA EM L");
   });
 
-  // C29
-  it("filters by zone", async () => {
+  // office-keyart C5
+  it("category filters and cards", () => {
     renderOffice();
-    await userEvent.click(filter("PAREDE"));
-    expect(cardIds()).toEqual(["neon", "poster", "kanban", "janela"]);
-    expect(filter("PAREDE")).toHaveAttribute("aria-pressed", "true");
-    expect(filter("TODOS")).toHaveAttribute("aria-pressed", "false");
-    await userEvent.click(filter("PISO"));
-    expect(cardIds()).toEqual(["mesa", "cadeira_gamer", "setup2", "rack", "cafeteira", "estante", "planta", "tapete"]);
-    await userEvent.click(filter("TODOS"));
-    expect(cardIds()).toHaveLength(12);
+    const names = Array.from(document.querySelectorAll(".office-filter")).map((b) => b.textContent);
+    expect(names).toEqual(["TODOS", "MÓVEIS", "DECORAÇÕES", "TECNOLOGIAS", "MASCOTES"]);
+    expect(filter("TODOS")).toHaveAttribute("aria-pressed", "true");
+    for (const n of ["MÓVEIS", "DECORAÇÕES", "TECNOLOGIAS", "MASCOTES"]) expect(filter(n)).toHaveAttribute("aria-pressed", "false");
+    expect(cardIds()).toEqual(ALL);
+    for (const id of ALL) {
+      expect(card(id).querySelector(".office-glyph img")?.getAttribute("src")).toBe(`/art/icon/office-${id}.png`);
+    }
+  });
+
+  // office-keyart C6
+  it.each([
+    ["MÓVEIS", MOVEIS],
+    ["DECORAÇÕES", DECORACOES],
+    ["TECNOLOGIAS", TECNOLOGIAS],
+    ["MASCOTES", MASCOTES],
+  ])("filter by category %s", async (name, ids) => {
+    renderOffice();
+    await userEvent.click(filter(name));
+    expect(cardIds()).toEqual(ids);
+    const pressed = Array.from(document.querySelectorAll(".office-filter[aria-pressed='true']")).map((b) => b.textContent);
+    expect(pressed).toEqual([name]);
   });
 
   // C30
@@ -288,7 +302,7 @@ describe("OfficeScene", () => {
   // C45
   it("unknown furniture", async () => {
     const m = mockFetch({ "POST /api/me/office/piso/0/remove": json(200, { player: player({ office: room({ piso: { 1: "mesa" } }) }) }) });
-    renderOffice(player({ office: room({ piso: { 0: "sofa", 1: "mesa" } }) }));
+    renderOffice(player({ office: room({ piso: { 0: "sofa_velho", 1: "mesa" } }) }));
     expect(cell("piso", 0).querySelector(".office-cell-glyph")).toHaveTextContent(/^\?$/);
     expect(screen.getByText("1 móveis instalados")).toBeInTheDocument();
     expect(stat("CONFORTO")).toBe("8");
@@ -299,7 +313,7 @@ describe("OfficeScene", () => {
 
   // game-art C29
   it("furniture art", async () => {
-    renderOffice(player({ office: room({ piso: { 0: "mesa", 1: "sofa" } }) }));
+    renderOffice(player({ office: room({ piso: { 0: "mesa", 1: "sofa_velho" } }) }));
     for (const f of OFFICE.furniture) {
       const box = card(f.id).querySelector(".office-glyph") as HTMLElement;
       const img = box.querySelector("img")!;
@@ -393,5 +407,168 @@ describe("OfficeScene applied assets", () => {
     const zone = (name: string) => screen.getByRole("group", { name }) as HTMLElement;
     expect(zone("PAREDE").style.backgroundImage.replace(/"/g, "")).toBe("url(/art/tile/tile-parede-madeira.png)");
     expect(zone("PISO").style.backgroundImage.replace(/"/g, "")).toBe("url(/art/tile/tile-tabua.png)");
+  });
+});
+
+describe("OfficeScene keyart", () => {
+  const light = (id: string) => document.querySelector(`[data-light-option="${id}"]`) as HTMLButtonElement;
+  const lightIds = () => Array.from(document.querySelectorAll("[data-light-option]")).map((b) => b.getAttribute("data-light-option"));
+  const template = (id: string) => document.querySelector(`[data-template="${id}"]`) as HTMLElement;
+  const apply = (id: string) => within(template(id)).getByRole("button", { name: "APLICAR" });
+  const sala = () => screen.getByRole("region", { name: "sala" });
+  // neon 12 + cadeira_gamer 10 + mesa 8 = 30; janela 15 + setup2 14 = 29
+  const comfort30 = room({ parede: { 0: "neon" }, piso: { 0: "cadeira_gamer", 1: "mesa" } });
+  const comfort29 = room({ parede: { 0: "janela" }, piso: { 0: "setup2" } });
+
+  // C16
+  it("lighting panel", () => {
+    const { unmount } = render(
+      <GameContext.Provider value={{ player: player({ office: comfort30, officeLight: "quente" }), catalog: CATALOG, setPlayer: vi.fn() }}>
+        <OfficePage />
+      </GameContext.Provider>,
+    );
+    const panel = screen.getByRole("group", { name: "ILUMINAÇÃO" });
+    expect(within(panel).getByText("ILUMINAÇÃO")).toBeInTheDocument();
+    expect(lightIds()).toEqual(["natural", "quente", "noite", "neon"]);
+    expect(lightIds().map((id) => light(id!).querySelector(".pixel")?.textContent)).toEqual(["NATURAL", "LUZ QUENTE", "NOITE", "NEON"]);
+    expect(light("quente")).toHaveAttribute("aria-pressed", "true");
+    for (const id of ["natural", "noite", "neon"]) expect(light(id)).toHaveAttribute("aria-pressed", "false");
+    expect(light("natural")).toBeEnabled();
+    expect(light("quente")).toBeEnabled();
+    expect(light("quente")).not.toHaveTextContent("conforto");
+    expect(light("noite")).toBeDisabled();
+    expect(light("noite")).toHaveTextContent("conforto 70");
+    expect(light("neon")).toBeDisabled();
+    expect(light("neon")).toHaveTextContent("conforto 120");
+    expect(sala()).toHaveAttribute("data-light", "quente");
+    unmount();
+
+    renderOffice(player({ office: comfort29 }));
+    expect(light("natural")).toHaveAttribute("aria-pressed", "true");
+    expect(light("quente")).toBeDisabled();
+    expect(light("quente")).toHaveTextContent("conforto 30");
+    expect(sala()).toHaveAttribute("data-light", "natural");
+  });
+
+  // C17
+  it("change light", async () => {
+    const after = player({ office: comfort30, officeLight: "quente" });
+    const m = mockFetch({ "POST /api/me/office/light": json(200, { player: after }) });
+    const setPlayer = vi.fn();
+    const { rerender } = render(
+      <GameContext.Provider value={{ player: player({ office: comfort30 }), catalog: CATALOG, setPlayer }}>
+        <OfficePage />
+      </GameContext.Provider>,
+    );
+    await userEvent.click(light("quente"));
+    expect(m.calls("POST /api/me/office/light")).toBe(1);
+    expect(JSON.parse(String((m.fn.mock.calls[0][1] as RequestInit).body))).toEqual({ light: "quente" });
+    expect(setPlayer).toHaveBeenCalledWith(after);
+    expect(status()).toHaveTextContent("LUZ LUZ QUENTE");
+    rerender(
+      <GameContext.Provider value={{ player: after, catalog: CATALOG, setPlayer }}>
+        <OfficePage />
+      </GameContext.Provider>,
+    );
+    expect(sala()).toHaveAttribute("data-light", "quente");
+    cleanup();
+    vi.unstubAllGlobals();
+
+    for (const [name, respond, text] of [
+      ["409", () => json(409, { error: { code: "light_locked", message: "falta conforto para essa luz" } }), "falta conforto para essa luz"],
+      ["network", () => Promise.reject(new TypeError("fetch failed")), "falha na conexão. tente de novo."],
+    ] as [string, () => Response | Promise<Response>, string][]) {
+      mockFetch({ "POST /api/me/office/light": respond });
+      const failed = vi.fn();
+      const { unmount } = render(
+        <GameContext.Provider value={{ player: player({ office: comfort30 }), catalog: CATALOG, setPlayer: failed }}>
+          <OfficePage />
+        </GameContext.Provider>,
+      );
+      await userEvent.click(light("quente"));
+      expect(status(), name).toHaveTextContent(text);
+      expect(failed).not.toHaveBeenCalled();
+      unmount();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  // C26
+  it("templates panel", () => {
+    renderOffice();
+    const panel = screen.getByRole("region", { name: "templates de layout" });
+    expect(within(panel).getByText("TEMPLATES DE LAYOUT")).toBeInTheDocument();
+    const ids = Array.from(panel.querySelectorAll("[data-template]")).map((t) => t.getAttribute("data-template"));
+    expect(ids).toEqual(["basico", "conforto", "profissional", "gamer"]);
+    const want: [string, string, string, number][] = [
+      ["basico", "BÁSICO", "270C", 7],
+      ["conforto", "CONFORTO", "380C + 60G", 11],
+      ["profissional", "PROFISSIONAL", "220C + 395G", 11],
+      ["gamer", "GAMER", "405C + 210G", 11],
+    ];
+    for (const [id, name, price, pieces] of want) {
+      const t = template(id);
+      expect(t.querySelector(".office-template-name")?.textContent).toBe(name);
+      expect(t.querySelector(".office-template-desc")?.textContent).toBe(OFFICE.templates.find((x) => x.id === id)!.description);
+      expect(t.querySelector(".office-template-price")?.textContent).toBe(price);
+      const icons = Array.from(t.querySelectorAll(".office-template-pieces img")).map((i) => i.getAttribute("src"));
+      expect(icons).toEqual(OFFICE.templates.find((x) => x.id === id)!.pieces.map((p) => `/art/icon/office-${p.furniture}.png`));
+      expect(icons).toHaveLength(pieces);
+      expect(apply(id)).toBeEnabled();
+    }
+  });
+
+  // C27
+  it("apply template", async () => {
+    const after = player({ coins: 9729, office: room({ piso: { 2: "mesa" } }) });
+    const m = mockFetch({ "POST /api/me/office/template": json(200, { player: after }) });
+    const { setPlayer } = renderOffice();
+    await userEvent.click(apply("basico"));
+    expect(m.calls("POST /api/me/office/template")).toBe(1);
+    expect(JSON.parse(String((m.fn.mock.calls[0][1] as RequestInit).body))).toEqual({ template: "basico" });
+    expect(setPlayer).toHaveBeenCalledWith(after);
+    expect(status()).toHaveTextContent("LAYOUT BÁSICO APLICADO");
+    cleanup();
+    vi.unstubAllGlobals();
+
+    for (const [name, respond, text] of [
+      ["409", () => json(409, { error: { code: "cell_occupied", message: "o espaço já tem um móvel" } }), "o espaço já tem um móvel"],
+      ["500 no body", () => new Response(null, { status: 500 }), "falha na conexão. tente de novo."],
+    ] as [string, () => Response | Promise<Response>, string][]) {
+      mockFetch({ "POST /api/me/office/template": respond });
+      const failed = vi.fn();
+      const { unmount } = render(
+        <GameContext.Provider value={{ player: player(), catalog: CATALOG, setPlayer: failed }}>
+          <OfficePage />
+        </GameContext.Provider>,
+      );
+      await userEvent.click(apply("basico"));
+      expect(status(), name).toHaveTextContent(text);
+      expect(failed).not.toHaveBeenCalled();
+      unmount();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  // C28
+  it("pending disables layout and light", async () => {
+    let release!: (r: Response) => void;
+    mockFetch({ "POST /api/me/office/template": () => new Promise<Response>((r) => (release = r)) });
+    renderOffice(player({ office: comfort30 }));
+    const buttons = () => [...["basico", "conforto", "profissional", "gamer"].map(apply), light("natural"), light("quente")];
+    for (const b of buttons()) expect(b).toBeEnabled();
+    await userEvent.click(apply("gamer"));
+    for (const b of buttons()) expect(b).toBeDisabled();
+    await act(async () => release(json(200, { player: player({ office: comfort30 }) })));
+    for (const b of buttons()) expect(b).toBeEnabled();
+  });
+
+  // C36 (web half)
+  it("template bonuses in stats", () => {
+    const pieces = OFFICE.templates.find((t) => t.id === "profissional")!.pieces;
+    const filled = { parede: {} as Record<number, string>, piso: {} as Record<number, string> };
+    for (const p of pieces) filled[p.zone as "parede" | "piso"][p.position] = p.furniture;
+    renderOffice(player({ office: room(filled) }));
+    expect(stat("TEMPO DE DEPLOY")).toBe("-16%");
   });
 });
