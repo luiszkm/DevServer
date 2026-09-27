@@ -405,6 +405,12 @@ func TestOfficeRoutes_RequireSession(t *testing.T) {
 			t.Errorf("%s without session: %d %s", path, rec.Code, rec.Body.String())
 		}
 	}
+	// office-keyart C29
+	for _, r := range keyartRoutes {
+		if rec := env.Do(http.MethodPost, r.path, r.body); rec.Code != 401 || apptest.ErrorCode(t, rec) != "unauthenticated" {
+			t.Errorf("%s without session: %d %s", r.path, rec.Code, rec.Body.String())
+		}
+	}
 }
 
 // C16
@@ -617,7 +623,7 @@ func TestMigration_OfficeExistingPlayers(t *testing.T) {
 // C43
 func TestUnknownFurniture_OccupiesAndRemoves(t *testing.T) {
 	f := newFixture(t)
-	f.place("piso", 0, "sofa")
+	f.place("piso", 0, "sofa_velho")
 	f.balance(20, 1000)
 	f.status(f.install("piso", 0, "planta"), 409, "cell_occupied")
 	got := f.ok(f.remove("piso", 0))

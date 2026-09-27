@@ -99,9 +99,9 @@ func TestBonus_Office(t *testing.T) {
 		{"other sources xp", otherSources, "xp", 0},
 		{"other sources deploy", otherSources, "deploy", 0},
 		{"other sources spregen", otherSources, "spregen", 0},
-		{"unknown furniture xp", player.Player{Equipment: none, Skin: "default", Office: room([]string{"sofa"})}, "xp", 0},
-		{"unknown furniture deploy", player.Player{Equipment: none, Skin: "default", Office: room([]string{"sofa"})}, "deploy", 0},
-		{"unknown furniture spregen", player.Player{Equipment: none, Skin: "default", Office: room([]string{"sofa"})}, "spregen", 0},
+		{"unknown furniture xp", player.Player{Equipment: none, Skin: "default", Office: room([]string{"sofa_velho"})}, "xp", 0},
+		{"unknown furniture deploy", player.Player{Equipment: none, Skin: "default", Office: room([]string{"sofa_velho"})}, "deploy", 0},
+		{"unknown furniture spregen", player.Player{Equipment: none, Skin: "default", Office: room([]string{"sofa_velho"})}, "spregen", 0},
 	} {
 		if got := player.Bonus(cat, &tc.p, tc.typ); got != tc.amount {
 			t.Errorf("%s: Bonus(%s) = %d, want %d", tc.name, tc.typ, got, tc.amount)

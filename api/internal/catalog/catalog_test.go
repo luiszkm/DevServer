@@ -614,8 +614,9 @@ func TestCatalog_ServesOffice(t *testing.T) {
 				ID, Name string
 				Cells    int
 			} `json:"zones"`
-			Furniture []map[string]json.RawMessage `json:"furniture"`
-			Levels    []struct {
+			Categories []struct{ ID, Name string }  `json:"categories"`
+			Furniture  []map[string]json.RawMessage `json:"furniture"`
+			Levels     []struct {
 				Min  int
 				Name string
 			} `json:"levels"`
@@ -651,43 +652,230 @@ func TestCatalog_ServesOffice(t *testing.T) {
 		t.Errorf("maxDeployCut = %d, want 40", o.MaxDeployCut)
 	}
 
-	// id, name, glyph, color, zone, price, comfort, bonus, description - every field by value.
-	furniture := [][9]string{
-		{"mesa", "MESA EM L", "[==]", "#ffc93c", "piso", `{"currency":"coins","amount":60}`, "8", `{"type":"xp","amount":3}`, "Espaço para dois monitores e o café."},
-		{"cadeira_gamer", "CADEIRA GAMER", "[|]", "#e05252", "piso", `{"currency":"gems","amount":40}`, "10", `{"type":"spregen","amount":1}`, "Plantão de madrugada sem dor nas costas."},
-		{"setup2", "SETUP 2 TELAS", "][", "#45b7ff", "piso", `{"currency":"gems","amount":90}`, "14", `{"type":"deploy","amount":5}`, "Build de um lado, log do outro."},
-		{"rack", "RACK CASEIRO", "::", "#6bd425", "piso", `{"currency":"gems","amount":70}`, "9", `{"type":"deploy","amount":6}`, "Servidor local zumbindo no canto."},
-		{"cafeteira", "CAFETEIRA", "{C}", "#ffc93c", "piso", `{"currency":"coins","amount":55}`, "7", `{"type":"spregen","amount":2}`, "Combustível renovável do dev."},
-		{"estante", "ESTANTE DE LIVROS", "|||", "#b46cf0", "piso", `{"currency":"coins","amount":45}`, "6", `{"type":"xp","amount":2}`, "Documentação que ninguém lê, mas inspira."},
-		{"planta", "PLANTA DE CANTO", "^", "#6bd425", "piso", `{"currency":"coins","amount":25}`, "5", `null`, "Oxigênio e um pouco de sanidade."},
-		{"tapete", "TAPETE PIXELADO", "##", "#8b6cf0", "piso", `{"currency":"coins","amount":30}`, "4", `null`, "Aquece a sala e abafa o teclado."},
-		{"neon", "LETREIRO NEON", "~~", "#45b7ff", "parede", `{"currency":"gems","amount":35}`, "12", `null`, "IT WORKS ON MY MACHINE em ciano."},
-		{"poster", "PÔSTER RETRÔ", "[#]", "#ffc93c", "parede", `{"currency":"coins","amount":20}`, "4", `null`, "Key art do DevServer emoldurada."},
-		{"kanban", "QUADRO KANBAN", "[+]", "#dbeeff", "parede", `{"currency":"coins","amount":50}`, "5", `{"type":"xp","amount":2}`, "Post-its que viram sprint."},
-		{"janela", "JANELA COM VISTA", "[/]", "#8fc3e8", "parede", `{"currency":"gems","amount":60}`, "15", `null`, "Luz natural entre dois deploys."},
+	// id, category, name, zone, price, comfort, bonus - the fields the office-keyart plan fixes, for all 45.
+	furniture := [][7]string{
+		{"mesa", "moveis", "MESA EM L", "piso", "coins 60", "8", "xp 3"},
+		{"cadeira_gamer", "moveis", "CADEIRA GAMER", "piso", "gems 40", "10", "spregen 1"},
+		{"monitor", "moveis", "MONITOR", "piso", "gems 30", "6", "deploy 2"},
+		{"laptop", "moveis", "LAPTOP", "piso", "coins 80", "5", "xp 2"},
+		{"estante", "moveis", "ESTANTE DE LIVROS", "piso", "coins 45", "6", "xp 2"},
+		{"sofa", "moveis", "SOFÁ", "piso", "coins 90", "12", "spregen 1"},
+		{"puff", "moveis", "PUFF", "piso", "coins 40", "7", "-"},
+		{"cama", "moveis", "CAMA", "piso", "coins 120", "14", "spregen 2"},
+		{"gaveteiro", "moveis", "GAVETEIRO", "piso", "coins 35", "4", "-"},
+		{"prateleira", "moveis", "PRATELEIRA", "parede", "coins 30", "4", "xp 1"},
+		{"planta", "moveis", "PLANTA DE CANTO", "piso", "coins 25", "5", "-"},
+		{"luminaria", "moveis", "LUMINÁRIA", "piso", "coins 25", "5", "-"},
+		{"setup2", "moveis", "SETUP 2 TELAS", "piso", "gems 90", "14", "deploy 5"},
+		{"cafeteira", "moveis", "CAFETEIRA", "piso", "coins 55", "7", "spregen 2"},
+		{"quadro", "decoracoes", "QUADRO", "parede", "coins 20", "3", "-"},
+		{"poster", "decoracoes", "PÔSTER RETRÔ", "parede", "coins 20", "4", "-"},
+		{"relogio", "decoracoes", "RELÓGIO", "parede", "coins 30", "3", "deploy 1"},
+		{"trofeu", "decoracoes", "TROFÉU", "piso", "gems 25", "6", "xp 2"},
+		{"guitarra", "decoracoes", "GUITARRA", "piso", "coins 70", "8", "spregen 1"},
+		{"estatua", "decoracoes", "ESTÁTUA", "piso", "gems 30", "7", "-"},
+		{"livros", "decoracoes", "LIVROS", "piso", "coins 20", "3", "xp 1"},
+		{"almofada", "decoracoes", "ALMOFADA", "piso", "coins 15", "3", "-"},
+		{"tapete", "decoracoes", "TAPETE PIXELADO", "piso", "coins 30", "4", "-"},
+		{"caixa", "decoracoes", "CAIXA", "piso", "coins 10", "1", "-"},
+		{"camiseta", "decoracoes", "CAMISETA", "parede", "coins 25", "3", "-"},
+		{"boneco", "decoracoes", "BONECO", "piso", "coins 35", "4", "-"},
+		{"neon", "decoracoes", "LETREIRO NEON", "parede", "gems 35", "12", "-"},
+		{"kanban", "decoracoes", "QUADRO KANBAN", "parede", "coins 50", "5", "xp 2"},
+		{"janela", "decoracoes", "JANELA COM VISTA", "parede", "gems 60", "15", "-"},
+		{"servidor", "tecnologias", "SERVIDOR", "piso", "gems 80", "8", "deploy 5"},
+		{"pc", "tecnologias", "PC", "piso", "coins 150", "7", "deploy 3"},
+		{"nas", "tecnologias", "NAS", "piso", "gems 50", "5", "deploy 3"},
+		{"router", "tecnologias", "ROUTER", "piso", "coins 60", "4", "deploy 2"},
+		{"nuvem", "tecnologias", "NUVEM", "parede", "gems 45", "10", "deploy 3"},
+		{"painel", "tecnologias", "PAINEL", "parede", "gems 55", "6", "xp 3"},
+		{"monitor_ops", "tecnologias", "MONITORAMENTO", "piso", "gems 40", "5", "deploy 2"},
+		{"rack", "tecnologias", "RACK CASEIRO", "piso", "gems 70", "9", "deploy 6"},
+		{"github", "mascotes", "GITHUB", "piso", "gems 50", "10", "xp 3"},
+		{"python", "mascotes", "PYTHON", "piso", "gems 50", "10", "xp 3"},
+		{"java", "mascotes", "JAVA", "piso", "gems 45", "9", "spregen 1"},
+		{"go", "mascotes", "GO", "piso", "gems 50", "10", "deploy 3"},
+		{"nodejs", "mascotes", "NODE.JS", "piso", "gems 45", "9", "spregen 1"},
+		{"react", "mascotes", "REACT", "piso", "gems 45", "9", "xp 2"},
+		{"rust", "mascotes", "RUST", "piso", "gems 55", "10", "spregen 2"},
+		{"docker", "mascotes", "DOCKER", "piso", "gems 55", "10", "deploy 4"},
 	}
-	keys := []string{"id", "name", "glyph", "color", "zone", "price", "comfort", "bonus", "description"}
+	// glyph, color, description of the 12 pieces that predate the keyart, unchanged.
+	kept := map[string][3]string{
+		"mesa":          {"[==]", "#ffc93c", "Espaço para dois monitores e o café."},
+		"cadeira_gamer": {"[|]", "#e05252", "Plantão de madrugada sem dor nas costas."},
+		"setup2":        {"][", "#45b7ff", "Build de um lado, log do outro."},
+		"rack":          {"::", "#6bd425", "Servidor local zumbindo no canto."},
+		"cafeteira":     {"{C}", "#ffc93c", "Combustível renovável do dev."},
+		"estante":       {"|||", "#b46cf0", "Documentação que ninguém lê, mas inspira."},
+		"planta":        {"^", "#6bd425", "Oxigênio e um pouco de sanidade."},
+		"tapete":        {"##", "#8b6cf0", "Aquece a sala e abafa o teclado."},
+		"neon":          {"~~", "#45b7ff", "IT WORKS ON MY MACHINE em ciano."},
+		"poster":        {"[#]", "#ffc93c", "Key art do DevServer emoldurada."},
+		"kanban":        {"[+]", "#dbeeff", "Post-its que viram sprint."},
+		"janela":        {"[/]", "#8fc3e8", "Luz natural entre dois deploys."},
+	}
 	if len(o.Furniture) != len(furniture) {
-		t.Fatalf("furniture = %d, want 12", len(o.Furniture))
+		t.Fatalf("furniture = %d, want %d", len(o.Furniture), len(furniture))
 	}
+	keys := []string{"id", "category", "name", "glyph", "color", "zone", "price", "comfort", "bonus", "description"}
 	for i, f := range o.Furniture {
 		if len(f) != len(keys) {
 			t.Errorf("furniture %d has %d fields, want %d", i, len(f), len(keys))
 		}
-		for k, key := range keys {
-			raw, ok := f[key]
-			if !ok {
+		for _, key := range keys {
+			if _, ok := f[key]; !ok {
 				t.Errorf("furniture %d lacks %s", i, key)
-				continue
 			}
-			got := string(raw)
-			var s string
-			if strings.HasPrefix(got, `"`) && json.Unmarshal(raw, &s) == nil {
-				got = s
+		}
+		var p struct {
+			ID, Category, Name, Glyph, Color, Zone, Description string
+			Price                                               struct {
+				Currency string
+				Amount   int
 			}
-			if got != furniture[i][k] {
-				t.Errorf("furniture %d %s = %s, want %s", i, key, got, furniture[i][k])
+			Comfort int
+			Bonus   *struct {
+				Type   string
+				Amount int
 			}
+		}
+		raw, _ := json.Marshal(f)
+		if err := json.Unmarshal(raw, &p); err != nil {
+			t.Fatal(err)
+		}
+		bonus := "-"
+		if p.Bonus != nil {
+			bonus = fmt.Sprintf("%s %d", p.Bonus.Type, p.Bonus.Amount)
+		}
+		got := [7]string{p.ID, p.Category, p.Name, p.Zone, fmt.Sprintf("%s %d", p.Price.Currency, p.Price.Amount), fmt.Sprint(p.Comfort), bonus}
+		if got != furniture[i] {
+			t.Errorf("furniture %d = %v, want %v", i, got, furniture[i])
+		}
+		if k, ok := kept[p.ID]; ok {
+			if g := [3]string{p.Glyph, p.Color, p.Description}; g != k {
+				t.Errorf("furniture %s glyph/color/description = %v, want %v", p.ID, g, k)
+			}
+		} else if p.Glyph == "" || p.Color == "" || p.Description == "" {
+			t.Errorf("furniture %s lacks glyph, color or description", p.ID)
+		}
+	}
+
+	categories := []string{"moveis|MÓVEIS", "decoracoes|DECORAÇÕES", "tecnologias|TECNOLOGIAS", "mascotes|MASCOTES"}
+	if len(o.Categories) != len(categories) {
+		t.Fatalf("categories = %d, want 4", len(o.Categories))
+	}
+	for i, c := range o.Categories {
+		if got := c.ID + "|" + c.Name; got != categories[i] {
+			t.Errorf("category %d = %s, want %s", i, got, categories[i])
+		}
+	}
+}
+
+type officeJSON struct {
+	Zones []struct {
+		ID    string
+		Cells int
+	} `json:"zones"`
+	Categories []struct{ ID string } `json:"categories"`
+	Furniture  []struct {
+		ID, Category, Zone string
+	} `json:"furniture"`
+	Lights []struct {
+		ID, Name string
+		Comfort  int
+	} `json:"lights"`
+	Templates []struct {
+		ID, Name, Description string
+		Pieces                []struct {
+			Zone      string
+			Position  int
+			Furniture string
+		}
+	} `json:"templates"`
+}
+
+func servedOffice(t *testing.T) officeJSON {
+	t.Helper()
+	rec := apptest.New(t).Do(http.MethodGet, "/api/catalog", nil)
+	var b struct {
+		Office officeJSON `json:"office"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &b); err != nil {
+		t.Fatal(err)
+	}
+	return b.Office
+}
+
+// C2 (office-keyart)
+func TestCatalog_ServesOfficeLightsAndTemplates(t *testing.T) {
+	o := servedOffice(t)
+	lights := []string{"natural|NATURAL|0", "quente|LUZ QUENTE|30", "noite|NOITE|70", "neon|NEON|120"}
+	if len(o.Lights) != len(lights) {
+		t.Fatalf("lights = %d, want 4", len(o.Lights))
+	}
+	for i, l := range o.Lights {
+		if got := fmt.Sprintf("%s|%s|%d", l.ID, l.Name, l.Comfort); got != lights[i] {
+			t.Errorf("light %d = %s, want %s", i, got, lights[i])
+		}
+	}
+	templates := []string{
+		"basico|BÁSICO|parede 2 quadro,parede 5 relogio,piso 0 planta,piso 2 mesa,piso 3 laptop,piso 7 luminaria,piso 11 tapete",
+		"conforto|CONFORTO|parede 1 prateleira,parede 4 quadro,parede 6 janela,piso 0 estante,piso 1 sofa,piso 3 luminaria,piso 5 mesa,piso 7 planta,piso 10 tapete,piso 12 puff,piso 17 almofada",
+		"profissional|PROFISSIONAL|parede 1 kanban,parede 3 janela,parede 5 painel,piso 0 servidor,piso 1 rack,piso 3 mesa,piso 4 setup2,piso 6 cafeteira,piso 7 planta,piso 11 tapete,piso 12 cadeira_gamer",
+		"gamer|GAMER|parede 2 neon,parede 5 nuvem,parede 7 poster,piso 0 pc,piso 1 router,piso 3 setup2,piso 5 boneco,piso 6 puff,piso 7 guitarra,piso 11 cadeira_gamer,piso 12 tapete",
+	}
+	if len(o.Templates) != len(templates) {
+		t.Fatalf("templates = %d, want 4", len(o.Templates))
+	}
+	for i, tp := range o.Templates {
+		pieces := []string{}
+		for _, p := range tp.Pieces {
+			pieces = append(pieces, fmt.Sprintf("%s %d %s", p.Zone, p.Position, p.Furniture))
+		}
+		if got := tp.ID + "|" + tp.Name + "|" + strings.Join(pieces, ","); got != templates[i] {
+			t.Errorf("template %d = %s, want %s", i, got, templates[i])
+		}
+		if tp.Description == "" {
+			t.Errorf("template %s has no description", tp.ID)
+		}
+	}
+}
+
+// C3 (office-keyart)
+func TestCatalog_OfficeReferencesResolve(t *testing.T) {
+	o := servedOffice(t)
+	cells := map[string]int{}
+	for _, z := range o.Zones {
+		cells[z.ID] = z.Cells
+	}
+	categories := map[string]bool{}
+	for _, c := range o.Categories {
+		categories[c.ID] = true
+	}
+	zoneOf := map[string]string{}
+	for _, f := range o.Furniture {
+		zoneOf[f.ID] = f.Zone
+		if !categories[f.Category] {
+			t.Errorf("furniture %s category %q is not a catalog category", f.ID, f.Category)
+		}
+	}
+	for _, tp := range o.Templates {
+		seen := map[string]bool{}
+		for _, p := range tp.Pieces {
+			cell := fmt.Sprintf("%s %d", p.Zone, p.Position)
+			n, ok := cells[p.Zone]
+			switch {
+			case !ok || p.Position < 0 || p.Position >= n:
+				t.Errorf("template %s: %s is not a catalog cell", tp.ID, cell)
+			case zoneOf[p.Furniture] == "":
+				t.Errorf("template %s: %s is not catalog furniture", tp.ID, p.Furniture)
+			case zoneOf[p.Furniture] != p.Zone:
+				t.Errorf("template %s: %s goes in %s, not %s", tp.ID, p.Furniture, zoneOf[p.Furniture], p.Zone)
+			case seen[cell]:
+				t.Errorf("template %s: %s twice", tp.ID, cell)
+			}
+			seen[cell] = true
 		}
 	}
 }

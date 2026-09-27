@@ -1,28 +1,79 @@
 {
   "zones": [
-    { "id": "parede", "name": "PAREDE", "cells": 8 },
-    { "id": "piso", "name": "PISO", "cells": 24 }
+    {"id": "parede", "name": "PAREDE", "cells": 8},
+    {"id": "piso", "name": "PISO", "cells": 24}
+  ],
+  "categories": [
+    {"id": "moveis", "name": "MÓVEIS"},
+    {"id": "decoracoes", "name": "DECORAÇÕES"},
+    {"id": "tecnologias", "name": "TECNOLOGIAS"},
+    {"id": "mascotes", "name": "MASCOTES"}
   ],
   "furniture": [
-    { "id": "mesa", "name": "MESA EM L", "glyph": "[==]", "color": "#ffc93c", "zone": "piso", "price": { "currency": "coins", "amount": 60 }, "comfort": 8, "bonus": { "type": "xp", "amount": 3 }, "description": "Espaço para dois monitores e o café." },
-    { "id": "cadeira_gamer", "name": "CADEIRA GAMER", "glyph": "[|]", "color": "#e05252", "zone": "piso", "price": { "currency": "gems", "amount": 40 }, "comfort": 10, "bonus": { "type": "spregen", "amount": 1 }, "description": "Plantão de madrugada sem dor nas costas." },
-    { "id": "setup2", "name": "SETUP 2 TELAS", "glyph": "][", "color": "#45b7ff", "zone": "piso", "price": { "currency": "gems", "amount": 90 }, "comfort": 14, "bonus": { "type": "deploy", "amount": 5 }, "description": "Build de um lado, log do outro." },
-    { "id": "rack", "name": "RACK CASEIRO", "glyph": "::", "color": "#6bd425", "zone": "piso", "price": { "currency": "gems", "amount": 70 }, "comfort": 9, "bonus": { "type": "deploy", "amount": 6 }, "description": "Servidor local zumbindo no canto." },
-    { "id": "cafeteira", "name": "CAFETEIRA", "glyph": "{C}", "color": "#ffc93c", "zone": "piso", "price": { "currency": "coins", "amount": 55 }, "comfort": 7, "bonus": { "type": "spregen", "amount": 2 }, "description": "Combustível renovável do dev." },
-    { "id": "estante", "name": "ESTANTE DE LIVROS", "glyph": "|||", "color": "#b46cf0", "zone": "piso", "price": { "currency": "coins", "amount": 45 }, "comfort": 6, "bonus": { "type": "xp", "amount": 2 }, "description": "Documentação que ninguém lê, mas inspira." },
-    { "id": "planta", "name": "PLANTA DE CANTO", "glyph": "^", "color": "#6bd425", "zone": "piso", "price": { "currency": "coins", "amount": 25 }, "comfort": 5, "bonus": null, "description": "Oxigênio e um pouco de sanidade." },
-    { "id": "tapete", "name": "TAPETE PIXELADO", "glyph": "##", "color": "#8b6cf0", "zone": "piso", "price": { "currency": "coins", "amount": 30 }, "comfort": 4, "bonus": null, "description": "Aquece a sala e abafa o teclado." },
-    { "id": "neon", "name": "LETREIRO NEON", "glyph": "~~", "color": "#45b7ff", "zone": "parede", "price": { "currency": "gems", "amount": 35 }, "comfort": 12, "bonus": null, "description": "IT WORKS ON MY MACHINE em ciano." },
-    { "id": "poster", "name": "PÔSTER RETRÔ", "glyph": "[#]", "color": "#ffc93c", "zone": "parede", "price": { "currency": "coins", "amount": 20 }, "comfort": 4, "bonus": null, "description": "Key art do DevServer emoldurada." },
-    { "id": "kanban", "name": "QUADRO KANBAN", "glyph": "[+]", "color": "#dbeeff", "zone": "parede", "price": { "currency": "coins", "amount": 50 }, "comfort": 5, "bonus": { "type": "xp", "amount": 2 }, "description": "Post-its que viram sprint." },
-    { "id": "janela", "name": "JANELA COM VISTA", "glyph": "[/]", "color": "#8fc3e8", "zone": "parede", "price": { "currency": "gems", "amount": 60 }, "comfort": 15, "bonus": null, "description": "Luz natural entre dois deploys." }
+    {"id": "mesa", "category": "moveis", "name": "MESA EM L", "glyph": "[==]", "color": "#ffc93c", "zone": "piso", "price": {"currency": "coins", "amount": 60}, "comfort": 8, "bonus": {"type": "xp", "amount": 3}, "description": "Espaço para dois monitores e o café."},
+    {"id": "cadeira_gamer", "category": "moveis", "name": "CADEIRA GAMER", "glyph": "[|]", "color": "#e05252", "zone": "piso", "price": {"currency": "gems", "amount": 40}, "comfort": 10, "bonus": {"type": "spregen", "amount": 1}, "description": "Plantão de madrugada sem dor nas costas."},
+    {"id": "monitor", "category": "moveis", "name": "MONITOR", "glyph": "[_]", "color": "#45b7ff", "zone": "piso", "price": {"currency": "gems", "amount": 30}, "comfort": 6, "bonus": {"type": "deploy", "amount": 2}, "description": "Terminal verde sempre aberto no log."},
+    {"id": "laptop", "category": "moveis", "name": "LAPTOP", "glyph": "[.]", "color": "#dbeeff", "zone": "piso", "price": {"currency": "coins", "amount": 80}, "comfort": 5, "bonus": {"type": "xp", "amount": 2}, "description": "Codar no sofá também conta."},
+    {"id": "estante", "category": "moveis", "name": "ESTANTE DE LIVROS", "glyph": "|||", "color": "#b46cf0", "zone": "piso", "price": {"currency": "coins", "amount": 45}, "comfort": 6, "bonus": {"type": "xp", "amount": 2}, "description": "Documentação que ninguém lê, mas inspira."},
+    {"id": "sofa", "category": "moveis", "name": "SOFÁ", "glyph": "(==)", "color": "#45b7ff", "zone": "piso", "price": {"currency": "coins", "amount": 90}, "comfort": 12, "bonus": {"type": "spregen", "amount": 1}, "description": "Pausa estratégica entre dois bugs."},
+    {"id": "puff", "category": "moveis", "name": "PUFF", "glyph": "()", "color": "#8b6cf0", "zone": "piso", "price": {"currency": "coins", "amount": 40}, "comfort": 7, "bonus": null, "description": "Afunda e esquece o sprint."},
+    {"id": "cama", "category": "moveis", "name": "CAMA", "glyph": "[~~]", "color": "#45b7ff", "zone": "piso", "price": {"currency": "coins", "amount": 120}, "comfort": 14, "bonus": {"type": "spregen", "amount": 2}, "description": "Dormir também é refatorar o cérebro."},
+    {"id": "gaveteiro", "category": "moveis", "name": "GAVETEIRO", "glyph": "[=]", "color": "#8fc3e8", "zone": "piso", "price": {"currency": "coins", "amount": 35}, "comfort": 4, "bonus": null, "description": "Cabos, adaptadores e um HD antigo."},
+    {"id": "prateleira", "category": "moveis", "name": "PRATELEIRA", "glyph": "_=_", "color": "#ffc93c", "zone": "parede", "price": {"currency": "coins", "amount": 30}, "comfort": 4, "bonus": {"type": "xp", "amount": 1}, "description": "Livros e plantinhas ao alcance da mão."},
+    {"id": "planta", "category": "moveis", "name": "PLANTA DE CANTO", "glyph": "^", "color": "#6bd425", "zone": "piso", "price": {"currency": "coins", "amount": 25}, "comfort": 5, "bonus": null, "description": "Oxigênio e um pouco de sanidade."},
+    {"id": "luminaria", "category": "moveis", "name": "LUMINÁRIA", "glyph": "/\\", "color": "#ffc93c", "zone": "piso", "price": {"currency": "coins", "amount": 25}, "comfort": 5, "bonus": null, "description": "Luz quente para o turno da noite."},
+    {"id": "setup2", "category": "moveis", "name": "SETUP 2 TELAS", "glyph": "][", "color": "#45b7ff", "zone": "piso", "price": {"currency": "gems", "amount": 90}, "comfort": 14, "bonus": {"type": "deploy", "amount": 5}, "description": "Build de um lado, log do outro."},
+    {"id": "cafeteira", "category": "moveis", "name": "CAFETEIRA", "glyph": "{C}", "color": "#ffc93c", "zone": "piso", "price": {"currency": "coins", "amount": 55}, "comfort": 7, "bonus": {"type": "spregen", "amount": 2}, "description": "Combustível renovável do dev."},
+    {"id": "quadro", "category": "decoracoes", "name": "QUADRO", "glyph": "</>", "color": "#6bd425", "zone": "parede", "price": {"currency": "coins", "amount": 20}, "comfort": 3, "bonus": null, "description": "A tag que resume a carreira."},
+    {"id": "poster", "category": "decoracoes", "name": "PÔSTER RETRÔ", "glyph": "[#]", "color": "#ffc93c", "zone": "parede", "price": {"currency": "coins", "amount": 20}, "comfort": 4, "bonus": null, "description": "Key art do DevServer emoldurada."},
+    {"id": "relogio", "category": "decoracoes", "name": "RELÓGIO", "glyph": "(o)", "color": "#dbeeff", "zone": "parede", "price": {"currency": "coins", "amount": 30}, "comfort": 3, "bonus": {"type": "deploy", "amount": 1}, "description": "Lembra que o deploy é às cinco."},
+    {"id": "trofeu", "category": "decoracoes", "name": "TROFÉU", "glyph": "\\Y/", "color": "#ffc93c", "zone": "piso", "price": {"currency": "gems", "amount": 25}, "comfort": 6, "bonus": {"type": "xp", "amount": 2}, "description": "Primeiro lugar no hackathon."},
+    {"id": "guitarra", "category": "decoracoes", "name": "GUITARRA", "glyph": "-o", "color": "#e0873c", "zone": "piso", "price": {"currency": "coins", "amount": 70}, "comfort": 8, "bonus": {"type": "spregen", "amount": 1}, "description": "Um riff enquanto o build roda."},
+    {"id": "estatua", "category": "decoracoes", "name": "ESTÁTUA", "glyph": "[R]", "color": "#8fc3e8", "zone": "piso", "price": {"currency": "gems", "amount": 30}, "comfort": 7, "bonus": null, "description": "O robô que guarda o repositório."},
+    {"id": "livros", "category": "decoracoes", "name": "LIVROS", "glyph": "|||", "color": "#b46cf0", "zone": "piso", "price": {"currency": "coins", "amount": 20}, "comfort": 3, "bonus": {"type": "xp", "amount": 1}, "description": "Clean Code, SICP e um mangá."},
+    {"id": "almofada", "category": "decoracoes", "name": "ALMOFADA", "glyph": "<>", "color": "#b46cf0", "zone": "piso", "price": {"currency": "coins", "amount": 15}, "comfort": 3, "bonus": null, "description": "Macia o bastante para um cochilo."},
+    {"id": "tapete", "category": "decoracoes", "name": "TAPETE PIXELADO", "glyph": "##", "color": "#8b6cf0", "zone": "piso", "price": {"currency": "coins", "amount": 30}, "comfort": 4, "bonus": null, "description": "Aquece a sala e abafa o teclado."},
+    {"id": "caixa", "category": "decoracoes", "name": "CAIXA", "glyph": "[x]", "color": "#e0873c", "zone": "piso", "price": {"currency": "coins", "amount": 10}, "comfort": 1, "bonus": null, "description": "Mudança que nunca foi desempacotada."},
+    {"id": "camiseta", "category": "decoracoes", "name": "CAMISETA", "glyph": "T", "color": "#6bd425", "zone": "parede", "price": {"currency": "coins", "amount": 25}, "comfort": 3, "bonus": null, "description": "Brinde da conferência, emoldurado."},
+    {"id": "boneco", "category": "decoracoes", "name": "BONECO", "glyph": "@", "color": "#8b6cf0", "zone": "piso", "price": {"currency": "coins", "amount": 35}, "comfort": 4, "bonus": null, "description": "Colecionável de edição limitada."},
+    {"id": "neon", "category": "decoracoes", "name": "LETREIRO NEON", "glyph": "~~", "color": "#45b7ff", "zone": "parede", "price": {"currency": "gems", "amount": 35}, "comfort": 12, "bonus": null, "description": "IT WORKS ON MY MACHINE em ciano."},
+    {"id": "kanban", "category": "decoracoes", "name": "QUADRO KANBAN", "glyph": "[+]", "color": "#dbeeff", "zone": "parede", "price": {"currency": "coins", "amount": 50}, "comfort": 5, "bonus": {"type": "xp", "amount": 2}, "description": "Post-its que viram sprint."},
+    {"id": "janela", "category": "decoracoes", "name": "JANELA COM VISTA", "glyph": "[/]", "color": "#8fc3e8", "zone": "parede", "price": {"currency": "gems", "amount": 60}, "comfort": 15, "bonus": null, "description": "Luz natural entre dois deploys."},
+    {"id": "servidor", "category": "tecnologias", "name": "SERVIDOR", "glyph": "[::]", "color": "#6bd425", "zone": "piso", "price": {"currency": "gems", "amount": 80}, "comfort": 8, "bonus": {"type": "deploy", "amount": 5}, "description": "LEDs verdes, uptime de respeito."},
+    {"id": "pc", "category": "tecnologias", "name": "PC", "glyph": "[#]", "color": "#45b7ff", "zone": "piso", "price": {"currency": "coins", "amount": 150}, "comfort": 7, "bonus": {"type": "deploy", "amount": 3}, "description": "Compila o monorepo sem suar."},
+    {"id": "nas", "category": "tecnologias", "name": "NAS", "glyph": "[:]", "color": "#8fc3e8", "zone": "piso", "price": {"currency": "gems", "amount": 50}, "comfort": 5, "bonus": {"type": "deploy", "amount": 3}, "description": "Backup de tudo, até dos memes."},
+    {"id": "router", "category": "tecnologias", "name": "ROUTER", "glyph": "-^-", "color": "#45b7ff", "zone": "piso", "price": {"currency": "coins", "amount": 60}, "comfort": 4, "bonus": {"type": "deploy", "amount": 2}, "description": "Wi-Fi que alcança a cozinha."},
+    {"id": "nuvem", "category": "tecnologias", "name": "NUVEM", "glyph": "~o~", "color": "#45b7ff", "zone": "parede", "price": {"currency": "gems", "amount": 45}, "comfort": 10, "bonus": {"type": "deploy", "amount": 3}, "description": "Letreiro neon do deploy na nuvem."},
+    {"id": "painel", "category": "tecnologias", "name": "PAINEL", "glyph": "[/\\]", "color": "#6bd425", "zone": "parede", "price": {"currency": "gems", "amount": 55}, "comfort": 6, "bonus": {"type": "xp", "amount": 3}, "description": "Métricas ao vivo na parede."},
+    {"id": "monitor_ops", "category": "tecnologias", "name": "MONITORAMENTO", "glyph": "[~]", "color": "#45b7ff", "zone": "piso", "price": {"currency": "gems", "amount": 40}, "comfort": 5, "bonus": {"type": "deploy", "amount": 2}, "description": "Gráfico subindo, alerta calado."},
+    {"id": "rack", "category": "tecnologias", "name": "RACK CASEIRO", "glyph": "::", "color": "#6bd425", "zone": "piso", "price": {"currency": "gems", "amount": 70}, "comfort": 9, "bonus": {"type": "deploy", "amount": 6}, "description": "Servidor local zumbindo no canto."},
+    {"id": "github", "category": "mascotes", "name": "GITHUB", "glyph": "=^.^=", "color": "#dbeeff", "zone": "piso", "price": {"currency": "gems", "amount": 50}, "comfort": 10, "bonus": {"type": "xp", "amount": 3}, "description": "Mascote que revisa seus PRs."},
+    {"id": "python", "category": "mascotes", "name": "PYTHON", "glyph": "~S~", "color": "#ffc93c", "zone": "piso", "price": {"currency": "gems", "amount": 50}, "comfort": 10, "bonus": {"type": "xp", "amount": 3}, "description": "Indentação impecável."},
+    {"id": "java", "category": "mascotes", "name": "JAVA", "glyph": "{J}", "color": "#e05252", "zone": "piso", "price": {"currency": "gems", "amount": 45}, "comfort": 9, "bonus": {"type": "spregen", "amount": 1}, "description": "Verboso, mas nunca te abandona."},
+    {"id": "go", "category": "mascotes", "name": "GO", "glyph": "(G)", "color": "#45b7ff", "zone": "piso", "price": {"currency": "gems", "amount": 50}, "comfort": 10, "bonus": {"type": "deploy", "amount": 3}, "description": "Goroutines correndo pela sala."},
+    {"id": "nodejs", "category": "mascotes", "name": "NODE.JS", "glyph": "{N}", "color": "#6bd425", "zone": "piso", "price": {"currency": "gems", "amount": 45}, "comfort": 9, "bonus": {"type": "spregen", "amount": 1}, "description": "Assíncrono até no abraço."},
+    {"id": "react", "category": "mascotes", "name": "REACT", "glyph": "(*)", "color": "#45b7ff", "zone": "piso", "price": {"currency": "gems", "amount": 45}, "comfort": 9, "bonus": {"type": "xp", "amount": 2}, "description": "Re-renderiza a sala com estilo."},
+    {"id": "rust", "category": "mascotes", "name": "RUST", "glyph": "}R{", "color": "#e05252", "zone": "piso", "price": {"currency": "gems", "amount": 55}, "comfort": 10, "bonus": {"type": "spregen", "amount": 2}, "description": "O borrow checker aprova."},
+    {"id": "docker", "category": "mascotes", "name": "DOCKER", "glyph": "[W]", "color": "#45b7ff", "zone": "piso", "price": {"currency": "gems", "amount": 55}, "comfort": 10, "bonus": {"type": "deploy", "amount": 4}, "description": "Leva a sala inteira num contêiner."}
   ],
   "levels": [
-    { "min": 0, "name": "CANTINHO" },
-    { "min": 30, "name": "HOME OFFICE" },
-    { "min": 70, "name": "ESTÚDIO" },
-    { "min": 120, "name": "LAB DEV" },
-    { "min": 180, "name": "SEDE DEVSERVE" }
+    {"min": 0, "name": "CANTINHO"},
+    {"min": 30, "name": "HOME OFFICE"},
+    {"min": 70, "name": "ESTÚDIO"},
+    {"min": 120, "name": "LAB DEV"},
+    {"min": 180, "name": "SEDE DEVSERVE"}
+  ],
+  "lights": [
+    {"id": "natural", "name": "NATURAL", "comfort": 0},
+    {"id": "quente", "name": "LUZ QUENTE", "comfort": 30},
+    {"id": "noite", "name": "NOITE", "comfort": 70},
+    {"id": "neon", "name": "NEON", "comfort": 120}
+  ],
+  "templates": [
+    {"id": "basico", "name": "BÁSICO", "description": "Mesa, laptop e o essencial para começar.", "pieces": [{"zone": "parede", "position": 2, "furniture": "quadro"}, {"zone": "parede", "position": 5, "furniture": "relogio"}, {"zone": "piso", "position": 0, "furniture": "planta"}, {"zone": "piso", "position": 2, "furniture": "mesa"}, {"zone": "piso", "position": 3, "furniture": "laptop"}, {"zone": "piso", "position": 7, "furniture": "luminaria"}, {"zone": "piso", "position": 11, "furniture": "tapete"}]},
+    {"id": "conforto", "name": "CONFORTO", "description": "Sofá, estante e luz de fim de tarde.", "pieces": [{"zone": "parede", "position": 1, "furniture": "prateleira"}, {"zone": "parede", "position": 4, "furniture": "quadro"}, {"zone": "parede", "position": 6, "furniture": "janela"}, {"zone": "piso", "position": 0, "furniture": "estante"}, {"zone": "piso", "position": 1, "furniture": "sofa"}, {"zone": "piso", "position": 3, "furniture": "luminaria"}, {"zone": "piso", "position": 5, "furniture": "mesa"}, {"zone": "piso", "position": 7, "furniture": "planta"}, {"zone": "piso", "position": 10, "furniture": "tapete"}, {"zone": "piso", "position": 12, "furniture": "puff"}, {"zone": "piso", "position": 17, "furniture": "almofada"}]},
+    {"id": "profissional", "name": "PROFISSIONAL", "description": "Servidores, kanban e duas telas.", "pieces": [{"zone": "parede", "position": 1, "furniture": "kanban"}, {"zone": "parede", "position": 3, "furniture": "janela"}, {"zone": "parede", "position": 5, "furniture": "painel"}, {"zone": "piso", "position": 0, "furniture": "servidor"}, {"zone": "piso", "position": 1, "furniture": "rack"}, {"zone": "piso", "position": 3, "furniture": "mesa"}, {"zone": "piso", "position": 4, "furniture": "setup2"}, {"zone": "piso", "position": 6, "furniture": "cafeteira"}, {"zone": "piso", "position": 7, "furniture": "planta"}, {"zone": "piso", "position": 11, "furniture": "tapete"}, {"zone": "piso", "position": 12, "furniture": "cadeira_gamer"}]},
+    {"id": "gamer", "name": "GAMER", "description": "Neon, PC parrudo e cadeira gamer.", "pieces": [{"zone": "parede", "position": 2, "furniture": "neon"}, {"zone": "parede", "position": 5, "furniture": "nuvem"}, {"zone": "parede", "position": 7, "furniture": "poster"}, {"zone": "piso", "position": 0, "furniture": "pc"}, {"zone": "piso", "position": 1, "furniture": "router"}, {"zone": "piso", "position": 3, "furniture": "setup2"}, {"zone": "piso", "position": 5, "furniture": "boneco"}, {"zone": "piso", "position": 6, "furniture": "puff"}, {"zone": "piso", "position": 7, "furniture": "guitarra"}, {"zone": "piso", "position": 11, "furniture": "cadeira_gamer"}, {"zone": "piso", "position": 12, "furniture": "tapete"}]}
   ],
   "maxDeployCut": 40
 }

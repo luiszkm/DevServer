@@ -95,6 +95,8 @@ func NewRouter(d Deps) *chi.Mux {
 		pr.Post("/api/me/items/{id}/use", h(shopH.Use))
 		pr.Post("/api/me/forge/{recipe}", h(shopH.Forge))
 		pr.Post("/api/me/deploys/{type}/boost", h(deployH.Boost))
+		pr.Post("/api/me/office/light", h(officeH.SetLight))
+		pr.Post("/api/me/office/template", h(officeH.ApplyTemplate))
 		pr.Post("/api/me/office/{zone}/{position}", h(officeH.Install))
 		pr.Post("/api/me/office/{zone}/{position}/remove", h(officeH.Remove))
 		pr.Post("/api/me/rack", h(rackH.Buy))
