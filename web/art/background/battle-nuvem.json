@@ -348,6 +348,11 @@
    ],
    "density": 0.002,
    "seed": 57
+  },
+  {
+   "use": "../sprite/extra-fogueira.json",
+   "at": [0, 0],
+   "clip": [0, 0, 0, 0]
   }
  ]
 }

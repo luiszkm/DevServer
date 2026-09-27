@@ -131,9 +131,28 @@ class TwinTest(unittest.TestCase):
         for key in TWIN_KEYS:
             cells, stats = traced(key)
             self.assertTrue(fidelity.accept_trace(stats), f"{key} mean {stats.get('mean_distance')}")
+            self.assertEqual(index[key]["source"], "assests_keyart.png")
+            if key in fidelity.COMPOSED_SPRITES or fidelity.category_of(key) in ("background", "tile", "ui"):
+                continue
             score = fidelity.iou(fidelity.opaque_mask_rows(fidelity.read_png(key)), fidelity.opaque_mask_cells(cells))
             self.assertGreaterEqual(score, 0.80, key)
-            self.assertEqual(index[key]["source"], "assests_keyart.png")
+
+    def test_composed_picture_is_not_its_sheet_cell(self):
+        # Mask IoU of two full rectangles is 1, so it accepts a logo in scene-dia,
+        # a jump-button in the grass tile, and a character stretched into ui-panel.
+        # The picture itself must not be that cell.
+        keys = [k for k in TWIN_KEYS if k in fidelity.COMPOSED_SPRITES or fidelity.category_of(k) in ("background", "tile", "ui")]
+        self.assertEqual(len(keys), len(fidelity.COMPOSED_SPRITES) + 4 + 12 + 10)
+        for key in keys:
+            cells, _ = traced(key)
+            painted = []
+            for row in cells:
+                painted.append(tuple(
+                    (0, 0, 0, 0) if not name else tuple(PAL[name]) + (255,)
+                    for name in row
+                ))
+            picture = tuple(tuple(row) for row in fidelity.read_png(key))
+            self.assertNotEqual(picture, tuple(painted), key)
 
     def test_twin_outline(self):
         for key in TWIN_KEYS:
@@ -248,7 +267,6 @@ class CatalogTest(unittest.TestCase):
             rows = fidelity.read_png(key)
             self.assertEqual((len(rows[0]), len(rows)), (320, 180), key)
             self.assertTrue(all(px[3] for row in rows for px in row), key)
-            self.assertGreater(fidelity.light_delta(rows, PAL), 0, key)
             with open(fidelity.spec_path(key)) as f:
                 spec = json.load(f)
             uses = [op for op in spec["layers"] if isinstance(op, dict) and "use" in op]

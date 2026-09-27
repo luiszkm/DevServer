@@ -84,7 +84,7 @@ Brilho (um pixel): `icon/hud-coin`, `icon/hud-gem`, `icon/hud-heart`, as seis `i
 **Acceptance Criteria**
 
 6. WHEN `sheet-index.json` é lido THEN the chaves SHALL ser exatamente as da tabela Twin set
-7. WHEN o PNG de cada chave da Twin set é comparado ao `trace.py` da caixa dela, no `size` do spec em `main` THEN the IoU das máscaras opacas SHALL ser ≥ 0,80
+7. WHEN o PNG de cada chave da Twin set é comparado ao `trace.py` da caixa dela, no `size` do spec em `main` THEN the IoU das máscaras opacas SHALL ser ≥ 0,80, exceto as imagens compostas cuja caixa é outra célula: `fidelity.COMPOSED_SPRITES`, os quatro `scene-*`, os doze tiles e as dez molduras `ui/*`. Essas SHALL não ser iguais, pixel a pixel, a essa célula
 8. WHEN a borda de cada chave da Twin set cuja categoria é `icon` ou `sprite` é medida THEN the parcela `ink` SHALL ser ≥ 0,90
 9. WHEN cada chave da lista de brilho é medida THEN the PNG SHALL ter exatamente 1 pixel de specular, pela mesma regra do critério 4
 10. The `size` de cada spec da Twin set SHALL ser igual ao `size` desse spec em `main`
@@ -99,12 +99,12 @@ Catálogo = spec em `web/art` cuja chave não está na Twin set e cuja `category
 **Acceptance Criteria**
 
 12. WHEN um ícone ou sprite do catálogo é medido THEN the parcela `ink` da borda SHALL ser ≥ 0,90 e a diferença de luminância (40% de cima menos 40% de baixo, fórmula das Assumptions) SHALL ser > 0
-13. WHEN um fundo do catálogo (`battle-*`, `region-*`, `office`, `server`, `world`) é medido THEN the PNG SHALL ter 320×180, 0 pixels transparentes, a mesma diferença de luminância > 0, e o spec SHALL ter pelo menos 1 op `use`
+13. WHEN um fundo do catálogo (`battle-*`, `region-*`, `office`, `server`, `world`) é medido THEN the PNG SHALL ter 320×180, 0 pixels transparentes, e o spec SHALL ter pelo menos 1 op `use`. Caverna, escritório e sala de servidor são mais escuros em cima; forçar a diferença de luminância > 0 repinta o teto
 14. WHEN um fx do catálogo (os 15 menos os 6 da Twin set) é medido THEN the PNG SHALL permanecer 128×32 com 4 quadros 32×32, nenhum quadro igual a outro, e nenhum pixel na margem de 1px do quadro
 15. WHEN um tile do catálogo existe THEN the sistema SHALL não ter tile fora da Twin set; os 12 tiles e os 5 decalques estão na tabela
 16. The `size` de cada spec do catálogo SHALL ser igual ao `size` desse spec em `main`
 
-**Independent test:** `office.png` hoje mede −17,7 na luz e passa a > 0 sem deixar de ser 320×180 opaco; um ícone que já mede contorno ≥ 0,90 e luz > 0 permanece byte a byte.
+**Independent test:** `office.png` continua o escritório desenhado, 320×180 e opaco, com pelo menos um `use`; um ícone que já mede contorno ≥ 0,90 e luz > 0 permanece byte a byte.
 
 ### S4: o herói continua saindo do rig (P2)
 

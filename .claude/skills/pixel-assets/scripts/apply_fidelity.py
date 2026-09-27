@@ -237,6 +237,11 @@ def write_twins(rows, pal, index, sizes):
     glossy = set(GLOSSY)
     for key, box in index.items():
         cat = fidelity.category_of(key)
+        # Scenes, ground tiles, 9-slice chrome and the props standing in a scene are
+        # composed. The sheet boxes for them are other cells (a character, a campfire,
+        # the logo, the tileset sample). Tracing that cell paints it into the frame.
+        if cat in ("background", "tile", "ui") or key in fidelity.COMPOSED_SPRITES:
+            continue
         size = sizes[key]
         cells, stats = fidelity.trace_box(rows, box, size, cat, pal)
         if not fidelity.accept_trace(stats):
@@ -284,6 +289,10 @@ def repair_catalog(pal):
             spec = json.load(f)
         cat = spec.get("category")
         if cat not in ("icon", "sprite", "background"):
+            continue
+        # Forcing light_delta > 0 on a cave, an office or a server room repaints the
+        # ceiling and then bakes the picture, stacking every `use` on top of itself.
+        if cat == "background":
             continue
         rows = render.to_rows(render.render_spec(os.path.abspath(path), pal))
         if cat in ("icon", "sprite") and fidelity.passes_icon_sprite(rows, pal):

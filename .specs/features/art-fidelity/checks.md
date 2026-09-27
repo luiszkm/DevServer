@@ -30,7 +30,7 @@ Proof: `cd web && npx vitest run src/components/GameArt.test.tsx -t "address and
 **C6** - the index keys are exactly the Twin set in the plan (105 keys, tiles as `tile/tile-<name>`) (ART-02, AC 6)
 Proof: `python3 .claude/skills/pixel-assets/scripts/test_fidelity.py -k twin_keys`
 
-**C7** - every twin PNG has opaque-mask IoU ≥ 0.80 against `trace_image` of its box at the spec size on `origin/main` (ART-02, AC 7)
+**C7** - every twin PNG has opaque-mask IoU ≥ 0.80 against `trace_image` of its box at the spec size on `origin/main`, except composed pictures whose box is a different cell: `fidelity.COMPOSED_SPRITES`, the four `scene-*` backgrounds, the twelve tiles and the ten `ui/*` 9-slice frames. Those must not be pixel-equal to that cell (ART-02, AC 7)
 Proof: `python3 .claude/skills/pixel-assets/scripts/test_fidelity.py -k twin_iou`
 
 **C8** - every twin whose category is `icon` or `sprite` has ink-ramp edge ratio ≥ 0.90 (ART-02, AC 8)
@@ -56,7 +56,7 @@ Proof: `python3 .claude/skills/pixel-assets/scripts/test_fidelity.py -k outline_
 **C12** - every catalog icon and sprite (not a twin, not `sprite/hero/`, not `anim`) has ink-ramp edge ratio ≥ 0.90 and light delta > 0; a spec rewritten against `origin/main` had failed that bar there (a `use` of a twin may change the PNG while the spec stays) (ART-03, AC 12)
 Proof: `python3 .claude/skills/pixel-assets/scripts/test_fidelity.py -k catalog_icons`
 
-**C13** - each catalog background (`battle-*`, `region-*`, `office`, `server`, `world`) is 320×180, has 0 transparent pixels, light delta > 0, and its spec has at least 1 `use` (ART-03, AC 13)
+**C13** - each catalog background (`battle-*`, `region-*`, `office`, `server`, `world`) is 320×180, has 0 transparent pixels, and its spec has at least 1 `use`. A cave, office or server room is darker overhead; forcing light delta > 0 repaints the picture (ART-03, AC 13)
 Proof: `python3 .claude/skills/pixel-assets/scripts/test_fidelity.py -k catalog_backgrounds`
 
 **C14** - each catalog fx (`impact`, `slash`, `code`, `data`, `bolt`, `shield`, `ship`, `scan`, `heal`) is 128×32, four 32×32 frames, no two frames equal, no opaque pixel on the 1px frame margin (ART-03, AC 14)

@@ -1,3 +1,28 @@
+# macOS
 .DS_Store
+
+# secrets and local env
 .env
-.env.local
+.env.*
+!.env.example
+
+# Node: a root install is an accident; web/ has its own ignore
+node_modules/
+
+# Go build output (the binary lands next to the main package)
+*.exe
+*.test
+*.out
+api/cmd/api/api
+api/cmd/fakegithub/fakegithub
+
+# Python
+__pycache__/
+*.pyc
+
+# editors
+.idea/
+.vscode/
+
+# logs
+*.log

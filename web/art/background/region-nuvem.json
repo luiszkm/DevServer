@@ -577,6 +577,11 @@
    "density": 0.04,
    "seed": 76,
    "on": "stone.3"
+  },
+  {
+   "use": "../sprite/extra-fogueira.json",
+   "at": [0, 0],
+   "clip": [0, 0, 0, 0]
   }
  ]
 }

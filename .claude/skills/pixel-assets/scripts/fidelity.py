@@ -21,6 +21,22 @@ INDEX = os.path.join(ART, "sheet-index.json")
 KNOCKOUT_EDGE = trace.KNOCKOUT_EDGE
 DISTANCE_LIMIT = 24
 
+# These twins are drawn as pictures. Their sheet box is a different cell (the tileset
+# sample, a menu, a logo), so tracing that box replaces the object. Mask IoU cannot
+# see it: a background or tile is fully opaque, and these sprites lose the silhouette.
+COMPOSED_SPRITES = {
+    "sprite/build-antena", "sprite/build-placa", "sprite/build-placa-code", "sprite/build-rack",
+    "sprite/build-server-hut", "sprite/build-tenda",
+    "sprite/extra-banco", "sprite/extra-bandeira", "sprite/extra-fogueira", "sprite/extra-lampada",
+    "sprite/extra-placa",
+    "sprite/prop-caixa", "sprite/prop-caixa-aberta", "sprite/prop-caneca", "sprite/prop-laptop",
+    "sprite/prop-livros", "sprite/prop-macbook", "sprite/prop-modem", "sprite/prop-monitor",
+    "sprite/prop-planta", "sprite/prop-rack", "sprite/prop-roteador", "sprite/prop-terminal",
+    "sprite/prop-torre",
+    "sprite/tile-arbusto", "sprite/tile-arvore", "sprite/tile-arvore-grande", "sprite/tile-cerca",
+    "sprite/tile-flor",
+}
+
 
 def palette():
     return render.load_palette()
