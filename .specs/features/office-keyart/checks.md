@@ -3,7 +3,7 @@
 Profile: standard
 Plan: `.specs/features/office-keyart/plan.md`
 
-36 checks in 3 slices · 5 one-way doors · 0 open
+37 checks in 3 slices · 5 one-way doors · 0 open
 
 ## Checks
 
@@ -123,6 +123,9 @@ Proof: `cd web && npx playwright test e2e/office.spec.ts -g 'apply layout templa
 **C36** - Toda peça instalada pelas rotas novas soma seus bônus por `player.Bonus`: depois de `profissional`, `TEMPO DE DEPLOY` = 16 (servidor 5 + rack 6 + setup2 5) no `officeStats` da web e `player.Bonus(deploy)` = 16 na api (AD-013)
 Proof: `cd api && go test ./internal/office -run '^TestTemplate_BonusThroughPlayerBonus$' && cd ../web && npx vitest run src/components/OfficeScene.test.tsx -t 'template bonuses in stats'`
 
+**C37** - `ResolveLight` (own layer): luz do catálogo gravada é mantida (`neon`, `natural`); id fora do catálogo (`sol`) ou vazio devolve a primeira luz do catálogo, `natural` (OFFKEY-02, AC 6, AC 11) - added after verification round 1
+Proof: `cd api && go test ./internal/player -run '^TestResolveLight_Rows$'`
+
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
@@ -135,6 +138,7 @@ Proof: `cd api && go test ./internal/office -run '^TestTemplate_BonusThroughPlay
 | categories (4) | `moveis` C1, C6 · `decoracoes` C1, C6 · `tecnologias` C1, C6 · `mascotes` C1, C6 | - |
 | furniture catalog (45) | C1, table-driven over all 45; icons C4 over all 45 | - |
 | lights (4) | `natural` C2, C8, C16, C18 · `quente` C2, C8, C9, C16, C17, C18 · `noite` C2, C16, C18 · `neon` C2, C16, C18 | - |
+| light rule rows (2) | mantida C37, C8 · fora do catálogo C37, C13 | - |
 | light comfort boundary (2) | igual libera C8 · abaixo bloqueia C9, C16 | - |
 | templates (4) | `basico` C2, C19, C26 · `conforto` C2, C19, C22, C26 · `profissional` C2, C26, C36 · `gamer` C2, C26 | - |
 | template cell rows (5) | vazio instala C25, C19 · mesma peça pula C25, C20 · outra peça C25, C21 · id fora do catálogo C25, C21 · peça de template fora do catálogo C25 | - |
@@ -144,6 +148,7 @@ Proof: `cd api && go test ./internal/office -run '^TestTemplate_BonusThroughPlay
 | new error codes (3) | C32, table-driven over all 3 | - |
 | comfort sum rows (4) | vazio C15 · um móvel C15 · repetido C15 · fora do catálogo C15 | - |
 | screen filters (5) | `TODOS` C5 · `MÓVEIS` C6 · `DECORAÇÕES` C6 · `TECNOLOGIAS` C6 · `MASCOTES` C6 | - |
+| screen pending triggers (2) | template C28 · luz C28 | - |
 | screen light states (3) | pressionada C16 · liberada C16 · bloqueada C16 | - |
 | screen toasts (2) | `LUZ <NOME>` C17 · `LAYOUT <NOME> APLICADO` C27 | - |
 | screen error paths (4) | luz api C17 · luz rede C17 · template api C27 · template sem corpo C27 | - |
@@ -165,6 +170,7 @@ Evidence:
 
 - `api/internal/office` `planTemplate`: dispatches each template row over 4 cell states -> decides, reached across a boundary: C19-C22 at the boundary, C25 at its own layer
 - `api/internal/office` `officeComfort`: sums with a catalog lookup that skips unknown ids -> decides, reached across a boundary: C8, C9 at the boundary, C15 at its own layer
+- `api/internal/player` `ResolveLight`: keeps a catalog light or falls back to the first -> decides, reached across a boundary: C7, C13 at the boundary, C37 at its own layer (added after verification round 1)
 - `api/internal/office` `SetLight`, `ApplyTemplate`: guards in fixed order -> entry points proven at the boundary (C8-C11, C19-C24, C29-C31)
 - `web/src/components/OfficeScene.tsx`: filter, light lock, pending -> screen tests C5, C6, C16, C17, C26-C28
 - closest analogue in the repo: `api/internal/office` `Install`, same shape, proven at the boundary in `office_test.go`
@@ -190,3 +196,8 @@ Evidence:
 ## Handoff
 
 - Leitura: api ~70 KB + web ~60 KB + 33 specs de ícone ≈ 160 KB / 4 ≈ 40k, mais ~40k de código novo - abaixo do budget de 150k: um builder, sem handoff
+
+Round 2 (after verification round 1 FAIL):
+
+- **Boundary:** C28's test now also holds a light request pending (the check named both triggers); C37 added for `ResolveLight` at its own layer
+- **Settled mid-build:** nothing by the user

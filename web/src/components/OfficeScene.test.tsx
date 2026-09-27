@@ -561,6 +561,15 @@ describe("OfficeScene keyart", () => {
     for (const b of buttons()) expect(b).toBeDisabled();
     await act(async () => release(json(200, { player: player({ office: comfort30 }) })));
     for (const b of buttons()) expect(b).toBeEnabled();
+    cleanup();
+    vi.unstubAllGlobals();
+
+    mockFetch({ "POST /api/me/office/light": () => new Promise<Response>((r) => (release = r)) });
+    renderOffice(player({ office: comfort30 }));
+    await userEvent.click(light("quente"));
+    for (const b of buttons()) expect(b).toBeDisabled();
+    await act(async () => release(json(200, { player: player({ office: comfort30, officeLight: "quente" }) })));
+    for (const b of buttons()) expect(b).toBeEnabled();
   });
 
   // C36 (web half)
