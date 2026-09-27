@@ -1,29 +1,51 @@
 {
-  "name": "ic-gear",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "SETTINGS: the steel cog, a hole in the middle.",
-  "layers": [
-    {"ellipse": [8, 8, 5, 5], "color": "metal.2"},
-    {"rect": [7, 1, 3, 3], "color": "metal.2"},
-    {"rect": [7, 13, 3, 3], "color": "metal.2"},
-    {"rect": [1, 7, 3, 3], "color": "metal.2"},
-    {"rect": [13, 7, 3, 3], "color": "metal.2"},
-    {"rect": [3, 3, 2, 2], "color": "metal.2"},
-    {"rect": [12, 3, 2, 2], "color": "metal.2"},
-    {"rect": [3, 12, 2, 2], "color": "metal.2"},
-    {"rect": [12, 12, 2, 2], "color": "metal.2"},
-    {"ellipse": [8, 8, 2, 2], "color": null},
-    {"rect": [7, 2, 3, 1], "color": "metal.3"},
-    {"rect": [2, 7, 1, 3], "color": "metal.3"},
-    {"rect": [4, 4, 1, 1], "color": "metal.3"},
-    {"rect": [5, 5, 2, 1], "color": "metal.3"},
-    {"rect": [12, 11, 2, 2], "color": "metal.1"},
-    {"rect": [9, 13, 1, 2], "color": "metal.1"},
-    {"rect": [13, 9, 2, 1], "color": "metal.1"},
-    {"rect": [0, 0, 16, 1], "color": null},
-    {"outline": "ink"},
-    {"rect": [15, 7, 1, 3], "color": null},
-    {"rect": [7, 15, 3, 1], "color": null}
-  ]
+ "name": "ic-gear",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 734,280,40,48",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "....aa....a.....",
+    "...aa.aaaabaa...",
+    "...aaabbccccba..",
+    "......adabbcea..",
+    "..aa...a.afgha..",
+    "..aa..a..aijia..",
+    "..a...aaaklmna..",
+    ".aa...aaohhhpa..",
+    "ada...a.agaaa...",
+    ".a...a...a......",
+    "....aa..a.......",
+    "..a.a..aqaa.....",
+    ".ara..a.a.aa....",
+    "..aaaa..........",
+    "..aaaaaaa......."
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "soil.3",
+    "c": "av-tone-retinta.2",
+    "d": "soil.2",
+    "e": "av-tone-negra.2",
+    "f": "soil.1",
+    "g": "av-tone-morena.1",
+    "h": "skin.2",
+    "i": "av-skin-golden-hair",
+    "j": "av-bottom-caqui.2",
+    "k": "av-tone-negra.3",
+    "l": "av-hair-loiro.3",
+    "m": "av-tone-parda.3",
+    "n": "av-tone-morena.2",
+    "o": "av-hair-ruivo.2",
+    "p": "dirt.3",
+    "q": "stone.2",
+    "r": "av-tone-parda.2"
+   }
+  }
+ ]
 }

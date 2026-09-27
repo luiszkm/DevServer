@@ -1,24 +1,51 @@
 {
-  "name": "btn-exit",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "EXIT: a wooden door in a steel frame with a white arrow pointing out.",
-  "layers": [
-    {"grid": [
-      "oooooooo........",
-      "ommmmmmo........",
-      "omddddmo........",
-      "omddddmo....o...",
-      "omddddmo....oo..",
-      "omddddmooooogoo.",
-      "omddDdmogggggggo",
-      "omddddmogggggggo",
-      "omddddmooooogoo.",
-      "omddddmo....oo..",
-      "omddddmo....o...",
-      "omddddmo........",
-      "ommmmmmo........",
-      "oooooooo........"
-    ], "at": [0, 1], "legend": {"o": "ink", "m": "metal.2", "d": "wood.3", "D": "gold.2", "g": "white"}}
-  ]
+ "name": "btn-exit",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 726,78,44,50",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "....aa..a.......",
+    ".....aaabaaaa...",
+    ".....abbccabda..",
+    "...a.aaaba.aefa.",
+    "...aa...abaghia.",
+    "....aaa.acjhia..",
+    "..aa.akagghhla..",
+    "..aba.aamhhhna..",
+    "..aa....allaa...",
+    "..aa....aaa.....",
+    ".....aa.........",
+    "....aoa..aaa....",
+    "....apa.aqra....",
+    ".....a..ara.....",
+    "...a..a.aaaa...."
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "soil.3",
+    "c": "av-tone-retinta.2",
+    "d": "soil.2",
+    "e": "skin",
+    "f": "av-tone-retinta.1",
+    "g": "av-tone-morena.2",
+    "h": "skin.2",
+    "i": "av-tone-morena",
+    "j": "dirt.3",
+    "k": "av-tone-clara",
+    "l": "av-tone-morena.1",
+    "m": "skin.1",
+    "n": "av-eyes-mel.3",
+    "o": "av-hair-preto.1",
+    "p": "av-eyes-preto.2",
+    "q": "av-top-verde.3",
+    "r": "av-top-verde.2"
+   }
+  }
+ ]
 }

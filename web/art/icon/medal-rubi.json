@@ -1,9 +1,55 @@
 {
-  "name": "medal-rubi",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "Medal rubi: the rosette in the red ramp.",
-  "layers": [
-    {"use": "_medal.json", "recolor": {"gold": "red"}}
-  ]
+ "name": "medal-rubi",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1466,234,48,58",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "......aaaa......",
+    "...aaabcccaa....",
+    "...adcedffcfa...",
+    "..afcgdddgfcfa..",
+    "..acfddhhddfca..",
+    "..acfdhhdiccca..",
+    "..accfdidiccca..",
+    "...accfccfcea...",
+    "...affccccffa...",
+    "....ajiiigka....",
+    "....alkmkkca....",
+    "....agfaagga....",
+    "...aaaa..aaa....",
+    ".........a......",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "white",
+    "c": "red.1",
+    "d": "red.3",
+    "e": "corrupt.2",
+    "f": "red.2",
+    "g": "gap.3",
+    "h": "corrupt.4",
+    "i": "gap.5",
+    "j": "av-top-vinho.2",
+    "k": "red",
+    "l": "av-hair-ruivo.1",
+    "m": "av-top-vinho"
+   }
+  },
+  {
+   "use": "_medal.json",
+   "clip": [
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ ]
 }

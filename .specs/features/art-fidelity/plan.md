@@ -40,6 +40,7 @@ Quando isto for entregue, cada objeto que a folha desenha coincide com a célula
 | Brilho | um pixel, `white` ou o último índice da rampa com mais pixels não-`ink` | style guide: um specular em superfície brilhante | n |
 | Luz | luminância média (0,2126 R + 0,7152 G + 0,0722 B) dos pixels não-`ink` nos 40% de cima da caixa opaca, menos a dos 40% de baixo, > 0 | é a luz da esquerda-de-cima medida; `office.png` dá −17,7 | n |
 | Branch | `feat/art-fidelity` a partir de `main` | `main` é a linha atual | n |
+| Chaves de tile | `tile/tile-<nome>` | o arquivo no disco e o door 1 de assets são `tile/tile-grama-topo`; `tile/grama-topo` não existe | n |
 
 **Open questions:** none - all resolved or logged above.
 
@@ -61,7 +62,7 @@ Chave = caminho do spec sem `.json`. Fonte default `assests_keyart.png`.
 - extra: `sprite/extra-placa`, `sprite/extra-fogueira`, `sprite/extra-lampada`, `sprite/extra-banco`, `sprite/extra-bau`, `sprite/extra-bau-aberto`, `sprite/extra-bandeira`
 - fx: `fx/dust`, `fx/sparkle`, `fx/teleport`, `fx/fire`, `fx/loading`, `fx/collect`
 - scene: `background/scene-dia`, `background/scene-noite`, `background/scene-floresta`, `background/scene-dungeon`
-- tile: `tile/grama-topo`, `tile/grama`, `tile/grama-borda`, `tile/terra`, `tile/pedra`, `tile/tijolo`, `tile/tabua`, `tile/parede-madeira`, `tile/areia`, `tile/agua`, `tile/agua-funda`, `tile/cachoeira`
+- tile: `tile/tile-grama-topo`, `tile/tile-grama`, `tile/tile-grama-borda`, `tile/tile-terra`, `tile/tile-pedra`, `tile/tile-tijolo`, `tile/tile-tabua`, `tile/tile-parede-madeira`, `tile/tile-areia`, `tile/tile-agua`, `tile/tile-agua-funda`, `tile/tile-cachoeira`
 - decalque: `sprite/tile-arbusto`, `sprite/tile-flor`, `sprite/tile-arvore`, `sprite/tile-cerca`, `sprite/tile-arvore-grande`
 
 Brilho (um pixel): `icon/hud-coin`, `icon/hud-gem`, `icon/hud-heart`, as seis `icon/medal-*`, `sprite/mob-slime`, `sprite/mob-slime-verde`, `sprite/prop-gema-pedestal`.
@@ -119,10 +120,10 @@ Catálogo = spec em `web/art` cuja chave não está na Twin set e cuja `category
 
 | ID | Slice | Criteria | Status |
 | --- | --- | --- | --- |
-| ART-01 | S1 | 1, 2, 3, 4, 5 | Pending |
-| ART-02 | S2 | 6, 7, 8, 9, 10, 11 | Pending |
-| ART-03 | S3 | 12, 13, 14, 15, 16 | Pending |
-| ART-04 | S4 | 17, 18, 19 | Pending |
+| ART-01 | S1 | 1, 2, 3, 4, 5 | Implementing |
+| ART-02 | S2 | 6, 7, 8, 9, 10, 11 | Implementing |
+| ART-03 | S3 | 12, 13, 14, 15, 16 | Implementing |
+| ART-04 | S4 | 17, 18, 19 | Implementing |
 
 **ID format:** `ART-NUMBER`. **Status:** Pending → In checks → Implementing → Verified.
 
@@ -170,6 +171,7 @@ None - nothing consumed outside. Os `src` `/art/...` e os `width`/`height` que o
 | Índice de recortes | `web/art/sheet-index.json`: objeto cuja chave é `icon/hud-coin` e o valor é `{"source":"assests_keyart.png","box":[x,y,w,h]}`; as chaves são exatamente a Twin set | um PNG de referência por asset — segunda fonte ao lado da folha, e o `art-check` não sabe qual é a verdadeira |
 | Silhueta | IoU ≥ 0,80 das máscaras opacas contra o `trace.py` da caixa, não igualdade byte a byte | igualdade com o traço cru — o traço da moeda tem 0% de borda `ink`, contra o style guide |
 | Onde o contorno falha o build | o teste de fidelidade falha ícone e sprite soltos abaixo de 0,90 `ink`; `render.py` segue em `WARN` | promover o `WARN` a `ERROR` no `render.py` — óculos e mão do herói ficam abaixo de 0,90 de propósito, porque a borda está na camada do corpo |
+| Tons da folha fora da paleta | rampa `gap` em `references/palette.json`: hex lido do recorte (amostra em baldes de 16, como `sample_colors.py`), do mais escuro ao mais claro, só o bastante para a média de distância do traço cair a ≤ 24 | deixar o twin de fora — a média da medalha roxa na folha fica em ~32, e o critério 11 recusa gravar o spec |
 
 - Nothing else in this change is hard to reverse
 

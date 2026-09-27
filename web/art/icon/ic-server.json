@@ -1,21 +1,43 @@
 {
-  "name": "ic-server",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "A dark server rack front with blue and green LEDs (badges row 1).",
-  "layers": [
-    {"rect": [3, 1, 10, 14], "color": "ink"},
-    {"rect": [4, 2, 8, 12], "color": "stone.2"},
-    {"rect": [4, 2, 1, 12], "color": "stone.3"},
-    {"rect": [5, 3, 6, 3], "color": "stone.1"},
-    {"rect": [5, 7, 6, 3], "color": "stone.1"},
-    {"rect": [5, 11, 6, 2], "color": "stone.1"},
-    {"rect": [6, 4, 1, 1], "color": "net.3"},
-    {"rect": [8, 4, 1, 1], "color": "code.3"},
-    {"rect": [6, 8, 1, 1], "color": "net.3"},
-    {"rect": [8, 8, 1, 1], "color": "net.3"},
-    {"rect": [6, 12, 1, 1], "color": "code.3"},
-    {"rect": [9, 4, 2, 1], "color": "ink.2"},
-    {"rect": [9, 8, 2, 1], "color": "ink.2"}
-  ]
+ "name": "ic-server",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1318,170,40,48",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    ".....aaaaa......",
+    "....abaaaaaa....",
+    "....aa....aa....",
+    "....aa....aa....",
+    "...aca....aa....",
+    "..adbbaaaabbaa..",
+    "..abeeeaaeeeefa.",
+    "..aeeea..aeeefa.",
+    "..ageeea.aeeefa.",
+    "..aeeeehaeeeefa.",
+    "..aieeeejeeejaa.",
+    "...aaaaaaaaaa...",
+    "...a............",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "metal.3",
+    "c": "denim.3",
+    "d": "av-hair-grisalho.3",
+    "e": "ui.6",
+    "f": "stone.3",
+    "g": "av-eyes-cinza.3",
+    "h": "av-bottom-cinza.2",
+    "i": "av-top-branco",
+    "j": "metal.2"
+   }
+  }
+ ]
 }

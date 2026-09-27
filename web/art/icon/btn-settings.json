@@ -1,0 +1,46 @@
+{
+ "name": "btn-settings",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1214,170,42,50",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "........aaa.....",
+    "....aaaabbbaa...",
+    "..aacdeeeeeefa..",
+    "..afgghffffbea..",
+    "..aijgkfiibdda..",
+    "...ahakbibbda...",
+    "..aba.accddeda..",
+    "..aigalffbbdda..",
+    "...aggkbmmedaa..",
+    "...acbfbmmda....",
+    "..amhggfbbbbaa..",
+    "..amjgfbiiedaa..",
+    "...aaafbbaaa....",
+    "......aaa.......",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "net.1",
+    "c": "av-top-azul.2",
+    "d": "net",
+    "e": "av-eyes-azul.1",
+    "f": "av-eyes-azul.2",
+    "g": "cloud",
+    "h": "av-hair-azul.3",
+    "i": "sky.2",
+    "j": "av-eyes-azul.3",
+    "k": "sky.3",
+    "l": "net.2",
+    "m": "sky.1"
+   }
+  }
+ ]
+}

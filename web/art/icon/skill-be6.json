@@ -5,118 +5,33 @@
   16,
   16
  ],
- "_design": "THREAD POOL (backend): three blue arrows running side by side, parallel work.",
+ "_from": "catalog repair",
  "layers": [
   {
-   "poly": [
-    [
-     1,
-     2
-    ],
-    [
-     10,
-     2
-    ],
-    [
-     10,
-     0
-    ],
-    [
-     14,
-     3
-    ],
-    [
-     10,
-     6
-    ],
-    [
-     10,
-     4
-    ],
-    [
-     1,
-     4
-    ]
+   "grid": [
+    ".........aaa....",
+    ".aaaaaaaaabba...",
+    "abbbbbbbbbbbba..",
+    "abbbbbbbbbbbba..",
+    ".aaaaaaaaabba...",
+    ".........aca....",
+    ".aaaaaaaaacca...",
+    "acddddddccccca..",
+    "acccccccccccca..",
+    ".aaaaaaaaacca...",
+    ".........aba....",
+    ".aaaaaaaaabba...",
+    "abbbbbbbbbbbba..",
+    "abbbbbbbbbbbba..",
+    ".aaaaaaaaabaa...",
+    "..........a....."
    ],
-   "color": "net.2"
-  },
-  {
-   "poly": [
-    [
-     1,
-     7
-    ],
-    [
-     10,
-     7
-    ],
-    [
-     10,
-     5
-    ],
-    [
-     14,
-     8
-    ],
-    [
-     10,
-     11
-    ],
-    [
-     10,
-     9
-    ],
-    [
-     1,
-     9
-    ]
-   ],
-   "color": "net.3"
-  },
-  {
-   "poly": [
-    [
-     1,
-     12
-    ],
-    [
-     10,
-     12
-    ],
-    [
-     10,
-     10
-    ],
-    [
-     14,
-     13
-    ],
-    [
-     10,
-     15
-    ],
-    [
-     10,
-     14
-    ],
-    [
-     1,
-     14
-    ]
-   ],
-   "color": "net.2"
-  },
-  {
-   "rect": [
-    2,
-    7,
-    6,
-    1
-   ],
-   "color": "net.4"
-  },
-  {
-   "outline": "ink"
+   "legend": {
+    "a": "ink.0",
+    "b": "net.2",
+    "c": "net.3",
+    "d": "net.4"
+   }
   }
  ]
 }

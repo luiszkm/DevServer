@@ -1,24 +1,45 @@
 {
-  "name": "ic-file",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "A white document with grey text lines and a folded corner.",
-  "layers": [
-    {"grid": [
-      "ooooooooo...",
-      "owwwwwwwwoo.",
-      "owwwwwwwwcwo",
-      "owwwwwwwwccw",
-      "owkkkkkkwwwo",
-      "owwwwwwwwwwo",
-      "owkkkkkkkkwo",
-      "owwwwwwwwwwo",
-      "owkkkkkkkkwo",
-      "owwwwwwwwwwo",
-      "owkkkkkkwwwo",
-      "owwwwwwwwwco",
-      "occccccccccc",
-      "oooooooooooo"
-    ], "at": [2, 1], "legend": {"o": "ink", "w": "white", "c": "metal.3", "k": "metal.1"}}
-  ]
+ "name": "ic-file",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1408,56,52,48",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "....aa...aaa....",
+    "..aabcaaadddaa..",
+    "..aabeeffgdhaa..",
+    "..a.aiiffgda.a..",
+    "..aabeeffgdhaa..",
+    "..ahbeeffgdhja..",
+    "...akfiffbdaa...",
+    "....ajglbda.....",
+    ".....aajja......",
+    ".......aa.......",
+    ".......aa.......",
+    ".....aaldaa.....",
+    ".....aaaaaa.....",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "gold.1",
+    "c": "av-hair-loiro.3",
+    "d": "lamp",
+    "e": "skin.2",
+    "f": "lamp.2",
+    "g": "lamp.1",
+    "h": "gold",
+    "i": "av-skin-golden.2",
+    "j": "av-eyes-mel.1",
+    "k": "av-eyes-mel.2",
+    "l": "gold.2"
+   }
+  }
+ ]
 }

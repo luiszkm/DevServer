@@ -5,94 +5,37 @@
   16,
   16
  ],
- "_design": "HOT PATH (backend): an orange flame with a gold heart, the code path that runs hottest.",
+ "_from": "catalog repair",
  "layers": [
   {
-   "poly": [
-    [
-     8,
-     1
-    ],
-    [
-     4,
-     7
-    ],
-    [
-     3,
-     11
-    ],
-    [
-     5,
-     14
-    ],
-    [
-     11,
-     14
-    ],
-    [
-     13,
-     11
-    ],
-    [
-     12,
-     7
-    ],
-    [
-     10,
-     8
-    ],
-    [
-     10,
-     4
-    ]
+   "grid": [
+    "................",
+    ".......aa.......",
+    "......abba......",
+    ".....abbbba.....",
+    ".....abbbba.....",
+    "....abbbbba.....",
+    "...abbbbbbaa....",
+    "...acccddcaca...",
+    "...acecddccca...",
+    "..affbggggfffa..",
+    "..afffggggfffa..",
+    "..afffghhgfffa..",
+    "...affghhgffa...",
+    "....affffffa....",
+    ".....aaaaaa.....",
+    "................"
    ],
-   "color": "bronze.2"
-  },
-  {
-   "poly": [
-    [
-     8,
-     6
-    ],
-    [
-     6,
-     10
-    ],
-    [
-     6,
-     13
-    ],
-    [
-     10,
-     13
-    ],
-    [
-     10,
-     10
-    ]
-   ],
-   "color": "gold.2"
-  },
-  {
-   "rect": [
-    7,
-    11,
-    2,
-    2
-   ],
-   "color": "gold.4"
-  },
-  {
-   "rect": [
-    5,
-    8,
-    1,
-    2
-   ],
-   "color": "bronze.4"
-  },
-  {
-   "outline": "ink"
+   "legend": {
+    "a": "ink.0",
+    "b": "bronze.3",
+    "c": "bronze.2",
+    "d": "gold.2",
+    "e": "bronze.4",
+    "f": "bronze.1",
+    "g": "gold.1",
+    "h": "gold.3"
+   }
   }
  ]
 }

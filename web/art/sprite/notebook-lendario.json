@@ -5,41 +5,38 @@
   16,
   16
  ],
- "_design": "notebook-lendario: macbook silhouette, screen ramp roof.",
- "legend": {
-  "o": "ink",
-  "h": "metal.3",
-  "m": "metal.2",
-  "d": "metal.1",
-  "s": "ui.2",
-  "g": "roof.3",
-  "G": "roof.3",
-  "w": "net.3"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
     "................",
-    "..oooooooooooo..",
-    "..ohhhhhhhhhmo..",
-    "..ohwsssssssmo..",
-    "..ohsGgsggGsmo..",
-    "..ohssssssssmo..",
-    "..ohsggsgggsmo..",
-    "..ohssssssssmo..",
-    "..ohsGgsssssmo..",
-    "..ommmmmmmmmmo..",
-    ".oooooooooooooo.",
-    ".ohhhhhhhhhhhmo.",
-    ".ohdmdmdmdmddmo.",
-    ".oddddddddddddo.",
-    "..oooooooooooo..",
+    "..aaaaaaaaaaaa..",
+    "..abbbbbbbbbba..",
+    "..abcdddddddba..",
+    "..abdeedeeedba..",
+    "..abddddddddba..",
+    "..abdeedeeedba..",
+    "..abffffffffga..",
+    "..abfeefffffga..",
+    "..ahhhhhhhhhha..",
+    ".aaaaaaaaaaaaaa.",
+    ".agggggggggggha.",
+    ".agihihihihiiha.",
+    ".aiiiiiiiiiiiia.",
+    "..aaaaaaaaaaaa..",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "metal.3",
+    "c": "net.4",
+    "d": "ui.3",
+    "e": "roof.3",
+    "f": "ui.2",
+    "g": "metal.2",
+    "h": "metal.1",
+    "i": "metal.0"
+   }
   }
  ]
 }

@@ -1,0 +1,947 @@
+{
+ "ui/ui-panel": {
+  "source": "assests_keyart.png",
+  "box": [
+   576,
+   76,
+   48,
+   90
+  ]
+ },
+ "ui/ui-panel-wood": {
+  "source": "assests_keyart.png",
+  "box": [
+   1210,
+   868,
+   52,
+   70
+  ]
+ },
+ "ui/ui-btn-wood": {
+  "source": "assests_keyart.png",
+  "box": [
+   578,
+   184,
+   50,
+   76
+  ]
+ },
+ "ui/ui-btn-wood-press": {
+  "source": "assests_keyart.png",
+  "box": [
+   420,
+   276,
+   50,
+   74
+  ]
+ },
+ "ui/ui-btn-dark": {
+  "source": "assests_keyart.png",
+  "box": [
+   1466,
+   864,
+   50,
+   74
+  ]
+ },
+ "ui/ui-btn-dark-press": {
+  "source": "assests_keyart.png",
+  "box": [
+   234,
+   870,
+   48,
+   80
+  ]
+ },
+ "ui/ui-btn-green": {
+  "source": "assests_keyart.png",
+  "box": [
+   326,
+   76,
+   44,
+   90
+  ]
+ },
+ "ui/ui-btn-green-press": {
+  "source": "assests_keyart.png",
+  "box": [
+   112,
+   276,
+   48,
+   72
+  ]
+ },
+ "ui/ui-bubble": {
+  "source": "assests_keyart.png",
+  "box": [
+   1324,
+   886,
+   64,
+   50
+  ]
+ },
+ "ui/ui-bar": {
+  "source": "assests_keyart.png",
+  "box": [
+   632,
+   184,
+   46,
+   74
+  ]
+ },
+ "icon/btn-build": {
+  "source": "assests_keyart.png",
+  "box": [
+   1416,
+   172,
+   46,
+   46
+  ]
+ },
+ "icon/btn-deploy": {
+  "source": "assests_keyart.png",
+  "box": [
+   416,
+   896,
+   46,
+   44
+  ]
+ },
+ "icon/btn-play": {
+  "source": "assests_keyart.png",
+  "box": [
+   830,
+   204,
+   44,
+   44
+  ]
+ },
+ "icon/btn-rank": {
+  "source": "assests_keyart.png",
+  "box": [
+   1410,
+   116,
+   48,
+   42
+  ]
+ },
+ "icon/btn-start": {
+  "source": "assests_keyart.png",
+  "box": [
+   988,
+   206,
+   46,
+   42
+  ]
+ },
+ "icon/btn-settings": {
+  "source": "assests_keyart.png",
+  "box": [
+   1214,
+   170,
+   42,
+   50
+  ]
+ },
+ "icon/btn-shop": {
+  "source": "assests_keyart.png",
+  "box": [
+   474,
+   898,
+   44,
+   42
+  ]
+ },
+ "icon/btn-exit": {
+  "source": "assests_keyart.png",
+  "box": [
+   726,
+   78,
+   44,
+   50
+  ]
+ },
+ "icon/ic-code": {
+  "source": "assests_keyart.png",
+  "box": [
+   1218,
+   114,
+   50,
+   44
+  ]
+ },
+ "icon/ic-cloud": {
+  "source": "assests_keyart.png",
+  "box": [
+   1464,
+   464,
+   50,
+   44
+  ]
+ },
+ "icon/ic-server": {
+  "source": "assests_keyart.png",
+  "box": [
+   1318,
+   170,
+   40,
+   48
+  ]
+ },
+ "icon/ic-gear": {
+  "source": "assests_keyart.png",
+  "box": [
+   734,
+   280,
+   40,
+   48
+  ]
+ },
+ "icon/ic-trophy": {
+  "source": "assests_keyart.png",
+  "box": [
+   1466,
+   56,
+   50,
+   46
+  ]
+ },
+ "icon/ic-star": {
+  "source": "assests_keyart.png",
+  "box": [
+   1370,
+   172,
+   40,
+   46
+  ]
+ },
+ "icon/ic-crown": {
+  "source": "assests_keyart.png",
+  "box": [
+   356,
+   896,
+   48,
+   50
+  ]
+ },
+ "icon/ic-laptop": {
+  "source": "assests_keyart.png",
+  "box": [
+   1282,
+   112,
+   50,
+   48
+  ]
+ },
+ "icon/ic-database": {
+  "source": "assests_keyart.png",
+  "box": [
+   1470,
+   176,
+   42,
+   40
+  ]
+ },
+ "icon/ic-shield": {
+  "source": "assests_keyart.png",
+  "box": [
+   1398,
+   458,
+   54,
+   38
+  ]
+ },
+ "icon/ic-lock": {
+  "source": "assests_keyart.png",
+  "box": [
+   1216,
+   60,
+   54,
+   42
+  ]
+ },
+ "icon/ic-file": {
+  "source": "assests_keyart.png",
+  "box": [
+   1408,
+   56,
+   52,
+   48
+  ]
+ },
+ "icon/ic-wrench": {
+  "source": "assests_keyart.png",
+  "box": [
+   732,
+   116,
+   36,
+   48
+  ]
+ },
+ "icon/ic-chart": {
+  "source": "assests_keyart.png",
+  "box": [
+   1346,
+   52,
+   50,
+   52
+  ]
+ },
+ "icon/ic-sp": {
+  "source": "assests_keyart.png",
+  "box": [
+   934,
+   798,
+   44,
+   56
+  ]
+ },
+ "icon/medal-bronze": {
+  "source": "assests_keyart.png",
+  "box": [
+   1154,
+   234,
+   48,
+   58
+  ]
+ },
+ "icon/medal-prata": {
+  "source": "assests_keyart.png",
+  "box": [
+   1216,
+   234,
+   48,
+   58
+  ]
+ },
+ "icon/medal-ouro": {
+  "source": "assests_keyart.png",
+  "box": [
+   1280,
+   234,
+   48,
+   58
+  ]
+ },
+ "icon/medal-azul": {
+  "source": "assests_keyart.png",
+  "box": [
+   1342,
+   234,
+   48,
+   56
+  ]
+ },
+ "icon/medal-roxo": {
+  "source": "assests_keyart.png",
+  "box": [
+   1406,
+   234,
+   48,
+   56
+  ]
+ },
+ "icon/medal-rubi": {
+  "source": "assests_keyart.png",
+  "box": [
+   1466,
+   234,
+   48,
+   58
+  ]
+ },
+ "icon/hud-coin": {
+  "source": "assests_keyart.png",
+  "box": [
+   1154,
+   110,
+   50,
+   50
+  ]
+ },
+ "icon/hud-gem": {
+  "source": "assests_keyart.png",
+  "box": [
+   1266,
+   170,
+   44,
+   50
+  ]
+ },
+ "icon/hud-heart": {
+  "source": "assests_keyart.png",
+  "box": [
+   830,
+   138,
+   46,
+   42
+  ]
+ },
+ "icon/hud-xp": {
+  "source": "assests_keyart.png",
+  "box": [
+   832,
+   62,
+   42,
+   48
+  ]
+ },
+ "sprite/logo": {
+  "source": "assests_keyart.png",
+  "box": [
+   816,
+   192,
+   160,
+   68
+  ]
+ },
+ "sprite/prop-laptop": {
+  "source": "assests_keyart.png",
+  "box": [
+   924,
+   716,
+   88,
+   78
+  ]
+ },
+ "sprite/prop-macbook": {
+  "source": "assests_keyart.png",
+  "box": [
+   1026,
+   708,
+   78,
+   86
+  ]
+ },
+ "sprite/prop-rack": {
+  "source": "assests_keyart.png",
+  "box": [
+   1314,
+   478,
+   72,
+   118
+  ]
+ },
+ "sprite/prop-caixa": {
+  "source": "assests_keyart.png",
+  "box": [
+   838,
+   708,
+   74,
+   86
+  ]
+ },
+ "sprite/prop-caixa-aberta": {
+  "source": "assests_keyart.png",
+  "box": [
+   116,
+   524,
+   104,
+   106
+  ]
+ },
+ "sprite/prop-monitor": {
+  "source": "assests_keyart.png",
+  "box": [
+   314,
+   444,
+   72,
+   74
+  ]
+ },
+ "sprite/prop-roteador": {
+  "source": "assests_keyart.png",
+  "box": [
+   222,
+   270,
+   54,
+   144
+  ]
+ },
+ "sprite/prop-planta": {
+  "source": "assests_keyart.png",
+  "box": [
+   92,
+   628,
+   92,
+   70
+  ]
+ },
+ "sprite/prop-caneca": {
+  "source": "assests_keyart.png",
+  "box": [
+   572,
+   448,
+   78,
+   70
+  ]
+ },
+ "sprite/prop-livros": {
+  "source": "assests_keyart.png",
+  "box": [
+   1238,
+   550,
+   72,
+   70
+  ]
+ },
+ "sprite/prop-bloco-grama": {
+  "source": "assests_keyart.png",
+  "box": [
+   22,
+   626,
+   72,
+   70
+  ]
+ },
+ "sprite/prop-terminal": {
+  "source": "assests_keyart.png",
+  "box": [
+   22,
+   524,
+   110,
+   106
+  ]
+ },
+ "sprite/prop-torre": {
+  "source": "assests_keyart.png",
+  "box": [
+   1160,
+   424,
+   66,
+   66
+  ]
+ },
+ "sprite/prop-gema-pedestal": {
+  "source": "assests_keyart.png",
+  "box": [
+   1302,
+   346,
+   62,
+   68
+  ]
+ },
+ "sprite/prop-modem": {
+  "source": "assests_keyart.png",
+  "box": [
+   170,
+   524,
+   118,
+   100
+  ]
+ },
+ "sprite/build-server-hut": {
+  "source": "assests_keyart.png",
+  "box": [
+   22,
+   694,
+   142,
+   138
+  ]
+ },
+ "sprite/build-rack": {
+  "source": "assests_keyart.png",
+  "box": [
+   1372,
+   346,
+   62,
+   64
+  ]
+ },
+ "sprite/build-tenda": {
+  "source": "assests_keyart.png",
+  "box": [
+   1242,
+   478,
+   62,
+   64
+  ]
+ },
+ "sprite/build-antena": {
+  "source": "assests_keyart.png",
+  "box": [
+   1156,
+   508,
+   82,
+   62
+  ]
+ },
+ "sprite/build-placa-code": {
+  "source": "assests_keyart.png",
+  "box": [
+   1446,
+   540,
+   68,
+   60
+  ]
+ },
+ "sprite/build-flag": {
+  "source": "assests_keyart.png",
+  "box": [
+   1162,
+   362,
+   70,
+   60
+  ]
+ },
+ "sprite/build-placa": {
+  "source": "assests_keyart.png",
+  "box": [
+   572,
+   282,
+   58,
+   80
+  ]
+ },
+ "sprite/mob-slime": {
+  "source": "assests_keyart.png",
+  "box": [
+   614,
+   904,
+   58,
+   50
+  ]
+ },
+ "sprite/mob-slime-verde": {
+  "source": "assests_keyart.png",
+  "box": [
+   692,
+   906,
+   58,
+   48
+  ]
+ },
+ "sprite/mob-monstro": {
+  "source": "assests_keyart.png",
+  "box": [
+   860,
+   880,
+   66,
+   74
+  ]
+ },
+ "sprite/mob-robo": {
+  "source": "assests_keyart.png",
+  "box": [
+   940,
+   898,
+   44,
+   56
+  ]
+ },
+ "sprite/npc-dev": {
+  "source": "assests_keyart.png",
+  "box": [
+   282,
+   564,
+   86,
+   134
+  ]
+ },
+ "sprite/extra-placa": {
+  "source": "assests_keyart.png",
+  "box": [
+   314,
+   276,
+   56,
+   86
+  ]
+ },
+ "sprite/extra-fogueira": {
+  "source": "assests_keyart.png",
+  "box": [
+   120,
+   420,
+   58,
+   60
+  ]
+ },
+ "sprite/extra-lampada": {
+  "source": "assests_keyart.png",
+  "box": [
+   772,
+   896,
+   62,
+   58
+  ]
+ },
+ "sprite/extra-banco": {
+  "source": "assests_keyart.png",
+  "box": [
+   314,
+   366,
+   56,
+   78
+  ]
+ },
+ "sprite/extra-bau": {
+  "source": "assests_keyart.png",
+  "box": [
+   840,
+   794,
+   70,
+   58
+  ]
+ },
+ "sprite/extra-bau-aberto": {
+  "source": "assests_keyart.png",
+  "box": [
+   470,
+   274,
+   56,
+   74
+  ]
+ },
+ "sprite/extra-bandeira": {
+  "source": "assests_keyart.png",
+  "box": [
+   164,
+   270,
+   54,
+   84
+  ]
+ },
+ "sprite/tile-arbusto": {
+  "source": "assests_keyart.png",
+  "box": [
+   418,
+   444,
+   56,
+   64
+  ]
+ },
+ "sprite/tile-flor": {
+  "source": "assests_keyart.png",
+  "box": [
+   670,
+   444,
+   56,
+   64
+  ]
+ },
+ "sprite/tile-arvore": {
+  "source": "assests_keyart.png",
+  "box": [
+   732,
+   444,
+   56,
+   64
+  ]
+ },
+ "sprite/tile-arvore-grande": {
+  "source": "assests_keyart.png",
+  "box": [
+   162,
+   696,
+   204,
+   140
+  ]
+ },
+ "sprite/tile-cerca": {
+  "source": "assests_keyart.png",
+  "box": [
+   1448,
+   354,
+   60,
+   56
+  ]
+ },
+ "fx/dust": {
+  "source": "assests_keyart.png",
+  "box": [
+   816,
+   50,
+   302,
+   74
+  ]
+ },
+ "fx/sparkle": {
+  "source": "assests_keyart.png",
+  "box": [
+   816,
+   122,
+   302,
+   72
+  ]
+ },
+ "fx/teleport": {
+  "source": "assests_keyart.png",
+  "box": [
+   388,
+   550,
+   408,
+   80
+  ]
+ },
+ "fx/fire": {
+  "source": "assests_keyart.png",
+  "box": [
+   388,
+   628,
+   410,
+   80
+  ]
+ },
+ "fx/loading": {
+  "source": "assests_keyart.png",
+  "box": [
+   608,
+   50,
+   82,
+   20
+  ]
+ },
+ "fx/collect": {
+  "source": "assests_keyart.png",
+  "box": [
+   882,
+   136,
+   154,
+   44
+  ]
+ },
+ "background/scene-dia": {
+  "source": "assests_keyart.png",
+  "box": [
+   14,
+   8,
+   278,
+   164
+  ]
+ },
+ "background/scene-noite": {
+  "source": "assests_keyart.png",
+  "box": [
+   816,
+   268,
+   144,
+   202
+  ]
+ },
+ "background/scene-floresta": {
+  "source": "assests_keyart.png",
+  "box": [
+   974,
+   268,
+   144,
+   202
+  ]
+ },
+ "background/scene-dungeon": {
+  "source": "assests_keyart.png",
+  "box": [
+   836,
+   530,
+   270,
+   174
+  ]
+ },
+ "tile/tile-grama-topo": {
+  "source": "assests_keyart.png",
+  "box": [
+   572,
+   364,
+   54,
+   82
+  ]
+ },
+ "tile/tile-grama": {
+  "source": "assests_keyart.png",
+  "box": [
+   1236,
+   360,
+   64,
+   56
+  ]
+ },
+ "tile/tile-grama-borda": {
+  "source": "assests_keyart.png",
+  "box": [
+   1152,
+   52,
+   54,
+   54
+  ]
+ },
+ "tile/tile-terra": {
+  "source": "assests_keyart.png",
+  "box": [
+   1148,
+   866,
+   54,
+   72
+  ]
+ },
+ "tile/tile-pedra": {
+  "source": "assests_keyart.png",
+  "box": [
+   1394,
+   884,
+   60,
+   54
+  ]
+ },
+ "tile/tile-tijolo": {
+  "source": "assests_keyart.png",
+  "box": [
+   1428,
+   412,
+   52,
+   52
+  ]
+ },
+ "tile/tile-tabua": {
+  "source": "assests_keyart.png",
+  "box": [
+   1386,
+   510,
+   50,
+   88
+  ]
+ },
+ "tile/tile-parede-madeira": {
+  "source": "assests_keyart.png",
+  "box": [
+   1046,
+   796,
+   52,
+   56
+  ]
+ },
+ "tile/tile-areia": {
+  "source": "assests_keyart.png",
+  "box": [
+   228,
+   626,
+   52,
+   70
+  ]
+ },
+ "tile/tile-agua": {
+  "source": "assests_keyart.png",
+  "box": [
+   30,
+   408,
+   84,
+   20
+  ]
+ },
+ "tile/tile-agua-funda": {
+  "source": "assests_keyart.png",
+  "box": [
+   390,
+   528,
+   84,
+   20
+  ]
+ },
+ "tile/tile-cachoeira": {
+  "source": "assests_keyart.png",
+  "box": [
+   816,
+   18,
+   112,
+   26
+  ]
+ }
+}

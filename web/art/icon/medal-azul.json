@@ -1,9 +1,58 @@
 {
-  "name": "medal-azul",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "Medal azul: the rosette in the net ramp.",
-  "layers": [
-    {"use": "_medal.json", "recolor": {"gold": "net"}}
-  ]
+ "name": "medal-azul",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1342,234,48,56",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "......aaaa......",
+    "....aabcddaa....",
+    "...aecfggfcga...",
+    "...afheijfhkha..",
+    "..achiiljmhfda..",
+    "..acfhjjjmnfda..",
+    "..adffmmmgccna..",
+    "...adfhcdhfna...",
+    "..aagcknnnffa...",
+    "....acfhhhca....",
+    "....aokkoopa....",
+    "....ahfaaffa....",
+    "....aaa..aaa....",
+    "......a..a......",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "white",
+    "c": "sky.2",
+    "d": "sky.1",
+    "e": "net.2",
+    "f": "gem.1",
+    "g": "sky.3",
+    "h": "gap.7",
+    "i": "gem.3",
+    "j": "gap.13",
+    "k": "av-hair-azul.1",
+    "l": "net.3",
+    "m": "gem.2",
+    "n": "av-eyes-azul.1",
+    "o": "net",
+    "p": "av-hair-azul"
+   }
+  },
+  {
+   "use": "_medal.json",
+   "clip": [
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ ]
 }

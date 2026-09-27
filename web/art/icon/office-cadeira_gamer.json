@@ -5,42 +5,40 @@
   16,
   16
  ],
- "_design": "CADEIRA GAMER: a tall racing chair, black shell with red side bolsters and a red centre stripe, harness slots in the headrest, wide shoulder wings; red and taller than the blue gear-cadeira.",
- "legend": {
-  "o": "ink",
-  "R": "red.3",
-  "r": "red.1",
-  "K": "hoodie.3",
-  "k": "hoodie.1",
-  "M": "metal.2",
-  "s": "metal.3",
-  "t": "metal.2",
-  "u": "metal.1"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
-    "....oooooooo....",
-    "...oRKKKKKKro...",
-    "...oRKoKKoKro...",
-    "...oRKKKKKKro...",
-    "..oRRKKRRKKrro..",
-    "..oRRKKRRKKrro..",
-    "..oRRKKRRKKrro..",
-    "...oRKKRRKKro...",
-    "...oRkkkkkkro...",
-    ".oooooooooooooo.",
-    ".oMRRRRRRRRRRMo.",
-    ".oMrrrrrrrrrrMo.",
-    ".oooooootuooooo.",
-    "..oooostuuoooo..",
-    ".ossssttttuuuuo.",
-    ".oooooooooooooo."
+    "....aaaaaaaa....",
+    "...abccccccda...",
+    "...abcaccacda...",
+    "...abccccccda...",
+    "..abbccbbccdda..",
+    "..abbccbbccdda..",
+    "..abbccbbccdda..",
+    "...aecceeccfa...",
+    "...aeggggggfa...",
+    ".aaaaaaaaaaaaaa.",
+    ".ahddddddddddha.",
+    ".ahiiiiiiiiiiha.",
+    ".aaaaaaahjaaaaa.",
+    "..aaaakhjjaaaa..",
+    ".akkkkhhhhjjjja.",
+    ".aaaaaaaaaaaaaa."
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "red.4",
+    "c": "hoodie.3",
+    "d": "red.2",
+    "e": "red.3",
+    "f": "red.1",
+    "g": "hoodie.1",
+    "h": "metal.1",
+    "i": "red.0",
+    "j": "metal.0",
+    "k": "metal.2"
+   }
   }
  ]
 }

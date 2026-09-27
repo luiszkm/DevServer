@@ -1,9 +1,61 @@
 {
-  "name": "medal-bronze",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "Medal bronze: the rosette in the bronze ramp.",
-  "layers": [
-    {"use": "_medal.json", "recolor": {"gold": "bronze"}}
-  ]
+ "name": "medal-bronze",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1154,234,48,58",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "......aaaa......",
+    "...aaabcdcaaa...",
+    "..aefcfghhija...",
+    "..ahhekkkfhia...",
+    "..acelkkkkmhja..",
+    "..anhekkkehija..",
+    "..achgkemmiioa..",
+    "...apfhcifpha...",
+    "..aaaicccchaa...",
+    ".....aeeffa.....",
+    "....aqrasqpa....",
+    "....afa.affa....",
+    "...aaaa..aaa....",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "white",
+    "c": "bronze",
+    "d": "av-tone-parda",
+    "e": "bronze.2",
+    "f": "av-hair-ruivo.2",
+    "g": "av-tone-parda.2",
+    "h": "bronze.1",
+    "i": "av-tone-morena",
+    "j": "skin",
+    "k": "bronze.3",
+    "l": "skin.2",
+    "m": "av-hair-ruivo.3",
+    "n": "av-hair-castanho.1",
+    "o": "av-tone-parda.1",
+    "p": "av-eyes-castanho.1",
+    "q": "av-hair-ruivo",
+    "r": "av-tone-negra",
+    "s": "av-tone-retinta.1"
+   }
+  },
+  {
+   "use": "_medal.json",
+   "clip": [
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ ]
 }

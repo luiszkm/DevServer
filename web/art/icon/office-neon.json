@@ -5,40 +5,35 @@
   16,
   16
  ],
- "_design": "LETREIRO NEON: a dark sign board hanging from two wires, a glowing cyan neon tube drawing a wave of cursive writing with a white-hot core.",
- "legend": {
-  "o": "ink",
-  "K": "roof.1",
-  "k": "roof.0",
-  "g": "gem.3",
-  "G": "gem.2",
-  "w": "white",
-  "m": "metal.2"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
-    "....m......m....",
-    "....m......m....",
-    "oooooooooooooooo",
-    "oKKKKKKKKKKKKKKo",
-    "oKKGGKKKKKKGGKKo",
-    "oKGwwGKKKKGwwGKo",
-    "oGwGGwGKKGwGGwGo",
-    "oGwGKGwGGwGKGwGo",
-    "oKGKKKGwwGKKKGKo",
-    "oKKKKKKGGKKKKKKo",
-    "oKgggggggggggggo",
-    "okkkkkkkkkkkkkko",
-    "oooooooooooooooo",
+    "....a......a....",
+    "....a......a....",
+    "aaaaaaaaaaaaaaaa",
+    "abbbbbbbbbbbbbba",
+    "abbccbbbbbbccbba",
+    "abcddcbbbbcddcba",
+    "acdccdcbbcdccdca",
+    "acdcbcdccdcbcdca",
+    "abcbbbcddcbbbcba",
+    "abbbbbbccbbbbbba",
+    "abeeeeeeeeeeeeea",
+    "affffffffffffffa",
+    "aaaaaaaaaaaaaaaa",
     "................",
     "................",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "roof.1",
+    "c": "gem.2",
+    "d": "white.0",
+    "e": "gem.3",
+    "f": "roof.0"
+   }
   }
  ]
 }

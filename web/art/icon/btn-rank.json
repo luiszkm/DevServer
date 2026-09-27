@@ -1,9 +1,63 @@
 {
-  "name": "btn-rank",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "RANK: the gold trophy.",
-  "layers": [
-    {"use": "ic-trophy.json"}
-  ]
+ "name": "btn-rank",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1410,116,48,42",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    ".......aa.......",
+    "......aba.......",
+    "....a..aa..a....",
+    ".aa.aa.acaaa.aa.",
+    ".adaeeafgheeaia.",
+    ".aijhikflimjnma.",
+    "..amegolppmqma..",
+    "..appfbmrppmma..",
+    "..asmffsepmma...",
+    "...aeeeeeeeta...",
+    "....aeeeuqqa....",
+    "....aaaaaaaa....",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "av-hair-loiro.3",
+    "c": "av-eyes-mel.2",
+    "d": "av-top-mostarda.2",
+    "e": "av-eyes-mel.1",
+    "f": "av-skin-golden.2",
+    "g": "gold.2",
+    "h": "av-top-mostarda",
+    "i": "gold.1",
+    "j": "av-hair-castanho.1",
+    "k": "skin.2",
+    "l": "lamp.2",
+    "m": "lamp",
+    "n": "av-eyes-mel",
+    "o": "av-skin-golden.3",
+    "p": "lamp.1",
+    "q": "gold",
+    "r": "bronze.2",
+    "s": "wood.4",
+    "t": "av-hair-ruivo.1",
+    "u": "av-skin-golden"
+   }
+  },
+  {
+   "use": "ic-trophy.json",
+   "clip": [
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ ]
 }

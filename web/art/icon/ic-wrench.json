@@ -1,19 +1,50 @@
 {
-  "name": "ic-wrench",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "A steel wrench, open jaw at the top-right.",
-  "layers": [
-    {"line": [4, 12, 10, 6], "color": "metal.2"},
-    {"line": [3, 12, 10, 5], "color": "metal.2"},
-    {"line": [4, 13, 11, 6], "color": "metal.1"},
-    {"ellipse": [11, 4, 2, 2], "color": "metal.2"},
-    {"rect": [11, 2, 2, 2], "color": null},
-    {"rect": [12, 4, 1, 1], "color": null},
-    {"ellipse": [3, 12, 1, 1], "color": "metal.2"},
-    {"rect": [10, 3, 1, 1], "color": "metal.3"},
-    {"rect": [9, 4, 1, 1], "color": "metal.3"},
-    {"rect": [5, 10, 1, 1], "color": "metal.3"},
-    {"outline": "ink"}
-  ]
+ "name": "ic-wrench",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 732,116,36,48",
+ "layers": [
+  {
+   "grid": [
+    "...aaa..aaaa....",
+    "...aa..abbca....",
+    "..a.aa.adda.....",
+    "..a.aa..aefa..a.",
+    "....a...aaa.a.a.",
+    "....aa......aaa.",
+    "...agaaaaaaaha..",
+    "....a.aia.aia...",
+    "....a.aia.aja...",
+    "....aakaa.ala...",
+    ".....aa.a..a....",
+    "....a.aaaaaa....",
+    "....aamnompqa...",
+    "...aaaaaaaaaaa..",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "av-top-verde.3",
+    "c": "av-top-verde.2",
+    "d": "av-top-grafite.1",
+    "e": "av-eyes-cinza",
+    "f": "roof.2",
+    "g": "dirt.2",
+    "h": "av-tone-morena.1",
+    "i": "denim.3",
+    "j": "ui.5",
+    "k": "ui.4",
+    "l": "metal",
+    "m": "av-bottom-cinza.2",
+    "n": "av-bottom-cinza.3",
+    "o": "av-top-branco",
+    "p": "metal.2",
+    "q": "av-hair-grisalho.2"
+   }
+  }
+ ]
 }

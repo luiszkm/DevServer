@@ -1,18 +1,44 @@
 {
-  "name": "ic-laptop",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "A grey laptop with a blue-lit screen (badges row 3).",
-  "layers": [
-    {"rect": [2, 3, 12, 8], "color": "ink"},
-    {"rect": [3, 4, 10, 6], "color": "ink.1"},
-    {"line": [4, 8, 7, 5], "color": "net.2"},
-    {"rect": [8, 5, 1, 1], "color": "net.3"},
-    {"rect": [9, 7, 2, 1], "color": "code.2"},
-    {"rect": [4, 5, 1, 1], "color": "sky.3"},
-    {"rect": [1, 11, 14, 2], "color": "metal.2"},
-    {"rect": [1, 11, 14, 1], "color": "metal.3"},
-    {"rect": [6, 12, 4, 1], "color": "metal.1"},
-    {"outline": "ink"}
-  ]
+ "name": "ic-laptop",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1282,112,50,48",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    ".......a........",
+    ".......aa.......",
+    "......abca......",
+    "......adea......",
+    "..aaaaddecaaa...",
+    "..adddcceeeeea..",
+    "..afeeccegfha...",
+    "...aieccgiha....",
+    "....acjiigha....",
+    "....acgiiiia....",
+    "....aghakiia....",
+    "...aeha.aahha...",
+    "....aa....aa....",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "lamp.3",
+    "c": "av-skin-golden.2",
+    "d": "av-skin-golden.3",
+    "e": "lamp.2",
+    "f": "gold.1",
+    "g": "gold.2",
+    "h": "lamp",
+    "i": "lamp.1",
+    "j": "skin.2",
+    "k": "av-hair-ruivo.2"
+   }
+  }
+ ]
 }

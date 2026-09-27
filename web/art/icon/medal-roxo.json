@@ -1,9 +1,57 @@
 {
-  "name": "medal-roxo",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "Medal roxo: the rosette in the slime ramp.",
-  "layers": [
-    {"use": "_medal.json", "recolor": {"gold": "slime"}}
-  ]
+ "name": "medal-roxo",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1406,234,48,56",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "......aaaa......",
+    "...aaabcccaa....",
+    "...adefgffeha...",
+    "..ahegijjgfka...",
+    "..acgjjddiiela..",
+    "..acghifgieefa..",
+    "..aclfjhhheefa..",
+    "..ahcllkcheea...",
+    "...afckccclga...",
+    "....almhmmla....",
+    "....annnnooa....",
+    "....aflacfga....",
+    "...aaaa.amaa....",
+    "......a..a......",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "white",
+    "c": "slime.1",
+    "d": "slime.2",
+    "e": "gap.2",
+    "f": "gap.6",
+    "g": "gap.8",
+    "h": "gap.9",
+    "i": "gap.12",
+    "j": "slime.4",
+    "k": "gap.1",
+    "l": "gap.4",
+    "m": "gap.11",
+    "n": "slime",
+    "o": "gap"
+   }
+  },
+  {
+   "use": "_medal.json",
+   "clip": [
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ ]
 }

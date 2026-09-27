@@ -5,44 +5,42 @@
   16,
   16
  ],
- "_design": "FRONTEND: a browser window with a blue title bar and a white page laid out as header, sidebar and content lines.",
- "legend": {
-  "o": "ink",
-  "B": "net.2",
-  "d": "net.0",
-  "r": "red.3",
-  "y": "gold.3",
-  "c": "code.3",
-  "h": "cloud.3",
-  "l": "cloud.2",
-  "b": "net.3",
-  "g": "cloud.1",
-  "t": "metal.2"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
     "................",
-    ".oooooooooooooo.",
-    ".oBrByBcBBBBBBo.",
-    ".oddddddddddddo.",
-    ".ohhhhhhhhhhhlo.",
-    ".ohbbbbbbbbbblo.",
-    ".ohhhhhhhhhhhlo.",
-    ".ohgggghtttthlo.",
-    ".ohgggghhhhhhlo.",
-    ".ohgggghttthhlo.",
-    ".ohgggghhhhhhlo.",
-    ".ohgggghtttthlo.",
-    ".ollllllllllllo.",
-    ".oooooooooooooo.",
+    ".aaaaaaaaaaaaaa.",
+    ".abcbdbebbbbbba.",
+    ".affffffffffffa.",
+    ".agggggggggggga.",
+    ".aghhhhhhhhhhga.",
+    ".agggggggggggga.",
+    ".agiiiigjjjjgka.",
+    ".akllllkkkkkkia.",
+    ".akllllkmmmkkia.",
+    ".akllllkkkkkkia.",
+    ".akllllkmmmmkia.",
+    ".aiiiiiiiiiiiia.",
+    ".aaaaaaaaaaaaaa.",
     "................",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "net.3",
+    "c": "red.4",
+    "d": "gold.4",
+    "e": "code.4",
+    "f": "net.1",
+    "g": "cloud.3",
+    "h": "net.4",
+    "i": "cloud.1",
+    "j": "metal.2",
+    "k": "cloud.2",
+    "l": "cloud.0",
+    "m": "metal.1"
+   }
   }
  ]
 }

@@ -1,0 +1,48 @@
+{
+ "name": "ic-star",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1370,172,40,46",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "..aaaaaaaaa.....",
+    "..abcddddefa....",
+    "..abghiccejga...",
+    "..abgekkhhkla...",
+    "..abhhhhhheja...",
+    "..abghhhhigfa...",
+    "..afhellklhba...",
+    "..afmnhhhokba...",
+    "..abhhhhehifa...",
+    "..abiccgccjfa...",
+    "..abjjccccjfa...",
+    "..aaaaaaaaaaa...",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "ui.7",
+    "c": "cloud.1",
+    "d": "net.4",
+    "e": "metal.2",
+    "f": "av-top-branco.2",
+    "g": "metal.3",
+    "h": "ui.6",
+    "i": "av-eyes-cinza.3",
+    "j": "av-hair-grisalho.3",
+    "k": "av-eyes-cinza.2",
+    "l": "denim.3",
+    "m": "cloud",
+    "n": "av-bottom-cinza.2",
+    "o": "av-top-branco"
+   }
+  }
+ ]
+}

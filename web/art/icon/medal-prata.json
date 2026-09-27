@@ -1,9 +1,57 @@
 {
-  "name": "medal-prata",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "Medal prata: the rosette in the metal ramp.",
-  "layers": [
-    {"use": "_medal.json", "recolor": {"gold": "metal"}}
-  ]
+ "name": "medal-prata",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1216,234,48,58",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "......aaaa......",
+    "...aaabccdaa....",
+    "...aedfghfdga...",
+    "..agdgijkgeca...",
+    "..afgljkkkmffa..",
+    "..aeegkkkiccfa..",
+    "..acfekigiccfa..",
+    "...adfhcfgcca...",
+    "...aaedccchaa...",
+    ".....aiagga.....",
+    "....aca.anna....",
+    "....agoaagga....",
+    "....aaa..aaa....",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "white",
+    "c": "ui.5",
+    "d": "roof.3",
+    "e": "denim.3",
+    "f": "stone.3",
+    "g": "metal.2",
+    "h": "av-eyes-cinza.2",
+    "i": "ui.6",
+    "j": "av-hair-grisalho.3",
+    "k": "metal.3",
+    "l": "av-top-branco.2",
+    "m": "av-top-branco.1",
+    "n": "ui.4",
+    "o": "av-skin-shadow.2"
+   }
+  },
+  {
+   "use": "_medal.json",
+   "clip": [
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ ]
 }
