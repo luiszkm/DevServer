@@ -1,0 +1,56 @@
+{
+ "name": "office-gaveteiro",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "GAVETEIRO: the moveis tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 770,483,72,72 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "....abcbbbbd....",
+    "....eaccccffe...",
+    "....ffbgfhfff...",
+    "...iiaaaacccf...",
+    "...ijkblmbbnc...",
+    "...jjbbbkkbnh...",
+    "...ofhgoibboo...",
+    "....bcfbbbfbf...",
+    "....bkklmkkkb...",
+    "....kkokkkopg...",
+    "...qqaaaaaabg...",
+    "....okbrekkkf...",
+    "....bkks.kkkf...",
+    "....bkoookkkk...",
+    "................"
+   ],
+   "legend": {
+    "a": "stone.3",
+    "b": "ui.4",
+    "c": "ui.5",
+    "d": "av-top-grafite.3",
+    "e": "av-bottom-cinza.2",
+    "f": "roof.3",
+    "g": "stone.2",
+    "h": "metal.1",
+    "i": "metal",
+    "j": "roof.1",
+    "k": "denim.1",
+    "l": "av-eyes-cinza.1",
+    "m": "av-hair-grisalho.1",
+    "n": "av-top-azul.1",
+    "o": "roof.2",
+    "p": "av-top-azul",
+    "q": "stone.1",
+    "r": "hoodie.3",
+    "s": "av-top-grafite.2"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

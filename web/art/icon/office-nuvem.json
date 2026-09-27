@@ -1,0 +1,53 @@
+{
+ "name": "office-nuvem",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "NUVEM: the tecnologias tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 743,763,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "................",
+    ".....abcd.......",
+    "....efgghd......",
+    "....efggbdi.....",
+    "..hjdeggeddk....",
+    ".affejeedhbcd...",
+    ".efbeeedlfged...",
+    ".ceeecjdceedm...",
+    ".kjdddmmddmdn...",
+    "..okknoponnn....",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "cloud",
+    "b": "ui.7",
+    "c": "gem.3",
+    "d": "net.2",
+    "e": "net.4",
+    "f": "white",
+    "g": "gem.4",
+    "h": "sky.4",
+    "i": "sky",
+    "j": "net.3",
+    "k": "sky.3",
+    "l": "av-eyes-azul.3",
+    "m": "gem.2",
+    "n": "gem.1",
+    "o": "sky.2",
+    "p": "sky.1"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

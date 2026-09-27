@@ -1,0 +1,47 @@
+{
+ "name": "office-sofa",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "SOFÁ: the moveis tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 868,365,72,72 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "........aa......",
+    "..bcddcdedbbcb..",
+    "..ffffgfggffff..",
+    ".ahfffgffffffi..",
+    ".b.iiiiaiiifi.c.",
+    ".f.iffffifffi.f.",
+    ".ffbcedbcddbbbf.",
+    ".fiiiiiiffiiiif.",
+    ".ihhhhhihihhhhi.",
+    ".hhiiiiihhhiihi.",
+    ".j............j.",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "gem",
+    "b": "av-top-azul.2",
+    "c": "av-eyes-azul.1",
+    "d": "av-top-azul.3",
+    "e": "net.1",
+    "f": "net",
+    "g": "av-hair-azul.1",
+    "h": "av-eyes-azul",
+    "i": "av-hair-azul",
+    "j": "av-eyes-preto"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

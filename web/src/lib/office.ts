@@ -1,4 +1,4 @@
-import type { Catalog, OfficeBonus, OfficeLevel, Player, Price } from "./types";
+import type { Catalog, OfficeBonus, OfficeLevel, OfficeTemplate, Player, Price } from "./types";
 
 export type OfficeStats = { count: number; comfort: number; xp: number; deploy: number; spregen: number };
 
@@ -38,4 +38,17 @@ export function furnitureBonus(b: OfficeBonus): string {
 /** What removing a piece gives back: half the price, rounded down, in its currency. */
 export function refundText(p: Price): string {
   return `+${Math.floor(p.amount / 2)} ${p.currency === "gems" ? "GEMS" : "COINS"}`;
+}
+
+/** A template's price with an empty room, per currency: "270C" or "380C + 60G". */
+export function templatePrice(catalog: Catalog, t: OfficeTemplate): string {
+  const total = { coins: 0, gems: 0 };
+  for (const piece of t.pieces) {
+    const f = catalog.office.furniture.find((x) => x.id === piece.furniture);
+    if (f) total[f.price.currency] += f.price.amount;
+  }
+  const parts: string[] = [];
+  if (total.coins) parts.push(`${total.coins}C`);
+  if (total.gems) parts.push(`${total.gems}G`);
+  return parts.join(" + ");
 }

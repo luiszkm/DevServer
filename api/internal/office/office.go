@@ -122,3 +122,96 @@ func (h *Handlers) Remove(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	})
 }
+
+// officeComfort sums the comfort of the installed catalog furniture; an id the catalog no longer
+// has adds nothing.
+func officeComfort(cat *catalog.Catalog, office map[string][]*string) int {
+	sum := 0
+	for _, cells := range office {
+		for _, id := range cells {
+			if id == nil {
+				continue
+			}
+			if f, ok := cat.FurnitureItem(*id); ok {
+				sum += f.Comfort
+			}
+		}
+	}
+	return sum
+}
+
+// SetLight switches the room lighting to a catalog light the office's comfort has unlocked.
+func (h *Handlers) SetLight(w http.ResponseWriter, r *http.Request) error {
+	var in struct {
+		Light string `json:"light"`
+	}
+	if err := httpx.DecodeJSON(r, &in); err != nil {
+		return err
+	}
+	l, ok := h.Catalog.Light(in.Light)
+	if !ok {
+		return httpx.ErrUnknownLight
+	}
+	return h.mutate(w, r, func(ctx context.Context, tx pgx.Tx, p *player.Player) error {
+		if officeComfort(h.Catalog, p.Office) < l.Comfort {
+			return httpx.ErrLightLocked
+		}
+		p.OfficeLight = l.ID
+		return nil
+	})
+}
+
+// planTemplate decides, cell by cell, what applying t to office installs and what it costs per
+// currency: an empty cell gets its piece, a cell already holding that piece is skipped, and any
+// other occupant blocks the whole template.
+func planTemplate(cat *catalog.Catalog, t catalog.OfficeTemplate, office map[string][]*string) ([]catalog.TemplatePiece, map[string]int, error) {
+	var installs []catalog.TemplatePiece
+	cost := map[string]int{}
+	for _, piece := range t.Pieces {
+		f, ok := cat.FurnitureItem(piece.Furniture)
+		if !ok {
+			return nil, nil, httpx.ErrUnknownFurniture
+		}
+		switch current := office[piece.Zone][piece.Position]; {
+		case current == nil:
+			installs = append(installs, piece)
+			cost[f.Price.Currency] += f.Price.Amount
+		case *current != piece.Furniture:
+			return nil, nil, httpx.ErrCellOccupied
+		}
+	}
+	return installs, cost, nil
+}
+
+// ApplyTemplate buys and installs every piece of a layout template the room still lacks, all or
+// nothing; coins are checked before gems.
+func (h *Handlers) ApplyTemplate(w http.ResponseWriter, r *http.Request) error {
+	var in struct {
+		Template string `json:"template"`
+	}
+	if err := httpx.DecodeJSON(r, &in); err != nil {
+		return err
+	}
+	t, ok := h.Catalog.Template(in.Template)
+	if !ok {
+		return httpx.ErrUnknownTemplate
+	}
+	return h.mutate(w, r, func(ctx context.Context, tx pgx.Tx, p *player.Player) error {
+		installs, cost, err := planTemplate(h.Catalog, t, p.Office)
+		if err != nil {
+			return err
+		}
+		for _, currency := range []string{"coins", "gems"} {
+			if err := player.Pay(p, catalog.Price{Currency: currency, Amount: cost[currency]}); err != nil {
+				return err
+			}
+		}
+		for _, piece := range installs {
+			if _, err := tx.Exec(ctx, `INSERT INTO player_office (player_id, zone, position, furniture_id) VALUES ($1, $2, $3, $4)`,
+				p.ID, piece.Zone, piece.Position, piece.Furniture); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+}

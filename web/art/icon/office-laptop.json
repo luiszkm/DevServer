@@ -1,0 +1,62 @@
+{
+ "name": "office-laptop",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "LAPTOP: the moveis tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1058,247,72,72 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "....ababc..a....",
+    "....addeefgh....",
+    "....aiffjkdl....",
+    "....bfffmddln...",
+    "....odmdpeeh....",
+    "....cqqcrrst....",
+    "...hqqqrublb....",
+    "..albqgviwor....",
+    "..llllaxllo.....",
+    ".....yrqbc......",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-hair-grisalho.2",
+    "b": "av-top-branco",
+    "c": "av-bottom-cinza.3",
+    "d": "net",
+    "e": "av-top-azul.1",
+    "f": "av-top-azul.2",
+    "g": "denim.3",
+    "h": "av-top-branco.1",
+    "i": "ui.5",
+    "j": "av-eyes-azul.1",
+    "k": "sky.1",
+    "l": "av-eyes-cinza.3",
+    "m": "sky",
+    "n": "roof.2",
+    "o": "metal.2",
+    "p": "av-hair-azul",
+    "q": "av-eyes-cinza.2",
+    "r": "av-bottom-cinza.2",
+    "s": "stone.3",
+    "t": "metal.3",
+    "u": "av-hair-grisalho.1",
+    "v": "av-skin-shadow.1",
+    "w": "av-skin-shadow-hair.3",
+    "x": "av-hair-grisalho.3",
+    "y": "metal.1"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

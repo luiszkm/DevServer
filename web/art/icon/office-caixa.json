@@ -1,0 +1,58 @@
+{
+ "name": "office-caixa",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CAIXA: the decoracoes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1270,490,68,68 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "......aaa.......",
+    "...bbcdaaadef...",
+    "...eegddagehi...",
+    "...ffjaegklli...",
+    "..mndoohjillp...",
+    "..mfaaapdllii...",
+    "..qjrsnoblolp...",
+    "...tcoroelolp...",
+    "...crnjodlfl....",
+    ".....ounbo......",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-tone-parda.1",
+    "b": "av-hair-castanho.3",
+    "c": "wood.3",
+    "d": "skin",
+    "e": "av-tone-morena.1",
+    "f": "av-tone-negra.1",
+    "g": "av-tone-parda.2",
+    "h": "av-tone-retinta.2",
+    "i": "av-tone-retinta.1",
+    "j": "av-hair-castanho.2",
+    "k": "av-tone-retinta.3",
+    "l": "soil.3",
+    "m": "av-hair-castanho",
+    "n": "av-tone-morena",
+    "o": "bronze",
+    "p": "av-hair-castanho.1",
+    "q": "av-tone-negra",
+    "r": "bronze.1",
+    "s": "wood.4",
+    "t": "av-eyes-castanho.1",
+    "u": "av-tone-parda"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

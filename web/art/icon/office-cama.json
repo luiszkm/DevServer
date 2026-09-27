@@ -1,0 +1,64 @@
+{
+ "name": "office-cama",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CAMA: the moveis tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1058,365,72,72 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "......abc.......",
+    "......deeeeeaf..",
+    "......eghigjekc.",
+    ".....lmniiinj.o.",
+    "....jgnpnnjmmge.",
+    "...jjjjjmjggnqm.",
+    ".mjjjjjjjjjmemk.",
+    ".jjnnnjjjjjrreo.",
+    ".essmjqqjtrrd...",
+    ".eerssrumrrvw...",
+    ".ccaerrrurv.....",
+    ".xxccayyev......",
+    ".......zcA......",
+    "................"
+   ],
+   "legend": {
+    "a": "roof.3",
+    "b": "ui.4",
+    "c": "roof.2",
+    "d": "denim.1",
+    "e": "av-top-azul.1",
+    "f": "hoodie.2",
+    "g": "metal.2",
+    "h": "av-hair-grisalho.3",
+    "i": "metal.3",
+    "j": "av-top-azul.3",
+    "k": "av-top-azul",
+    "l": "av-top-branco",
+    "m": "av-top-azul.2",
+    "n": "ui.6",
+    "o": "roof",
+    "p": "av-eyes-cinza.3",
+    "q": "av-skin-shadow.2",
+    "r": "av-hair-azul",
+    "s": "av-hair-azul.1",
+    "t": "av-eyes-azul.1",
+    "u": "net",
+    "v": "av-skin-shadow-hair.2",
+    "w": "roof.1",
+    "x": "ink.1",
+    "y": "av-skin-shadow",
+    "z": "av-top-grafite",
+    "A": "av-hair-preto"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

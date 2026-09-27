@@ -1,0 +1,55 @@
+{
+ "name": "office-pc",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "PC: the tecnologias tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 838,653,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    ".....aabaacade..",
+    "...eacaeeffdbg..",
+    "...e.g.g.higbg..",
+    "...iefggjkcggg..",
+    "...a.ggglkcbbg..",
+    "...acbbg..ibbg..",
+    "...aimnopiabbg..",
+    ".....ooo..cbbg..",
+    "...e..oqj.bggg..",
+    "...bgggbj.cggg..",
+    "...bomjll.qbgg..",
+    "...b.o.or.cggg..",
+    "................"
+   ],
+   "legend": {
+    "a": "stone.3",
+    "b": "roof.3",
+    "c": "metal.1",
+    "d": "av-hair-grisalho.1",
+    "e": "av-bottom-cinza.2",
+    "f": "av-eyes-cinza.2",
+    "g": "ui.4",
+    "h": "av-eyes-preto.3",
+    "i": "av-eyes-cinza.1",
+    "j": "denim.2",
+    "k": "av-bottom-cinza.1",
+    "l": "av-top-azul.1",
+    "m": "denim.3",
+    "n": "roof.2",
+    "o": "denim.1",
+    "p": "net",
+    "q": "ui.5",
+    "r": "av-top-azul"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

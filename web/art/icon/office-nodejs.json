@@ -1,0 +1,50 @@
+{
+ "name": "office-nodejs",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "NODE.JS: the mascotes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1147,763,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "...a.....b......",
+    "...ccdeef.g.....",
+    "...heeeeff......",
+    "...eibefjfk.....",
+    "..lfffffifk.....",
+    "..lfefflffm.....",
+    "..lfffffffk.....",
+    "..fifffffmk.....",
+    "....mfffkk......",
+    "....k...k.......",
+    "....i...g.......",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "leaf.3",
+    "b": "av-top-verde.3",
+    "c": "leaf.2",
+    "d": "av-hair-verde.3",
+    "e": "code.3",
+    "f": "code.2",
+    "g": "leaf.1",
+    "h": "av-hair-verde.2",
+    "i": "code.1",
+    "j": "grass.1",
+    "k": "av-eyes-verde.1",
+    "l": "av-hair-verde.1",
+    "m": "av-eyes-verde.2"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

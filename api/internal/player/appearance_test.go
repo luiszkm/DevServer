@@ -50,3 +50,18 @@ func TestResolveAppearance_Rows(t *testing.T) {
 		}
 	}
 }
+
+// office-keyart C37 (own layer): one case per row of the light rule.
+func TestResolveLight_Rows(t *testing.T) {
+	cat := catalog.Default()
+	for _, tc := range []struct{ name, stored, want string }{
+		{"catalog light kept", "neon", "neon"},
+		{"first light kept", "natural", "natural"},
+		{"light outside the catalog falls back to the first", "sol", "natural"},
+		{"empty falls back to the first", "", "natural"},
+	} {
+		if got := player.ResolveLight(cat, tc.stored); got != tc.want {
+			t.Errorf("%s: ResolveLight(%q) = %q, want %q", tc.name, tc.stored, got, tc.want)
+		}
+	}
+}

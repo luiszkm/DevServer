@@ -1,0 +1,57 @@
+{
+ "name": "office-quadro",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "QUADRO: the decoracoes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1175,250,68,68 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "..abbbbbccbde...",
+    "..d..ff....fb...",
+    "..b..ff...ffb...",
+    "..d.fg..h.ifb...",
+    "..a.jk.l..l.b...",
+    "..a.mkinmo..b...",
+    "..p.fmq.....b...",
+    "..r.f.......b...",
+    "..sp......t.b...",
+    "..sppdddppppp...",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-hair-grisalho.1",
+    "b": "av-top-branco",
+    "c": "av-eyes-cinza.3",
+    "d": "av-bottom-cinza.3",
+    "e": "av-hair-grisalho.2",
+    "f": "denim",
+    "g": "grass.1",
+    "h": "leaf.3",
+    "i": "av-top-grafite.1",
+    "j": "av-top-verde.2",
+    "k": "leaf.2",
+    "l": "av-hair-verde.2",
+    "m": "av-top-azul",
+    "n": "av-top-verde.3",
+    "o": "code.1",
+    "p": "av-eyes-cinza.2",
+    "q": "hoodie.1",
+    "r": "metal.2",
+    "s": "av-bottom-cinza.2",
+    "t": "metal.1"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

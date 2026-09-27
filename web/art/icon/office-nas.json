@@ -1,0 +1,60 @@
+{
+ "name": "office-nas",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "NAS: the tecnologias tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 935,653,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    ".....a..........",
+    "...bcdefeca.....",
+    "..ghihaccaja....",
+    "..kffffdd.ff....",
+    "..k.dlmfnopf....",
+    "..e.fqdqqrff....",
+    "..e.cddddsde....",
+    "..etccffusce....",
+    "..etfffo..ef....",
+    "..ervvqqlofo....",
+    "..erqfqosott....",
+    "..w.oomssstt....",
+    "..ecfffffeve....",
+    "................"
+   ],
+   "legend": {
+    "a": "av-bottom-cinza.2",
+    "b": "av-eyes-cinza.1",
+    "c": "stone.3",
+    "d": "ui.5",
+    "e": "roof.3",
+    "f": "ui.4",
+    "g": "av-hair-grisalho",
+    "h": "av-eyes-cinza.2",
+    "i": "metal.2",
+    "j": "av-top-branco",
+    "k": "av-bottom-cinza.1",
+    "l": "denim.3",
+    "m": "av-top-azul.2",
+    "n": "av-top-azul.3",
+    "o": "denim.1",
+    "p": "stone.2",
+    "q": "denim.2",
+    "r": "av-top-azul",
+    "s": "av-top-azul.1",
+    "t": "roof.2",
+    "u": "net.1",
+    "v": "metal.1",
+    "w": "av-eyes-preto.3"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

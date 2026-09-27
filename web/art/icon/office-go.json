@@ -1,0 +1,61 @@
+{
+ "name": "office-go",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "GO: the mascotes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1425,657,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "....abccbde.....",
+    "...fghicihj.....",
+    "...kclmnlhd.....",
+    "...dbcopqgn.....",
+    "...nbbbrbcb.....",
+    "...abcbbcbb.....",
+    "...rbcbbbbso....",
+    "...tbbbbbbnu....",
+    "....nbbbas......",
+    ".....vwdxf......",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "sky.3",
+    "b": "gem.2",
+    "c": "net.3",
+    "d": "sky.1",
+    "e": "av-skin-neon",
+    "f": "av-bottom-caqui.2",
+    "g": "net.2",
+    "h": "ui.7",
+    "i": "net.4",
+    "j": "denim.3",
+    "k": "denim.2",
+    "l": "av-hair-grisalho.3",
+    "m": "metal.3",
+    "n": "sky.2",
+    "o": "metal.2",
+    "p": "av-tone-parda.2",
+    "q": "cloud",
+    "r": "av-skin-neon.1",
+    "s": "gem.1",
+    "t": "stone.3",
+    "u": "av-bottom-caqui.3",
+    "v": "av-bottom-cinza.3",
+    "w": "sky",
+    "x": "ui.4"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

@@ -1,0 +1,56 @@
+{
+ "name": "office-router",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "ROUTER: the tecnologias tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1025,653,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "...a......b.....",
+    "...c......c.....",
+    "...c......c.....",
+    "...d.cefghi.....",
+    "..cijjjjggie....",
+    ".aiijkkllgiia...",
+    ".ecciillliimi...",
+    ".njogiceecccp...",
+    ".nlqqnnkllqnp...",
+    "..hnnnnkknrs....",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "metal.2",
+    "b": "av-hair-grisalho.1",
+    "c": "stone.3",
+    "d": "denim.3",
+    "e": "av-bottom-cinza.2",
+    "f": "av-top-grafite.3",
+    "g": "roof.3",
+    "h": "roof.2",
+    "i": "ui.5",
+    "j": "ui.4",
+    "k": "av-top-azul.1",
+    "l": "denim.2",
+    "m": "av-eyes-cinza.2",
+    "n": "denim.1",
+    "o": "metal.1",
+    "p": "av-top-azul",
+    "q": "sky",
+    "r": "av-eyes-azul",
+    "s": "av-skin-shadow-hair.2"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

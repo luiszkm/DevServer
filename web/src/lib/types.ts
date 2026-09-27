@@ -28,6 +28,8 @@ export type Player = {
   skins: string[];
   /** Every catalog zone, each a list of its positions with the installed furniture id or null. */
   office: Record<string, (string | null)[]>;
+  /** The room lighting, always a catalog light id. */
+  officeLight: string;
   /** Every rack slot, with the installed component id or null. */
   rack: (string | null)[];
   /** Body type, picked at creation; only a redesign token changes it. */
@@ -172,8 +174,11 @@ export type OfficeBonus = { type: "xp" | "deploy" | "spregen"; amount: number };
 
 export type OfficeZone = { id: string; name: string; cells: number };
 
+export type OfficeCategory = { id: string; name: string };
+
 export type Furniture = {
   id: string;
+  category: string;
   name: string;
   glyph: string;
   color: string;
@@ -186,10 +191,21 @@ export type Furniture = {
 
 export type OfficeLevel = { min: number; name: string };
 
+/** A room lighting, free once the office's comfort reaches `comfort`. */
+export type OfficeLight = { id: string; name: string; comfort: number };
+
+export type TemplatePiece = { zone: string; position: number; furniture: string };
+
+/** A layout bought and installed at once; the api charges only the pieces the room lacks. */
+export type OfficeTemplate = { id: string; name: string; description: string; pieces: TemplatePiece[] };
+
 export type Office = {
   zones: OfficeZone[];
+  categories: OfficeCategory[];
   furniture: Furniture[];
   levels: OfficeLevel[];
+  lights: OfficeLight[];
+  templates: OfficeTemplate[];
   maxDeployCut: number;
 };
 

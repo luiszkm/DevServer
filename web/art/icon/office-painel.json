@@ -1,0 +1,58 @@
+{
+ "name": "office-painel",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "PAINEL: the tecnologias tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 838,763,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    ".abcccbbbbbbbd..",
+    ".c.effghhggggc..",
+    ".cgieeghgghfhb..",
+    ".cgjklghmneehc..",
+    ".cg..jghohppgc..",
+    ".cgepphggggqgc..",
+    ".r.ggg..ggsmgc..",
+    ".rgg..n..mgegr..",
+    ".rg.s.n.mmgegr..",
+    ".rgsghmnhhgtgr..",
+    ".r.gg..hg....r..",
+    "..rijirrrjuii...",
+    "................"
+   ],
+   "legend": {
+    "a": "av-bottom-cinza.2",
+    "b": "denim.3",
+    "c": "stone.3",
+    "d": "av-eyes-cinza.2",
+    "e": "sky",
+    "f": "sky.1",
+    "g": "gem",
+    "h": "av-eyes-azul",
+    "i": "denim.2",
+    "j": "ui.4",
+    "k": "av-bottom-cinza.1",
+    "l": "av-eyes-cinza.1",
+    "m": "av-skin-neon",
+    "n": "av-skin-neon.1",
+    "o": "av-top-azul.1",
+    "p": "net",
+    "q": "av-hair-azul",
+    "r": "ui.5",
+    "s": "av-eyes-verde.2",
+    "t": "sky.2",
+    "u": "roof.3"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

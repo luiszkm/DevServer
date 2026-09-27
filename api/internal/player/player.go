@@ -51,6 +51,8 @@ type Player struct {
 	// Office has every catalog zone as a key, each a list of its positions with the installed
 	// furniture id or null.
 	Office map[string][]*string `json:"office"`
+	// OfficeLight is the room lighting, always a catalog light (see ResolveLight).
+	OfficeLight string `json:"officeLight"`
 	// Rack has every catalog slot, with the installed component id or null.
 	Rack []*string `json:"rack"`
 	// Appearance has every avatar part as a key with the option worn (see ResolveAppearance).
@@ -128,7 +130,7 @@ func newPlayer(githubUserID int64, devName, class, body string) *Player {
 		SkillLevels: map[string]int{}, Loadout: emptyLoadout(),
 		Inventory: []catalog.ItemQuantity{},
 		Gear:      []string{}, Equipment: emptyEquipment(), Skins: []string{DefaultSkin},
-		Office: emptyOffice(), Rack: emptyRack(),
+		Office: emptyOffice(), OfficeLight: ResolveLight(catalog.Default(), ""), Rack: emptyRack(),
 		Appearance: ResolveAppearance(catalog.Default(), body, nil), Looks: []string{}, picks: map[string]string{},
 		Progress: map[string]int{}, Notebook: emptyNotebook(),
 	}
@@ -191,13 +193,13 @@ func SuggestDevName(login string) string {
 }
 
 const columns = `id, github_user_id, dev_name, class, level, xp, xp_max, hp, hp_max,
-	coins, gems, skill_points, region, skin, appearance, body, power, notebook_level`
+	coins, gems, skill_points, region, skin, appearance, body, power, notebook_level, office_light`
 
 func scan(row pgx.Row) (*Player, error) {
 	p := &Player{}
 	err := row.Scan(&p.ID, &p.GithubUserID, &p.DevName, &p.Class, &p.Level, &p.XP, &p.XPMax,
 		&p.HP, &p.HPMax, &p.Coins, &p.Gems, &p.SkillPoints, &p.Region, &p.Skin, &p.picks, &p.Body, &p.Power,
-		&p.Notebook.Level)
+		&p.Notebook.Level, &p.OfficeLight)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, httpx.ErrPlayerNotFound
 	}
@@ -208,6 +210,7 @@ func scan(row pgx.Row) (*Player, error) {
 		p.picks = map[string]string{}
 	}
 	p.Appearance = ResolveAppearance(catalog.Default(), p.Body, p.picks)
+	p.OfficeLight = ResolveLight(catalog.Default(), p.OfficeLight)
 	return p, nil
 }
 
@@ -260,6 +263,15 @@ func LoadLooks(ctx context.Context, q querier, p *Player) error {
 	sort.SliceStable(looks, func(i, j int) bool { return cat.AvatarOptionPosition(looks[i]) < cat.AvatarOptionPosition(looks[j]) })
 	p.Looks = looks
 	return nil
+}
+
+// ResolveLight is the stored lighting while the catalog still has it, and the catalog's first
+// light otherwise, so removing a light never breaks a player.
+func ResolveLight(cat *catalog.Catalog, id string) string {
+	if _, ok := cat.Light(id); ok {
+		return id
+	}
+	return cat.Office.Lights[0].ID
 }
 
 // LoadOffice reads the installed furniture into p.Office. A row outside the catalog's zones is
@@ -472,9 +484,9 @@ func WithLocked(ctx context.Context, pool *pgxpool.Pool, githubUserID int64, fn 
 	}
 	_, err = tx.Exec(ctx, `UPDATE players SET level = $2, xp = $3, xp_max = $4, hp = $5, hp_max = $6,
 		coins = $7, gems = $8, skill_points = $9, region = $10, skin = $11, appearance = $12, body = $13,
-		power = $14, notebook_level = $15 WHERE id = $1`,
+		power = $14, notebook_level = $15, office_light = $16 WHERE id = $1`,
 		p.ID, p.Level, p.XP, p.XPMax, p.HP, p.HPMax, p.Coins, p.Gems, p.SkillPoints, p.Region, p.Skin, p.picks, p.Body,
-		p.Power, p.Notebook.Level)
+		p.Power, p.Notebook.Level, p.OfficeLight)
 	if err != nil {
 		return nil, err
 	}

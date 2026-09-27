@@ -1,0 +1,50 @@
+{
+ "name": "office-docker",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "DOCKER: the mascotes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1425,763,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "......ab........",
+    "....cdef........",
+    "...ebf.ae.be....",
+    "...ggaahhieef...",
+    "..jjjkjkdde.....",
+    "..ddfkddeelm....",
+    "..eddddeelg.....",
+    "...eeeellg......",
+    "....ggga........",
+    "....f...........",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-eyes-azul.1",
+    "b": "sky.1",
+    "c": "av-eyes-azul",
+    "d": "sky.3",
+    "e": "gem.1",
+    "f": "sky.2",
+    "g": "av-hair-azul.1",
+    "h": "net",
+    "i": "gem",
+    "j": "net.2",
+    "k": "gem.2",
+    "l": "av-hair-azul.2",
+    "m": "av-hair-azul"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

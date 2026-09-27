@@ -1,0 +1,56 @@
+{
+ "name": "office-relogio",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "RELÓGIO: the decoracoes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1360,250,68,68 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    ".........aaa....",
+    "................",
+    "................",
+    "....bc..dd......",
+    "...b.aeaf.c.....",
+    "..b.gahigg......",
+    ".ccajklbmg.n....",
+    ".nnmajobinhg....",
+    ".nnaaangii.g....",
+    "..caiaaaiigg....",
+    "..cnpaqajig.....",
+    "...gngb..g......",
+    ".....rnrs.......",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "gem",
+    "b": "av-bottom-cinza.2",
+    "c": "roof.3",
+    "d": "stone.3",
+    "e": "denim.3",
+    "f": "denim.2",
+    "g": "denim.1",
+    "h": "av-eyes-cinza.2",
+    "i": "av-top-azul",
+    "j": "av-eyes-azul",
+    "k": "av-top-azul.1",
+    "l": "av-bottom-cinza.3",
+    "m": "av-top-branco",
+    "n": "ui.4",
+    "o": "av-top-branco.1",
+    "p": "net",
+    "q": "ui.5",
+    "r": "roof.2",
+    "s": "roof.1"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

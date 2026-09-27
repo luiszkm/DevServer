@@ -70,6 +70,9 @@ var (
 	ErrWrongZoneWall       = &Error{http.StatusUnprocessableEntity, "wrong_zone", "esse móvel vai na parede"}
 	ErrWrongZoneFloor      = &Error{http.StatusUnprocessableEntity, "wrong_zone", "esse móvel vai no piso"}
 	ErrCellOccupied        = &Error{http.StatusConflict, "cell_occupied", "o espaço já tem um móvel"}
+	ErrUnknownLight        = &Error{http.StatusUnprocessableEntity, "unknown_light", "luz desconhecida"}
+	ErrLightLocked         = &Error{http.StatusConflict, "light_locked", "falta conforto para essa luz"}
+	ErrUnknownTemplate     = &Error{http.StatusUnprocessableEntity, "unknown_template", "layout desconhecido"}
 	ErrRackFull            = &Error{http.StatusConflict, "rack_full", "rack cheio. remova um componente antes"}
 	ErrUnknownComponent    = &Error{http.StatusUnprocessableEntity, "unknown_component", "componente desconhecido"}
 	ErrUnknownSlot         = &Error{http.StatusUnprocessableEntity, "unknown_slot", "slot do rack desconhecido"}

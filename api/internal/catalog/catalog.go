@@ -199,13 +199,14 @@ type OfficeZone struct {
 }
 
 type Furniture struct {
-	ID      string `json:"id"`
-	Name    string `json:"name"`
-	Glyph   string `json:"glyph"`
-	Color   string `json:"color"`
-	Zone    string `json:"zone"`
-	Price   Price  `json:"price"`
-	Comfort int    `json:"comfort"`
+	ID       string `json:"id"`
+	Category string `json:"category"`
+	Name     string `json:"name"`
+	Glyph    string `json:"glyph"`
+	Color    string `json:"color"`
+	Zone     string `json:"zone"`
+	Price    Price  `json:"price"`
+	Comfort  int    `json:"comfort"`
 	// Bonus is nil for furniture that only adds comfort; its type is "xp", "deploy" or "spregen".
 	Bonus       *Bonus `json:"bonus"`
 	Description string `json:"description"`
@@ -216,10 +217,42 @@ type OfficeLevel struct {
 	Name string `json:"name"`
 }
 
+// OfficeCategory groups the furniture catalog; it decides nothing but the screen's filter.
+type OfficeCategory struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// OfficeLight is a room lighting, free once the office's comfort reaches Comfort.
+type OfficeLight struct {
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Comfort int    `json:"comfort"`
+}
+
+// TemplatePiece is one furniture of a layout template at its cell.
+type TemplatePiece struct {
+	Zone      string `json:"zone"`
+	Position  int    `json:"position"`
+	Furniture string `json:"furniture"`
+}
+
+// OfficeTemplate is a layout bought and installed at once.
+type OfficeTemplate struct {
+	ID          string          `json:"id"`
+	Name        string          `json:"name"`
+	Description string          `json:"description"`
+	Pieces      []TemplatePiece `json:"pieces"`
+}
+
 type Office struct {
-	Zones     []OfficeZone  `json:"zones"`
-	Furniture []Furniture   `json:"furniture"`
-	Levels    []OfficeLevel `json:"levels"`
+	Zones      []OfficeZone     `json:"zones"`
+	Categories []OfficeCategory `json:"categories"`
+	Furniture  []Furniture      `json:"furniture"`
+	Levels     []OfficeLevel    `json:"levels"`
+	// Lights is in unlock order; the first one is every player's default.
+	Lights    []OfficeLight    `json:"lights"`
+	Templates []OfficeTemplate `json:"templates"`
 	// MaxDeployCut caps the summed "deploy" bonus, in percent.
 	MaxDeployCut int `json:"maxDeployCut"`
 }
@@ -709,6 +742,24 @@ func (c *Catalog) Zone(id string) (OfficeZone, bool) {
 		}
 	}
 	return OfficeZone{}, false
+}
+
+func (c *Catalog) Light(id string) (OfficeLight, bool) {
+	for _, l := range c.Office.Lights {
+		if l.ID == id {
+			return l, true
+		}
+	}
+	return OfficeLight{}, false
+}
+
+func (c *Catalog) Template(id string) (OfficeTemplate, bool) {
+	for _, t := range c.Office.Templates {
+		if t.ID == id {
+			return t, true
+		}
+	}
+	return OfficeTemplate{}, false
 }
 
 func (c *Catalog) FurnitureItem(id string) (Furniture, bool) {
