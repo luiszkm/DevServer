@@ -5,41 +5,39 @@
   16,
   16
  ],
- "_design": "MACBOOK PRO: an open silver laptop (metal ramp, like the hero's in the key art) with a dark terminal screen of green code lines.",
- "legend": {
-  "o": "ink",
-  "h": "metal.3",
-  "m": "metal.2",
-  "d": "metal.1",
-  "s": "ui.2",
-  "g": "code.3",
-  "G": "code.4",
-  "w": "net.4"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
     "................",
-    "..oooooooooooo..",
-    "..ohhhhhhhhhmo..",
-    "..ohwsssssssmo..",
-    "..ohsGgsggGsmo..",
-    "..ohssssssssmo..",
-    "..ohsggsgggsmo..",
-    "..ohssssssssmo..",
-    "..ohsGgsssssmo..",
-    "..ommmmmmmmmmo..",
-    ".oooooooooooooo.",
-    ".ohhhhhhhhhhhmo.",
-    ".ohdmdmdmdmddmo.",
-    ".oddddddddddddo.",
-    "..oooooooooooo..",
+    "..aaaaaaaaaaaa..",
+    "..abbbbbbbbbba..",
+    "..abcdddddddba..",
+    "..abdeedeeedba..",
+    "..abddddddddba..",
+    "..abdeedeeedba..",
+    "..abffffffffga..",
+    "..abfehfffffga..",
+    "..aiiiiiiiiiia..",
+    ".aaaaaaaaaaaaaa.",
+    ".agggggggggggia.",
+    ".agjijijijijjia.",
+    ".ajjjjjjjjjjjja.",
+    "..aaaaaaaaaaaa..",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "metal.3",
+    "c": "net.4",
+    "d": "ui.3",
+    "e": "code.4",
+    "f": "ui.2",
+    "g": "metal.2",
+    "h": "code.3",
+    "i": "metal.1",
+    "j": "metal.0"
+   }
   }
  ]
 }

@@ -1,21 +1,43 @@
 {
-  "name": "ic-database",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "RAM: a blue database of three stacked disks, lit top.",
-  "layers": [
-    {"ellipse": [8, 12, 5, 2], "color": "net.1"},
-    {"rect": [3, 10, 11, 2], "color": "net.1"},
-    {"ellipse": [8, 10, 5, 2], "color": "net.2"},
-    {"ellipse": [8, 8, 5, 2], "color": "net.1"},
-    {"rect": [3, 6, 11, 2], "color": "net.1"},
-    {"ellipse": [8, 6, 5, 2], "color": "net.2"},
-    {"ellipse": [8, 4, 5, 2], "color": "net.1"},
-    {"rect": [3, 3, 11, 1], "color": "net.1"},
-    {"ellipse": [8, 3, 5, 2], "color": "net.3"},
-    {"rect": [5, 2, 5, 1], "color": "net.4"},
-    {"rect": [3, 5, 1, 7], "color": "net.2"},
-    {"rect": [12, 6, 1, 6], "color": "net.0"},
-    {"outline": "ink"}
-  ]
+ "name": "ic-database",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1470,176,42,40",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "..a.............",
+    "..a........aa...",
+    "..a.......aba...",
+    "..a....a..aca...",
+    "..a...aba.ada...",
+    "..a...aefagda...",
+    "....a.adchbea...",
+    "..aaa.adcabda...",
+    "..aia.ada.aia...",
+    "..aia.aca.aia...",
+    "..aia.aia.aca...",
+    "..afa.afjacja...",
+    "...aa..aa.aaa...",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "av-skin-neon.2",
+    "c": "gem.2",
+    "d": "net.3",
+    "e": "gem.3",
+    "f": "sky.3",
+    "g": "av-skin-neon.1",
+    "h": "gem",
+    "i": "gap.13",
+    "j": "gem.1"
+   }
+  }
+ ]
 }

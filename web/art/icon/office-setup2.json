@@ -5,42 +5,40 @@
   16,
   16
  ],
- "_design": "SETUP 2 TELAS: two separate monitors side by side on one stand bar, build output (green) on the left, logs (blue) on the right; two screens, not the single wide gear-monitor.",
- "legend": {
-  "o": "ink",
-  "B": "metal.1",
-  "b": "net.1",
-  "g": "code.3",
-  "l": "net.3",
-  "L": "net.4",
-  "s": "metal.3",
-  "t": "metal.1",
-  "K": "ink.2"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
     "................",
     "................",
-    "oooooooooooooooo",
-    "oBBBBBBooBBBBBBo",
-    "oBKKKKBooBbbbbBo",
-    "oBKgggBooBbllbBo",
-    "oBKKKKBooBbbbbBo",
-    "oBKggKBooBblLbBo",
-    "oBKKKKBooBbbbbBo",
-    "oBKgggBooBbllbBo",
-    "oBBBBBBooBBBBBBo",
-    "oooooooooooooooo",
-    "....ostooosto...",
-    "..oooooooooooo..",
-    "..ossssssssstto.",
-    "..oooooooooooo.."
+    "aaaaaaaaaaaaaaaa",
+    "abbbbbbaabbbbbba",
+    "abccccbaabddddba",
+    "abceeebaabdffdba",
+    "abccccbaabddddba",
+    "abceecbaabdffdba",
+    "agccccgaaghhhhga",
+    "agciiigaaghjjhga",
+    "akkkkkkaakkkkkka",
+    "aaaaaaaaaaaaaaaa",
+    "....abkaaabka...",
+    "..aaaaaaaaaaaa..",
+    "..abbbbbbbbbkka.",
+    "..aaaaaaaaaaaa.."
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "metal.2",
+    "c": "ink.2",
+    "d": "net.2",
+    "e": "code.4",
+    "f": "net.4",
+    "g": "metal.1",
+    "h": "net.1",
+    "i": "code.3",
+    "j": "net.3",
+    "k": "metal.0"
+   }
   }
  ]
 }

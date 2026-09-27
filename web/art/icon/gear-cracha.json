@@ -5,41 +5,39 @@
   16,
   16
  ],
- "_design": "CRACHÁ DE ACESSO: a red lanyard in a V down to a metal clip holding a white plastic badge with a blue photo and two lines of text.",
- "legend": {
-  "o": "ink",
-  "r": "red.2",
-  "g": "metal.3",
-  "w": "white",
-  "c": "cloud.3",
-  "C": "cloud.2",
-  "n": "net.2",
-  "K": "stone.3"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
     "................",
-    "..oo........oo..",
-    "..oro......oro..",
-    "...oro....oro...",
-    "....oro..oro....",
-    ".....orooro.....",
-    "......oggo......",
-    "...oooooooooo...",
-    "...owcccccCCo...",
-    "...ocnnccccCo...",
-    "...ocnncKKcCo...",
-    "...ocnncccCCo...",
-    "...occcKKKCCo...",
-    "...oCCCCCCCCo...",
-    "...oooooooooo...",
+    "..aa........aa..",
+    "..aba......aba..",
+    "...aba....aba...",
+    "....aba..aba....",
+    ".....abaaba.....",
+    "......acca......",
+    "...aaaaaaaaaa...",
+    "...adeeeeeffa...",
+    "...aghhggggia...",
+    "...aghhgjjgia...",
+    "...aghhgggiia...",
+    "...agggjjjiia...",
+    "...aiiiiiiiia...",
+    "...aaaaaaaaaa...",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "red.4",
+    "c": "metal.3",
+    "d": "white.0",
+    "e": "cloud.3",
+    "f": "cloud.2",
+    "g": "cloud.1",
+    "h": "net.0",
+    "i": "cloud.0",
+    "j": "stone.1"
+   }
   }
  ]
 }

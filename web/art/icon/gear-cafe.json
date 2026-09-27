@@ -5,41 +5,36 @@
   16,
   16
  ],
- "_design": "CAFÉ EXPRESSO: a white ceramic mug of dark coffee with a crema rim and two wisps of steam, handle on the right.",
- "legend": {
-  "o": "ink",
-  "c": "cloud.2",
-  "h": "cloud.3",
-  "l": "cloud.2",
-  "m": "cloud.1",
-  "d": "cloud.0",
-  "K": "dirt.2",
-  "k": "wood.1"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
     "................",
-    "......o...o.....",
-    ".....oco.oco....",
-    "....oco.oco.....",
-    ".....oco.oco....",
-    "...oooooooooo...",
-    "...oKkkkkkkko...",
-    "...ohllllllmooo.",
-    "...ohllllllmomo.",
-    "...ohllllllmomo.",
-    "...ohllllllmomo.",
-    "...ohllllllmooo.",
-    "...ohlllllmmo...",
-    "....ohllmmdo....",
-    ".....oooooo.....",
+    "......a...a.....",
+    ".....aba.aba....",
+    "....aca.aca.....",
+    ".....aca.aca....",
+    "...aaaaaaaaaa...",
+    "...acccccccca...",
+    "...abddddddeaaa.",
+    "...abddddddeaea.",
+    "...affffffffafa.",
+    "...affffffffafa.",
+    "...affffffffaaa.",
+    "...affffffffa...",
+    "....agggggga....",
+    ".....aaaaaa.....",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "cloud.3",
+    "c": "white.0",
+    "d": "cloud.2",
+    "e": "cloud.1",
+    "f": "ink.2",
+    "g": "cloud.0"
+   }
   }
  ]
 }

@@ -1,9 +1,79 @@
 {
-  "name": "mob-slime-verde",
-  "category": "sprite",
-  "size": [32, 32],
-  "_design": "The slime in terminal green, facing left.",
-  "layers": [
-    {"use": "mob-slime.json", "recolor": {"slime": "code"}, "flip": "h"}
-  ]
+ "name": "mob-slime-verde",
+ "category": "sprite",
+ "size": [
+  32,
+  32
+ ],
+ "_from": "assests_keyart.png 692,906,58,48",
+ "layers": [
+  {
+   "grid": [
+    "................................",
+    "................................",
+    ".............aaaaa..............",
+    "............abcddda.............",
+    "............acefffcaa...........",
+    "..........aaddefghhgfaa.........",
+    ".........aidcdhhfghgggea........",
+    "........adddfhhhhhghjhfa........",
+    ".......aidiefgghhhgggklga.......",
+    "......acdiiggmghhhgggghgha......",
+    "......addihfgghhhhhhhhhhha......",
+    ".....adiiihhhhhhhheehhhhhha.....",
+    ".....adiihhhghhhhhhieehhhha.....",
+    ".....aidihhhfaaehhhhheaaehca....",
+    "....aiidehhha..ahhhhha..ahida...",
+    "....adddeehheaachhhhhnaadhhea...",
+    "...acddceehhhaadhhhhhnaaohha....",
+    "...acddceehha..ahhhhha..ahheaa..",
+    "...acddceehha..ahhhhha..ahhipa..",
+    "...acdddehhheaaehhqpha..ahhica..",
+    "...acdddihhhhhhhaarreeaaehhica..",
+    "...acddddihhhhha..apshhhhiiia...",
+    "...anidiiihhhhhhaaiiihhhiiica...",
+    "...aaciidihhhiiiiiiihhhiiidpa...",
+    ".....adiidddeiiiiiiiiiiiidca....",
+    ".....ascddcceeeeeeeeeeiicaa.....",
+    "......aappcnnnnttttnnnnca.......",
+    "........aaaaauttttnnnnaaa.......",
+    ".............aaaaaaaaa..........",
+    "................................",
+    "................................",
+    "................................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "white",
+    "c": "av-hair-verde.1",
+    "d": "code.1",
+    "e": "av-hair-verde.2",
+    "f": "leaf.3",
+    "g": "av-hair-verde.3",
+    "h": "code.3",
+    "i": "code.2",
+    "j": "cloud.2",
+    "k": "av-skin-golden-hair.2",
+    "l": "gold.4",
+    "m": "av-hair-grisalho.3",
+    "n": "leaf.1",
+    "o": "grass.1",
+    "p": "code",
+    "q": "av-top-verde",
+    "r": "av-hair-verde",
+    "s": "av-eyes-verde",
+    "t": "av-eyes-verde.1",
+    "u": "av-top-verde.1"
+   }
+  },
+  {
+   "use": "mob-slime.json",
+   "clip": [
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ ]
 }

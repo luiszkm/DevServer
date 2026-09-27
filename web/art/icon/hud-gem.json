@@ -5,40 +5,44 @@
   16,
   16
  ],
- "_design": "GEMS: the cut blue diamond of the key art HUD (gem ramp): a flat crown, a girdle line and a pointed pavilion.",
- "legend": {
-  "o": "ink",
-  "w": "white",
-  "h": "gem.4",
-  "L": "gem.3",
-  "l": "gem.2",
-  "m": "gem.1",
-  "d": "gem.0"
- },
+ "_from": "assests_keyart.png 1266,170,44,50",
  "layers": [
   {
    "grid": [
     "................",
     "................",
-    "...oooooooooo...",
-    "..owhLLLlllmmo..",
-    ".ohLLLLLllllmmo.",
-    ".oddddddddddddo.",
-    "..ohLLlllllmmo..",
-    "...ohLllllmmo...",
-    "....ohLllmmo....",
-    ".....oLlmmo.....",
-    "......olmo......",
-    ".......oo.......",
-    "................",
-    "................",
+    ".....aaaaa......",
+    "..aaabcdefaaaa..",
+    "..agddhceeijka..",
+    "..agfclcdeejka..",
+    "..agfmmkeeejka..",
+    "..ahdkkfeeinka..",
+    "..acefkfeeeea...",
+    "..ahddffeeioa...",
+    "...acdddeeea....",
+    "....affdneoa....",
+    ".....aaffaa.....",
+    ".......aa.......",
     "................",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink",
+    "b": "white",
+    "c": "net.3",
+    "d": "gap.7",
+    "e": "gem.1",
+    "f": "gem.2",
+    "g": "av-hair-azul.3",
+    "h": "net.2",
+    "i": "sky.2",
+    "j": "av-hair-azul.1",
+    "k": "gap.13",
+    "l": "av-skin-neon.3",
+    "m": "gem.3",
+    "n": "av-eyes-azul.1",
+    "o": "sky.3"
+   }
   }
  ]
 }

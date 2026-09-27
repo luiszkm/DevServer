@@ -1,24 +1,43 @@
 {
-  "name": "ic-lock",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "LOCK: a steel padlock, dark keyhole.",
-  "layers": [
-    {"grid": [
-      "....oooooo....",
-      "...ommmmmmo...",
-      "..omo....omo..",
-      "..omo....omo..",
-      "..omo....omo..",
-      "oooooooooooooo",
-      "ogggggggggggGo",
-      "ogggggoogggggo",
-      "ogggggoogggggo",
-      "ogggggooggggGo",
-      "oggggggggggGGo",
-      "oGGGGGGGGGGGGo",
-      "oooooooooooooo"
-    ], "at": [1, 2], "legend": {"o": "ink", "m": "metal.3", "g": "metal.2", "G": "metal.1"}},
-    {"rect": [2, 8, 1, 3], "color": "metal.3"}
-  ]
+ "name": "ic-lock",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1216,60,54,42",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "......aaaa......",
+    ".....abccda.....",
+    ".....acccbea....",
+    ".....accccfa....",
+    "...aagccccea....",
+    "..abcbbccdebaa..",
+    "..acchhbbfbcca..",
+    "..abhhhhddcccga.",
+    "..ahdhhhffccba..",
+    "..aeffffeeeeea..",
+    "...aeiiiijeea...",
+    "....aaaaaaaaa...",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "av-top-branco.3",
+    "c": "white",
+    "d": "av-top-branco.2",
+    "e": "metal.3",
+    "f": "cloud.1",
+    "g": "av-hair-grisalho.3",
+    "h": "ui.7",
+    "i": "ui.6",
+    "j": "av-eyes-cinza.3"
+   }
+  }
+ ]
 }

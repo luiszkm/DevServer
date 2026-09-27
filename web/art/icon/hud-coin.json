@@ -5,57 +5,50 @@
   16,
   16
  ],
- "_design": "COINS: the gold coin of the key art HUD, from the skill's coin example (gold ramp, lit top-left).",
- "legend": {
-  "o": "ink",
-  "d": "gold.0",
-  "m": "gold.1",
-  "b": "gold.2",
-  "l": "gold.3",
-  "w": "gold.4"
- },
+ "_from": "assests_keyart.png 1154,110,50,50",
  "layers": [
   {
    "grid": [
-    "....oooo",
-    "..oollll",
-    ".olllbbb",
-    ".olbbbbb",
-    "olbbmmmm",
-    "olbmbbbb",
-    "olbmbbdd",
-    "olbmbbdd",
-    "olbmbbdd",
-    "olbmbbbb",
-    "olbbmmmm",
-    ".odbbbbb",
-    ".oddbbbb",
-    "..oodddd",
-    "....oooo"
+    "................",
+    "................",
+    ".....aaaaaa.....",
+    "...aabcccdeaa...",
+    "..afghiiiijkia..",
+    "..aljimnompdkqa.",
+    "..arimstdiijtia.",
+    "..auimotqiijmia.",
+    "..auimidmtipma..",
+    ".asiiitiktjika..",
+    ".auiijmmmcjikja.",
+    "..aisijcjdtmda..",
+    "...atktttmmja...",
+    "....aittiica....",
+    ".....aaaaaa.....",
+    "................"
    ],
-   "mirror": "odd",
-   "at": [
-    0,
-    0
-   ]
-  },
-  {
-   "rect": [
-    3,
-    3,
-    1,
-    2
-   ],
-   "color": "gold.4"
-  },
-  {
-   "rect": [
-    4,
-    2,
-    2,
-    1
-   ],
-   "color": "gold.4"
+   "legend": {
+    "a": "ink",
+    "b": "white",
+    "c": "av-eyes-mel.1",
+    "d": "wood.4",
+    "e": "gold.3",
+    "f": "av-tone-morena.3",
+    "g": "av-eyes-mel.3",
+    "h": "av-hair-ruivo.1",
+    "i": "lamp",
+    "j": "av-hair-ruivo.2",
+    "k": "gold.2",
+    "l": "av-hair-loiro.2",
+    "m": "lamp.1",
+    "n": "av-skin-golden.3",
+    "o": "av-skin-golden.2",
+    "p": "bronze.2",
+    "q": "av-eyes-mel.2",
+    "r": "dirt.2",
+    "s": "lamp.2",
+    "t": "gold.1",
+    "u": "av-skin-golden.1"
+   }
   }
  ]
 }

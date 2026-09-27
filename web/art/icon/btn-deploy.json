@@ -1,9 +1,52 @@
 {
-  "name": "btn-deploy",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "DEPLOY: the deploy cloud.",
-  "layers": [
-    {"use": "ic-cloud.json"}
-  ]
+ "name": "btn-deploy",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 416,896,46,44",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    ".....aaaaaa.....",
+    "......abbca.....",
+    "....a.abbcda....",
+    "...aeafbbcgha...",
+    "..affibbbbbiia..",
+    "..aibbbbbbbbca..",
+    "..acbbbbbbbbca..",
+    "..acacbbbbcaaa..",
+    "...a.aibbca.....",
+    "....ajbbca......",
+    ".....abcca......",
+    ".....aaaaa......",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "code.3",
+    "c": "code.2",
+    "d": "av-hair-verde",
+    "e": "grass",
+    "f": "code.4",
+    "g": "leaf.1",
+    "h": "code",
+    "i": "av-hair-verde.3",
+    "j": "av-top-verde"
+   }
+  },
+  {
+   "use": "ic-cloud.json",
+   "clip": [
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ ]
 }

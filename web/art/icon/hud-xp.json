@@ -5,39 +5,37 @@
   16,
   16
  ],
- "_design": "XP: the green pawn of the key art LEVEL card (code ramp): round head over a domed body, lit top-left.",
- "legend": {
-  "o": "ink",
-  "w": "white",
-  "h": "code.4",
-  "l": "code.3",
-  "m": "code.2",
-  "d": "code.1"
- },
+ "_from": "assests_keyart.png 832,62,42,48",
  "layers": [
   {
    "grid": [
     "................",
-    "......oooo......",
-    ".....ohhllo.....",
-    "....ohwlllmo....",
-    "....ohllllmo....",
-    "....olllmmmo....",
-    ".....olmmdo.....",
-    "....oooooooo....",
-    "...ohhllllmmo...",
-    "..ohwllllllmmo..",
-    "..ohlllllllmmo..",
-    "..ollllllmmmdo..",
-    "..olllllmmmddo..",
-    "..oooooooooooo..",
+    "......aaaa......",
+    ".....abcdda.....",
+    "....aeddddda....",
+    "....adddddda....",
+    "....adddddfa....",
+    ".....adddfa.....",
+    "......agga......",
+    "....aaddddaa....",
+    "..aacddcccddaa..",
+    "..adddddddddfa..",
+    "..affffdddffga..",
+    "..aafffffffhaa..",
+    "....aaaaaaaa....",
     "................",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink",
+    "b": "code.4",
+    "c": "av-hair-verde.3",
+    "d": "code.3",
+    "e": "cloud.2",
+    "f": "code.2",
+    "g": "av-hair-verde.1",
+    "h": "code.1"
+   }
   }
  ]
 }

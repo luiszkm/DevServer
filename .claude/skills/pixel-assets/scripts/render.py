@@ -449,12 +449,24 @@ def category_subdir(path, category):
     return os.path.join(*parts[i + 1:]) if parts[i + 1:] else ""
 
 
+def is_spec(path):
+    """A drawable spec has size and layers. sheet-index.json lives beside the specs and is not one."""
+    if not path.endswith(".json") or os.path.basename(path).startswith("_"):
+        return False
+    try:
+        with open(path) as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return False
+    return isinstance(data, dict) and "size" in data and "layers" in data
+
+
 def collect(paths):
     specs = []
     for p in paths:
         if os.path.isdir(p):
             for root, _, files in os.walk(p):
-                specs += [os.path.join(root, f) for f in sorted(files) if f.endswith(".json") and not f.startswith("_")]
+                specs += [os.path.join(root, f) for f in sorted(files) if is_spec(os.path.join(root, f))]
         else:
             specs.append(p)
     return specs

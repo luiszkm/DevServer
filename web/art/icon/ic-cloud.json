@@ -1,20 +1,61 @@
 {
-  "name": "ic-cloud",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "The white deploy cloud, lit from the top-left, blue-grey underside.",
-  "layers": [
-    {"ellipse": [5, 9, 2, 2], "color": "cloud.3"},
-    {"ellipse": [8, 7, 3, 3], "color": "cloud.3"},
-    {"ellipse": [11, 9, 2, 2], "color": "cloud.3"},
-    {"rect": [4, 9, 9, 3], "color": "cloud.3"},
-    {"rect": [4, 11, 9, 1], "color": "cloud.1"},
-    {"rect": [11, 10, 3, 1], "color": "cloud.1"},
-    {"rect": [10, 11, 3, 1], "color": "cloud.0"},
-    {"rect": [12, 10, 1, 1], "color": "cloud.0"},
-    {"rect": [7, 5, 2, 1], "color": "white"},
-    {"rect": [6, 6, 1, 1], "color": "white"},
-    {"rect": [4, 8, 1, 1], "color": "white"},
-    {"outline": "ink"}
-  ]
+ "name": "ic-cloud",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1464,464,50,44",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "......aaaaaaa...",
+    ".....abcdefba...",
+    "....abfghibba...",
+    "...abbbjibbka...",
+    "...akkbbbabkja..",
+    "..alllmna.ahoa..",
+    "..alpqqqqaria...",
+    "..aaaaqsptlkua..",
+    "..a...agggvwxa..",
+    "..aaaacymzzca...",
+    "..arrlqAAABa....",
+    "...aaaaaaaa.....",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "av-top-azul.2",
+    "c": "av-bottom-cinza.2",
+    "d": "av-bottom-caqui.3",
+    "e": "av-bottom-cinza.3",
+    "f": "ui.5",
+    "g": "stone.3",
+    "h": "av-eyes-cinza.2",
+    "i": "denim.3",
+    "j": "metal.2",
+    "k": "av-top-azul.1",
+    "l": "av-hair-grisalho.2",
+    "m": "denim.1",
+    "n": "av-top-azul",
+    "o": "av-skin-shadow.1",
+    "p": "av-hair-grisalho.3",
+    "q": "av-top-branco.1",
+    "r": "av-top-branco",
+    "s": "metal.3",
+    "t": "av-top-branco.2",
+    "u": "hoodie.3",
+    "v": "roof.3",
+    "w": "av-skin-shadow-hair.2",
+    "x": "av-tone-retinta.3",
+    "y": "av-eyes-cinza.1",
+    "z": "roof.2",
+    "A": "av-tone-clara.1",
+    "B": "av-tone-parda.3"
+   }
+  }
+ ]
 }

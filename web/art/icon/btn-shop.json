@@ -1,25 +1,55 @@
 {
-  "name": "btn-shop",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "SHOP: a steel shopping cart with a grid basket and two wheels.",
-  "layers": [
-    {"grid": [
-      "oo..............",
-      "ohoo............",
-      ".oho............",
-      "..ohooooooooooo.",
-      "..ohwwwwwwwwwwho",
-      "..ohwhwhwhwhwho.",
-      "...ohwwwwwwwwho.",
-      "...ohwhwhwhwho..",
-      "....ohhhhhhhho..",
-      "....ohooooooo...",
-      "....ohhhhhhhhho.",
-      ".....oooooooooo.",
-      "......ooo..ooo..",
-      "......oko..oko..",
-      "......ooo..ooo.."
-    ], "at": [0, 1], "legend": {"o": "ink", "h": "metal.3", "w": "metal.1", "k": "metal.2"}}
-  ]
+ "name": "btn-shop",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 474,898,44,42",
+ "layers": [
+  {
+   "grid": [
+    "..........a.....",
+    ".......aaabaa...",
+    "....aa.acdefba..",
+    "....aa.aghifba..",
+    "..aa.a.ajjfdefa.",
+    "..aa....abjklma.",
+    ".........ajdndja",
+    "..aa.....ajfoofa",
+    ".aaa.....ajpooa.",
+    "...a....abjdnda.",
+    "..aqaaaajjriisa.",
+    "..ahbsrrrdedcsa.",
+    "...aturicvikrba.",
+    "...aahrlorggaa..",
+    ".....aagmrba....",
+    ".......aaaa....."
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "gem",
+    "c": "net.3",
+    "d": "net",
+    "e": "cloud",
+    "f": "av-top-azul.3",
+    "g": "av-skin-neon.1",
+    "h": "sky",
+    "i": "gem.3",
+    "j": "av-eyes-azul",
+    "k": "av-hair-azul.3",
+    "l": "net.4",
+    "m": "ui.6",
+    "n": "av-top-azul.2",
+    "o": "av-skin-neon.3",
+    "p": "denim.3",
+    "q": "gem.1",
+    "r": "av-hair-azul",
+    "s": "net.1",
+    "t": "gem.2",
+    "u": "net.2",
+    "v": "av-hair-azul.1"
+   }
+  }
+ ]
 }

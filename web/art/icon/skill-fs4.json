@@ -5,109 +5,33 @@
   16,
   16
  ],
- "_design": "STACK OVERFLOW (fullstack): an orange stack of answers tilting up out of a grey tray.",
+ "_from": "catalog repair",
  "layers": [
   {
-   "rect": [
-    2,
-    10,
-    1,
-    5
+   "grid": [
+    "................",
+    "......aa........",
+    ".....abbaa......",
+    "......abbbaa....",
+    "....aaaaabbba...",
+    "...abbbaaaabba..",
+    "....aabbbbaaa...",
+    "....aaaaabbba...",
+    "...abbbbaaaa....",
+    "..a.aaacccca.a..",
+    ".adaaaaaaaaaada.",
+    ".adaccccccccada.",
+    ".adaccccccccada.",
+    ".adaaaaaaaaaada.",
+    ".adddddddddddda.",
+    "..aaaaaaaaaaaa.."
    ],
-   "color": "metal.3"
-  },
-  {
-   "rect": [
-    13,
-    10,
-    1,
-    5
-   ],
-   "color": "metal.3"
-  },
-  {
-   "rect": [
-    2,
-    14,
-    12,
-    1
-   ],
-   "color": "metal.3"
-  },
-  {
-   "rect": [
-    4,
-    11,
-    8,
-    2
-   ],
-   "color": "bronze.3"
-  },
-  {
-   "poly": [
-    [
-     4,
-     8
-    ],
-    [
-     11,
-     9
-    ],
-    [
-     11,
-     10
-    ],
-    [
-     4,
-     9
-    ]
-   ],
-   "color": "bronze.3"
-  },
-  {
-   "poly": [
-    [
-     5,
-     5
-    ],
-    [
-     12,
-     7
-    ],
-    [
-     11,
-     8
-    ],
-    [
-     4,
-     6
-    ]
-   ],
-   "color": "bronze.2"
-  },
-  {
-   "poly": [
-    [
-     7,
-     2
-    ],
-    [
-     13,
-     5
-    ],
-    [
-     12,
-     6
-    ],
-    [
-     6,
-     3
-    ]
-   ],
-   "color": "bronze.2"
-  },
-  {
-   "outline": "ink"
+   "legend": {
+    "a": "ink.0",
+    "b": "bronze.3",
+    "c": "bronze.2",
+    "d": "metal.2"
+   }
   }
  ]
 }

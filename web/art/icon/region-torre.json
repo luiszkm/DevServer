@@ -5,41 +5,38 @@
   16,
   16
  ],
- "_design": "TORRE DE DEPLOY: a tall narrow stone tower with a pointed dark roof, a green </> flag on top and lit windows up its floors.",
- "legend": {
-  "o": "ink",
-  "S": "stone.3",
-  "s": "stone.2",
-  "R": "roof.3",
-  "r": "roof.1",
-  "y": "lamp.2",
-  "g": "code.3",
-  "m": "metal.2"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
-    ".......oooo.....",
-    ".......oggo.....",
-    ".......mooo.....",
-    "......oRro......",
-    ".....oRRrro.....",
-    "....oRRRrrro....",
-    "....oooooooo....",
-    ".....oSSSso.....",
-    ".....oSyyso.....",
-    ".....oSSSso.....",
-    ".....oSyyso.....",
-    ".....oSSSso.....",
-    "....oSSSSsso....",
-    "....oSSoossso...",
-    "...oSSSoosssso..",
-    "...oooooooooooo."
+    ".......aaaa.....",
+    ".......abba.....",
+    ".......aaaa.....",
+    "......acda......",
+    ".....accdda.....",
+    "....acccddda....",
+    "....aaaaaaaa....",
+    ".....aeeefa.....",
+    ".....aeggfa.....",
+    ".....afffha.....",
+    ".....afiiha.....",
+    ".....afffha.....",
+    "....affffhha....",
+    "....affaahhha...",
+    "...afffaahhhha..",
+    "...aaaaaaaaaaaa."
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "code.4",
+    "c": "roof.3",
+    "d": "roof.2",
+    "e": "stone.3",
+    "f": "stone.2",
+    "g": "lamp.2",
+    "h": "stone.1",
+    "i": "lamp.1"
+   }
   }
  ]
 }

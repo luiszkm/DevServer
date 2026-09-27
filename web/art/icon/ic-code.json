@@ -1,20 +1,47 @@
 {
-  "name": "ic-code",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "</> in terminal green on a dark screen with a green bezel (ICONES row 1).",
-  "layers": [
-    {"rect": [1, 2, 14, 12], "color": "ink"},
-    {"rect": [2, 3, 12, 10], "color": "code.0"},
-    {"rect": [2, 3, 12, 1], "color": "code.1"},
-    {"rect": [2, 3, 1, 10], "color": "code.1"},
-    {"rect": [3, 4, 10, 8], "color": "ink.1"},
-    {"grid": [
-      "..L..L.L..",
-      ".G...G..G.",
-      "G...G....G",
-      ".G..G...G.",
-      "..G.G..G.."
-    ], "at": [3, 5], "legend": {"G": "code.3", "L": "code.4"}}
-  ]
+ "name": "ic-code",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1218,114,50,44",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "....aaaaaaaa....",
+    "...abcbccdefa...",
+    "..aghcbcddiffa..",
+    "..ahcjbccckifa..",
+    "..accgbbbdlmea..",
+    "...acfdffnnea...",
+    "...accfffmmea...",
+    "....acdffmea....",
+    ".....acffea.....",
+    "......adfa......",
+    "......adea......",
+    ".......aa.......",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "gem.3",
+    "c": "gap.13",
+    "d": "gem.2",
+    "e": "gem.1",
+    "f": "gap.7",
+    "g": "net.4",
+    "h": "net.3",
+    "i": "sky.2",
+    "j": "av-skin-neon.3",
+    "k": "sky.3",
+    "l": "net.2",
+    "m": "av-eyes-azul.1",
+    "n": "av-hair-azul.1"
+   }
+  }
+ ]
 }

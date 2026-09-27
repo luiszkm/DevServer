@@ -5,14 +5,7 @@
   16,
   16
  ],
- "_design": "TÊNIS DE SPRINT: a red running sneaker in side view facing right, high collar at the back, toe to the right and a thick white sole.",
- "legend": {
-  "o": "ink",
-  "l": "red.4",
-  "r": "red.3",
-  "R": "red.2",
-  "c": "cloud.3"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
@@ -21,22 +14,25 @@
     "................",
     "................",
     "................",
-    "...ooooo........",
-    "..orrrrro.......",
-    "..orlrrrroo.....",
-    "..orrrrrrrroo...",
-    ".orrrrrrRRRRRo..",
-    ".orrrrrRRRRRRRo.",
-    ".occcccccccccco.",
-    "..oooooooooooo..",
+    "...aaaaa........",
+    "..abbbbba.......",
+    "..abbbbbbaa.....",
+    "..abbbbbbbbaa...",
+    ".accccccddddda..",
+    ".acccccddddddda.",
+    ".aeeeeeeeeeeeea.",
+    "..aaaaaaaaaaaa..",
     "................",
     "................",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "red.4",
+    "c": "red.2",
+    "d": "red.1",
+    "e": "cloud.2"
+   }
   }
  ]
 }

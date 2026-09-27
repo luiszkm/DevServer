@@ -1,9 +1,66 @@
 {
-  "name": "medal-ouro",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "Medal ouro: the rosette in the gold ramp.",
-  "layers": [
-    {"use": "_medal.json"}
-  ]
+ "name": "medal-ouro",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 1280,234,48,58",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    ".....aaaaa......",
+    "...aabcccdaa....",
+    "..aefgghgggia...",
+    ".ajfklmnhlgoa...",
+    ".aipqrnniihpsa..",
+    ".arplstiigupsa..",
+    ".asukirksggpla..",
+    "..akgkocgggla...",
+    "..aakupppfgaa...",
+    "....aklllka.....",
+    "...agcvawxa.....",
+    "...atla.assa....",
+    "...aaga.akaa....",
+    ".....a...a......",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "white",
+    "c": "av-eyes-mel.1",
+    "d": "av-skin-golden.1",
+    "e": "av-hair-loiro.2",
+    "f": "av-eyes-mel.2",
+    "g": "lamp",
+    "h": "av-eyes-mel.3",
+    "i": "av-skin-golden.2",
+    "j": "av-top-mostarda.3",
+    "k": "gold.1",
+    "l": "lamp.1",
+    "m": "av-hair-loiro.3",
+    "n": "av-skin-golden.3",
+    "o": "wood.4",
+    "p": "av-hair-ruivo.2",
+    "q": "skin.2",
+    "r": "lamp.2",
+    "s": "gold.2",
+    "t": "gold.3",
+    "u": "bronze.2",
+    "v": "av-eyes-mel",
+    "w": "av-hair-ruivo.1",
+    "x": "gold"
+   }
+  },
+  {
+   "use": "_medal.json",
+   "clip": [
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ ]
 }

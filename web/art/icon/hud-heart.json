@@ -5,39 +5,39 @@
   16,
   16
  ],
- "_design": "HP: the red pixel heart of the key art HUD, lit top-left with a white glint, shaded towards the tip.",
- "legend": {
-  "o": "ink",
-  "w": "white",
-  "h": "red.4",
-  "l": "red.3",
-  "m": "red.2",
-  "d": "red.1"
- },
+ "_from": "assests_keyart.png 830,138,46,42",
  "layers": [
   {
    "grid": [
     "................",
     "................",
-    "..oooo....oooo..",
-    ".ohhllo..ollllo.",
-    ".ohwllloollllmo.",
-    ".ohllllllllllmo.",
-    ".olllllllllmmmo.",
-    "..olllllllmmmo..",
-    "...ollllmmmdo...",
-    "....olmmmddo....",
-    ".....ommddo.....",
-    "......oddo......",
-    ".......oo.......",
-    "................",
+    "...aaaa..aaaa...",
+    "..abcda.aecdfa..",
+    "..acgddafdddda..",
+    "..adddddddhhha..",
+    "..addddddhhhha..",
+    "..afddddhhhhfa..",
+    "...ahddhhhhfa...",
+    "....ahhhhhha....",
+    "....afhhhhia....",
+    ".....afhhja.....",
+    "......afia......",
+    ".......aa.......",
     "................",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink",
+    "b": "white",
+    "c": "red.4",
+    "d": "gap.5",
+    "e": "av-tone-clara",
+    "f": "red.2",
+    "g": "cloud.2",
+    "h": "gap.3",
+    "i": "red.1",
+    "j": "corrupt.2"
+   }
   }
  ]
 }

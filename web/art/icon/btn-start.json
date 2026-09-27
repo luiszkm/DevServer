@@ -1,13 +1,44 @@
 {
-  "name": "btn-start",
-  "category": "icon",
-  "size": [16, 16],
-  "_design": "PLAY (dark button): the green start triangle.",
-  "layers": [
-    {"poly": [[4, 2], [4, 14], [13, 8]], "color": "code.3"},
-    {"poly": [[4, 2], [4, 8], [13, 8]], "color": "code.4"},
-    {"rect": [4, 9, 3, 5], "color": "code.2"},
-    {"rect": [4, 3, 1, 10], "color": "code.4"},
-    {"outline": "ink"}
-  ]
+ "name": "btn-start",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_from": "assests_keyart.png 988,206,46,42",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "....aaaaaaaa....",
+    "...abcdeeffa....",
+    "..abedceeggga...",
+    "..aedbdeefhgga..",
+    "..aecccbdfijha..",
+    "...aeggghjjha...",
+    "...aefgghjha....",
+    "....aegghkha....",
+    "....aifghha.....",
+    ".....afgha......",
+    "......aia.......",
+    ".......a........",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "ink",
+    "b": "av-skin-neon.3",
+    "c": "gem.3",
+    "d": "net.3",
+    "e": "gap.13",
+    "f": "gem.2",
+    "g": "gap.7",
+    "h": "gem.1",
+    "i": "sky.3",
+    "j": "av-hair-azul.1",
+    "k": "sky.2"
+   }
+  }
+ ]
 }

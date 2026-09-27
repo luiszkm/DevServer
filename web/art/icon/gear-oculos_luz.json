@@ -5,15 +5,7 @@
   16,
   16
  ],
- "_design": "ÓCULOS ANTI LUZ AZUL: front view of brow-line glasses, a silver top bar and bridge over two amber blue-light-filter lenses in ink frames, one glint per lens at the top-left.",
- "legend": {
-  "o": "ink",
-  "f": "metal.3",
-  "w": "white",
-  "b": "lamp.3",
-  "B": "lamp.2",
-  "N": "lamp.1"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
@@ -21,23 +13,28 @@
     "................",
     "................",
     "................",
-    ".oooooooooooooo.",
-    ".offffoffoffffo.",
-    ".owbbBoooowbbBo.",
-    ".obbbBo..obbbBo.",
-    ".obbBBo..obbBBo.",
-    ".obBBNo..obBBNo.",
-    "..oooo....oooo..",
+    ".aaaaaaaaaaaaaa.",
+    ".abbbbabbabbbba.",
+    ".acdddaaaacddda.",
+    ".adddea..adddea.",
+    ".aeeffa..aeeffa.",
+    ".aeffga..aeffga.",
+    "..aaaa....aaaa..",
     "................",
     "................",
     "................",
     "................",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "metal.3",
+    "c": "white.0",
+    "d": "lamp.3",
+    "e": "lamp.2",
+    "f": "lamp.1",
+    "g": "lamp.0"
+   }
   }
  ]
 }

@@ -5,15 +5,7 @@
   16,
   16
  ],
- "_design": "TAPETE PIXELADO: a violet rug lying on the floor in slight perspective, a pixel checker pattern with a blue border and cream tassels at both ends.",
- "legend": {
-  "o": "ink",
-  "a": "slime.3",
-  "A": "slime.4",
-  "b": "slime.1",
-  "n": "net.3",
-  "t": "cloud.2"
- },
+ "_from": "catalog repair",
  "layers": [
   {
    "grid": [
@@ -21,23 +13,32 @@
     "................",
     "................",
     "................",
-    "..oooooooooooo..",
-    "..otototototoo..",
-    "..oooooooooooo..",
-    ".onAaAaAaAaAno..",
-    ".onaAaAaAaAano..",
-    ".onAaAaAaAaAnbo.",
-    "onaAaAaAaAaAnbo.",
-    "onnnnnnnnnnnnbo.",
-    "ooooooooooooooo.",
-    "otototototototo.",
-    "ooooooooooooooo.",
+    "..aaaaaaaaaaaa..",
+    "..abababababaa..",
+    "..aaaaaaaaaaaa..",
+    ".acdddddddddca..",
+    ".acdddddddddca..",
+    ".aedfdfdfdfdega.",
+    "ahifififififhja.",
+    "ahhhhhhhhhhhhja.",
+    "aaaaaaaaaaaaaaa.",
+    "akakakakakakaka.",
+    "aaaaaaaaaaaaaaa.",
     "................"
    ],
-   "at": [
-    0,
-    0
-   ]
+   "legend": {
+    "a": "ink.0",
+    "b": "cloud.3",
+    "c": "net.4",
+    "d": "slime.4",
+    "e": "net.3",
+    "f": "slime.3",
+    "g": "slime.1",
+    "h": "net.2",
+    "i": "slime.2",
+    "j": "slime.0",
+    "k": "cloud.1"
+   }
   }
  ]
 }
