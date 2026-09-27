@@ -1,0 +1,66 @@
+{
+ "name": "office-github",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "GITHUB: the mascotes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1147,657,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "...a.....bc.....",
+    "....deeef.......",
+    "...egggggg......",
+    "..hgi...........",
+    "....jkjlkm......",
+    "...knoppqr......",
+    "...ijkljkks.....",
+    "...tunmvm.......",
+    "......wq........",
+    ".....xyi.zc.....",
+    "....tA..........",
+    "....BC..c.......",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-hair-preto.1",
+    "b": "av-top-grafite",
+    "c": "av-eyes-preto.1",
+    "d": "av-eyes-preto.2",
+    "e": "roof.2",
+    "f": "av-top-grafite.2",
+    "g": "roof.1",
+    "h": "av-hair-preto",
+    "i": "av-tone-retinta.3",
+    "j": "av-tone-morena.3",
+    "k": "av-tone-clara.1",
+    "l": "av-skin-golden-hair.2",
+    "m": "av-tone-clara",
+    "n": "av-bottom-caqui.3",
+    "o": "av-hair-grisalho.1",
+    "p": "av-tone-clara.3",
+    "q": "soil.2",
+    "r": "av-tone-clara.2",
+    "s": "av-bottom-preto",
+    "t": "ink",
+    "u": "av-bottom-caqui",
+    "v": "av-tone-parda.3",
+    "w": "av-hair-castanho.2",
+    "x": "av-bottom-preto.3",
+    "y": "skin.2",
+    "z": "ink.1",
+    "A": "av-bottom-cinza",
+    "B": "av-eyes-preto",
+    "C": "av-bottom-preto.1"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

@@ -1,0 +1,62 @@
+{
+ "name": "office-camiseta",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "CAMISETA: the decoracoes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1360,490,68,68 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "...abcdcef......",
+    "..ghijcklff.....",
+    ".hmfffnhffof....",
+    ".hf.faapffqr....",
+    ".ll.sptuvf.c....",
+    "....rssuwo......",
+    "....fxrxoo......",
+    "....oooooo......",
+    "...yoooooo......",
+    "....o...........",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-eyes-preto.3",
+    "b": "av-hair-grisalho.2",
+    "c": "av-top-branco",
+    "d": "av-hair-grisalho.1",
+    "e": "av-top-branco.2",
+    "f": "roof.2",
+    "g": "hoodie.3",
+    "h": "roof.3",
+    "i": "metal.1",
+    "j": "av-eyes-cinza.3",
+    "k": "av-hair-grisalho.3",
+    "l": "av-bottom-cinza.2",
+    "m": "ui.4",
+    "n": "av-eyes-cinza.1",
+    "o": "roof.1",
+    "p": "av-bottom-cinza.1",
+    "q": "av-top-azul",
+    "r": "stone.2",
+    "s": "av-top-verde.2",
+    "t": "av-top-verde.3",
+    "u": "av-top-grafite.1",
+    "v": "leaf.2",
+    "w": "grass.1",
+    "x": "metal",
+    "y": "stone.1"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

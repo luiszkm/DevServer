@@ -9,6 +9,7 @@ Trace the object you are drawing from the picture that actually contains it:
 | Feminine hero | `web/public/female_keyart.png` |
 | Icon, prop, tile, scene, mob, effect, UI on the asset sheet | `web/public/assests_keyart.png` |
 | Boss, corruption, the side-view lunge | `web/public/boss_screen_keyart` |
+| Office furniture, decorations, servers, language mascots | `web/public/office_keyart.png` |
 
 If the object is not in that picture, trace the closest relative that is (a new enemy
 starts from the sheet's slime, bug or robot) and keep that silhouette's language.

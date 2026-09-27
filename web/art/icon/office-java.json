@@ -1,0 +1,53 @@
+{
+ "name": "office-java",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "JAVA: the mascotes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1333,657,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "......a..b......",
+    "......cb.d......",
+    "...dbddde.......",
+    "....dfgfhe......",
+    "...ififfid......",
+    "..bdfjffkie.....",
+    "..bffddldhc.....",
+    "..mdfdlndhe.....",
+    "...edhffhi......",
+    "....eeiee.......",
+    "....op..o.......",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-hair-ruivo.2",
+    "b": "av-hair-ruivo",
+    "c": "av-top-vinho",
+    "d": "red.1",
+    "e": "red",
+    "f": "red.2",
+    "g": "red.3",
+    "h": "corrupt.2",
+    "i": "av-hair-ruivo.1",
+    "j": "av-bottom-cinza",
+    "k": "soil.3",
+    "l": "av-top-vinho.2",
+    "m": "ink",
+    "n": "bronze.1",
+    "o": "cloud",
+    "p": "ui.6"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

@@ -1,0 +1,52 @@
+{
+ "name": "office-rust",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "RUST: the mascotes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1333,763,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    ".....abbc.......",
+    "....ddeeea......",
+    ".fgedheeeecf....",
+    ".ichjaeekaaaa...",
+    ".aaecaeelbacl...",
+    ".caeeamnoeac....",
+    "..ceeeebeoc.....",
+    "..cabooobac.....",
+    "...calccca.c....",
+    "....c...........",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-hair-ruivo.1",
+    "b": "red.1",
+    "c": "av-hair-ruivo",
+    "d": "red.3",
+    "e": "red.2",
+    "f": "bronze.2",
+    "g": "av-eyes-castanho.1",
+    "h": "corrupt.3",
+    "i": "av-hair-ruivo.2",
+    "j": "av-top-vinho.2",
+    "k": "skin",
+    "l": "av-top-vinho",
+    "m": "av-tone-negra.2",
+    "n": "av-bottom-caqui",
+    "o": "corrupt.2"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

@@ -1,0 +1,66 @@
+{
+ "name": "office-estatua",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "ESTÁTUA: the decoracoes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1270,370,68,68 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    ".......a........",
+    ".....bcde.......",
+    ".....fghi.b.....",
+    "....jkklgmn.....",
+    "....onlpjmq.....",
+    "....rppjks......",
+    "...fnpgtpm......",
+    "...g..nuvwx.....",
+    "...ixmvvv.nn....",
+    ".....pqyp.m.....",
+    ".....m..xz......",
+    "....AgB.gn......",
+    "....gjjnnjv.....",
+    "....xzCCCq......",
+    "................"
+   ],
+   "legend": {
+    "a": "av-hair-ruivo.2",
+    "b": "av-top-branco.1",
+    "c": "av-tone-retinta.2",
+    "d": "av-tone-negra",
+    "e": "av-hair-ruivo.1",
+    "f": "av-hair-grisalho.2",
+    "g": "av-top-branco",
+    "h": "av-hair-grisalho.1",
+    "i": "av-bottom-cinza.3",
+    "j": "av-eyes-cinza.2",
+    "k": "av-eyes-cinza.3",
+    "l": "ui.6",
+    "m": "stone.3",
+    "n": "av-bottom-cinza.2",
+    "o": "av-eyes-cinza.1",
+    "p": "metal.2",
+    "q": "denim.1",
+    "r": "hoodie.3",
+    "s": "denim.3",
+    "t": "av-bottom-caqui.3",
+    "u": "av-skin-shadow.1",
+    "v": "ui.5",
+    "w": "stone.1",
+    "x": "roof.3",
+    "y": "av-top-azul.1",
+    "z": "roof.2",
+    "A": "av-top-grafite.2",
+    "B": "metal.1",
+    "C": "roof.1"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

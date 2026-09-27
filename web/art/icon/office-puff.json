@@ -1,0 +1,46 @@
+{
+ "name": "office-puff",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "PUFF: the moveis tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 963,365,72,72 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "......aabc......",
+    "....dbbbbbb.....",
+    "....bbeeeddd....",
+    "...bbdeeeedbd...",
+    "..dabeeeeeebbd..",
+    "..ebbdebbddbbd..",
+    "..ebaabbbbabbe..",
+    "..eebbbaabbdee..",
+    "..feedgddddehh..",
+    "...feeeeeeehf...",
+    "....ifhhhhh.....",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-top-azul.3",
+    "b": "av-top-azul.2",
+    "c": "ui.5",
+    "d": "av-top-azul.1",
+    "e": "av-hair-azul",
+    "f": "av-top-azul",
+    "g": "net",
+    "h": "gem",
+    "i": "roof"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

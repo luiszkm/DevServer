@@ -1,0 +1,63 @@
+{
+ "name": "office-boneco",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "BONECO: the decoracoes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1443,490,68,68 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "...a.bc.........",
+    "...defgh........",
+    "...ijgkgl.......",
+    "...kkikml.......",
+    "...binmo........",
+    ".....p..........",
+    "..mlqmmr.l......",
+    "..rsqtuv.w......",
+    "....oxoy........",
+    "....i..z........",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-bottom-cinza.1",
+    "b": "roof.2",
+    "c": "roof.1",
+    "d": "ui.4",
+    "e": "av-skin-shadow.1",
+    "f": "denim.3",
+    "g": "ui.5",
+    "h": "denim.1",
+    "i": "roof.3",
+    "j": "metal.2",
+    "k": "stone.3",
+    "l": "av-top-azul",
+    "m": "av-bottom-cinza.2",
+    "n": "av-tone-parda.3",
+    "o": "av-top-azul.1",
+    "p": "av-tone-negra.3",
+    "q": "av-top-azul.2",
+    "r": "av-hair-preto.3",
+    "s": "soil.1",
+    "t": "av-tone-clara.1",
+    "u": "av-skin-shadow.2",
+    "v": "av-top-grafite.3",
+    "w": "av-tone-negra.1",
+    "x": "av-skin-shadow-hair.3",
+    "y": "gem",
+    "z": "av-hair-grisalho.1"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

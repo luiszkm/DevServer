@@ -1,0 +1,59 @@
+{
+ "name": "office-guitarra",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "GUITARRA: the decoracoes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1175,370,68,68 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "..........abb...",
+    "..........cde...",
+    "..........b.....",
+    ".........f......",
+    "......g.fd......",
+    ".....ghdd.......",
+    ".....gidjk......",
+    "....gl.ihm......",
+    "..lggnomgp......",
+    "..ghqrmhp.......",
+    "..hhsahmt.......",
+    "..mhhmhmt.......",
+    "...mhhhu........",
+    ".....kv.........",
+    "................"
+   ],
+   "legend": {
+    "a": "av-bottom-caqui.2",
+    "b": "av-hair-preto.3",
+    "c": "av-tone-retinta.3",
+    "d": "av-top-grafite.3",
+    "e": "av-hair-preto.2",
+    "f": "av-bottom-cinza.2",
+    "g": "bronze.2",
+    "h": "av-hair-ruivo.2",
+    "i": "av-tone-morena",
+    "j": "av-tone-negra.1",
+    "k": "av-hair-ruivo",
+    "l": "av-eyes-mel.1",
+    "m": "bronze.1",
+    "n": "av-tone-negra.3",
+    "o": "av-bottom-cinza.1",
+    "p": "av-tone-parda",
+    "q": "av-tone-parda.2",
+    "r": "av-tone-morena.2",
+    "s": "av-tone-negra.2",
+    "t": "wood",
+    "u": "av-hair-castanho.1",
+    "v": "av-tone-negra"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

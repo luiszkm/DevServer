@@ -1,0 +1,78 @@
+{
+ "name": "office-livros",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "LIVROS: the decoracoes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1360,370,68,68 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    ".abcccccccca....",
+    ".adefg.....h....",
+    ".cijklmnopqa....",
+    ".arjstuuvwja....",
+    ".adkxy.dz.AB....",
+    ".aaCDDEEDFEB....",
+    ".agq..G.r..H....",
+    ".aiqIiJKopLa....",
+    ".arqM.NlOpqH....",
+    ".BhmhHaaaahh....",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-tone-morena",
+    "b": "wood.3",
+    "c": "av-tone-parda.1",
+    "d": "soil.3",
+    "e": "ui.4",
+    "f": "av-eyes-preto.1",
+    "g": "soil.2",
+    "h": "av-tone-negra.1",
+    "i": "av-eyes-preto.2",
+    "j": "av-top-azul.3",
+    "k": "av-top-azul.2",
+    "l": "metal.1",
+    "m": "av-tone-retinta.2",
+    "n": "av-bottom-caqui",
+    "o": "av-bottom-cinza.2",
+    "p": "denim.3",
+    "q": "av-eyes-azul.1",
+    "r": "hoodie.2",
+    "s": "ui.6",
+    "t": "av-hair-grisalho.1",
+    "u": "dirt.1",
+    "v": "av-skin-golden-hair.1",
+    "w": "av-bottom-cinza.3",
+    "x": "denim.2",
+    "y": "stone.3",
+    "z": "av-bottom-caqui.2",
+    "A": "sky",
+    "B": "bronze",
+    "C": "av-hair-ruivo.2",
+    "D": "skin",
+    "E": "bronze.1",
+    "F": "gold",
+    "G": "av-hair-azul",
+    "H": "av-hair-castanho.2",
+    "I": "red.1",
+    "J": "av-skin-neon",
+    "K": "av-eyes-cinza.1",
+    "L": "sky.1",
+    "M": "av-top-vinho.3",
+    "N": "av-top-branco",
+    "O": "ui.5"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "name": "office-almofada",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "ALMOFADA: the decoracoes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1443,370,68,68 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "..a.............",
+    "..bcdddccbcc....",
+    "..bdddddddb.....",
+    "..cdddddddb.....",
+    "..cddddddde.....",
+    "..cddcdddce.....",
+    "..ccdddddce.....",
+    "..cccccccb......",
+    ".bbfebbbegb.....",
+    ".........fb.....",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-bottom-cinza.3",
+    "b": "av-skin-shadow.1",
+    "c": "av-skin-shadow.2",
+    "d": "av-skin-shadow.3",
+    "e": "slime",
+    "f": "av-skin-shadow-hair.3",
+    "g": "slime.1"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

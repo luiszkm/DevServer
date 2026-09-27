@@ -1,0 +1,64 @@
+{
+ "name": "office-monitor",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MONITOR: the moveis tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 963,247,72,72 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "...a............",
+    "..bcdebfbgg.....",
+    "...hiiijjkheb...",
+    "..bhlmmiilllb...",
+    "..fklniillljb...",
+    "..fklnoiljjjb...",
+    "..fhiillllllp...",
+    "..babedhiiiqp...",
+    "...r..sasttpb...",
+    ".......uv...w...",
+    ".....ggxyz......",
+    "........vA......",
+    "................"
+   ],
+   "legend": {
+    "a": "av-hair-grisalho.2",
+    "b": "av-top-branco",
+    "c": "stone.3",
+    "d": "denim.3",
+    "e": "metal.2",
+    "f": "av-bottom-cinza.3",
+    "g": "av-hair-grisalho.1",
+    "h": "av-top-azul.2",
+    "i": "sky",
+    "j": "av-hair-azul",
+    "k": "av-top-azul.1",
+    "l": "net",
+    "m": "av-eyes-azul",
+    "n": "av-skin-neon",
+    "o": "sky.1",
+    "p": "ui.6",
+    "q": "av-eyes-azul.1",
+    "r": "av-bottom-preto.1",
+    "s": "av-top-branco.1",
+    "t": "av-eyes-cinza.3",
+    "u": "bronze.1",
+    "v": "av-tone-negra.1",
+    "w": "av-bottom-cinza.2",
+    "x": "av-tone-morena.1",
+    "y": "av-hair-ruivo.2",
+    "z": "av-tone-retinta.3",
+    "A": "av-tone-retinta.2"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

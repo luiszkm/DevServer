@@ -1,0 +1,44 @@
+{
+ "name": "office-react",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "REACT: the mascotes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1240,763,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "....a...b.......",
+    "...a.cac.a......",
+    "...c..cc........",
+    "...acabacac.....",
+    ".baac.d.ce.b....",
+    ".a..c.fgb.......",
+    ".bcaa.c.cb.b....",
+    "...caabcca......",
+    "...c..bc........",
+    "...c.bcc.c......",
+    "....c...bc......",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "gem.2",
+    "b": "sky.2",
+    "c": "sky.3",
+    "d": "av-skin-neon.1",
+    "e": "gem.1",
+    "f": "gem.3",
+    "g": "av-skin-neon.2"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

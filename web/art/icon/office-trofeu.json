@@ -1,0 +1,63 @@
+{
+ "name": "office-trofeu",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "TROFÉU: the decoracoes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1443,250,68,68 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "....abbcd.......",
+    "..efghijkl......",
+    ".mcfglnopc......",
+    "..qarstodb......",
+    "..aahjouc.......",
+    "....jvok........",
+    ".....cp.........",
+    ".....fk.........",
+    "....ewux........",
+    "...sxyzs........",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-eyes-mel.1",
+    "b": "gold",
+    "c": "av-eyes-mel",
+    "d": "av-tone-negra",
+    "e": "av-top-mostarda.2",
+    "f": "wood.4",
+    "g": "av-hair-loiro.3",
+    "h": "av-skin-golden.2",
+    "i": "av-eyes-mel.3",
+    "j": "gold.1",
+    "k": "av-hair-ruivo.1",
+    "l": "av-top-mostarda.1",
+    "m": "av-hair-loiro",
+    "n": "av-skin-golden",
+    "o": "lamp",
+    "p": "av-hair-ruivo",
+    "q": "wood.3",
+    "r": "skin.2",
+    "s": "av-hair-castanho.1",
+    "t": "av-top-mostarda",
+    "u": "av-hair-ruivo.2",
+    "v": "lamp.1",
+    "w": "av-eyes-mel.2",
+    "x": "av-eyes-castanho.1",
+    "y": "av-hair-castanho.2",
+    "z": "av-tone-parda"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

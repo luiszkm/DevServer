@@ -1,0 +1,78 @@
+{
+ "name": "office-prateleira",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "PRATELEIRA: the moveis tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 868,483,72,72 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "...........a.a..",
+    "...........bcde.",
+    "............ffg.",
+    "..........h.ijg.",
+    "...kl...mnhopqr.",
+    "..stuk..rmmmmmm.",
+    ".mvwxyvzz.......",
+    ".AmmrrmrB.CDbaE.",
+    ".....x..F.haGmA.",
+    ".mHIJI.FBAErArK.",
+    ".ABLLy.A......M.",
+    ".NBrrrO.........",
+    "................"
+   ],
+   "legend": {
+    "a": "av-bottom-caqui.1",
+    "b": "av-bottom-caqui.2",
+    "c": "grass.2",
+    "d": "leaf.2",
+    "e": "dirt.1",
+    "f": "wood.4",
+    "g": "av-top-vinho.1",
+    "h": "net",
+    "i": "av-hair-ruivo.3",
+    "j": "av-eyes-mel.2",
+    "k": "av-eyes-cinza.2",
+    "l": "ui.6",
+    "m": "av-tone-parda.1",
+    "n": "av-tone-retinta.2",
+    "o": "bronze",
+    "p": "av-hair-ruivo.2",
+    "q": "gold",
+    "r": "av-tone-morena",
+    "s": "net.1",
+    "t": "av-skin-neon",
+    "u": "av-bottom-cinza.2",
+    "v": "av-bottom-cinza.1",
+    "w": "ui.4",
+    "x": "stone.3",
+    "y": "av-top-azul.1",
+    "z": "skin",
+    "A": "av-hair-castanho.2",
+    "B": "av-tone-negra.1",
+    "C": "av-eyes-azul",
+    "D": "av-hair-grisalho",
+    "E": "av-tone-retinta.3",
+    "F": "soil.3",
+    "G": "av-tone-negra.3",
+    "H": "av-bottom-preto.3",
+    "I": "av-top-azul.3",
+    "J": "metal.2",
+    "K": "av-eyes-castanho.1",
+    "L": "denim.2",
+    "M": "av-hair-castanho",
+    "N": "av-hair-castanho.1",
+    "O": "wood.3"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

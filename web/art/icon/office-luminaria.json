@@ -1,0 +1,64 @@
+{
+ "name": "office-luminaria",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "LUMINÁRIA: the moveis tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1058,483,72,72 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "......a.b.......",
+    "....cdefgc......",
+    "...chijklmc.....",
+    "...cnoppodc.....",
+    "...bgoojlqc.....",
+    "...bngrrgs......",
+    "....cctucc......",
+    "......tv........",
+    "................",
+    "................",
+    "......nnw.......",
+    ".....dnnx.......",
+    ".....yzzA.......",
+    "................"
+   ],
+   "legend": {
+    "a": "ink.2",
+    "b": "av-eyes-preto.1",
+    "c": "soil.2",
+    "d": "av-tone-negra.3",
+    "e": "av-skin-golden-hair.1",
+    "f": "av-tone-clara.1",
+    "g": "skin.1",
+    "h": "soil.3",
+    "i": "av-tone-morena.3",
+    "j": "skin.3",
+    "k": "av-skin-golden-hair.2",
+    "l": "skin.2",
+    "m": "av-tone-retinta.2",
+    "n": "av-tone-retinta.3",
+    "o": "av-hair-loiro.3",
+    "p": "gold.4",
+    "q": "av-tone-morena.2",
+    "r": "dirt.3",
+    "s": "skin",
+    "t": "wood",
+    "u": "av-tone-negra.1",
+    "v": "av-hair-castanho.2",
+    "w": "av-eyes-castanho.2",
+    "x": "av-tone-morena.1",
+    "y": "av-hair-preto.2",
+    "z": "av-hair-preto.3",
+    "A": "av-eyes-preto.2"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

@@ -1,0 +1,70 @@
+{
+ "name": "office-servidor",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "SERVIDOR: the tecnologias tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 743,653,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "....abbccccde...",
+    "..aaaabaaaadf...",
+    "...gghijkbfll...",
+    ".ihmneec.afff...",
+    ".opaeqrstdkff...",
+    "...gaggj.bkff...",
+    "...uvggwjbffk...",
+    ".p.xgaay.bfkk...",
+    "..izgda..Akkk...",
+    ".BjasCcD.Akkk...",
+    ".jE.l.fF.ckkk...",
+    "..jzdAcG.Akkk...",
+    "..lzswCw.ckkk...",
+    "................"
+   ],
+   "legend": {
+    "a": "av-bottom-cinza.2",
+    "b": "stone.3",
+    "c": "roof.3",
+    "d": "av-eyes-cinza.1",
+    "e": "av-hair-grisalho.1",
+    "f": "ui.4",
+    "g": "av-top-grafite.3",
+    "h": "av-eyes-preto.3",
+    "i": "hoodie.2",
+    "j": "roof.2",
+    "k": "denim.1",
+    "l": "stone.2",
+    "m": "av-skin-golden-hair",
+    "n": "av-hair-grisalho.2",
+    "o": "av-eyes-preto.2",
+    "p": "av-bottom-preto.3",
+    "q": "av-top-branco",
+    "r": "av-bottom-cinza.3",
+    "s": "denim.3",
+    "t": "av-top-azul",
+    "u": "av-bottom-caqui.2",
+    "v": "metal.2",
+    "w": "av-top-azul.1",
+    "x": "av-hair-preto.3",
+    "y": "net",
+    "z": "av-hair-grisalho",
+    "A": "metal.1",
+    "B": "av-eyes-cinza",
+    "C": "ui.5",
+    "D": "av-top-azul.2",
+    "E": "ink.2",
+    "F": "av-eyes-azul",
+    "G": "denim.2"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

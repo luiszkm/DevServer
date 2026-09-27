@@ -1,0 +1,71 @@
+{
+ "name": "office-python",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "PYTHON: the mascotes tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 1240,657,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "....abccd.......",
+    "....efdcd.......",
+    "..gdahdddij.....",
+    "..hkddddelmn....",
+    "..ddeoooimpn....",
+    "..aeqrmmmmst....",
+    "..aaumvwwxn.....",
+    "....ypzAB.......",
+    "....lvpCD.......",
+    ".....EFGH.......",
+    "................",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "sky.2",
+    "b": "av-eyes-azul.3",
+    "c": "sky.3",
+    "d": "gem.1",
+    "e": "av-eyes-azul.1",
+    "f": "av-eyes-azul.2",
+    "g": "av-eyes-azul",
+    "h": "sky.1",
+    "i": "av-bottom-caqui.2",
+    "j": "av-hair-loiro.1",
+    "k": "net.1",
+    "l": "av-top-mostarda.2",
+    "m": "gold.3",
+    "n": "av-eyes-mel.1",
+    "o": "denim.3",
+    "p": "lamp.2",
+    "q": "av-bottom-caqui.3",
+    "r": "av-skin-golden.3",
+    "s": "lamp.1",
+    "t": "av-top-mostarda",
+    "u": "av-skin-golden.2",
+    "v": "gold.2",
+    "w": "av-skin-golden.1",
+    "x": "lamp",
+    "y": "gold.1",
+    "z": "av-top-mostarda.3",
+    "A": "wood.4",
+    "B": "av-eyes-mel.2",
+    "C": "av-skin-golden-hair",
+    "D": "av-eyes-mel.3",
+    "E": "av-bottom-caqui.1",
+    "F": "gold",
+    "G": "av-eyes-mel",
+    "H": "av-top-azul.1"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}

@@ -1,0 +1,56 @@
+{
+ "name": "office-monitor_ops",
+ "category": "icon",
+ "size": [
+  16,
+  16
+ ],
+ "_design": "MONITORAMENTO: the tecnologias tile of web/public/office_keyart.png, traced at 14x14 inside a 1px margin and closed with an ink outline.",
+ "_from": "traced from web/public/office_keyart.png 935,763,70,70 at 14x14, knockout edge",
+ "layers": [
+  {
+   "grid": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "..abcdddecbdc...",
+    "..fgghhhhgiij...",
+    "..fhkihilmhmn...",
+    "..fihhglhhhmo...",
+    "..fihgghhhhmp...",
+    "..jigqhhhhhhj...",
+    "..drkkkkkkrfj...",
+    "..nnffb.ffff....",
+    "......pps.......",
+    "....ddddff......",
+    "................",
+    "................"
+   ],
+   "legend": {
+    "a": "av-bottom-cinza.3",
+    "b": "av-bottom-cinza.2",
+    "c": "av-eyes-cinza.2",
+    "d": "metal.2",
+    "e": "ui.6",
+    "f": "denim.3",
+    "g": "sky.1",
+    "h": "av-hair-azul.1",
+    "i": "av-eyes-azul.1",
+    "j": "stone.3",
+    "k": "av-top-azul.2",
+    "l": "sky.2",
+    "m": "net",
+    "n": "metal.1",
+    "o": "roof.3",
+    "p": "ui.5",
+    "q": "sky",
+    "r": "av-top-azul.3",
+    "s": "denim.2"
+   }
+  },
+  {
+   "outline": "ink"
+  }
+ ]
+}
