@@ -5,7 +5,7 @@ import { newDev, openScene } from "./helpers";
 test("buy and remove", async ({ page }) => {
   await newDev(page);
   const hud = page.getByRole("banner", { name: "HUD" });
-  const coins = hud.locator(".hud-card", { hasText: "COINS" }).locator(".hud-value");
+  const coins = hud.locator(".hud-row", { hasText: "COINS" }).locator(".hud-value");
   await expect(coins).toHaveText("9999");
 
   await openScene(page, "SERVER");
@@ -35,7 +35,7 @@ test("entries", async ({ page }) => {
   await expect(page).toHaveURL(/\/server$/);
   await expect(page.getByText("RACK LOCALHOST-01")).toBeVisible();
 
-  await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "TÍTULO" }).click();
+  await openScene(page, "TÍTULO");
   await expect(page).toHaveURL(/\/$/);
   await openScene(page, "SERVER");
   await expect(page).toHaveURL(/\/server$/);

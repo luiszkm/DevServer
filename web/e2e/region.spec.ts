@@ -3,7 +3,7 @@ import { newDev } from "./helpers";
 
 test("entering floresta opens its path", async ({ page }) => {
   await newDev(page);
-  await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "MUNDO" }).click();
+  await page.getByRole("banner", { name: "HUD" }).getByRole("link", { name: "MUNDO" }).click();
   await page.getByRole("button", { name: "FLORESTA DE LOGS" }).click();
   await page.getByRole("dialog", { name: "FLORESTA DE LOGS" }).getByRole("button", { name: "ENTRAR" }).click();
   await expect(page).toHaveURL(/\/mundo\/floresta$/);

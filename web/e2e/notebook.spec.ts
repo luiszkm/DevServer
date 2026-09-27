@@ -21,7 +21,7 @@ test("upgrade then locked", async ({ page }) => {
   await newDev(page);
   await page.goto("/notebook");
   const hud = page.getByRole("banner", { name: "HUD" });
-  const coins = hud.locator(".hud-card", { hasText: "COINS" }).locator(".hud-value");
+  const coins = hud.locator(".hud-row", { hasText: "COINS" }).locator(".hud-value");
   await expect(coins).toHaveText("9999");
   const cpu = page.locator(".notebook-card", { hasText: "CPU TURBO" });
   await cpu.getByRole("button", { name: "UPGRADE · 300c" }).click();

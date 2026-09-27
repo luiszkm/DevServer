@@ -2,16 +2,18 @@ import { expect, test } from "@playwright/test";
 import { newDev } from "./helpers";
 
 // C27
-test("tab click keeps document and HUD", async ({ page }) => {
+test("tab and HUD link clicks keep document and HUD", async ({ page }) => {
   await newDev(page);
   await page.evaluate(() => ((window as unknown as { __marker: number }).__marker = 42));
-  const nav = page.getByRole("navigation", { name: "Cenas" });
+  const hud = page.getByRole("banner", { name: "HUD" });
 
-  await nav.getByRole("link", { name: "MUNDO" }).click();
+  await hud.getByRole("link", { name: "MUNDO" }).click();
   await expect(page).toHaveURL(/\/mundo$/);
-  await nav.getByRole("link", { name: "DEPLOY" }).click();
+  await hud.getByRole("link", { name: "DEPLOY" }).click();
   await expect(page).toHaveURL(/\/deploy$/);
   await expect(page.getByText("PIPELINES DE DEPLOY")).toBeVisible();
+  await hud.getByRole("link", { name: "BUG FIGHT" }).click();
+  await expect(page).toHaveURL(/\/bug-fight$/);
 
   expect(await page.evaluate(() => (window as unknown as { __marker?: number }).__marker)).toBe(42);
   await expect(page.getByRole("banner", { name: "HUD" })).toContainText("LEVEL 1");

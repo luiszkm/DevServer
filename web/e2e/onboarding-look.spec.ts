@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openBase } from "./helpers";
 
 const FAKE = "http://localhost:9180";
 
@@ -29,8 +30,7 @@ test("onboarding look fits phone", async ({ page }) => {
   await expect(page.locator(".onboarding-hero")).toHaveAttribute("data-look", /top-camiseta/);
   await page.getByRole("button", { name: "CRIAR DEV" }).click();
   await expect(page.getByRole("banner", { name: "HUD" })).toContainText("LEVEL 1");
-  await page.getByRole("button", { name: /^MENU/ }).click();
-  await page.getByRole("link", { name: "BASE" }).click();
+  await openBase(page);
   await page.getByRole("navigation", { name: "Base" }).getByRole("link", { name: "AVATAR" }).click();
   await expect(page.locator(".avatar-hero")).toHaveAttribute("data-look", /#b07858/);
   await expect(page.locator(".avatar-hero")).toHaveAttribute("data-look", /top-camiseta/);

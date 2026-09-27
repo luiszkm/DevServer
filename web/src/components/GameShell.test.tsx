@@ -5,7 +5,8 @@ import { CATALOG, json, mockFetch, player } from "@/test/helpers";
 import { GameShell } from "./GameShell";
 import { WorldScene } from "./WorldScene";
 
-vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ push: () => {} }) }));
+const router = vi.hoisted(() => ({ push: vi.fn() }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => router }));
 
 describe("GameShell", () => {
   // C1
@@ -134,26 +135,50 @@ describe("GameShell", () => {
     });
     render(<GameShell><p className="scene">cena</p></GameShell>);
     await screen.findByText("cena");
-    const frame = document.querySelector(".frame")!;
-    expect(frame.children[0]).toHaveClass("hud");
-    expect(frame.children[0]).toHaveAttribute("aria-label", "HUD");
-    expect(frame.children[1]).toHaveTextContent("cena");
+    const topbar = document.querySelector(".page > .topbar")!;
+    expect(topbar.children).toHaveLength(1);
+    expect(topbar.children[0]).toHaveClass("hud");
+    expect(topbar.children[0]).toHaveAttribute("aria-label", "HUD");
+    const frame = document.querySelector(".page > .frame")!;
+    expect(frame.querySelector(".hud")).toBeNull();
+    expect(frame.children[0]).toHaveTextContent("cena");
+  });
+
+  it("has no scene hotbar and no MENU button; TÍTULO is a HUD link", async () => {
+    mockFetch({
+      "GET /api/me": json(200, { player: player() }),
+      "GET /api/catalog": json(200, CATALOG),
+    });
+    render(<GameShell><p>cena</p></GameShell>);
+    await screen.findByText("cena");
+    expect(screen.queryByRole("navigation", { name: "Cenas" })).toBeNull();
+    expect(screen.queryByRole("button", { name: /^MENU/ })).toBeNull();
+    const title = screen.getByRole("link", { name: "TÍTULO" });
+    expect(title.closest("header")).toBe(screen.getByRole("banner", { name: "HUD" }));
+    expect(title.getAttribute("href")).toBe("/");
+  });
+
+  it("number keys still switch scenes inside the shell", async () => {
+    router.push.mockClear();
+    mockFetch({
+      "GET /api/me": json(200, { player: player() }),
+      "GET /api/catalog": json(200, CATALOG),
+    });
+    render(<GameShell><p>cena</p></GameShell>);
+    await screen.findByText("cena");
+    await userEvent.keyboard("1");
+    expect(router.push).toHaveBeenCalledWith("/");
   });
 
 });
 
 describe("GameShell assets", () => {
-  // assets C15
-  it("logo", async () => {
+  it("no logo header above the tabs", async () => {
     mockFetch({ "GET /api/catalog": json(200, CATALOG), "GET /api/me": json(200, { player: player() }) });
     render(<GameShell><p>cena</p></GameShell>);
-    const logo = await screen.findByRole("img", { name: "DevServer" });
-    expect(logo.getAttribute("src")).toBe("/art/sprite/logo.png");
-    expect(logo.getAttribute("width")).toBe("160");
-    expect(logo.getAttribute("height")).toBe("64");
-    expect(logo.className.split(/\s+/)).toContain("pixelated");
-    expect(logo.closest("header")).not.toBeNull();
-    expect(logo.closest("header")!.textContent).not.toMatch(/DEV|SERVER/);
+    await screen.findByText("cena");
+    expect(document.querySelector("header.logo")).toBeNull();
+    expect(screen.queryByRole("img", { name: "DevServer" })).toBeNull();
   });
 });
 

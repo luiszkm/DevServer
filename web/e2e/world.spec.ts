@@ -4,7 +4,7 @@ import { newDev } from "./helpers";
 // C40
 test("travel persists", async ({ page }) => {
   await newDev(page);
-  await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "MUNDO" }).click();
+  await page.getByRole("banner", { name: "HUD" }).getByRole("link", { name: "MUNDO" }).click();
   await expect(page.getByText("região atual: VILA LOCALHOST")).toBeVisible();
 
   await page.evaluate(() => ((window as unknown as { __marker: number }).__marker = 7));

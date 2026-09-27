@@ -23,7 +23,6 @@ test("unlock persists", async ({ page }) => {
 // skill-loadout AC 7, 9, 13, 24: the loadout is stored, and only an equipped skill reaches the Bug Fight.
 test("loadout persists and decides the fight's commands", async ({ page }) => {
   await newDev(page);
-  const nav = page.getByRole("navigation", { name: "Cenas" });
   await openScene(page, "SKILLS");
   const endpoint = page.locator('[data-skill="be1"]');
   await endpoint.locator('[data-action="unlock"]').click();
@@ -36,7 +35,7 @@ test("loadout persists and decides the fight's commands", async ({ page }) => {
   await expect(page.locator('[data-slot="0"]')).toHaveAttribute("data-filled", "false");
   await expect(page.getByText("bônus ativo: +0 HP · +0 SP · +0% dano")).toBeVisible();
 
-  await nav.getByRole("link", { name: "BUG FIGHT" }).click();
+  await openScene(page, "BUG FIGHT");
   await expect(page.getByText("ENCONTRO · VILA LOCALHOST")).toBeVisible();
   await expect(page.locator('[data-command="be1"]')).toHaveCount(0);
   await expect(page.locator('[data-command="ship"]')).toBeDisabled();
@@ -46,7 +45,7 @@ test("loadout persists and decides the fight's commands", async ({ page }) => {
   await endpoint.locator('[data-action="equip"]').click();
   await expect(page.locator('[data-slot="0"]')).toContainText("ENDPOINT");
   await expect(page.getByText("bônus ativo: +0 HP · +0 SP · +8% dano")).toBeVisible();
-  await nav.getByRole("link", { name: "BUG FIGHT" }).click();
+  await openScene(page, "BUG FIGHT");
   await expect(page.locator('[data-command="be1"]')).toBeVisible();
 
   // a landed FIX charges the stored power bar

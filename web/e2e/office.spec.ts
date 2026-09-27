@@ -5,7 +5,7 @@ import { newDev, openScene } from "./helpers";
 test("install and remove", async ({ page }) => {
   await newDev(page);
   const hud = page.getByRole("banner", { name: "HUD" });
-  const coins = hud.locator(".hud-card", { hasText: "COINS" }).locator(".hud-value");
+  const coins = hud.locator(".hud-row", { hasText: "COINS" }).locator(".hud-value");
   await expect(coins).toHaveText("9999");
 
   await openScene(page, "OFFICE");

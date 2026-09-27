@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { newDev } from "./helpers";
 
-// responsive C7-C17: layout only exists in the real browser - jsdom never evaluates the media block.
+// responsive C8-C17: layout only exists in the real browser - jsdom never evaluates the media block.
 const FAKE = "http://localhost:9180";
 const PHONE_S = { width: 360, height: 740 };
 const PHONE_M = { width: 390, height: 844 };
@@ -54,32 +54,6 @@ const scene = (s: (typeof SCENES)[number]) => `section.scene[aria-label="${s.lab
 
 test.describe("phone M", () => {
   test.use({ viewport: PHONE_M });
-
-  test("C7 menu on phone", async ({ page }) => {
-    await newDev(page);
-    const nav = page.getByRole("navigation", { name: "Cenas" });
-    const menu = page.getByRole("button", { name: /^MENU/ });
-    const all = nav.getByRole("link", { includeHidden: true });
-    await expect(all).toHaveCount(6);
-    for (const link of await all.all()) await expect(link).toBeHidden();
-    await expect(menu).toHaveText("MENU · TÍTULO");
-    await expect(menu).toHaveAttribute("aria-expanded", "false");
-
-    await menu.click();
-    const links = nav.getByRole("link");
-    for (const link of await links.all()) await expect(link).toBeVisible();
-    const names = (await links.allTextContents()).map((t) => t.replace(/^\d\d/, ""));
-    expect(names).toEqual(["TÍTULO", "MUNDO", "BASE", "DEPLOY", "BUG FIGHT", "LOJA"]);
-
-    await nav.getByRole("link", { name: /DEPLOY/ }).click();
-    await expect(page).toHaveURL(/\/deploy$/);
-    await expect(page.getByText("PIPELINES DE DEPLOY")).toBeVisible();
-    await expect(all).toHaveCount(6);
-    for (const link of await all.all()) await expect(link).toBeHidden();
-    await expect(menu).toHaveText("MENU · DEPLOY");
-    await expect(menu).toHaveAttribute("aria-expanded", "false");
-    await expect(all.filter({ hasText: "DEPLOY" })).toHaveAttribute("aria-current", "page");
-  });
 
   for (const s of SCENES) {
     test(`C8 390 ${s.route}`, async ({ page }) => {
@@ -145,30 +119,27 @@ test.describe("phone S", () => {
     test(`C10 360 ${s.route}`, async ({ page }) => {
       await newDev(page);
       await openScene(page, s);
-      const boxes = await controls(page, [scene(s), "header.hud", ".tabs-bar"], ".title-art a");
+      const boxes = await controls(page, [scene(s), "header.hud"], ".title-art a");
       const small = boxes.filter((b) => b.width < 24 || b.height < 24).map((b) => `${b.name} ${b.width}x${b.height}`);
       expect(small).toEqual([]);
     });
   }
 
-  test("C10 360 menu open", async ({ page }) => {
-    await newDev(page);
-    await page.getByRole("button", { name: /^MENU/ }).click();
-    const boxes = await controls(page, ["nav#cenas-nav"]);
-    expect(boxes).toHaveLength(9);
-    const small = boxes.filter((b) => b.width < 24 || b.height < 24).map((b) => `${b.name} ${b.width}x${b.height}`);
-    expect(small).toEqual([]);
-  });
-
   test("C12 hud", async ({ page }) => {
     await newDev(page);
     const cards = page.locator("header.hud .hud-card");
-    await expect(cards).toHaveCount(6);
+    await expect(cards).toHaveCount(4);
     for (const card of await cards.all()) {
       await expect(card).toBeVisible();
       const b = (await card.boundingBox())!;
       expect(b.x).toBeGreaterThanOrEqual(0);
       expect(b.x + b.width).toBeLessThanOrEqual(PHONE_S.width);
+    }
+    const scenes = (await page.locator("header.hud .hud-scenes").boundingBox())!;
+    for (const name of ["TÍTULO", "MUNDO", "DEPLOY", "BUG FIGHT"]) {
+      const b = (await page.locator("header.hud .hud-scenes").getByRole("link", { name, exact: true }).boundingBox())!;
+      expect(b.x, name).toBeGreaterThanOrEqual(scenes.x - 0.5);
+      expect(b.x + b.width, name).toBeLessThanOrEqual(scenes.x + scenes.width + 0.5);
     }
     await expect(page.getByRole("button", { name: "SAIR" })).toBeVisible();
   });
@@ -250,15 +221,13 @@ test.describe("desktop", () => {
       await openScene(page, s);
       expect((await page.locator(".page").boundingBox())!.width).toBe(1200);
       expect((await page.locator(scene(s)).boundingBox())!.height).toBe(760);
-      const links = page.getByRole("navigation", { name: "Cenas" }).getByRole("link");
-      await expect(links).toHaveCount(6);
-      const ys = new Set<number>();
-      for (const link of await links.all()) {
-        await expect(link).toBeVisible();
-        ys.add((await link.boundingBox())!.y);
+      const hud = page.locator("header.hud");
+      const row: { x: number; y: number; width: number }[] = [];
+      for (const name of ["TÍTULO", "MUNDO", "DEPLOY", "BUG FIGHT"]) row.push((await hud.getByRole("link", { name, exact: true }).boundingBox())!);
+      for (const [i, b] of row.entries()) {
+        expect(b.y).toBe(row[0].y);
+        if (i > 0) expect(b.x).toBeGreaterThanOrEqual(row[i - 1].x + row[i - 1].width);
       }
-      expect(ys.size).toBe(1);
-      await expect(page.getByRole("button", { name: /^MENU/ })).toBeHidden();
     });
   }
 });

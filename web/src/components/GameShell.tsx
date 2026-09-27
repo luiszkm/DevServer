@@ -7,10 +7,9 @@ import { GameContext } from "./GameContext";
 import { HubTabs } from "./HubTabs";
 import { Hud } from "./Hud";
 import { LoginScreen } from "./LoginScreen";
-import { Logo } from "./Logo";
 import { Onboarding } from "./Onboarding";
+import { SceneShortcuts } from "./SceneShortcuts";
 import { ServerDown } from "./ServerDown";
-import { Tabs } from "./Tabs";
 
 type State =
   | { kind: "loading" }
@@ -83,16 +82,14 @@ export function GameShell({ children }: { children: React.ReactNode }) {
       return <ServerDown onRetry={load} />;
     case "loading":
       return (
-        <Frame>
-          <Hud />
+        <Frame hud={<Hud />}>
           <div className="scene" />
         </Frame>
       );
     case "ready":
       return (
         <GameContext.Provider value={{ player: state.player, catalog: state.catalog, setPlayer }}>
-          <Frame>
-            <Hud player={state.player} onLogout={logout} />
+          <Frame hud={<Hud player={state.player} onLogout={logout} />}>
             <HubTabs />
             {children}
           </Frame>
@@ -101,13 +98,11 @@ export function GameShell({ children }: { children: React.ReactNode }) {
   }
 }
 
-function Frame({ children }: { children: React.ReactNode }) {
+function Frame({ hud, children }: { hud: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="page">
-      <header className="logo">
-        <Logo scale={1} />
-      </header>
-      <Tabs />
+      <SceneShortcuts />
+      <div className="topbar">{hud}</div>
       <div className="frame">{children}</div>
     </div>
   );

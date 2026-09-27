@@ -4,7 +4,7 @@ import { newDev } from "./helpers";
 // C24
 test("start persists", async ({ page }) => {
   await newDev(page);
-  await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "DEPLOY" }).click();
+  await page.getByRole("banner", { name: "HUD" }).getByRole("link", { name: "DEPLOY" }).click();
   await page.getByRole("button", { name: "BANCO DE DADOS" }).click();
   const panel = page.getByRole("region", { name: "painel de deploy" });
   await panel.getByRole("button", { name: "INICIAR DEPLOY" }).click();

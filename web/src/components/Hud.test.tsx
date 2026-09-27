@@ -5,7 +5,8 @@ import { GameContext } from "./GameContext";
 import { GameShell } from "./GameShell";
 import { Hud } from "./Hud";
 
-vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ push: () => {} }) }));
+const nav = vi.hoisted(() => ({ pathname: "/" }));
+vi.mock("next/navigation", () => ({ usePathname: () => nav.pathname, useRouter: () => ({ push: () => {} }) }));
 
 describe("Hud", () => {
   // C23
@@ -27,6 +28,75 @@ describe("Hud", () => {
     const hud = screen.getByRole("banner", { name: "HUD" });
     expect(within(hud).getByText("CARREGANDO...")).toBeInTheDocument();
     expect(hud.textContent).not.toMatch(/\d/);
+  });
+
+  it("stacks the XP bar above the HP bar in one card", () => {
+    render(<Hud player={player({ xp: 40, xpMax: 1000, hp: 80, hpMax: 140 })} />);
+    const xp = screen.getByText("40/1000").closest(".hud-row")!;
+    const hp = screen.getByText("HP 80/140").closest(".hud-row")!;
+    expect(xp.parentElement).toBe(hp.parentElement);
+    expect(xp.parentElement).toHaveClass("hud-bars");
+    expect(xp.compareDocumentPosition(hp) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("stacks COINS above GEMS in one card", () => {
+    render(<Hud player={player({ coins: 55, gems: 7 })} />);
+    const coins = screen.getByText("COINS").closest(".hud-row")!;
+    const gems = screen.getByText("GEMS").closest(".hud-row")!;
+    expect(coins.parentElement).toBe(gems.parentElement);
+    expect(coins.parentElement).toHaveClass("hud-wallet");
+    expect(coins).toHaveTextContent("55");
+    expect(gems).toHaveTextContent("7");
+    expect(coins.compareDocumentPosition(gems) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it.each([
+    ["TÍTULO", "/", "titulo", "/mundo"],
+    ["MUNDO", "/mundo", "mundo", "/"],
+    ["DEPLOY", "/deploy", "deploy", "/"],
+    ["BUG FIGHT", "/bug-fight", "bug-fight", "/"],
+    ["LOJA", "/loja", "loja", "/"],
+  ])("%s link: icon and name, current only on its route", (label, href, icon, elsewhere) => {
+    for (const [pathname, current] of [[elsewhere, null], [href, "page"]]) {
+      nav.pathname = pathname!;
+      const { unmount } = render(<Hud player={player()} />);
+      const link = screen.getByRole("link", { name: label });
+      expect(link.getAttribute("href")).toBe(href);
+      expect(link.getAttribute("aria-current")).toBe(current);
+      expect(link.textContent).toBe(label);
+      expect(link.firstElementChild?.getAttribute("src")).toBe(`/art/icon/menu-${icon}.png`);
+      unmount();
+    }
+    nav.pathname = "/";
+  });
+
+  it("puts TÍTULO, MUNDO, DEPLOY then BUG FIGHT in the card right after the XP and HP bars", () => {
+    render(<Hud player={player()} />);
+    const card = screen.getByRole("link", { name: "MUNDO" }).parentElement!;
+    expect(card.previousElementSibling?.classList.contains("hud-bars")).toBe(true);
+    expect([...card.children].map((c) => c.textContent)).toEqual(["TÍTULO", "MUNDO", "DEPLOY", "BUG FIGHT"]);
+  });
+
+  it("puts the LOJA link under GEMS", () => {
+    render(<Hud player={player()} />);
+    const loja = screen.getByRole("link", { name: "LOJA" });
+    const gems = screen.getByText("GEMS").closest(".hud-row")!;
+    expect(loja.parentElement).toBe(gems.parentElement);
+    expect(gems.nextElementSibling).toBe(loja);
+  });
+
+  it("puts SAIR below LEVEL, beside the hero", () => {
+    const p = player({ level: 15 });
+    render(
+      <GameContext.Provider value={{ player: p, catalog: CATALOG, setPlayer: vi.fn() }}>
+        <Hud player={p} onLogout={vi.fn()} />
+      </GameContext.Provider>,
+    );
+    const sair = screen.getByRole("button", { name: "SAIR" });
+    const level = screen.getByText("LEVEL 15");
+    expect(level.parentElement).toBe(sair.parentElement);
+    expect(level.compareDocumentPosition(sair) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(level.closest(".hud-card")!.querySelector(".hud-hero canvas")).not.toBeNull();
   });
 
   it("shows SAIR only when a logout handler is given", () => {
@@ -104,6 +174,19 @@ describe("Hud hero", () => {
       </GameContext.Provider>,
     );
     expect(document.querySelector("canvas")?.getAttribute("data-look")).toContain("/art/sprite/hero/laptop-raro.png");
+  });
+
+  it("the hero and dev name link to BASE", () => {
+    const p = player({ devName: "OCTOCAT" });
+    render(
+      <GameContext.Provider value={{ player: p, catalog: CATALOG, setPlayer: vi.fn() }}>
+        <Hud player={p} />
+      </GameContext.Provider>,
+    );
+    const link = screen.getByRole("link", { name: "OCTOCAT · ir para a base" });
+    expect(link.getAttribute("href")).toBe("/office");
+    expect(link.querySelector("canvas.hero-avatar")).not.toBeNull();
+    expect(link).toHaveTextContent("OCTOCAT");
   });
 });
 

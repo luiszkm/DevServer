@@ -26,7 +26,7 @@ for (const width of [390, 360]) {
 // forge C28: the forge route answers through the /api rewrite with the page's session.
 test("forge round trip", async ({ page }) => {
   await newDev(page);
-  await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "LOJA" }).click();
+  await page.getByRole("banner", { name: "HUD" }).getByRole("link", { name: "LOJA" }).click();
   await page.getByRole("tab", { name: "FORJA" }).click();
   const forge = page.getByRole("tabpanel", { name: "FORJA" });
   await expect(forge).toBeVisible();

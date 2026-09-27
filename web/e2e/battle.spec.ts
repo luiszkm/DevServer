@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { newDev } from "./helpers";
+import { newDev, openScene } from "./helpers";
 
 // C53
 test("fight to victory", async ({ page }) => {
   await newDev(page);
-  await page.getByRole("navigation", { name: "Cenas" }).getByRole("link", { name: "BUG FIGHT" }).click();
+  await openScene(page, "BUG FIGHT");
   // assets-apply C26: VILA draws one of its two enemies (AD-017); the scene names the one the server picked
   const enemy = page.getByLabel("inimigo");
   await expect(enemy).toContainText("HP ");
