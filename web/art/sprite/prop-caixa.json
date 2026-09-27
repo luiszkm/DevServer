@@ -1,69 +1,19 @@
 {
- "name": "prop-caixa",
- "category": "sprite",
- "size": [
-  32,
-  32
- ],
- "_from": "assests_keyart.png 838,708,74,86",
- "layers": [
-  {
-   "grid": [
-    "................................",
-    "...........aaa..................",
-    ".....aa..aabaaaaaaaaa...........",
-    "....abbaacda...aeeeeeaaaaaaa....",
-    "...afgbgccca....achhhieeeeedaa..",
-    "...accbbbbcfaaaaccciieieeeeeda..",
-    "...aaaaaaaaaaaaaaaaaaeeeaaaaaa..",
-    ".....................aja........",
-    "...aaaaaaaaa..aaaaaa..aeaaaaa...",
-    "..aa.a.aeeeea.a.akla.alla...a...",
-    "..aa.aamndeha.a.aaia.alciaa.a...",
-    "..aa.aeedhhia.a.a.aa.alooda.a...",
-    "..aa..alheaaa.aaaaaa.alaaaa.a...",
-    "..aiaadcda..a.a....a.aa.....a...",
-    "..aa.aieeeaaa.aaaaaa.alaaaa.a...",
-    "...aapdaaaaaa.aaaaaa.aa..aa.a...",
-    "....aaa..............aa.....a...",
-    "...a..aaaaaaa.aaaaaa.aa..a..a...",
-    "...aaaiia...a.aoeeea.aeaaca.a...",
-    "...aaqihhaaaa.aolboa.aaaaaa.a...",
-    "...a.arnsdeea.aalaea.a......a...",
-    "....aleledhha.a.a.a.alaaaaa.a...",
-    "...aaaaaaaaaa.a.....aeaaaaa.a...",
-    "..aa.................a......a...",
-    "..aa.aaaaaaaa.aaaaaa.aaaaaa.a...",
-    "..aa.aibthlea.aldgea.alahba.a...",
-    "..aa.aaaaaaaa.alaaaa.aa.aoa.aa..",
-    "..aa........a.aa.....aa..aaaaa..",
-    "...aaaaaaaaaa.alaaa..aaaaa...a..",
-    "......aaaaaaa.aaaaa.............",
-    "................................",
-    "................................"
-   ],
-   "legend": {
-    "a": "ink",
-    "b": "denim.3",
-    "c": "ui.5",
-    "d": "denim.2",
-    "e": "denim.1",
-    "f": "metal.2",
-    "g": "stone.3",
-    "h": "av-top-azul.1",
-    "i": "ui.4",
-    "j": "stone",
-    "k": "av-bottom-cinza.2",
-    "l": "av-top-azul",
-    "m": "av-top-azul.3",
-    "n": "net.1",
-    "o": "gem",
-    "p": "av-top-verde.2",
-    "q": "av-skin-neon",
-    "r": "leaf",
-    "s": "av-skin-neon.1",
-    "t": "av-top-azul.2"
-   }
-  }
- ]
+  "name": "prop-caixa",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "Wooden crate with an X brace, top face lit (PROPS row 1).",
+  "layers": [
+    {"poly": [[6, 8], [26, 8], [29, 5], [9, 5]], "color": "wood.4"},
+    {"rect": [9, 5, 20, 1], "color": "dirt.3"},
+    {"rect": [4, 8, 22, 20], "color": "wood.3"},
+    {"frame": [4, 8, 22, 20], "color": "wood.1"},
+    {"frame": [5, 9, 20, 18], "color": "wood.2"},
+    {"line": [6, 10, 23, 25], "color": "wood.1"},
+    {"line": [23, 10, 6, 25], "color": "wood.1"},
+    {"rect": [5, 9, 20, 1], "color": "wood.4"},
+    {"rect": [5, 9, 1, 18], "color": "wood.4"},
+    {"poly": [[26, 8], [29, 5], [29, 25], [26, 28]], "color": "wood.1"},
+    {"outline": "ink"}
+  ]
 }

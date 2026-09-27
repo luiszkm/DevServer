@@ -1,77 +1,21 @@
 {
- "name": "build-placa-code",
- "category": "sprite",
- "size": [
-  32,
-  32
- ],
- "_from": "assests_keyart.png 1446,540,68,60",
- "layers": [
-  {
-   "grid": [
-    "................................",
-    "................................",
-    "................................",
-    ".......aa.....aaaaa......aa.....",
-    ".......aba...acdefa.....aga.....",
-    ".......aahaaabcdefia...adba.....",
-    ".......a.adddccdefjkaaalfa......",
-    "........amdddccdnfbikkhha.......",
-    "........adcocpddefebkkiia.......",
-    ".......addqqrcddneefiikka.......",
-    "......aeccccccppppceesiiiaa.....",
-    ".....atdpcdcccccccccgdbiiia.....",
-    ".....addddddddddddddggfissja....",
-    "....abddddddnddddddddgeijiia....",
-    "....aegbbabddnddtfatddebjiika...",
-    "...abddta.adnegdua.adddejivsa...",
-    "..a.agdwa.adeeedxqaxdddeiiiska..",
-    "..a.andta.adeeenxraxdddeiikska..",
-    "..aaenda..ageeenxa.adddeiiksya..",
-    "...aenda..agbtfda..adddviiksya..",
-    "...aenda..apaazda...adgeikksya..",
-    "...aendnaafa.aAafaaadggiikkBya..",
-    "...asnddgga.ada.adggggdiiiiBya..",
-    "..aykendggdandfaddggggbkkiikya..",
-    "..aajkngggddddnddggggdkkkvska...",
-    "....aisnenndnnnnneeeebkiiskaa...",
-    ".....aikbeevveeeveeeijkBkka.....",
-    "......aykkkkkkkkkkkkkkkkkaa.....",
-    ".......aaaaaaaaaaaaaaaaaa.......",
-    "................................",
-    "................................",
-    "................................"
-   ],
-   "legend": {
-    "a": "ink",
-    "b": "slime.2",
-    "c": "av-hair-rosa.3",
-    "d": "gap.15",
-    "e": "gap.10",
-    "f": "slime.3",
-    "g": "gap.14",
-    "h": "slime",
-    "i": "gap.4",
-    "j": "slime.1",
-    "k": "gap.2",
-    "l": "av-skin-shadow-hair.2",
-    "m": "av-hair-rosa",
-    "n": "gap.12",
-    "o": "av-hair-grisalho.3",
-    "p": "slime.4",
-    "q": "av-top-branco.2",
-    "r": "av-top-branco.3",
-    "s": "gap.6",
-    "t": "av-hair-rosa.1",
-    "u": "soil.1",
-    "v": "gap.9",
-    "w": "av-skin-shadow.2",
-    "x": "corrupt",
-    "y": "gap.1",
-    "z": "av-skin-shadow.1",
-    "A": "av-skin-shadow",
-    "B": "gap.8"
-   }
-  }
- ]
+  "name": "build-placa-code",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A blue board sign showing </> on two legs (ESTRUTURAS row 3).",
+  "layers": [
+    {"rect": [4, 5, 24, 17], "color": "net.1"},
+    {"rect": [5, 6, 22, 15], "color": "ui.2"},
+    {"rect": [4, 5, 24, 1], "color": "net.2"},
+    {"grid": [
+      "..L..L.L..",
+      ".G...G..G.",
+      "G...G....G",
+      ".G..G...G.",
+      "..G.G..G.."
+    ], "legend": {"G": "code.3", "L": "code.4"}, "at": [11, 11]},
+    {"rect": [7, 22, 2, 6], "color": "metal.2"},
+    {"rect": [23, 22, 2, 6], "color": "metal.2"},
+    {"outline": "ink"}
+  ]
 }

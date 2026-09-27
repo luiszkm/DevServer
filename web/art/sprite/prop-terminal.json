@@ -1,77 +1,22 @@
 {
- "name": "prop-terminal",
- "category": "sprite",
- "size": [
-  32,
-  32
- ],
- "_from": "assests_keyart.png 22,524,110,106",
- "layers": [
-  {
-   "grid": [
-    "................................",
-    "..a..........................aaa",
-    "..aaaaaaaaaaaaaaaaaaaaaaaaa..aba",
-    "..accbbbbbbbbbbbbbdbbbbbbba..aca",
-    "..aeefgcdcbdbcccbccbedgdffa..aba",
-    "..agfhgiaegfbbgccceefgjgfa...aea",
-    "..aakfha.agaeefgbgghaghhaa...aga",
-    "....aia..aa.aaagggaa.aja......aa",
-    "..aalmnaa.aa...aaa..a.a.aa...aoa",
-    "..aonnpnqapnaaa..a.amanapa...ara",
-    "..ansaonptqnnsoaaoaonoopna...ama",
-    "..ala.alponmanmotnmnonnnua...ava",
-    "..aa.anaaaaa.aaaapaaaaaaaa...aaa",
-    "......a..........a..............",
-    "................................",
-    "................................",
-    "..aaa..a..a..aaaaaaaaaaa.a..aa..",
-    "..awwaagaagaabcbbxdbddddadaawya.",
-    "..aiebbbbbdddeeeeddedbbedbbbbea.",
-    "..abbbeeeeizzegeezzebbbbcbbbcba.",
-    "..abeddbbbbbeddbbddbccbcbccgzga.",
-    "..abbcbbbbedbbbcbbbcbdddfgefhha.",
-    "..abbbbbcbbbbbbbbbfegggkaffaaa..",
-    "..afefgbebcbbgggfgyfaffa.aa.....",
-    "..afAahgfgdefgafffaa.aa..a...a..",
-    "...aa.aaafgfaa.afa.......aaaaa..",
-    "..a...a..afa....aa.aaaaaanBla...",
-    "..aaaala.aa...aallaoBopnBBBlla..",
-    "..annaBnannaaaololannBnlnnnla...",
-    "..aaa.aaaaaaaaaaaa.aaaaaaaaa....",
-    "................................",
-    "................................"
-   ],
-   "legend": {
-    "a": "ink",
-    "b": "av-hair-verde.2",
-    "c": "leaf.3",
-    "d": "leaf.2",
-    "e": "code.1",
-    "f": "leaf.1",
-    "g": "av-hair-verde.1",
-    "h": "code",
-    "i": "grass.1",
-    "j": "grass",
-    "k": "av-top-verde.1",
-    "l": "soil.2",
-    "m": "av-tone-retinta.1",
-    "n": "soil.3",
-    "o": "bronze",
-    "p": "av-tone-negra.1",
-    "q": "av-tone-morena",
-    "r": "av-eyes-castanho.1",
-    "s": "av-hair-castanho.1",
-    "t": "av-hair-castanho.2",
-    "u": "av-eyes-preto.2",
-    "v": "av-tone-parda",
-    "w": "av-eyes-verde",
-    "x": "av-skin-golden.1",
-    "y": "leaf",
-    "z": "grass.2",
-    "A": "av-eyes-verde.1",
-    "B": "av-tone-retinta.2"
-   }
-  }
- ]
+  "name": "prop-terminal",
+  "category": "sprite",
+  "size": [32, 32],
+  "_design": "A small terminal PC with a keyboard, </> on the screen (PROPS row 3).",
+  "layers": [
+    {"rect": [6, 5, 20, 16], "color": "metal.2"},
+    {"rect": [6, 5, 20, 1], "color": "metal.3"},
+    {"rect": [8, 7, 16, 11], "color": "ink.1"},
+    {"grid": [
+      "..L..L.L..",
+      ".G...G..G.",
+      "G...G....G",
+      ".G..G...G.",
+      "..G.G..G.."
+    ], "legend": {"G": "code.3", "L": "code.4"}, "at": [11, 10]},
+    {"rect": [4, 21, 24, 5], "color": "metal.1"},
+    {"rect": [4, 21, 24, 1], "color": "metal.2"},
+    {"rect": [7, 23, 18, 1], "color": "stone.2"},
+    {"outline": "ink"}
+  ]
 }
