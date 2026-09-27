@@ -546,7 +546,7 @@ button { font-family: inherit; }
 .office-templates { display: flex; flex-direction: column; gap: 7px; border: 3px solid var(--edge); background: var(--panel-2); padding: 10px 12px; }
 .office-template-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .office-template { display: flex; flex-direction: column; gap: 5px; padding: 8px; border: 2px solid var(--line-2); background: #122130; min-width: 0; }
-.office-template-name { font-size: 9px; }
+.office-template-name { font-size: 8px; overflow-wrap: anywhere; }
 .office-template-desc { font-size: 14px; line-height: 1.15; color: var(--dim); }
 .office-template-pieces { display: flex; flex-wrap: wrap; gap: 2px; }
 .office-template-price { font-size: 15px; color: var(--yellow); }
