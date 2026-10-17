@@ -315,6 +315,12 @@ button { font-family: inherit; }
 .battle-actor { position: relative; display: flex; align-items: flex-end; justify-content: center; }
 .battle-enemy-card .bar > div, .battle-hero-bar > div { transition: width .4s steps(6); }
 .battle-fx { position: absolute; left: 50%; top: 50%; width: 96px; height: 96px; margin: -48px 0 0 -48px; background: no-repeat 0 0 / 384px 96px; image-rendering: pixelated; pointer-events: none; animation: fx-play .4s steps(4) forwards; }
+/* Painted cast fx fits the 300px arena at 112px tall. Stills hold frame 0; strips step across equal cells. */
+.battle-fx.cast-fx { width: calc(112px * var(--cast-aspect, 1)); height: 112px; margin: -56px 0 0 calc(-56px * var(--cast-aspect, 1)); image-rendering: auto; background-repeat: no-repeat; background-position: 0 0; }
+.battle-fx.cast-fx.cast-fx-still { background-size: 100% 100%; animation: none; }
+.battle-fx.cast-fx.cast-fx-strip { background-size: calc(100% * var(--cast-frames, 4)) 100%; animation: cast-fx-play .4s steps(4) forwards; }
+.cast-sprite { display: block; height: 112px; width: auto; image-rendering: auto; }
+.cast-strip { display: block; height: 112px; width: calc(112px * var(--cast-aspect, 1)); background: no-repeat 0 0 / calc(112px * var(--cast-aspect, 1) * var(--cast-frames, 4)) 112px; image-rendering: auto; animation: cast-play .6s steps(4) infinite; }
 /* limit-break door 5: a special plays the same 4-frame strip at 4x (128px) for 1.2s over a gold flash. */
 .battle-fx.battle-fx-limit { width: 128px; height: 128px; margin: -64px 0 0 -64px; background-size: 512px 128px; animation: fx-limit 1.2s steps(4) forwards; }
 .battle-stage.is-limit { animation: shake .3s steps(6), limit-flash 1.2s steps(6); }
@@ -337,6 +343,8 @@ button { font-family: inherit; }
 .battle-stage.is-shake { animation: shake .3s steps(6); }
 
 @keyframes fx-play { to { background-position: -384px 0; } }
+@keyframes cast-fx-play { to { background-position: var(--cast-shift) 0; } }
+@keyframes cast-play { to { background-position: var(--cast-shift) 0; } }
 @keyframes fx-limit { to { background-position: -512px 0; } }
 @keyframes limit-flash { 0%, 40% { filter: brightness(1.8) sepia(.6); } to { filter: none; } }
 /* assets: the loading strip loops at 1x beside CARREGANDO...; one-shot strips (collect, teleport) play at 3x. */
@@ -374,7 +382,7 @@ button { font-family: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
   .map-hero, .region-hero { transition: none; }
-  .battle-stage, .battle-actor, .battle-float, .battle-fx { animation: none !important; }
+  .battle-stage, .battle-actor, .battle-float, .battle-fx, .cast-strip { animation: none !important; }
   .battle-fx { display: none; }
   .fx-loading { animation: none; }
   .fx-fire { animation: none; }

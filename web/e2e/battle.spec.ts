@@ -20,7 +20,7 @@ test("fight to victory", async ({ page }) => {
   await fix.click();
   await expect(page.locator('.battle-fx[data-fx="slash"]')).toBeAttached();
   const art = await page.locator(".battle-fx").evaluate((el) => getComputedStyle(el).backgroundImage);
-  expect(art).toContain("/art/fx/slash.png");
+  expect(art).toContain("/cast/fx-slash.png");
   await expect(page.locator(".battle-float").first()).toContainText(/^-\d+/);
   await expect(fix).toBeEnabled();
 

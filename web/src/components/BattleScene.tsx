@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { post } from "@/lib/api";
 import type { AvatarAnim } from "@/lib/avatar";
-import { beatOf, type Beat } from "@/lib/battleFx";
+import { beatOf, type Beat, type FxId } from "@/lib/battleFx";
+import { CAST_ENEMY, castFxItem, castFxStyle } from "@/lib/cast";
 import { eventText } from "@/lib/battleLog";
 import { baseCommands, classSpecial, commandForSkill, levelOf, skillLevel } from "@/lib/skills";
 import type { Battle, BattleEvent, Command, Player } from "@/lib/types";
+import { CastSprite } from "./CastSprite";
 import { GameArt, nativeSize } from "./GameArt";
 import { FxOnce, LoadingFx } from "./LoadingFx";
 import { useGame } from "./GameContext";
@@ -22,6 +24,23 @@ const reducedMotion = () => typeof window.matchMedia === "function" && window.ma
 
 // The hero's strip for the beat on stage (plan assumptions: anim per screen); a won fight jumps.
 const BEAT_ANIM: Partial<Record<Beat["hero"] & string, AvatarAnim>> = { lunge: "run", cast: "interact", special: "interact" };
+function BattleFx({ id, limit }: { id: FxId; limit: boolean }) {
+  const cast = castFxItem(id);
+  if (!cast) {
+    return <span className={`battle-fx${limit ? " battle-fx-limit" : ""}`} data-fx={id} style={{ backgroundImage: `url(/art/fx/${id}.png)` }} aria-hidden="true" />;
+  }
+  const still = cast.frames === 1;
+  return (
+    <span
+      className={`battle-fx cast-fx ${still ? "cast-fx-still" : "cast-fx-strip"}${limit ? " battle-fx-limit" : ""}`}
+      data-fx={id}
+      data-frames={cast.frames}
+      style={castFxStyle(cast)}
+      aria-hidden="true"
+    />
+  );
+}
+
 function heroAnim(beat: Beat | null, status: Battle["status"]): AvatarAnim {
   return (beat?.hero && BEAT_ANIM[beat.hero]) || (status === "won" ? "jump" : "idle");
 }
@@ -350,7 +369,11 @@ export function BattleScene() {
         </div>
         <div className={`battle-actor battle-enemy-actor${beat?.enemy ? ` anim-${beat.enemy}` : ""}${down ? " is-down" : ""}`}>
           <div className="battle-sprite pixel">
-            <GameArt kind="enemy" id={battle.enemy} scale={ENEMY_SCALE[nativeSize("enemy", battle.enemy)]} alt={enemy.name} fallback={enemy.glyph} />
+            {CAST_ENEMY[battle.enemy] ? (
+              <CastSprite id={CAST_ENEMY[battle.enemy]} alt={enemy.name} />
+            ) : (
+              <GameArt kind="enemy" id={battle.enemy} scale={ENEMY_SCALE[nativeSize("enemy", battle.enemy)]} alt={enemy.name} fallback={enemy.glyph} />
+            )}
           </div>
           {effects("enemy")}
         </div>
@@ -363,9 +386,7 @@ export function BattleScene() {
     const item = beat.float?.item && catalog.items.find((i) => i.id === beat.float!.item);
     return (
       <>
-        {beat.fx?.on === on && (
-          <span key={`fx-${beat.key}`} className={`battle-fx${beat.limit ? " battle-fx-limit" : ""}`} data-fx={beat.fx.id} style={{ backgroundImage: `url(/art/fx/${beat.fx.id}.png)` }} aria-hidden="true" />
-        )}
+        {beat.fx?.on === on && <BattleFx key={`fx-${beat.key}`} id={beat.fx.id} limit={!!beat.limit} />}
         {beat.float?.on === on && (
           <span key={`float-${beat.key}`} className={`pixel battle-float tone-${beat.float.tone}`} aria-hidden="true">
             {item && <GameArt kind="item" id={item.id} scale={2} alt="" fallback={item.glyph} />}

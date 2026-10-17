@@ -1,0 +1,364 @@
+{
+  "items": [
+    {
+      "id": "enemy-boss-nuvem",
+      "src": "/cast/enemy-boss-nuvem.png",
+      "w": 224,
+      "h": 320,
+      "frames": 1,
+      "cellW": 224,
+      "cellH": 320,
+      "source": "stand-in"
+    },
+    {
+      "id": "enemy-cat",
+      "src": "/cast/enemy-cat.png",
+      "w": 160,
+      "h": 160,
+      "frames": 1,
+      "cellW": 160,
+      "cellH": 160,
+      "source": "stand-in"
+    },
+    {
+      "id": "enemy-slime",
+      "src": "/cast/enemy-slime.png",
+      "w": 192,
+      "h": 160,
+      "frames": 1,
+      "cellW": 192,
+      "cellH": 160,
+      "source": "stand-in"
+    },
+    {
+      "id": "enemy-slime-dark",
+      "src": "/cast/enemy-slime-dark.png",
+      "w": 192,
+      "h": 160,
+      "frames": 1,
+      "cellW": 192,
+      "cellH": 160,
+      "source": "stand-in"
+    },
+    {
+      "id": "enemy-slime-verde",
+      "src": "/cast/enemy-slime-verde.png",
+      "w": 192,
+      "h": 160,
+      "frames": 1,
+      "cellW": 192,
+      "cellH": 160,
+      "source": "stand-in"
+    },
+    {
+      "id": "enemy-snake",
+      "src": "/cast/enemy-snake.png",
+      "w": 192,
+      "h": 192,
+      "frames": 1,
+      "cellW": 192,
+      "cellH": 192,
+      "source": "stand-in"
+    },
+    {
+      "id": "enemy-spider",
+      "src": "/cast/enemy-spider.png",
+      "w": 256,
+      "h": 224,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 224,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-arc",
+      "src": "/cast/fx-arc.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-bolt",
+      "src": "/cast/fx-bolt.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-code",
+      "src": "/cast/fx-code.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-crit",
+      "src": "/cast/fx-crit.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-data",
+      "src": "/cast/fx-data.png",
+      "w": 1024,
+      "h": 256,
+      "frames": 4,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-earth",
+      "src": "/cast/fx-earth.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-fire",
+      "src": "/cast/fx-fire.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-glitch",
+      "src": "/cast/fx-glitch.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-heal",
+      "src": "/cast/fx-heal.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-heal-crown",
+      "src": "/cast/fx-heal-crown.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-ice",
+      "src": "/cast/fx-ice.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-impact",
+      "src": "/cast/fx-impact.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-shield",
+      "src": "/cast/fx-shield.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-shield-crown",
+      "src": "/cast/fx-shield-crown.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-slash",
+      "src": "/cast/fx-slash.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-stealth",
+      "src": "/cast/fx-stealth.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-teleport",
+      "src": "/cast/fx-teleport.png",
+      "w": 256,
+      "h": 256,
+      "frames": 1,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "fx-vortex",
+      "src": "/cast/fx-vortex.png",
+      "w": 1024,
+      "h": 256,
+      "frames": 4,
+      "cellW": 256,
+      "cellH": 256,
+      "source": "stand-in"
+    },
+    {
+      "id": "hero-f-attack",
+      "src": "/cast/hero-f-attack.png",
+      "w": 896,
+      "h": 288,
+      "frames": 4,
+      "cellW": 224,
+      "cellH": 288,
+      "source": "stand-in"
+    },
+    {
+      "id": "hero-f-idle",
+      "src": "/cast/hero-f-idle.png",
+      "w": 224,
+      "h": 288,
+      "frames": 1,
+      "cellW": 224,
+      "cellH": 288,
+      "source": "stand-in"
+    },
+    {
+      "id": "hero-f-run",
+      "src": "/cast/hero-f-run.png",
+      "w": 896,
+      "h": 288,
+      "frames": 4,
+      "cellW": 224,
+      "cellH": 288,
+      "source": "stand-in"
+    },
+    {
+      "id": "hero-f-walk",
+      "src": "/cast/hero-f-walk.png",
+      "w": 896,
+      "h": 288,
+      "frames": 4,
+      "cellW": 224,
+      "cellH": 288,
+      "source": "stand-in"
+    },
+    {
+      "id": "hero-m-attack",
+      "src": "/cast/hero-m-attack.png",
+      "w": 896,
+      "h": 288,
+      "frames": 4,
+      "cellW": 224,
+      "cellH": 288,
+      "source": "stand-in"
+    },
+    {
+      "id": "hero-m-crouch",
+      "src": "/cast/hero-m-crouch.png",
+      "w": 896,
+      "h": 288,
+      "frames": 4,
+      "cellW": 224,
+      "cellH": 288,
+      "source": "stand-in"
+    },
+    {
+      "id": "hero-m-idle",
+      "src": "/cast/hero-m-idle.png",
+      "w": 224,
+      "h": 288,
+      "frames": 1,
+      "cellW": 224,
+      "cellH": 288,
+      "source": "stand-in"
+    },
+    {
+      "id": "hero-m-run",
+      "src": "/cast/hero-m-run.png",
+      "w": 896,
+      "h": 288,
+      "frames": 4,
+      "cellW": 224,
+      "cellH": 288,
+      "source": "stand-in"
+    },
+    {
+      "id": "hero-m-walk",
+      "src": "/cast/hero-m-walk.png",
+      "w": 896,
+      "h": 288,
+      "frames": 4,
+      "cellW": 224,
+      "cellH": 288,
+      "source": "stand-in"
+    },
+    {
+      "id": "plate-battle-panic",
+      "src": "/cast/plate-battle-panic.png",
+      "w": 288,
+      "h": 384,
+      "frames": 1,
+      "cellW": 288,
+      "cellH": 384,
+      "source": "stand-in"
+    },
+    {
+      "id": "plate-meadow",
+      "src": "/cast/plate-meadow.png",
+      "w": 384,
+      "h": 256,
+      "frames": 1,
+      "cellW": 384,
+      "cellH": 256,
+      "source": "stand-in"
+    }
+  ]
+}

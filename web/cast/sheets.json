@@ -1,0 +1,28 @@
+{
+  "sheets": [
+    { "file": "0INFd.jpg", "key": "checker", "mode": "still", "ids": ["hero-m-idle"] },
+    { "file": "7Mb9i.jpg", "key": "checker", "mode": "still", "ids": ["hero-f-idle"] },
+    { "file": "9q7Xx.jpg", "key": "checker", "mode": "strip", "align": "bottom", "ids": ["hero-m-walk"] },
+    { "file": "GfA75.jpg", "key": "checker", "mode": "strip", "align": "bottom", "ids": ["hero-f-walk"] },
+    { "file": "Q6lqo.jpg", "key": "checker", "mode": "strip", "align": "bottom", "ids": ["hero-m-run"] },
+    { "file": "WQexN.jpg", "key": "checker", "mode": "strip", "align": "bottom", "ids": ["hero-f-run"] },
+    { "file": "C0oBe.jpg", "key": "checker", "mode": "strip", "align": "bottom", "ids": ["hero-m-crouch"] },
+    { "file": "kpJIM.jpg", "key": "checker", "mode": "strip", "align": "bottom", "ids": ["hero-m-attack"] },
+    { "file": "wJZPO.jpg", "key": "checker", "mode": "strip", "align": "bottom", "ids": ["hero-f-attack"] },
+    { "file": "YIcW9.jpg", "key": "checker", "mode": "still", "ids": ["enemy-slime"] },
+    { "file": "GFnew.jpg", "key": "checker", "mode": "still", "ids": ["enemy-slime-verde"] },
+    { "file": "uAzzR.jpg", "key": "corner", "mode": "still", "ids": ["enemy-slime-dark"] },
+    { "file": "DkIiW.jpg", "key": "checker", "mode": "still", "ids": ["enemy-spider"] },
+    { "file": "ndEVS.jpg", "key": "checker", "mode": "still", "ids": ["enemy-cat"] },
+    { "file": "omCJ8.jpg", "key": "checker", "mode": "still", "ids": ["enemy-snake"] },
+    { "file": "hhFHr.jpg", "key": "checker", "mode": "still", "pick": "largest", "ids": ["enemy-boss-nuvem"] },
+    { "file": "8r7f7.jpg", "key": "checker", "mode": "variants", "ids": ["fx-fire", "fx-ice", "fx-bolt", "fx-earth"] },
+    { "file": "UGCY0.jpg", "key": "checker", "mode": "variants", "ids": ["fx-slash", "fx-arc", "fx-impact", "fx-code"] },
+    { "file": "D0cqC.jpg", "key": "checker", "mode": "variants", "drop": "labels", "ids": ["fx-stealth", "fx-teleport", "fx-crit", "fx-glitch"] },
+    { "file": "hs7de.jpg", "key": "checker", "mode": "variants", "ids": ["fx-shield", "fx-shield-crown", "fx-heal", "fx-heal-crown"] },
+    { "file": "yoUtY.jpg", "key": "checker", "mode": "strip", "align": "center", "ids": ["fx-data"] },
+    { "file": "9v4li.jpg", "key": "checker", "mode": "strip", "align": "center", "ids": ["fx-vortex"] },
+    { "file": "KACsC.jpg", "key": "none", "mode": "plate", "ids": ["plate-meadow"] },
+    { "file": "S5bHu.jpg", "key": "none", "mode": "plate", "ids": ["plate-battle-panic"] }
+  ]
+}
