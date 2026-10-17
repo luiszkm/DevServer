@@ -9,7 +9,6 @@ envia intenção. O front chama `/api/*` na própria origem e o Next repassa par
 - Go 1.26+
 - Node 24+ e npm
 - Docker (para o Postgres)
-- Python 3 (só para gerar arte)
 
 ## Rodar localmente
 
@@ -112,17 +111,9 @@ Na primeira vez que rodar o e2e, instale o browser: `cd web && npx playwright in
 
 ## Arte do jogo
 
-A arte é pixel art gerada a partir de specs JSON pela skill `.claude/skills/pixel-assets`. Os
-specs ficam em `web/art/<categoria>/<nome>.json` e os PNGs em `web/public/art/`. Os dois são
-commitados juntos, e o PNG só muda quando o spec muda.
+Os assets de alta fidelidade (herói, skills, bosses, mobs) são gerados via Grok Imagine e organizados em `web/public/art/generated/`.
 
-```bash
-# gerar de novo tudo depois de mudar um spec
-python3 .claude/skills/pixel-assets/scripts/render.py web/art --out web/public/art
-
-# conferir que os PNGs commitados batem com os specs e seguem a paleta
-make art-check
-```
+A skill `pixel-assets` foi removida. Ícones e tiles simples podem continuar sendo feitos manualmente ou regenerados conforme necessário.
 
 ## Estrutura
 
