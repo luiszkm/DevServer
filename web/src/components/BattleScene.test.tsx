@@ -557,7 +557,8 @@ describe("BattleScene turn playback", () => {
     expect(heroActor()).toHaveClass("anim-lunge");
     expect(enemyActor()).toHaveClass("anim-hit");
     expect(fx()!.dataset.fx).toBe("data");
-    expect(fx()!.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/data.png)");
+    expect(fx()!.dataset.frames).toBe("4");
+    expect(fx()!.style.backgroundImage.replace(/"/g, "")).toBe("url(/cast/fx-data.png)");
     expect(within(enemyActor()).getByText("-20")).toBeInTheDocument();
     expect(screen.getByLabelText("inimigo")).toHaveTextContent("HP 40/60");
     expect(screen.getByLabelText("dev em combate")).toHaveTextContent("HP 100/100");
@@ -642,8 +643,10 @@ describe("BattleScene turn playback", () => {
     fireEvent.click(command("ship"));
     await act(() => vi.advanceTimersByTimeAsync(0));
     expect(fx()!.dataset.fx).toBe("ship");
+    expect(fx()!.dataset.frames).toBe("1");
     expect(fx()).toHaveClass("battle-fx-limit");
-    expect(fx()!.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/ship.png)");
+    expect(fx()).toHaveClass("cast-fx-still");
+    expect(fx()!.style.backgroundImage.replace(/"/g, "")).toBe("url(/cast/fx-crit.png)");
     expect(document.querySelector(".battle-stage")).toHaveClass("is-limit");
     expect(heroActor()).toHaveClass("anim-special");
     expect(float()).toHaveTextContent("-55 SHIP IT!");
@@ -720,6 +723,7 @@ describe("BattleScene loading", () => {
 });
 
 describe("BattleScene enemy by id", () => {
+  afterEach(() => vi.useRealTimers());
   // assets-apply C8: the battle's enemy comes from battle.enemy, not from the region
   const SLIME: Catalog["enemies"][number] = { id: "slime", region: "vila", name: "SLIME DE CACHE", level: 2, hp: 45, sp: 40, weakness: "cache invalidado", drop: "null_shard", glyph: "(o.o)" };
   it("enemy by id: slime in vila", async () => {
@@ -730,9 +734,46 @@ describe("BattleScene enemy by id", () => {
     expect(enemy).toHaveTextContent("fraqueza: cache invalidado");
     expect(enemy).not.toHaveTextContent("NULL SLIME");
     const img = sprite().querySelector("img")!;
-    expect(img.getAttribute("src")).toBe("/art/sprite/enemy-slime.png");
+    expect(img.getAttribute("src")).toBe("/cast/enemy-slime.png");
     expect(img.getAttribute("alt")).toBe("SLIME DE CACHE");
-    expect(img.getAttribute("width")).toBe("128");
+    expect(img.getAttribute("height")).toBe("112");
+    expect(img.className).toContain("cast-sprite");
+    const hero = screen.getByLabelText("herói na arena");
+    expect(hero.querySelector("canvas")).toHaveAttribute("aria-label", "herói");
+    expect(hero.querySelector(".cast-sprite")).toBeNull();
+  });
+
+  it("enemy by id: slime de log uses the green cast", async () => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ enemy: "slime_verde", region: "floresta", enemyHp: 55, enemyHpMax: 55 })) });
+    renderScene();
+    await screen.findByLabelText("inimigo");
+    expect(sprite().querySelector("img")).toHaveAttribute("src", "/cast/enemy-slime-verde.png");
+  });
+
+  it("enemy by id: kernel panic uses the cast boss", async () => {
+    const boss = { id: "boss_nuvem", region: "nuvem", name: "KERNEL PANIC", level: 25, hp: 330, sp: 100, weakness: "reboot", drop: "memory_crystal", glyph: "PANIC", boss: true };
+    mockFetch({ "POST /api/me/battle": startWith(battle({ enemy: "boss_nuvem", region: "nuvem", enemyHp: 330, enemyHpMax: 330 })) });
+    renderScene({ catalog: { ...CATALOG, enemies: [...CATALOG.enemies, boss] } });
+    await screen.findByLabelText("inimigo");
+    const img = sprite().querySelector("img")!;
+    expect(img.getAttribute("src")).toBe("/cast/enemy-boss-nuvem.png");
+    expect(img.getAttribute("alt")).toBe("KERNEL PANIC");
+  });
+
+  it("scan stays on the old fx strip", async () => {
+    mockFetch({
+      "POST /api/me/battle": startWith(),
+      "POST /api/me/battle/commands": turn(battle(), [{ type: "weakness" }]),
+    });
+    renderScene();
+    await screen.findByLabelText("inimigo");
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    fireEvent.click(command("test"));
+    await act(() => vi.advanceTimersByTimeAsync(0));
+    const fx = document.querySelector<HTMLElement>(".battle-fx")!;
+    expect(fx.dataset.fx).toBe("scan");
+    expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/scan.png)");
+    expect(fx.className).not.toContain("cast-fx");
   });
 });
 
