@@ -255,7 +255,7 @@ button { font-family: inherit; }
 .battle-enemy-card { width: 300px; display: flex; flex-direction: column; gap: 9px; }
 .battle-enemy-row { display: flex; justify-content: space-between; font-size: 10px; }
 .battle-enemy-card .bar { flex: none; }
-.battle-sprite { width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--purple); }
+.battle-sprite { min-width: 150px; min-height: 176px; width: auto; height: auto; display: flex; align-items: flex-end; justify-content: center; font-size: 18px; color: var(--purple); }
 .battle-sprite img { transform: scaleX(-1); }
 .battle-won { align-self: center; background: var(--green); color: var(--edge); padding: 10px 12px; font-size: 12px; }
 .battle-ended { font-size: 11px; }
@@ -311,16 +311,18 @@ button { font-family: inherit; }
 .battle-power { color: var(--yellow); }
 
 /* Arena: the turn plays one beat at a time (BattleScene); steps() keeps the motion pixel-y. */
-.battle-stage { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; width: 300px; max-width: 100%; }
+.battle-stage { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; width: 100%; max-width: 520px; }
 .battle-actor { position: relative; display: flex; align-items: flex-end; justify-content: center; }
 .battle-enemy-card .bar > div, .battle-hero-bar > div { transition: width .4s steps(6); }
 .battle-fx { position: absolute; left: 50%; top: 50%; width: 96px; height: 96px; margin: -48px 0 0 -48px; background: no-repeat 0 0 / 384px 96px; image-rendering: pixelated; pointer-events: none; animation: fx-play .4s steps(4) forwards; }
-/* Painted cast fx fits the 300px arena at 112px tall. Stills hold frame 0; strips step across equal cells. */
-.battle-fx.cast-fx { width: calc(112px * var(--cast-aspect, 1)); height: 112px; margin: -56px 0 0 calc(-56px * var(--cast-aspect, 1)); image-rendering: auto; background-repeat: no-repeat; background-position: 0 0; }
+/* Painted cast fx fits the arena at 176px tall. Stills hold frame 0; strips step across equal cells. */
+.battle-fx.cast-fx { width: calc(176px * var(--cast-aspect, 1)); height: 176px; margin: -88px 0 0 calc(-88px * var(--cast-aspect, 1)); image-rendering: auto; background-repeat: no-repeat; background-position: 0 0; }
 .battle-fx.cast-fx.cast-fx-still { background-size: 100% 100%; animation: none; }
 .battle-fx.cast-fx.cast-fx-strip { background-size: calc(100% * var(--cast-frames, 4)) 100%; animation: cast-fx-play .4s steps(4) forwards; }
-.cast-sprite { display: block; height: 112px; width: auto; image-rendering: auto; }
-.cast-strip { display: block; height: 112px; width: calc(112px * var(--cast-aspect, 1)); background: no-repeat 0 0 / calc(112px * var(--cast-aspect, 1) * var(--cast-frames, 4)) 112px; image-rendering: auto; animation: cast-play .6s steps(4) infinite; }
+.cast-sprite { display: block; height: 176px; width: auto; image-rendering: auto; }
+.cast-strip { display: block; height: 176px; width: calc(176px * var(--cast-aspect, 1)); background: no-repeat 0 0 / calc(100% * var(--cast-frames, 4)) 100%; image-rendering: auto; animation: cast-play 1s steps(4) infinite; }
+.cast-strip.cast-once { animation-duration: .45s; animation-iteration-count: 1; animation-fill-mode: forwards; }
+.cast-strip.cast-walk { animation-duration: .6s; }
 /* limit-break door 5: a special plays the same 4-frame strip at 4x (128px) for 1.2s over a gold flash. */
 .battle-fx.battle-fx-limit { width: 128px; height: 128px; margin: -64px 0 0 -64px; background-size: 512px 128px; animation: fx-limit 1.2s steps(4) forwards; }
 .battle-stage.is-limit { animation: shake .3s steps(6), limit-flash 1.2s steps(6); }
@@ -351,12 +353,13 @@ button { font-family: inherit; }
 .fx-loading { display: inline-block; width: 32px; height: 32px; margin-right: 8px; vertical-align: middle; background: no-repeat 0 0 / 128px 32px; image-rendering: pixelated; animation: fx-loop .6s steps(4) infinite; }
 @keyframes fx-loop { to { background-position: -128px 0; } }
 .fx-once { position: absolute; left: 50%; top: 50%; width: 96px; height: 96px; margin: -48px 0 0 -48px; background: no-repeat 0 0 / 384px 96px; image-rendering: pixelated; pointer-events: none; animation: fx-play .4s steps(4) forwards; }
+.fx-once.fx-cast-still { background: no-repeat center / contain; image-rendering: auto; animation: none; }
 .node-marker { position: relative; }
 .fx-dust { top: auto; bottom: -30px; }
 .skill-node { position: relative; }
-/* the world background is centred at 4x: art (x, y) sits at 50% + (4x - 640, 4y - 360)px; fire over the campfire at (112, 126) */
-.fx-fire { position: absolute; left: calc(50% - 160px); top: calc(50% + 164px); width: 64px; height: 64px; background: no-repeat 0 0 / 256px 64px; image-rendering: pixelated; pointer-events: none; animation: fx-fire .5s steps(4) infinite; }
-@keyframes fx-fire { to { background-position: -256px 0; } }
+/* Campfire centre stays where the 64px box sat (50% - 128px, 50% + 196px). The strip is 112px tall. */
+.fx-fire { position: absolute; width: calc(112px * var(--cast-aspect, 1)); height: 112px; background: no-repeat 0 0 / calc(100% * var(--cast-frames, 4)) 100%; image-rendering: auto; pointer-events: none; animation: cast-fx-play .6s steps(4) infinite; }
+.fx-once.fx-cast-strip { width: calc(112px * var(--cast-aspect, 1)); height: 112px; margin: -56px 0 0 calc(-56px * var(--cast-aspect, 1)); background-repeat: no-repeat; background-position: 0 0; background-size: calc(100% * var(--cast-frames, 4)) 100%; image-rendering: auto; animation: cast-fx-play .45s steps(4) forwards; }
 .node-flag { position: absolute; left: 70%; bottom: 60%; }
 .map-hero { position: absolute; transform: translate(-50%, -100%); z-index: 3; pointer-events: none; transition: left 1.2s linear, top 1.2s linear; }
 .map-hero .hero-avatar { display: block; }
@@ -440,7 +443,7 @@ button { font-family: inherit; }
 .avatar-bag { display: flex; flex-direction: column; gap: 9px; min-height: 0; }
 .avatar-bag-head { display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; font-size: 11px; }
 .avatar-bag-head .term { font-size: 18px; }
-.avatar-cells { flex: 1; display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 66px; gap: 5px; align-content: start; background: #101c27; padding: 9px; overflow: auto; }
+.avatar-cells { flex: 1; display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 110px; gap: 5px; align-content: start; background: #101c27; padding: 9px; overflow: auto; }
 .avatar-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 2px solid var(--line-2); background: var(--panel); color: var(--text); cursor: pointer; font-size: 9px; overflow: hidden; }
 .avatar-cell[data-active="true"] { border-color: var(--green); color: var(--green); }
 .avatar-cell[aria-pressed="true"] { background: #20364a; border-color: var(--yellow); box-shadow: 0 0 0 1px var(--yellow); }

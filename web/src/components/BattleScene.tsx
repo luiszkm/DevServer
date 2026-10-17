@@ -2,9 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { post } from "@/lib/api";
-import type { AvatarAnim } from "@/lib/avatar";
 import { beatOf, type Beat, type FxId } from "@/lib/battleFx";
-import { CAST_ENEMY, castFxItem, castFxStyle } from "@/lib/cast";
+import { CAST_ENEMY, castBattlePose, castFxItem, castFxStyle, castHeroId } from "@/lib/cast";
 import { eventText } from "@/lib/battleLog";
 import { baseCommands, classSpecial, commandForSkill, levelOf, skillLevel } from "@/lib/skills";
 import type { Battle, BattleEvent, Command, Player } from "@/lib/types";
@@ -12,7 +11,6 @@ import { CastSprite } from "./CastSprite";
 import { GameArt, nativeSize } from "./GameArt";
 import { FxOnce, LoadingFx } from "./LoadingFx";
 import { useGame } from "./GameContext";
-import { HeroAvatar } from "./HeroAvatar";
 
 // Whole-number zoom per native enemy size, so every enemy fits the 180x150 sprite box.
 const ENEMY_SCALE: Record<number, number> = { 32: 4, 48: 3, 64: 2 };
@@ -22,8 +20,6 @@ type Shown = { heroHp?: number; enemyHp?: number };
 
 const reducedMotion = () => typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// The hero's strip for the beat on stage (plan assumptions: anim per screen); a won fight jumps.
-const BEAT_ANIM: Partial<Record<Beat["hero"] & string, AvatarAnim>> = { lunge: "run", cast: "interact", special: "interact" };
 function BattleFx({ id, limit }: { id: FxId; limit: boolean }) {
   const cast = castFxItem(id);
   if (!cast) {
@@ -39,10 +35,6 @@ function BattleFx({ id, limit }: { id: FxId; limit: boolean }) {
       aria-hidden="true"
     />
   );
-}
-
-function heroAnim(beat: Beat | null, status: Battle["status"]): AvatarAnim {
-  return (beat?.hero && BEAT_ANIM[beat.hero]) || (status === "won" ? "jump" : "idle");
 }
 
 export function BattleScene() {
@@ -360,10 +352,11 @@ export function BattleScene() {
   function stage(battle: Battle) {
     const enemy = enemyOf(battle);
     const down = enemyDown || battle.status === "won";
+    const pose = castBattlePose(beat?.hero);
     return (
       <div className={`battle-stage${beat?.shake ? " is-shake" : ""}${beat?.limit ? " is-limit" : ""}`}>
         <div className={`battle-actor battle-hero-actor${beat?.hero ? ` anim-${beat.hero}` : ""}`} aria-label="herói na arena">
-          <HeroAvatar look={player} scale={2} className="battle-hero-sprite" anim={heroAnim(beat, battle.status)} />
+          <CastSprite id={castHeroId(player.body, pose)} alt="herói" anim={pose} className={pose === "attack" ? "cast-once" : undefined} />
           {effects("hero")}
           {beat?.hero === "lunge" && <FxOnce key={`dust-${beat.key}`} id="dust" className="fx-dust" />}
         </div>

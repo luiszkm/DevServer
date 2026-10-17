@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import AvatarPage from "@/app/(game)/avatar/page";
-import { availableFor, resolveLook } from "@/lib/avatar";
+import { availableFor } from "@/lib/avatar";
 import { CONNECTION_FAILED } from "@/lib/gear";
 import type { Player } from "@/lib/types";
 import { CATALOG, json, mockFetch, player, rack } from "@/test/helpers";
@@ -17,7 +17,6 @@ function renderAvatar(p: Player = player(), setPlayer = vi.fn()) {
   return { setPlayer };
 }
 
-const lookKey = (p: Player) => resolveLook(p, CATALOG).key;
 const tab = (name: string) => screen.getByRole("tab", { name });
 const cells = () => within(screen.getByRole("region", { name: "mochila" })).queryAllByRole("button");
 const cell = (id: string) => document.querySelector(`[data-entry="${id}"]`) as HTMLButtonElement;
@@ -48,13 +47,11 @@ const geared = (overrides: Partial<Player> = {}) =>
 describe("AvatarScene", () => {
   // C35
   it("preview and totals", () => {
-    renderAvatar(geared());
     const p = geared();
-    const hero = document.querySelector(".avatar-hero") as HTMLCanvasElement;
-    // the worn skin's palette and the equipped macbook are on the drawing
-    expect(hero.dataset.look).toBe(lookKey(p));
-    expect(hero.dataset.look).toContain("/art/sprite/hero/laptop-basico.png");
-    expect(hero.dataset.look).toContain(`${CATALOG.avatar.options.find((o) => o.id === "tone_padrao")!.ramp![0]}>${CATALOG.skins.find((s) => s.id === "shadow")!.palette.tone[0]}`);
+    renderAvatar(p);
+    const hero = document.querySelector(".avatar-hero") as HTMLImageElement;
+    expect(hero.getAttribute("src")).toBe("/cast/hero-m-idle.png");
+    expect(hero.dataset.look).toBeUndefined();
     expect(screen.getByText("DEV_01")).toBeInTheDocument();
     expect(document.querySelector(".avatar-skin-name")).toHaveTextContent("DEV SOMBRIO");
     const stats = screen.getByLabelText("atributos");
@@ -325,9 +322,9 @@ describe("AvatarScene", () => {
     expect(notebook.getAttribute("width")).toBe("32");
 
     await userEvent.click(tab("SKINS"));
-    const skin = cell("shadow").querySelector("canvas")!;
-    expect(skin.dataset.look).toBe(lookKey({ ...geared(), skin: "shadow" }));
-    expect(cell("shadow").querySelector("img")).toBeNull();
+    const skin = cell("shadow").querySelector("img")!;
+    expect(skin.getAttribute("src")).toBe("/cast/hero-m-idle.png");
+    expect(cell("default").querySelector("img")!.getAttribute("src")).toBe("/cast/hero-m-idle.png");
     await userEvent.click(cell("shadow"));
     expect(detail().querySelector(".avatar-detail-glyph")?.textContent).toBe("SKN");
     expect(detail().querySelector(".avatar-detail-glyph img")).toBeNull();
@@ -343,7 +340,7 @@ describe("AvatarScene visual editor", () => {
   const partButton = (id: string) => document.querySelector(`[data-part="${id}"]`) as HTMLButtonElement;
   const optionButton = (id: string) => document.querySelector(`[data-option="${id}"]`) as HTMLButtonElement;
   const optionIds = () => [...document.querySelectorAll<HTMLElement>("[data-option]")].map((b) => b.dataset.option);
-  const hero = () => document.querySelector(".avatar-hero") as HTMLCanvasElement;
+  const hero = () => document.querySelector(".avatar-hero") as HTMLImageElement;
   const visual = (name: string) => within(screen.getByRole("region", { name: "detalhe do item" })).getByRole("button", { name });
   const status = () => screen.getByRole("status").textContent;
   const withToken = (overrides: Partial<Player> = {}) =>
@@ -372,8 +369,8 @@ describe("AvatarScene visual editor", () => {
     expect(optionButton("hair_moicano")).toHaveAttribute("data-locked", "true");
     expect(optionButton("hair_moicano")).toHaveTextContent("30g");
     expect(optionButton("hair_curto")).toHaveAttribute("data-locked", "false");
-    // each style card previews the hero with that style on
-    expect(optionButton("hair_curto").querySelector("canvas")!.dataset.look).toContain("/art/sprite/hero/hair-curto.png");
+    expect(optionButton("hair_curto").querySelector("img, canvas")).toBeNull();
+    expect(optionButton("hair_curto")).toHaveTextContent(CATALOG.avatar.options.find((o) => o.id === "hair_curto")!.name);
 
     await userEvent.click(partButton("top"));
     expect(optionIds()).not.toContain("top_hoodie_trace");
@@ -384,15 +381,17 @@ describe("AvatarScene visual editor", () => {
     const saved = player({ devName: "SAVED" });
     const f = mockFetch({ "PUT /api/me/appearance": json(200, { player: saved }) });
     const { setPlayer } = await open();
-    const before = hero().dataset.look;
+    const before = hero().getAttribute("src");
     expect(visual("SALVAR")).toBeDisabled();
     expect(visual("DESFAZER")).toBeDisabled();
 
     await userEvent.click(optionButton("tone_negra"));
-    expect(hero().dataset.look).toBe(lookKey(player({ appearance: { ...CATALOG.avatar.defaults, tone: "tone_negra" } })));
+    expect(optionButton("tone_negra")).toHaveAttribute("aria-pressed", "true");
+    expect(hero().getAttribute("src")).toBe("/cast/hero-m-idle.png");
     expect(f.fn).not.toHaveBeenCalled();
     await userEvent.click(visual("DESFAZER"));
-    expect(hero().dataset.look).toBe(before);
+    expect(optionButton("tone_negra")).toHaveAttribute("aria-pressed", "false");
+    expect(hero().getAttribute("src")).toBe(before);
 
     await userEvent.click(optionButton("tone_negra"));
     await userEvent.click(partButton("hairColor"));
@@ -412,7 +411,7 @@ describe("AvatarScene visual editor", () => {
     const { setPlayer } = await open(withToken({ gems: 30 }));
     await userEvent.click(partButton("hair"));
     await userEvent.click(optionButton("hair_moicano"));
-    expect(hero().dataset.look).toContain("/art/sprite/hero/hair-moicano.png");
+    expect(hero().getAttribute("src")).toBe("/cast/hero-m-idle.png");
     expect(visual("SALVAR")).toBeDisabled();
     expect(screen.getByText("compre MOICANO para salvar.")).toBeInTheDocument();
     await userEvent.click(visual("COMPRAR · 30 GEMS"));
@@ -453,7 +452,8 @@ describe("AvatarScene visual editor", () => {
     expect(status()).toBe(text);
     expect(setPlayer).not.toHaveBeenCalled();
     expect(visual("SALVAR")).toBeEnabled();
-    expect(hero().dataset.look).toBe(lookKey(player({ appearance: { ...CATALOG.avatar.defaults, tone: "tone_negra" } })));
+    expect(hero().getAttribute("src")).toBe("/cast/hero-m-idle.png");
+    expect(optionButton("tone_negra")).toHaveAttribute("aria-pressed", "true");
   });
 
   it("USAR on the redesign token opens the editor", async () => {
@@ -518,7 +518,7 @@ describe("AvatarScene body", () => {
     await userEvent.click(document.querySelector('[data-part="hair"]') as HTMLButtonElement);
     const hair = [...document.querySelectorAll<HTMLElement>("[data-option]")].map((b) => b.dataset.option);
     expect(hair).toEqual(expect.arrayContaining(["hair_rabo", "hair_trancas", "hair_franja", "hair_longo"]));
-    expect(document.querySelector(".avatar-hero")!.getAttribute("data-look")).toContain("/art/sprite/hero/body-f.png");
+    expect(document.querySelector(".avatar-hero")).toHaveAttribute("src", "/cast/hero-f-idle.png");
   });
 
   it("masculino shows the beard and not the feminine hair", async () => {
@@ -561,8 +561,9 @@ describe("AvatarScene hero anim", () => {
   // assets C48
   it("hero anim: the preview idles", () => {
     renderAvatar();
-    const hero = document.querySelector(".avatar-preview canvas") as HTMLCanvasElement;
+    const hero = document.querySelector(".avatar-preview img") as HTMLImageElement;
     expect(hero.dataset.anim).toBe("idle");
+    expect(hero.getAttribute("src")).toBe("/cast/hero-m-idle.png");
   });
 });
 

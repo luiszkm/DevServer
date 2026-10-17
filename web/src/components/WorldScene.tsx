@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { post } from "@/lib/api";
+import { MAP_CAST_HEIGHT, castBox, castById, castFxStyle, castHeroId, castMapPose } from "@/lib/cast";
 import type { Player } from "@/lib/types";
+import { CastSprite } from "./CastSprite";
 import { GameArt } from "./GameArt";
-import { HeroAvatar } from "./HeroAvatar";
-import { FxOnce } from "./LoadingFx";
 import { useGame } from "./GameContext";
 
 // Map positions are presentation only; the regions themselves come from the catalog.
@@ -20,6 +20,11 @@ const POSITIONS: Record<string, { x: string; y: string }> = {
 };
 
 const FALLBACK_POS = { x: "50%", y: "50%" };
+
+const MAP_FX_H = 112;
+const FIRE = castById("fx-fire");
+const FIRE_BOX = castBox(FIRE, MAP_FX_H);
+const TELEPORT = castById("fx-teleport");
 
 // A region above the player's level shows its marker greyed out (plan assumptions: marker states).
 const LOCKED = "grayscale(1) brightness(.6)";
@@ -35,7 +40,7 @@ export function WorldScene() {
   const { player, catalog, setPlayer } = useGame();
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  // The region just reached by a successful travel; `key` replays the teleport strip.
+  // The region just reached by a successful travel; `key` replays the teleport.
   const [arrived, setArrived] = useState<{ region: string; key: number } | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   // Marker the player opened on the map (info panel + walk target).
@@ -89,6 +94,8 @@ export function WorldScene() {
     }
   }
 
+  const mapPose = castMapPose(walking || pending);
+
   return (
     <section className="scene world" aria-label="MUNDO">
       <div className="world-map" style={{ backgroundImage: "url(/art/background/world.png)" }}>
@@ -117,7 +124,16 @@ export function WorldScene() {
                 <GameArt kind="region" id={r.id} scale={2} alt="" fallback={r.tag} />
                 {here && <GameArt kind="build" id="flag" scale={1} alt="" fallback="" className="node-flag" />}
               </button>
-              {arrived?.region === r.id && <FxOnce key={arrived.key} id="teleport" />}
+              {arrived?.region === r.id && (
+                <span
+                  key={arrived.key}
+                  className="fx-once fx-cast-strip"
+                  data-fx="teleport"
+                  data-frames={TELEPORT.frames}
+                  aria-hidden="true"
+                  style={castFxStyle(TELEPORT, MAP_FX_H)}
+                />
+              )}
               <span className={`pixel node-chip${here ? " here" : ""}`}>{r.name}</span>
             </div>
           );
@@ -130,10 +146,19 @@ export function WorldScene() {
             if (e.propertyName === "left" || e.propertyName === "top") setWalking(false);
           }}
         >
-          <HeroAvatar look={player} scale={1} anim={walking || pending ? "walk" : "idle"} />
+          <CastSprite id={castHeroId(player.body, mapPose)} alt="" anim={mapPose} height={MAP_CAST_HEIGHT} className={mapPose === "walk" ? "cast-walk" : undefined} />
         </div>
-        {/* the campfire of the world background (art 112,126) burns in a loop */}
-        <span className="fx-fire" aria-hidden="true" style={{ backgroundImage: "url(/art/fx/fire.png)" }} />
+        {/* the campfire centre stays on the old 64px box: 50% - 128px, 50% + 196px */}
+        <span
+          className="fx-fire"
+          data-frames={FIRE.frames}
+          aria-hidden="true"
+          style={{
+            ...castFxStyle(FIRE, MAP_FX_H),
+            left: `calc(50% - ${128 + FIRE_BOX.width / 2}px)`,
+            top: `calc(50% + ${196 - FIRE_BOX.height / 2}px)`,
+          }}
+        />
         <div className="term world-current">{`região atual: ${current?.name ?? player.region}`}</div>
         {focused && (
           <aside className="world-panel panel" role="dialog" aria-label={focused.name}>

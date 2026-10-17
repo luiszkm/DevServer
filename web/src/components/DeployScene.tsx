@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { api, post } from "@/lib/api";
+import { PORTRAIT_CAST_HEIGHT, castHeroId } from "@/lib/cast";
 import { formatMinutes, formatRemaining } from "@/lib/time";
 import type { DeployJob, DeployLevel, Player } from "@/lib/types";
+import { CastSprite } from "./CastSprite";
 import { GameArt } from "./GameArt";
 import { FxOnce, LoadingFx } from "./LoadingFx";
 import { useGame } from "./GameContext";
-import { HeroAvatar } from "./HeroAvatar";
 
 const STAGES = ["LINT", "BUILD", "TEST", "SHIP"];
 /** The inventory item a boost consumes. */
@@ -260,7 +261,12 @@ function Running({ player, job, remainingMs, pending, boosters, onClaim, onBoost
   return (
     <>
       <div className="deploy-hero">
-        <HeroAvatar look={player} scale={2} anim={ready ? "idle" : "interact"} />
+        <CastSprite
+          id={castHeroId(player.body, ready ? "idle" : "interact")}
+          alt="herói"
+          anim={ready ? "idle" : "interact"}
+          height={PORTRAIT_CAST_HEIGHT}
+        />
       </div>
       <span className="term">{`nível ${job.level} em andamento`}</span>
       <div className="bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct)}>

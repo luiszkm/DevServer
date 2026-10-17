@@ -218,7 +218,9 @@ describe("WorldScene world pieces", () => {
     const fx = document.querySelector('[data-fx="teleport"]') as HTMLElement;
     expect(fx.closest("[data-region]")!.getAttribute("data-region")).toBe("floresta");
     expect(fx.getAttribute("data-fx")).toBe("teleport");
-    expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/teleport.png)");
+    expect(fx.style.backgroundImage.replace(/"/g, "")).toBe("url(/cast/fx-teleport.png)");
+    expect(fx.dataset.frames).toBe("4");
+    expect(fx.className).toContain("fx-cast-strip");
   });
 
   it("teleport only on success (travel error)", async () => {
@@ -233,14 +235,17 @@ describe("WorldScene world pieces", () => {
 
 describe("WorldScene hero anim", () => {
   // assets C48
-  const hero = () => document.querySelector(".map-hero canvas") as HTMLCanvasElement;
+  const hero = () => document.querySelector(".map-hero [data-anim]") as HTMLElement;
+  const heroSrc = (el: HTMLElement) =>
+    el.tagName === "IMG" ? el.getAttribute("src") : el.style.backgroundImage.replace(/"/g, "");
   it("hero anim: idle beside the current marker", () => {
     renderWorld(player({ region: "floresta" }));
-    expect(document.querySelectorAll(".map-hero canvas")).toHaveLength(1);
+    expect(document.querySelectorAll(".map-hero [data-anim]")).toHaveLength(1);
     const wrap = hero().closest(".map-hero") as HTMLElement;
     expect(wrap.style.left).toBe("40%");
     expect(wrap.style.top).toBe("34%");
     expect(hero().dataset.anim).toBe("idle");
+    expect(heroSrc(hero())).toBe("/cast/hero-m-idle.png");
   });
 
   it("hero anim: walk while the travel is pending", async () => {
@@ -249,6 +254,7 @@ describe("WorldScene hero anim", () => {
     const dialog = await openPanel("FLORESTA DE LOGS");
     await userEvent.click(within(dialog).getByRole("button", { name: "ENTRAR" }));
     expect(hero().dataset.anim).toBe("walk");
+    expect(heroSrc(hero())).toBe("url(/cast/hero-m-walk.png)");
   });
 
   it("map click walks the hero to the marker and opens the region panel", async () => {
@@ -263,9 +269,11 @@ describe("WorldScene hero anim", () => {
       expect(wrap.style.top).toBe("34%");
     });
     expect(hero().dataset.anim).toBe("walk");
+    expect(heroSrc(hero())).toBe("url(/cast/hero-m-walk.png)");
     fireEvent.transitionEnd(document.querySelector(".map-hero")!, { propertyName: "left" });
     expect(within(dialog).getByRole("button", { name: "ENTRAR" })).toBeEnabled();
     expect(hero().dataset.anim).toBe("idle");
+    expect(heroSrc(hero())).toBe("/cast/hero-m-idle.png");
   });
 
   it("map panel ENTRAR travels to the focused region", async () => {
@@ -348,6 +356,7 @@ describe("WorldScene campfire", () => {
     expect(fires).toHaveLength(1);
     const fire = fires[0] as HTMLElement;
     expect(fire.getAttribute("aria-hidden")).toBe("true");
-    expect(fire.style.backgroundImage.replace(/"/g, "")).toBe("url(/art/fx/fire.png)");
+    expect(fire.style.backgroundImage.replace(/"/g, "")).toBe("url(/cast/fx-fire.png)");
+    expect(fire.dataset.frames).toBe("4");
   });
 });

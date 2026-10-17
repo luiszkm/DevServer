@@ -435,7 +435,7 @@ describe("asset sheet on disk", () => {
   });
 
   it("new effect strips, 128x32", () => {
-    expectAssets(sized("fx", [128, 32], ["dust", "sparkle", "teleport", "fire", "loading", "collect"]));
+    expectAssets(sized("fx", [128, 32], ["dust", "sparkle", "loading", "collect"]));
   });
 
   it("new scene, 320x180, opaque", () => {
@@ -490,7 +490,7 @@ const LIBRARY = {
     ...["placa", "fogueira", "lampada", "banco", "bau", "bau-aberto", "bandeira"].map((k) => `extra-${k}`),
     ...["arbusto", "flor", "arvore", "arvore-grande", "cerca"].map((k) => `tile-${k}`),
   ],
-  fx: ["dust", "sparkle", "teleport", "fire", "loading", "collect"],
+  fx: ["dust", "sparkle", "loading", "collect"],
   background: ["dia", "noite", "floresta", "dungeon"].map((k) => `scene-${k}`),
   tile: ["grama-topo", "grama", "grama-borda", "terra", "pedra", "tijolo", "tabua", "parede-madeira", "areia", "agua", "agua-funda", "cachoeira"].map((k) => `tile-${k}`),
 };
@@ -569,7 +569,7 @@ describe("library consumers", () => {
     });
     const reached = reachedFrom([...backgrounds, ...enemies, ...named]);
     const names = Object.entries(LIBRARY).flatMap(([folder, list]) => list.map((name) => ({ folder, name })));
-    expect(names.length).toBe(99);
+    expect(names.length).toBe(97);
     expect(orphans(names, sources, reached)).toEqual([]);
   });
 

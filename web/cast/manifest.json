@@ -3,362 +3,382 @@
     {
       "id": "enemy-boss-nuvem",
       "src": "/cast/enemy-boss-nuvem.png",
-      "w": 224,
-      "h": 320,
-      "frames": 1,
-      "cellW": 224,
-      "cellH": 320,
-      "source": "stand-in"
+      "w": 2904,
+      "h": 954,
+      "frames": 4,
+      "cellW": 726,
+      "cellH": 954,
+      "source": "idle-enemy-boss-nuvem.png"
     },
     {
       "id": "enemy-cat",
       "src": "/cast/enemy-cat.png",
-      "w": 160,
-      "h": 160,
+      "w": 404,
+      "h": 498,
       "frames": 1,
-      "cellW": 160,
-      "cellH": 160,
-      "source": "stand-in"
+      "cellW": 404,
+      "cellH": 498,
+      "source": "ndEVS.jpg"
     },
     {
       "id": "enemy-slime",
       "src": "/cast/enemy-slime.png",
-      "w": 192,
-      "h": 160,
-      "frames": 1,
-      "cellW": 192,
-      "cellH": 160,
-      "source": "stand-in"
+      "w": 1868,
+      "h": 374,
+      "frames": 4,
+      "cellW": 467,
+      "cellH": 374,
+      "source": "idle-enemy-slime.png"
     },
     {
       "id": "enemy-slime-dark",
       "src": "/cast/enemy-slime-dark.png",
-      "w": 192,
-      "h": 160,
-      "frames": 1,
-      "cellW": 192,
-      "cellH": 160,
-      "source": "stand-in"
+      "w": 2084,
+      "h": 553,
+      "frames": 4,
+      "cellW": 521,
+      "cellH": 553,
+      "source": "idle-enemy-slime-dark.png"
     },
     {
       "id": "enemy-slime-verde",
       "src": "/cast/enemy-slime-verde.png",
-      "w": 192,
-      "h": 160,
-      "frames": 1,
-      "cellW": 192,
-      "cellH": 160,
-      "source": "stand-in"
+      "w": 2040,
+      "h": 449,
+      "frames": 4,
+      "cellW": 510,
+      "cellH": 449,
+      "source": "idle-enemy-slime-verde.png"
     },
     {
       "id": "enemy-snake",
       "src": "/cast/enemy-snake.png",
-      "w": 192,
-      "h": 192,
-      "frames": 1,
-      "cellW": 192,
-      "cellH": 192,
-      "source": "stand-in"
+      "w": 1816,
+      "h": 519,
+      "frames": 4,
+      "cellW": 454,
+      "cellH": 519,
+      "source": "idle-enemy-snake.png"
     },
     {
       "id": "enemy-spider",
       "src": "/cast/enemy-spider.png",
-      "w": 256,
-      "h": 224,
-      "frames": 1,
-      "cellW": 256,
-      "cellH": 224,
-      "source": "stand-in"
+      "w": 2444,
+      "h": 491,
+      "frames": 4,
+      "cellW": 611,
+      "cellH": 491,
+      "source": "idle-enemy-spider.png"
     },
     {
       "id": "fx-arc",
       "src": "/cast/fx-arc.png",
-      "w": 256,
-      "h": 256,
+      "w": 257,
+      "h": 262,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 257,
+      "cellH": 262,
+      "source": "UGCY0.jpg"
     },
     {
       "id": "fx-bolt",
       "src": "/cast/fx-bolt.png",
-      "w": 256,
-      "h": 256,
+      "w": 255,
+      "h": 369,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 255,
+      "cellH": 369,
+      "source": "8r7f7.jpg"
     },
     {
       "id": "fx-code",
       "src": "/cast/fx-code.png",
-      "w": 256,
-      "h": 256,
+      "w": 291,
+      "h": 308,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 291,
+      "cellH": 308,
+      "source": "UGCY0.jpg"
     },
     {
       "id": "fx-crit",
       "src": "/cast/fx-crit.png",
-      "w": 256,
-      "h": 256,
+      "w": 306,
+      "h": 303,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 306,
+      "cellH": 303,
+      "source": "D0cqC.jpg"
     },
     {
       "id": "fx-data",
       "src": "/cast/fx-data.png",
-      "w": 1024,
-      "h": 256,
+      "w": 1064,
+      "h": 285,
       "frames": 4,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 266,
+      "cellH": 285,
+      "source": "yoUtY.jpg"
     },
     {
       "id": "fx-earth",
       "src": "/cast/fx-earth.png",
-      "w": 256,
-      "h": 256,
+      "w": 285,
+      "h": 328,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 285,
+      "cellH": 328,
+      "source": "8r7f7.jpg"
     },
     {
       "id": "fx-fire",
       "src": "/cast/fx-fire.png",
-      "w": 256,
-      "h": 256,
-      "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "w": 1056,
+      "h": 320,
+      "frames": 4,
+      "cellW": 264,
+      "cellH": 320,
+      "source": "idle-fx-fire.png"
     },
     {
       "id": "fx-glitch",
       "src": "/cast/fx-glitch.png",
-      "w": 256,
-      "h": 256,
+      "w": 245,
+      "h": 285,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 245,
+      "cellH": 285,
+      "source": "D0cqC.jpg"
     },
     {
       "id": "fx-heal",
       "src": "/cast/fx-heal.png",
-      "w": 256,
-      "h": 256,
+      "w": 220,
+      "h": 411,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 220,
+      "cellH": 411,
+      "source": "hs7de.jpg"
     },
     {
       "id": "fx-heal-crown",
       "src": "/cast/fx-heal-crown.png",
-      "w": 256,
-      "h": 256,
+      "w": 220,
+      "h": 347,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 220,
+      "cellH": 347,
+      "source": "hs7de.jpg"
     },
     {
       "id": "fx-ice",
       "src": "/cast/fx-ice.png",
-      "w": 256,
-      "h": 256,
+      "w": 265,
+      "h": 316,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 265,
+      "cellH": 316,
+      "source": "8r7f7.jpg"
     },
     {
       "id": "fx-impact",
       "src": "/cast/fx-impact.png",
-      "w": 256,
-      "h": 256,
+      "w": 238,
+      "h": 265,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 238,
+      "cellH": 265,
+      "source": "UGCY0.jpg"
     },
     {
       "id": "fx-shield",
       "src": "/cast/fx-shield.png",
-      "w": 256,
-      "h": 256,
+      "w": 254,
+      "h": 287,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 254,
+      "cellH": 287,
+      "source": "hs7de.jpg"
     },
     {
       "id": "fx-shield-crown",
       "src": "/cast/fx-shield-crown.png",
-      "w": 256,
-      "h": 256,
+      "w": 249,
+      "h": 390,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 249,
+      "cellH": 390,
+      "source": "hs7de.jpg"
     },
     {
       "id": "fx-slash",
       "src": "/cast/fx-slash.png",
-      "w": 256,
-      "h": 256,
+      "w": 241,
+      "h": 228,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 241,
+      "cellH": 228,
+      "source": "UGCY0.jpg"
     },
     {
       "id": "fx-stealth",
       "src": "/cast/fx-stealth.png",
-      "w": 256,
-      "h": 256,
+      "w": 236,
+      "h": 254,
       "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 236,
+      "cellH": 254,
+      "source": "D0cqC.jpg"
     },
     {
       "id": "fx-teleport",
       "src": "/cast/fx-teleport.png",
-      "w": 256,
-      "h": 256,
-      "frames": 1,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "w": 1188,
+      "h": 351,
+      "frames": 4,
+      "cellW": 297,
+      "cellH": 351,
+      "source": "idle-fx-teleport.png"
     },
     {
       "id": "fx-vortex",
       "src": "/cast/fx-vortex.png",
-      "w": 1024,
-      "h": 256,
+      "w": 1160,
+      "h": 309,
       "frames": 4,
-      "cellW": 256,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 290,
+      "cellH": 309,
+      "source": "9v4li.jpg"
     },
     {
       "id": "hero-f-attack",
       "src": "/cast/hero-f-attack.png",
-      "w": 896,
-      "h": 288,
+      "w": 2416,
+      "h": 945,
       "frames": 4,
-      "cellW": 224,
-      "cellH": 288,
-      "source": "stand-in"
+      "cellW": 604,
+      "cellH": 945,
+      "source": "hero-f-attack.png"
     },
     {
       "id": "hero-f-idle",
       "src": "/cast/hero-f-idle.png",
-      "w": 224,
-      "h": 288,
+      "w": 513,
+      "h": 947,
       "frames": 1,
-      "cellW": 224,
-      "cellH": 288,
-      "source": "stand-in"
+      "cellW": 513,
+      "cellH": 947,
+      "source": "7Mb9i.jpg"
+    },
+    {
+      "id": "hero-f-interact",
+      "src": "/cast/hero-f-interact.png",
+      "w": 2084,
+      "h": 945,
+      "frames": 4,
+      "cellW": 521,
+      "cellH": 945,
+      "source": "hero-f-interact.png"
     },
     {
       "id": "hero-f-run",
       "src": "/cast/hero-f-run.png",
-      "w": 896,
-      "h": 288,
+      "w": 2408,
+      "h": 945,
       "frames": 4,
-      "cellW": 224,
-      "cellH": 288,
-      "source": "stand-in"
+      "cellW": 602,
+      "cellH": 945,
+      "source": "hero-f-run.png"
     },
     {
       "id": "hero-f-walk",
       "src": "/cast/hero-f-walk.png",
-      "w": 896,
-      "h": 288,
+      "w": 2112,
+      "h": 945,
       "frames": 4,
-      "cellW": 224,
-      "cellH": 288,
-      "source": "stand-in"
+      "cellW": 528,
+      "cellH": 945,
+      "source": "hero-f-walk.png"
     },
     {
       "id": "hero-m-attack",
       "src": "/cast/hero-m-attack.png",
-      "w": 896,
-      "h": 288,
+      "w": 2380,
+      "h": 842,
       "frames": 4,
-      "cellW": 224,
-      "cellH": 288,
-      "source": "stand-in"
+      "cellW": 595,
+      "cellH": 842,
+      "source": "hero-m-attack.png"
     },
     {
       "id": "hero-m-crouch",
       "src": "/cast/hero-m-crouch.png",
-      "w": 896,
-      "h": 288,
+      "w": 832,
+      "h": 331,
       "frames": 4,
-      "cellW": 224,
-      "cellH": 288,
-      "source": "stand-in"
+      "cellW": 208,
+      "cellH": 331,
+      "source": "C0oBe.jpg"
     },
     {
       "id": "hero-m-idle",
       "src": "/cast/hero-m-idle.png",
-      "w": 224,
-      "h": 288,
+      "w": 405,
+      "h": 844,
       "frames": 1,
-      "cellW": 224,
-      "cellH": 288,
-      "source": "stand-in"
+      "cellW": 405,
+      "cellH": 844,
+      "source": "0INFd.jpg"
+    },
+    {
+      "id": "hero-m-interact",
+      "src": "/cast/hero-m-interact.png",
+      "w": 1808,
+      "h": 842,
+      "frames": 4,
+      "cellW": 452,
+      "cellH": 842,
+      "source": "hero-m-interact.png"
     },
     {
       "id": "hero-m-run",
       "src": "/cast/hero-m-run.png",
-      "w": 896,
-      "h": 288,
+      "w": 2060,
+      "h": 842,
       "frames": 4,
-      "cellW": 224,
-      "cellH": 288,
-      "source": "stand-in"
+      "cellW": 515,
+      "cellH": 842,
+      "source": "hero-m-run.png"
     },
     {
       "id": "hero-m-walk",
       "src": "/cast/hero-m-walk.png",
-      "w": 896,
-      "h": 288,
+      "w": 1672,
+      "h": 842,
       "frames": 4,
-      "cellW": 224,
-      "cellH": 288,
-      "source": "stand-in"
+      "cellW": 418,
+      "cellH": 842,
+      "source": "hero-m-walk.png"
     },
     {
       "id": "plate-battle-panic",
       "src": "/cast/plate-battle-panic.png",
-      "w": 288,
-      "h": 384,
+      "w": 784,
+      "h": 1168,
       "frames": 1,
-      "cellW": 288,
-      "cellH": 384,
-      "source": "stand-in"
+      "cellW": 784,
+      "cellH": 1168,
+      "source": "S5bHu.jpg"
     },
     {
       "id": "plate-meadow",
       "src": "/cast/plate-meadow.png",
-      "w": 384,
-      "h": 256,
+      "w": 784,
+      "h": 1168,
       "frames": 1,
-      "cellW": 384,
-      "cellH": 256,
-      "source": "stand-in"
+      "cellW": 784,
+      "cellH": 1168,
+      "source": "KACsC.jpg"
     }
   ]
 }

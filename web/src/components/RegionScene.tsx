@@ -3,9 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { post } from "@/lib/api";
+import { MAP_CAST_HEIGHT, castHeroId, castMapPose } from "@/lib/cast";
 import type { Player } from "@/lib/types";
+import { CastSprite } from "./CastSprite";
 import { GameArt } from "./GameArt";
-import { HeroAvatar } from "./HeroAvatar";
 import { useGame } from "./GameContext";
 
 // Centers of the painted road, as a share of the 320×180 art. Index 0 is the entrance.
@@ -99,6 +100,8 @@ export function RegionScene({ regionId }: { regionId: string }) {
     walkTimer.current = window.setTimeout(go, WALK_MS);
   }
 
+  const regionPose = castMapPose(walking || pending);
+
   return (
     <section className="scene region" aria-label={region.name}>
       <div
@@ -145,7 +148,7 @@ export function RegionScene({ regionId }: { regionId: string }) {
             startRef.current?.();
           }}
         >
-          <HeroAvatar look={player} scale={1} anim={walking || pending ? "walk" : "idle"} />
+          <CastSprite id={castHeroId(player.body, regionPose)} alt="" anim={regionPose} height={MAP_CAST_HEIGHT} className={regionPose === "walk" ? "cast-walk" : undefined} />
         </div>
         {here && nextEnemy && (
           <p className="pixel region-caption">{`clique em ${cleared + 1} para enfrentar ${nextEnemy.name}`}</p>

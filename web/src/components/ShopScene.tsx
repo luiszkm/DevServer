@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { type ApiResult, post, put } from "@/lib/api";
 import { availableFor } from "@/lib/avatar";
+import { PORTRAIT_CAST_HEIGHT, THUMB_CAST_HEIGHT, castHeroId } from "@/lib/cast";
 import {
   CONNECTION_FAILED,
   bonusLong,
@@ -15,9 +16,9 @@ import {
   quantity,
 } from "@/lib/gear";
 import type { AvatarOption, Gear, Item, Player, Price, Recipe, Skin } from "@/lib/types";
+import { CastSprite } from "./CastSprite";
 import { GameArt, PriceArt, RarityArt } from "./GameArt";
 import { useGame } from "./GameContext";
-import { HeroAvatar } from "./HeroAvatar";
 
 type Selection = { kind: "item" | "gear" | "skin" | "look" | "recipe"; id: string };
 type ShopTab = "pocoes" | "equip" | "skins" | "estilos" | "forja";
@@ -215,7 +216,7 @@ export function ShopScene() {
                 aria-pressed={picked("skin", s.id)}
                 onClick={() => setSel({ kind: "skin", id: s.id })}
               >
-                <HeroAvatar look={{ ...player, skin: s.id }} scale={1} className="shop-skin-sprite" />
+                <CastSprite id={castHeroId(player.body, "idle")} alt="" height={THUMB_CAST_HEIGHT} className="shop-skin-sprite" />
                 <span className="pixel shop-card-name">{s.name}</span>
                 <span className="term shop-bonus">{bonusShort(s.bonus)}</span>
                 <span className="pixel shop-status">{skinStatus(s)}</span>
@@ -235,7 +236,7 @@ export function ShopScene() {
                 aria-pressed={picked("look", o.id)}
                 onClick={() => setSel({ kind: "look", id: o.id })}
               >
-                <HeroAvatar look={wearing(o)} scale={1} className="shop-skin-sprite" />
+                <CastSprite id={castHeroId(player.body, "idle")} alt="" height={THUMB_CAST_HEIGHT} className="shop-skin-sprite" />
                 <span className="pixel shop-card-name">{o.name}</span>
                 <span className="term shop-bonus">{partName(o.part)}</span>
                 <span className="pixel shop-status">{lookStatus(o)}</span>
@@ -382,11 +383,6 @@ export function ShopScene() {
     );
   }
 
-  // The player's own hero with this option on, the way the avatar editor previews it.
-  function wearing(o: AvatarOption): Player {
-    return { ...player, appearance: { ...player.appearance, [o.part]: o.id } };
-  }
-
   function lookDetail(o: AvatarOption & { price: Price }) {
     const owned = player.looks.includes(o.id);
     const worn = player.appearance[o.part] === o.id;
@@ -397,7 +393,7 @@ export function ShopScene() {
       : () => run(`/api/me/shop/looks/${o.id}`, `${o.name} COMPRADO`);
     return (
       <>
-        <HeroAvatar look={wearing(o)} scale={2} className="shop-detail-sprite" />
+        <CastSprite id={castHeroId(player.body, "idle")} alt="" height={PORTRAIT_CAST_HEIGHT} className="shop-detail-sprite" />
         <span className="pixel shop-rarity">{partName(o.part)}</span>
         <span className="pixel shop-detail-name">{o.name}</span>
         <span className="term shop-desc">Estilo extra para o seu dev. Compre e use quando quiser na Loja.</span>
@@ -421,7 +417,7 @@ export function ShopScene() {
       : () => run(`/api/me/shop/skins/${s.id}`, "SKIN COMPRADA E EQUIPADA");
     return (
       <>
-        <HeroAvatar look={{ ...player, skin: s.id }} scale={2} className="shop-detail-sprite" />
+        <CastSprite id={castHeroId(player.body, "idle")} alt="" height={PORTRAIT_CAST_HEIGHT} className="shop-detail-sprite" />
         <span className="pixel shop-rarity">
           <RarityArt rarity={s.rarity} />
           {s.rarity}

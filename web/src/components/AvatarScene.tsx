@@ -4,12 +4,13 @@ import Link from "next/link";
 import { type ReactNode, useState } from "react";
 import { type ApiResult, post, put } from "@/lib/api";
 import { availableFor, resolveLook } from "@/lib/avatar";
-import { rarityOf } from "@/lib/notebook";
+import { PORTRAIT_CAST_HEIGHT, THUMB_CAST_HEIGHT, castHeroId } from "@/lib/cast";
 import { CONNECTION_FAILED, bonusLong, canPay, insufficient, isEquipped, priceLong, priceShort, quantity, totalBonus } from "@/lib/gear";
+import { rarityOf } from "@/lib/notebook";
 import type { AvatarOption, Player } from "@/lib/types";
+import { CastSprite } from "./CastSprite";
 import { GameArt, PriceArt, RarityArt } from "./GameArt";
 import { useGame } from "./GameContext";
-import { HeroAvatar } from "./HeroAvatar";
 
 type Bag = "equip" | "pocao" | "loot" | "skin";
 type Entry = { kind: "gear" | "item" | "skin"; id: string; name: string; glyph: string; tag: string; active: boolean };
@@ -98,7 +99,7 @@ export function AvatarScene() {
         <span className="pixel avatar-sheet-title">AVATAR</span>
         <div className="avatar-sheet-top">
           <div className="avatar-preview">
-            <HeroAvatar look={preview} className="avatar-hero" anim="idle" />
+            <CastSprite id={castHeroId(player.body, "idle")} alt="herói" height={PORTRAIT_CAST_HEIGHT} className="avatar-hero" anim="idle" />
           </div>
           <dl className="avatar-identity">
             <div><dt className="term">NOME</dt><dd className="pixel">{player.devName}</dd></div>
@@ -179,7 +180,7 @@ export function AvatarScene() {
             onClick={() => setPicked(e.id)}
           >
             {e.kind === "skin" ? (
-              <HeroAvatar look={{ ...player, skin: e.id }} scale={0.5} className="avatar-cell-sprite" />
+              <CastSprite id={castHeroId(player.body, "idle")} alt="" height={THUMB_CAST_HEIGHT} className="avatar-cell-sprite" />
             ) : (
               <GameArt kind={e.kind} id={e.id} scale={2} alt={e.name} fallback={e.glyph} />
             )}
@@ -221,14 +222,12 @@ export function AvatarScene() {
               aria-pressed={preview.appearance[current.id] === o.id}
               onClick={() => setDraft((d) => ({ ...d, [current.id]: o.id }))}
             >
-              {o.ramp ? (
+              {o.ramp && (
                 <span className="avatar-swatch" aria-hidden="true">
                   {o.ramp.map((hex) => (
                     <span key={hex} style={{ background: hex }} />
                   ))}
                 </span>
-              ) : (
-                <HeroAvatar look={{ ...preview, appearance: { ...preview.appearance, [current.id]: o.id } }} scale={1} />
               )}
               <span className="term avatar-option-name">{o.name}</span>
               {locked(o) && <span className="pixel avatar-option-price">{priceShort(o.price!)}</span>}

@@ -2,7 +2,6 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import BugFightPage from "@/app/(game)/bug-fight/page";
-import { resolveLook } from "@/lib/avatar";
 import type { Battle, BattleEvent, Catalog, Player } from "@/lib/types";
 import { CATALOG, ENEMIES, COMMANDS, REGIONS, json, mockFetch, player } from "@/test/helpers";
 import { GameContext } from "./GameContext";
@@ -393,14 +392,14 @@ describe("BattleScene", () => {
   });
 
   // shop-inventory-avatar C44
-  it.each(["neon", "default"])("hero sprite wears skin (%s)", async (skin) => {
+  it.each(["neon", "default"])("battle hero stays the painted idle (%s)", async (skin) => {
     const p = player({ skin, skins: ["default", "neon"] });
     mockFetch({ "POST /api/me/battle": startWith(battle(), p) });
     renderScene({ p });
     const hero = await screen.findByLabelText("herói na arena");
     const img = within(hero).getByRole("img", { name: "herói" });
-    expect(img.dataset.look).toBe(resolveLook(p, CATALOG).key);
-    expect(img.dataset.look!.includes(">")).toBe(skin !== "default");
+    expect(img.getAttribute("src")).toBe("/cast/hero-m-idle.png");
+    expect(img.dataset.look).toBeUndefined();
   });
 
   // shop-inventory-avatar C49
@@ -421,8 +420,6 @@ describe("BattleScene", () => {
 
   // game-art C7
   it.each([
-    ["vila", "NULL SLIME", 128],
-    ["torre", "RACE CONDITION", 144],
     ["nuvem", "MEMORY LEAK ANCESTRAL", 128],
   ])("enemy sprite (%s)", async (region, name, size) => {
     mockFetch({ "POST /api/me/battle": startWith(battle({ region })) });
@@ -437,20 +434,21 @@ describe("BattleScene", () => {
   });
 
   it("enemy sprite falls back to the glyph", async () => {
+    const stayed = battle({ enemy: "floresta", region: "floresta" });
     mockFetch({
-      "POST /api/me/battle": startWith(),
-      "POST /api/me/battle/commands": turn(battle({ enemyHp: 50 }), [{ type: "damage", command: "fix", amount: 10 }]),
+      "POST /api/me/battle": startWith(stayed),
+      "POST /api/me/battle/commands": turn(battle({ enemy: "floresta", region: "floresta", enemyHp: 50 }), [{ type: "damage", command: "fix", amount: 10 }]),
     });
     renderScene({ catalog: EVERY_ENEMY });
     await screen.findByLabelText("inimigo");
     fireEvent.error(sprite().querySelector("img")!);
     expect(sprite().querySelector("img")).toBeNull();
-    expect(sprite()).toHaveTextContent("(0x0)");
+    expect(sprite()).toHaveTextContent("(~.~)");
     // the glyph stays through the next turn's render
     await userEvent.click(command("fix"));
     await screen.findByText(/HP 50\/60/);
     expect(sprite().querySelector("img")).toBeNull();
-    expect(sprite()).toHaveTextContent("(0x0)");
+    expect(sprite()).toHaveTextContent("(~.~)");
   });
 
   // game-art C8
@@ -508,30 +506,46 @@ describe("BattleScene turn playback", () => {
   }
 
   // assets C47: the beat on stage picks the hero's animation
-  const heroAnim = () => within(heroActor()).getByRole("img", { name: "herói" }).dataset.anim;
-  it.each<[string, BattleEvent[], string]>([
-    ["lunge", [{ type: "damage", command: "fix", amount: 20 }], "run"],
-    ["cast", [{ type: "heal", amount: 10 }], "interact"],
-    ["hit", [{ type: "counter", amount: 9 }], "idle"],
-    ["fall", [{ type: "defeat" }], "idle"],
-    ["flee", [{ type: "fled" }], "idle"],
-  ])("hero anim on beat %s", async (_beat, events, anim) => {
+  const heroAnim = () => within(heroActor()).getByRole("img", { name: "herói" });
+  const heroSrc = (el: HTMLElement) =>
+    el.tagName === "IMG" ? el.getAttribute("src") : el.style.backgroundImage.replace(/"/g, "");
+  it.each<[string, BattleEvent[], string, string]>([
+    ["lunge", [{ type: "damage", command: "fix", amount: 20 }], "attack", "url(/cast/hero-m-attack.png)"],
+    ["cast", [{ type: "heal", amount: 10 }], "attack", "url(/cast/hero-m-attack.png)"],
+    ["hit", [{ type: "counter", amount: 9 }], "idle", "/cast/hero-m-idle.png"],
+    ["fall", [{ type: "defeat" }], "idle", "/cast/hero-m-idle.png"],
+    ["flee", [{ type: "fled" }], "idle", "/cast/hero-m-idle.png"],
+  ])("hero anim on beat %s", async (_beat, events, anim, src) => {
     await fightOneTurn(events, battle({ enemyHp: 40 }));
-    expect(heroAnim()).toBe(anim);
+    const hero = heroAnim();
+    expect(hero.dataset.anim).toBe(anim);
+    expect(heroSrc(hero)).toBe(src);
   });
 
   it("hero anim with no beat is idle", async () => {
     mockFetch({ "POST /api/me/battle": startWith(battle()) });
     renderScene();
     await screen.findByLabelText("inimigo");
-    expect(heroAnim()).toBe("idle");
+    const hero = heroAnim();
+    expect(hero.dataset.anim).toBe("idle");
+    expect(heroSrc(hero)).toBe("/cast/hero-m-idle.png");
   });
 
-  it("hero anim when the battle is won is jump", async () => {
+  it("hero anim when the battle is won stays idle", async () => {
     mockFetch({ "POST /api/me/battle": startWith(battle({ status: "won", enemyHp: 0 })) });
     renderScene();
     await screen.findByLabelText("inimigo");
-    expect(heroAnim()).toBe("jump");
+    const hero = heroAnim();
+    expect(hero.dataset.anim).toBe("idle");
+    expect(heroSrc(hero)).toBe("/cast/hero-m-idle.png");
+  });
+
+  it("feminine body uses the painted heroine", async () => {
+    const p = player({ body: "feminino" });
+    mockFetch({ "POST /api/me/battle": startWith(battle(), p) });
+    renderScene({ p });
+    await screen.findByLabelText("inimigo");
+    expect(heroAnim().getAttribute("src")).toBe("/cast/hero-f-idle.png");
   });
 
   // assets-apply C19: dust at the hero's feet while it runs in, never on a cast
@@ -649,6 +663,10 @@ describe("BattleScene turn playback", () => {
     expect(fx()!.style.backgroundImage.replace(/"/g, "")).toBe("url(/cast/fx-crit.png)");
     expect(document.querySelector(".battle-stage")).toHaveClass("is-limit");
     expect(heroActor()).toHaveClass("anim-special");
+    const painted = within(heroActor()).getByRole("img", { name: "herói" });
+    expect(painted.dataset.anim).toBe("attack");
+    expect(painted.style.backgroundImage.replace(/"/g, "")).toBe("url(/cast/hero-m-attack.png)");
+    expect(painted).toHaveClass("cast-once");
     expect(float()).toHaveTextContent("-55 SHIP IT!");
     expect(lines().at(-1)).toBe("> SHIP IT: 55 de dano");
     expect(screen.getByLabelText("dev em combate")).toHaveTextContent("PODER 100/100");
@@ -733,21 +751,21 @@ describe("BattleScene enemy by id", () => {
     expect(enemy).toHaveTextContent("SLIME DE CACHE");
     expect(enemy).toHaveTextContent("fraqueza: cache invalidado");
     expect(enemy).not.toHaveTextContent("NULL SLIME");
-    const img = sprite().querySelector("img")!;
-    expect(img.getAttribute("src")).toBe("/cast/enemy-slime.png");
-    expect(img.getAttribute("alt")).toBe("SLIME DE CACHE");
-    expect(img.getAttribute("height")).toBe("112");
-    expect(img.className).toContain("cast-sprite");
+    const strip = sprite().querySelector(".cast-strip")!;
+    expect(strip.style.backgroundImage.replace(/"/g, "")).toBe("url(/cast/enemy-slime.png)");
+    expect(strip.getAttribute("aria-label")).toBe("SLIME DE CACHE");
+    expect(strip.dataset.frames).toBe("4");
+    expect(strip.className).toContain("cast-strip");
     const hero = screen.getByLabelText("herói na arena");
-    expect(hero.querySelector("canvas")).toHaveAttribute("aria-label", "herói");
-    expect(hero.querySelector(".cast-sprite")).toBeNull();
+    expect(hero.querySelector("img")).toHaveAttribute("src", "/cast/hero-m-idle.png");
+    expect(hero.querySelector("img")).toHaveAttribute("alt", "herói");
   });
 
   it("enemy by id: slime de log uses the green cast", async () => {
     mockFetch({ "POST /api/me/battle": startWith(battle({ enemy: "slime_verde", region: "floresta", enemyHp: 55, enemyHpMax: 55 })) });
     renderScene();
     await screen.findByLabelText("inimigo");
-    expect(sprite().querySelector("img")).toHaveAttribute("src", "/cast/enemy-slime-verde.png");
+    expect(sprite().querySelector(".cast-strip")!.style.backgroundImage.replace(/"/g, "")).toBe("url(/cast/enemy-slime-verde.png)");
   });
 
   it("enemy by id: kernel panic uses the cast boss", async () => {
@@ -755,9 +773,24 @@ describe("BattleScene enemy by id", () => {
     mockFetch({ "POST /api/me/battle": startWith(battle({ enemy: "boss_nuvem", region: "nuvem", enemyHp: 330, enemyHpMax: 330 })) });
     renderScene({ catalog: { ...CATALOG, enemies: [...CATALOG.enemies, boss] } });
     await screen.findByLabelText("inimigo");
-    const img = sprite().querySelector("img")!;
-    expect(img.getAttribute("src")).toBe("/cast/enemy-boss-nuvem.png");
-    expect(img.getAttribute("alt")).toBe("KERNEL PANIC");
+    const strip = sprite().querySelector(".cast-strip")!;
+    expect(strip.style.backgroundImage.replace(/"/g, "")).toBe("url(/cast/enemy-boss-nuvem.png)");
+    expect(strip.getAttribute("aria-label")).toBe("KERNEL PANIC");
+  });
+
+  it.each([
+    ["vila", "NULL SLIME", "/cast/enemy-slime-dark.png"],
+    ["caverna", "EXCEÇÃO SELVAGEM", "/cast/enemy-snake.png"],
+    ["torre", "RACE CONDITION", "/cast/enemy-spider.png"],
+  ])("cast enemy by id: %s", async (enemy, name, src) => {
+    mockFetch({ "POST /api/me/battle": startWith(battle({ enemy, region: enemy })) });
+    renderScene({ catalog: EVERY_ENEMY });
+    await screen.findByLabelText("inimigo");
+    const strip = sprite().querySelector(".cast-strip")!;
+    expect(strip.style.backgroundImage.replace(/"/g, "")).toBe(`url(${src})`);
+    expect(strip.getAttribute("aria-label")).toBe(name);
+    expect(strip.dataset.frames).toBe("4");
+    expect(strip.className).toContain("cast-strip");
   });
 
   it("scan stays on the old fx strip", async () => {

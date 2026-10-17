@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext } from "react";
+import { HUD_CAST_HEIGHT, castHeroId } from "@/lib/cast";
 import type { Player } from "@/lib/types";
+import { CastSprite } from "./CastSprite";
 import { GameArt } from "./GameArt";
-import { GameContext } from "./GameContext";
-import { HeroAvatar } from "./HeroAvatar";
 import { LoadingFx } from "./LoadingFx";
 import { DEPLOY, FIGHT, SHOP, TITLE, WORLD } from "./SceneShortcuts";
 
@@ -31,7 +30,6 @@ function Bar({ value, max, color }: { value: number; max: number; color: string 
 }
 
 export function Hud({ player, onLogout }: Props) {
-  const game = useContext(GameContext);
   const pathname = usePathname();
   if (!player) {
     return (
@@ -79,7 +77,7 @@ export function Hud({ player, onLogout }: Props) {
       </div>
       <div className="hud-card">
         <Link href="/office" className="pixel hud-label hud-hero" aria-label={`${player.devName} · ir para a base`}>
-          {game?.catalog && <HeroAvatar look={player} catalog={game.catalog} scale={1} />}
+          <CastSprite id={castHeroId(player.body, "idle")} alt="" height={HUD_CAST_HEIGHT} anim="idle" />
           {player.devName}
         </Link>
         <div className="hud-side">

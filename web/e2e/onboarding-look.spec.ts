@@ -26,12 +26,13 @@ test("onboarding look fits phone", async ({ page }) => {
   await page.getByRole("button", { name: "CLARA" }).click();
   await page.locator('[data-part="top"]').click();
   await page.getByRole("button", { name: "CAMISETA" }).click();
-  await expect(page.locator(".onboarding-hero")).toHaveAttribute("data-look", /#b07858/);
-  await expect(page.locator(".onboarding-hero")).toHaveAttribute("data-look", /top-camiseta/);
+  await expect(page.locator(".onboarding-hero")).toHaveAttribute("src", "/cast/hero-m-idle.png");
   await page.getByRole("button", { name: "CRIAR DEV" }).click();
   await expect(page.getByRole("banner", { name: "HUD" })).toContainText("LEVEL 1");
   await openBase(page);
   await page.getByRole("navigation", { name: "Base" }).getByRole("link", { name: "AVATAR" }).click();
-  await expect(page.locator(".avatar-hero")).toHaveAttribute("data-look", /#b07858/);
-  await expect(page.locator(".avatar-hero")).toHaveAttribute("data-look", /top-camiseta/);
+  await expect(page.locator(".avatar-hero")).toHaveAttribute("src", "/cast/hero-m-idle.png");
+  const me = await page.request.get("/api/me");
+  expect(me.ok()).toBeTruthy();
+  expect((await me.json()).player.appearance).toMatchObject({ tone: "tone_clara", top: "top_camiseta" });
 });

@@ -75,6 +75,36 @@ class SliceCastTest(unittest.TestCase):
             ]
             self.assertGreater(sum(hits), 0, rgb)
 
+    def test_variants_indices_drop_a_drawing(self):
+        im = checker(220, 80)
+        colors = [(220, 40, 40), (40, 180, 60), (40, 80, 220), (230, 180, 30)]
+        for i, rgb in enumerate(colors):
+            fill(im, 10 + i * 52, 16, 32, 40, rgb)
+        rows = slice_sheet(
+            im,
+            {
+                "file": "fx.jpg",
+                "key": "checker",
+                "mode": "variants",
+                "drawings": 4,
+                "indices": [1, 2, 3],
+                "ids": ["ice", "bolt", "earth"],
+            },
+        )
+        self.assertEqual([row["id"] for row in rows], ["ice", "bolt", "earth"])
+        kept = []
+        for row in rows:
+            out = row["_image"]
+            found = {
+                out.get(x, y)[:3]
+                for y in range(out.h)
+                for x in range(out.w)
+                if out.get(x, y)[3] == 255
+            }
+            kept.append(found)
+        self.assertNotIn((220, 40, 40), set().union(*kept))
+        self.assertEqual(kept[0], {(40, 180, 60)})
+
     def test_label_bars_are_dropped(self):
         im = checker(200, 100)
         colors = [(180, 40, 220), (120, 40, 200), (90, 20, 180), (200, 80, 240)]
@@ -113,6 +143,85 @@ class SliceCastTest(unittest.TestCase):
         out = rows[0]["_image"]
         self.assertTrue(any(out.get(x, y)[:3] == (80, 20, 40) for y in range(out.h) for x in range(out.w)))
         self.assertFalse(any(out.get(x, y)[:3] == (40, 200, 220) for y in range(out.h) for x in range(out.w)))
+
+    def test_glitch_bridge_drops_the_panel(self):
+        im = checker(90, 60)
+        fill(im, 16, 8, 34, 42, (40, 20, 50))
+        fill(im, 70, 8, 14, 12, (20, 20, 30))
+        for x in range(50, 70):
+            im.set(x, 14, 40, 220, 230)
+        rows = slice_sheet(
+            im,
+            {"file": "boss.jpg", "key": "checker", "mode": "still", "pick": "largest", "ids": ["boss"]},
+        )
+        out = rows[0]["_image"]
+        self.assertTrue(any(out.get(x, y)[:3] == (40, 20, 50) for y in range(out.h) for x in range(out.w)))
+        self.assertFalse(any(out.get(x, y)[:3] == (20, 20, 30) for y in range(out.h) for x in range(out.w)))
+
+    def test_strip_keeps_a_spark_inside_its_frame(self):
+        im = checker(200, 80)
+        for i in range(4):
+            fill(im, 10 + i * 50, 24, 18, 28, (220, 40, 40))
+            fill(im, 14 + i * 50, 8, 4, 4, (240, 200, 40))
+        rows = slice_sheet(
+            im,
+            {"file": "fx.jpg", "key": "checker", "mode": "strip", "align": "center", "ids": ["fx"]},
+        )
+        row = rows[0]
+        self.assertEqual(row["frames"], 4)
+        out = row["_image"]
+        for i in range(4):
+            cell = out.crop(i * row["cellW"], 0, row["cellW"], row["cellH"])
+            red = yellow = 0
+            for y in range(cell.h):
+                for x in range(cell.w):
+                    rgb, a = cell.get(x, y)[:3], cell.get(x, y)[3]
+                    if a != 255:
+                        continue
+                    if rgb == (220, 40, 40):
+                        red += 1
+                    elif rgb == (240, 200, 40):
+                        yellow += 1
+            self.assertGreater(red, 0, i)
+            self.assertGreater(yellow, 0, i)
+
+    def test_jpeg_gray_ramp_clears(self):
+        im = Raster(80, 48)
+        for y in range(48):
+            for x in range(80):
+                g = 210 if ((x // 8) + (y // 8)) % 2 == 0 else 248
+                im.set(x, y, g, g, g)
+        fill(im, 22, 12, 28, 22, (200, 40, 40))
+        rows = slice_sheet(im, {"file": "ramp.jpg", "key": "checker", "mode": "still", "ids": ["blob"]})
+        out = rows[0]["_image"]
+        self.assertEqual(out.get(0, 0)[3], 0)
+        self.assertLess(out.w, 50)
+        self.assertTrue(
+            any(out.get(x, y)[:3] == (200, 40, 40) and out.get(x, y)[3] == 255 for y in range(out.h) for x in range(out.w))
+        )
+
+    def test_strip_follows_the_gap_beside_the_quarter(self):
+        im = checker(200, 50)
+        # The second sprite crosses x=50, where an equal quarter would cut it.
+        spans = [(4, 28), (40, 78), (96, 130), (156, 190)]
+        for x0, x1 in spans:
+            fill(im, x0, 10, x1 - x0, 28, (220, 40, 40))
+        rows = slice_sheet(
+            im,
+            {"file": "wide.jpg", "key": "checker", "mode": "strip", "align": "bottom", "ids": ["wide"]},
+        )
+        row = rows[0]
+        self.assertEqual(row["frames"], 4)
+        out = row["_image"]
+        for i in range(4):
+            cell = out.crop(i * row["cellW"], 0, row["cellW"], row["cellH"])
+            reds = [
+                1
+                for y in range(cell.h)
+                for x in range(cell.w)
+                if cell.get(x, y)[:3] == (220, 40, 40) and cell.get(x, y)[3] == 255
+            ]
+            self.assertEqual(sum(reds), (spans[i][1] - spans[i][0]) * 28, i)
 
     def test_jpeg_checker_corner_clears(self):
         from PIL import Image

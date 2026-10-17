@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """Slice web/public/rendered sheets into transparent PNGs under web/public/cast.
 
-The checkerboard baked into the JPEGs is not an alpha channel. Background pixels
-are removed only when they match the sheet key and connect to the image edge, so
-interior whites (shoes, highlights) stay. Pillow is used to decode JPEG and write
-PNG; it is not a web or api dependency.
+The checkerboard baked into the JPEGs is not an alpha channel. Light-gray pixels
+that reach the image edge are cleared, so interior whites (shoes, highlights) stay.
+A strip or a row of effects is grouped by drawing, so a spark stays with the
+pose it belongs to and a wide laptop is not sliced on a column line. Pillow is used to decode JPEG and write PNG; it is not a web or api dependency.
 """
 
 from __future__ import annotations
 
 import json
 import sys
-from collections import Counter, deque
+from collections import deque
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -20,12 +20,16 @@ RENDERED = ROOT / "web" / "public" / "rendered"
 OUT = ROOT / "web" / "public" / "cast"
 MANIFEST = ROOT / "web" / "cast" / "manifest.json"
 
-# Sum of absolute channel deltas. Checker JPEG noise sits well under this;
-# a saturated sprite pixel does not.
+# Sum of absolute channel deltas for a flat corner (the dark slime sheet).
 KEY_TOL = 48
 # Edge halo only: stricter than the flood, and only with transparent neighbours.
 FRINGE_TOL = 36
 MIN_AREA = 24
+# The baked checker is light gray, not two flat colours. JPEG swings a cell
+# from about 190 to 255 while keeping it nearly neutral. A saturated pixel,
+# or a dark shoe, is not the board.
+CHECKER_CHROMA = 18
+CHECKER_MIN = 185
 
 
 class Raster:
@@ -74,28 +78,10 @@ def _near(rgb: tuple[int, int, int], keys: list[tuple[int, int, int]], tol: int)
     return any(_dist(rgb, k) <= tol for k in keys)
 
 
-def _quant(rgb: tuple[int, int, int]) -> tuple[int, int, int]:
-    return tuple((c // 8) * 8 for c in rgb)  # type: ignore[return-value]
-
-
-def checker_keys(im: Raster) -> list[tuple[int, int, int]]:
-    """Two colours that dominate the border (the baked checker, or a flat corner)."""
-    counts: Counter[tuple[int, int, int]] = Counter()
-    w, h = im.w, im.h
-    pts = []
-    for x in range(0, w, max(1, w // 32)):
-        pts.append((x, 0))
-        pts.append((x, h - 1))
-    for y in range(0, h, max(1, h // 32)):
-        pts.append((0, y))
-        pts.append((w - 1, y))
-    for x, y in pts:
-        r, g, b, a = im.get(x, y)
-        if a:
-            counts[_quant((r, g, b))] += 1
-    if not counts:
-        return [(0, 0, 0)]
-    return [rgb for rgb, _ in counts.most_common(2)]
+def is_light_checker(rgb: tuple[int, int, int]) -> bool:
+    """Nearly neutral and bright: the JPEG checker, not the sprite."""
+    r, g, b = rgb
+    return max(r, g, b) - min(r, g, b) <= CHECKER_CHROMA and min(r, g, b) >= CHECKER_MIN
 
 
 def corner_key(im: Raster) -> list[tuple[int, int, int]]:
@@ -103,38 +89,62 @@ def corner_key(im: Raster) -> list[tuple[int, int, int]]:
     return [(r, g, b)]
 
 
-def knock_out(im: Raster, keys: list[tuple[int, int, int]]) -> None:
-    """Clear key-coloured pixels that reach the border, then a short fringe."""
+def knock_out(im: Raster, keys: list[tuple[int, int, int]], *, checker: bool = False) -> None:
+    """Clear background pixels that reach the border, then a short fringe.
+
+    `checker` matches the whole light-gray ramp. Otherwise `keys` is a flat
+    corner colour within KEY_TOL. Interior whites stay when they do not touch
+    that background.
+    """
     w, h = im.w, im.h
+    px = im.px
+
+    def matches(i: int) -> bool:
+        if px[i + 3] == 0:
+            return False
+        rgb = (px[i], px[i + 1], px[i + 2])
+        if checker:
+            return is_light_checker(rgb)
+        return _near(rgb, keys, KEY_TOL)
+
     clear = bytearray(w * h)
-    q: deque[tuple[int, int]] = deque()
+    q: deque[int] = deque()
     for x in range(w):
-        q.append((x, 0))
-        q.append((x, h - 1))
+        q.append(x * 4)
+        q.append(((h - 1) * w + x) * 4)
     for y in range(h):
-        q.append((0, y))
-        q.append((w - 1, y))
+        q.append((y * w) * 4)
+        q.append((y * w + w - 1) * 4)
     while q:
-        x, y = q.popleft()
-        i = y * w + x
-        if clear[i]:
+        i = q.popleft()
+        p = i // 4
+        if clear[p] or not matches(i):
             continue
-        r, g, b, a = im.get(x, y)
-        if not a or not _near((r, g, b), keys, KEY_TOL):
-            continue
-        clear[i] = 1
-        for nx, ny in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
-            if 0 <= nx < w and 0 <= ny < h:
-                q.append((nx, ny))
+        clear[p] = 1
+        x, y = p % w, p // w
+        if x > 0:
+            q.append(i - 4)
+        if x + 1 < w:
+            q.append(i + 4)
+        if y > 0:
+            q.append(i - w * 4)
+        if y + 1 < h:
+            q.append(i + w * 4)
     for i, bit in enumerate(clear):
         if bit:
-            im.px[i * 4 + 3] = 0
+            px[i * 4 + 3] = 0
     for _ in range(2):
         kill: list[int] = []
         for y in range(h):
             for x in range(w):
                 r, g, b, a = im.get(x, y)
-                if not a or not _near((r, g, b), keys, FRINGE_TOL):
+                if not a:
+                    continue
+                rgb = (r, g, b)
+                if checker:
+                    if not is_light_checker(rgb):
+                        continue
+                elif not _near(rgb, keys, FRINGE_TOL):
                     continue
                 trans = 0
                 for ny in range(y - 1, y + 2):
@@ -183,17 +193,50 @@ def components(im: Raster) -> list[tuple[int, int, int, int, int]]:
     return found
 
 
-def _median(nums: list[int]) -> float:
-    s = sorted(nums)
-    n = len(s)
-    if n == 0:
-        return 0
-    return s[n // 2] if n % 2 else (s[n // 2 - 1] + s[n // 2]) / 2
+def _keep_largest(im: Raster) -> None:
+    """Drop every component but the biggest, including ones inside its box."""
+    w, h = im.w, im.h
+    px = im.px
+    seen = bytearray(w * h)
+    best = bytearray(w * h)
+    best_area = 0
+    for start in range(w * h):
+        if seen[start] or px[start * 4 + 3] == 0:
+            continue
+        q: deque[int] = deque([start])
+        seen[start] = 1
+        mark = bytearray(w * h)
+        mark[start] = 1
+        area = 0
+        while q:
+            i = q.popleft()
+            area += 1
+            x, y = i % w, i // w
+            for ny in range(y - 1, y + 2):
+                for nx in range(x - 1, x + 2):
+                    if nx < 0 or ny < 0 or nx >= w or ny >= h:
+                        continue
+                    j = ny * w + nx
+                    if seen[j] or px[j * 4 + 3] == 0:
+                        continue
+                    seen[j] = 1
+                    mark[j] = 1
+                    q.append(j)
+        if area >= MIN_AREA and area > best_area:
+            best = mark
+            best_area = area
+    if best_area == 0:
+        return
+    for i in range(w * h):
+        if not best[i]:
+            px[i * 4 + 3] = 0
 
 
-def _is_label(box: tuple[int, int, int, int, int], median_h: float) -> bool:
-    _, _, bw, bh, _ = box
-    return bh < median_h * 0.45 and bw > bh * 1.4
+def _is_label(box: tuple[int, int, int, int, int], largest: tuple[int, int, int, int, int]) -> bool:
+    """A caption sits under the main figure: short, wide, and below it."""
+    _, y, bw, bh, _ = box
+    _, ly, _, lh, _ = largest
+    return bh < lh * 0.4 and bw > bh * 1.4 and y > ly + lh * 0.55
 
 
 def pack_strip(frames: list[Raster], align: str) -> tuple[Raster, int, int]:
@@ -216,12 +259,150 @@ def _crop_box(im: Raster, box: tuple[int, int, int, int, int], pad: int = 1) -> 
     return im.crop(x0, y0, x1 - x0, y1 - y0)
 
 
+def _opaque_box(im: Raster) -> tuple[int, int, int, int] | None:
+    minx = miny = 10**9
+    maxx = maxy = -1
+    w = im.w
+    px = im.px
+    for y in range(im.h):
+        row = y * w * 4
+        for x in range(w):
+            if px[row + x * 4 + 3] == 0:
+                continue
+            if x < minx:
+                minx = x
+            if x > maxx:
+                maxx = x
+            if y < miny:
+                miny = y
+            if y > maxy:
+                maxy = y
+    if maxx < 0:
+        return None
+    return minx, miny, maxx - minx + 1, maxy - miny + 1
+
+
+def _component_pixels(im: Raster, min_area: int = MIN_AREA) -> list[tuple[tuple[int, int, int, int, int], list[int]]]:
+    """Opaque 8-connected pieces as (box, pixel indices), largest first."""
+    w, h = im.w, im.h
+    px = im.px
+    seen = bytearray(w * h)
+    found: list[tuple[tuple[int, int, int, int, int], list[int]]] = []
+    for start in range(w * h):
+        if seen[start] or px[start * 4 + 3] == 0:
+            continue
+        q: deque[int] = deque([start])
+        seen[start] = 1
+        pixels = [start]
+        minx = maxx = start % w
+        miny = maxy = start // w
+        while q:
+            i = q.popleft()
+            x, y = i % w, i // w
+            for ny in range(y - 1, y + 2):
+                for nx in range(x - 1, x + 2):
+                    if nx < 0 or ny < 0 or nx >= w or ny >= h:
+                        continue
+                    j = ny * w + nx
+                    if seen[j] or px[j * 4 + 3] == 0:
+                        continue
+                    seen[j] = 1
+                    pixels.append(j)
+                    q.append(j)
+                    if nx < minx:
+                        minx = nx
+                    if nx > maxx:
+                        maxx = nx
+                    if ny < miny:
+                        miny = ny
+                    if ny > maxy:
+                        maxy = ny
+        if len(pixels) >= min_area:
+            box = (minx, miny, maxx - minx + 1, maxy - miny + 1, len(pixels))
+            found.append((box, pixels))
+    found.sort(key=lambda item: item[0][4], reverse=True)
+    return found
+
+
+def _raster_from_pixels(im: Raster, groups: list[list[int]]) -> Raster:
+    w = im.w
+    xs: list[int] = []
+    ys: list[int] = []
+    for pixels in groups:
+        for i in pixels:
+            xs.append(i % w)
+            ys.append(i // w)
+    x0, y0, x1, y1 = min(xs), min(ys), max(xs), max(ys)
+    out = Raster(x1 - x0 + 1, y1 - y0 + 1)
+    px = im.px
+    for pixels in groups:
+        for i in pixels:
+            x, y = i % w, i // w
+            src = i * 4
+            out.set(x - x0, y - y0, px[src], px[src + 1], px[src + 2], px[src + 3])
+    return out
+
+
+def _row_frames(im: Raster, n: int, drop_labels: bool) -> list[Raster]:
+    """Group every piece with the nearest of the n largest drawings.
+
+    A vertical cut slices a laptop that crosses the next pose. Pieces stay whole
+    and follow the drawing whose centre is closest.
+    """
+    parts = _component_pixels(im, min_area=8)
+    if len(parts) < n:
+        raise ValueError(f"expected {n} drawings, found {len(parts)}")
+    seeds = sorted(parts[:n], key=lambda item: item[0][0] + item[0][2] / 2)
+    seed_x = [box[0] + box[2] / 2 for box, _ in seeds]
+    groups: list[list[tuple[tuple[int, int, int, int, int], list[int]]]] = [[] for _ in range(n)]
+    for part in parts:
+        cx = part[0][0] + part[0][2] / 2
+        groups[min(range(n), key=lambda i: abs(cx - seed_x[i]))].append(part)
+    frames: list[Raster] = []
+    for group in groups:
+        if drop_labels and len(group) >= 2:
+            largest = max(group, key=lambda item: item[0][4])
+            group = [item for item in group if item is largest or not _is_label(item[0], largest[0])]
+        if not group:
+            raise ValueError("empty frame")
+        frames.append(_raster_from_pixels(im, [pixels for _, pixels in group]))
+    return frames
+
+
+def _sever_glitch(im: Raster) -> None:
+    """Clear thin cyan and hot-red dashes so a corner panel does not join the figure."""
+    w, h = im.w, im.h
+    px = im.px
+    kill: list[int] = []
+    for y in range(h):
+        for x in range(w):
+            i = (y * w + x) * 4
+            if px[i + 3] == 0:
+                continue
+            r, g, b = px[i], px[i + 1], px[i + 2]
+            cyan = g > 140 and b > 140 and r < 90 and g > r + 50
+            hot = r > 170 and g < 100 and b < 150 and r > g + 70
+            if not (cyan or hot):
+                continue
+            trans = 0
+            for ny in range(y - 1, y + 2):
+                for nx in range(x - 1, x + 2):
+                    if nx == x and ny == y:
+                        continue
+                    if nx < 0 or ny < 0 or nx >= w or ny >= h or px[(ny * w + nx) * 4 + 3] == 0:
+                        trans += 1
+            if trans >= 3:
+                kill.append(i + 3)
+    for i in kill:
+        px[i] = 0
+
+
 def slice_sheet(im: Raster, sheet: dict) -> list[dict]:
     """Return manifest rows for one sheet. Mutates a copy, not `im`."""
     work = Raster(im.w, im.h, bytearray(im.px))
     key = sheet.get("key", "checker")
     if key == "checker":
-        knock_out(work, checker_keys(work))
+        knock_out(work, [], checker=True)
     elif key == "corner":
         knock_out(work, corner_key(work))
     elif key != "none":
@@ -232,46 +413,52 @@ def slice_sheet(im: Raster, sheet: dict) -> list[dict]:
     if mode == "plate" or (mode == "still" and sheet.get("pick") != "largest" and key == "none"):
         return [_row(ids[0], work, 1, work.w, work.h, sheet["file"])]
 
-    boxes = components(work)
-    if not boxes and mode == "plate":
-        return [_row(ids[0], work, 1, work.w, work.h, sheet["file"])]
-    if sheet.get("drop") == "labels" and boxes:
-        median_h = _median([b[3] for b in boxes])
-        boxes = [b for b in boxes if not _is_label(b, median_h)]
-    if sheet.get("pick") == "largest":
-        boxes = boxes[:1]
-    boxes.sort(key=lambda b: b[0] + b[2] / 2)
+    if mode in ("strip", "variants"):
+        # `drawings` is the count on the sheet when `ids` keeps only some of them.
+        n = 4 if mode == "strip" else int(sheet.get("drawings", len(ids)))
+        try:
+            frames = _row_frames(work, n, sheet.get("drop") == "labels")
+        except ValueError as exc:
+            raise ValueError(f"{sheet['file']}: {exc}") from None
+        if mode == "strip":
+            if len(frames) != 4:
+                raise ValueError(f"{sheet['file']}: strip needs 4 drawings, found {len(frames)}")
+            packed, cell_w, cell_h = pack_strip(frames, sheet.get("align", "bottom"))
+            return [_row(ids[0], packed, n, cell_w, cell_h, sheet["file"])]
+        indices = sheet.get("indices")
+        if indices is not None:
+            frames = [frames[i] for i in indices]
+        if len(frames) != len(ids):
+            raise ValueError(f"{sheet['file']}: {len(frames)} frames for {len(ids)} ids")
+        return [
+            _row(bid, frame, 1, frame.w, frame.h, sheet["file"])
+            for bid, frame in zip(ids, frames)
+        ]
 
-    if mode == "still":
-        if not boxes:
+    if mode != "still":
+        raise ValueError(f"unknown mode {mode}")
+
+    if sheet.get("pick") == "largest":
+        _sever_glitch(work)
+        _keep_largest(work)
+        box = _opaque_box(work)
+        if box is None:
             raise ValueError(f"{sheet['file']}: nothing opaque left")
-        if len(boxes) == 1 or sheet.get("pick") == "largest":
-            frame = _crop_box(work, boxes[0])
-        else:
-            x0 = min(b[0] for b in boxes)
-            y0 = min(b[1] for b in boxes)
-            x1 = max(b[0] + b[2] for b in boxes)
-            y1 = max(b[1] + b[3] for b in boxes)
-            frame = work.crop(x0, y0, x1 - x0, y1 - y0)
+        frame = _crop_box(work, (*box, 0))
         return [_row(ids[0], frame, 1, frame.w, frame.h, sheet["file"])]
 
-    if mode == "strip":
-        if len(boxes) != 4:
-            raise ValueError(f"{sheet['file']}: expected 4 frames, found {len(boxes)}")
-        frames = [_crop_box(work, b, pad=0) for b in boxes]
-        packed, cell_w, cell_h = pack_strip(frames, sheet.get("align", "bottom"))
-        return [_row(ids[0], packed, 4, cell_w, cell_h, sheet["file"])]
-
-    if mode == "variants":
-        if len(boxes) != len(ids):
-            raise ValueError(f"{sheet['file']}: expected {len(ids)} parts, found {len(boxes)}")
-        rows = []
-        for bid, box in zip(ids, boxes):
-            frame = _crop_box(work, box)
-            rows.append(_row(bid, frame, 1, frame.w, frame.h, sheet["file"]))
-        return rows
-
-    raise ValueError(f"unknown mode {mode}")
+    boxes = components(work)
+    if not boxes:
+        raise ValueError(f"{sheet['file']}: nothing opaque left")
+    if len(boxes) == 1:
+        frame = _crop_box(work, boxes[0])
+    else:
+        x0 = min(b[0] for b in boxes)
+        y0 = min(b[1] for b in boxes)
+        x1 = max(b[0] + b[2] for b in boxes)
+        y1 = max(b[1] + b[3] for b in boxes)
+        frame = work.crop(x0, y0, x1 - x0, y1 - y0)
+    return [_row(ids[0], frame, 1, frame.w, frame.h, sheet["file"])]
 
 
 def _row(id_: str, image: Raster, frames: int, cell_w: int, cell_h: int, source: str) -> dict:

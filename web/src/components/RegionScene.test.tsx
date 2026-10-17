@@ -68,6 +68,7 @@ describe("RegionScene", () => {
       </GameContext.Provider>,
     );
     await userEvent.click(button("floresta-1"));
+    expect(document.querySelector(".region-hero [data-anim]")).toHaveAttribute("data-anim", "walk");
     fireEvent.transitionEnd(document.querySelector(".region-hero")!, { propertyName: "left" });
     await waitFor(() => expect(fetchMock.calls("POST /api/me/battle")).toBe(1));
     const body = fetchMock.fn.mock.calls.find((c) => String(c[0]) === "/api/me/battle")?.[1]?.body;

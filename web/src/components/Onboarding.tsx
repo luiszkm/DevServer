@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { api, post } from "@/lib/api";
 import { availableFor, bodyDefaults } from "@/lib/avatar";
+import { PORTRAIT_CAST_HEIGHT, THUMB_CAST_HEIGHT, castHeroId } from "@/lib/cast";
 import type { AvatarOption, Catalog, Player } from "@/lib/types";
-import { HeroAvatar } from "./HeroAvatar";
+import { CastSprite } from "./CastSprite";
 import { LoadingFx } from "./LoadingFx";
 
 type OnboardingData = { suggestedDevName: string; classes: string[] };
@@ -129,11 +130,7 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
               <legend className="pixel field-label">CORPO</legend>
               {catalog!.avatar.bodies.map((b) => (
                 <button key={b.id} type="button" className="btn body-btn" data-body={b.id} aria-pressed={body === b.id} onClick={() => chooseBody(b.id)}>
-                  <HeroAvatar
-                    catalog={catalog!}
-                    look={{ body: b.id, appearance: bodyDefaults(catalog!, b.id), equipment: {}, skin: "default" }}
-                    scale={2}
-                  />
+                  <CastSprite id={castHeroId(b.id, "idle")} alt="" height={THUMB_CAST_HEIGHT} />
                   <span className="pixel">{b.name}</span>
                 </button>
               ))}
@@ -141,12 +138,7 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
             </fieldset>
             {body && currentPart && preview && (
               <div className="onboarding-look">
-                <HeroAvatar
-                  className="onboarding-hero"
-                  catalog={catalog!}
-                  look={{ body, appearance: preview, equipment: {}, skin: "default" }}
-                  scale={3}
-                />
+                <CastSprite id={castHeroId(body, "idle")} alt="" height={PORTRAIT_CAST_HEIGHT} className="onboarding-hero" anim="idle" />
                 <div className="avatar-parts" role="group" aria-label="partes">
                   {parts.map((p) => (
                     <button key={p.id} type="button" className="avatar-part pixel" data-part={p.id} aria-pressed={currentPart.id === p.id} onClick={() => setPart(p.id)}>
@@ -165,18 +157,12 @@ export function Onboarding({ onCreated }: { onCreated: (p: Player) => void }) {
                       aria-pressed={preview[currentPart.id] === o.id}
                       onClick={() => setDraft((d) => ({ ...d, [currentPart.id]: o.id }))}
                     >
-                      {o.ramp ? (
+                      {o.ramp && (
                         <span className="avatar-swatch" aria-hidden="true">
                           {o.ramp.map((hex) => (
                             <span key={hex} style={{ background: hex }} />
                           ))}
                         </span>
-                      ) : (
-                        <HeroAvatar
-                          catalog={catalog!}
-                          look={{ body, appearance: { ...preview, [currentPart.id]: o.id }, equipment: {}, skin: "default" }}
-                          scale={1}
-                        />
                       )}
                       <span className="term avatar-option-name">{o.name}</span>
                     </button>

@@ -150,8 +150,8 @@ describe("Onboarding body", () => {
     const ids = [...document.querySelectorAll<HTMLElement>("[data-body]")].map((b) => b.dataset.body);
     expect(ids).toEqual(CATALOG.avatar.bodies.map((b) => b.id));
     for (const b of CATALOG.avatar.bodies) {
-      const look = bodyButton(b.id).querySelector("canvas")!.dataset.look!;
-      expect(look).toContain(b.id === "feminino" ? "/art/sprite/hero/body-f.png" : "/art/sprite/hero/body.png");
+      const img = bodyButton(b.id).querySelector("img")!;
+      expect(img.getAttribute("src")).toBe(b.id === "feminino" ? "/cast/hero-f-idle.png" : "/cast/hero-m-idle.png");
       expect(bodyButton(b.id)).toHaveTextContent(b.name);
     }
     await userEvent.click(bodyButton("feminino"));
@@ -192,8 +192,8 @@ function partIds() {
   return [...document.querySelectorAll<HTMLElement>("[data-part]")].map((el) => el.dataset.part);
 }
 
-function previewLook() {
-  return document.querySelector<HTMLElement>(".onboarding-hero")!.dataset.look!;
+function previewSrc() {
+  return document.querySelector(".onboarding-hero")!.getAttribute("src");
 }
 
 describe("Onboarding look", () => {
@@ -247,8 +247,7 @@ describe("Onboarding look", () => {
     expect(screen.getByRole("button", { name: "PADRÃO" })).toHaveAttribute("aria-pressed", "false");
     await userEvent.click(screen.getByRole("button", { name: "ROUPA" }));
     await userEvent.click(screen.getByRole("button", { name: "CAMISETA" }));
-    expect(previewLook()).toContain("#b07858");
-    expect(previewLook()).toContain("top-camiseta");
+    expect(previewSrc()).toBe("/cast/hero-m-idle.png");
   });
 
   it("switching body keeps wearable picks", async () => {
@@ -259,12 +258,10 @@ describe("Onboarding look", () => {
     await userEvent.click(screen.getByRole("button", { name: "CLARA" }));
     await userEvent.click(screen.getByRole("button", { name: "BARBA" }));
     await userEvent.click(screen.getByRole("button", { name: "BIGODE" }));
-    expect(previewLook()).toContain("#b07858");
-    expect(previewLook()).toContain("beard-bigode");
+    expect(previewSrc()).toBe("/cast/hero-m-idle.png");
     await userEvent.click(bodyButton("feminino"));
     expect(screen.queryByRole("button", { name: "BARBA" })).not.toBeInTheDocument();
-    expect(previewLook()).toContain("#b07858");
-    expect(previewLook()).not.toContain("beard-bigode");
+    expect(previewSrc()).toBe("/cast/hero-f-idle.png");
     await userEvent.click(screen.getByRole("button", { name: "CRIAR DEV" }));
     await vi.waitFor(() => expect(f.fn).toHaveBeenCalled());
     const sent = JSON.parse(f.fn.mock.calls.find(([u]) => String(u) === "/api/players")![1]!.body as string);

@@ -505,8 +505,8 @@ describe("ShopScene avatar styles", () => {
     expect(status("hair_azul")).toBe("NO GUARDA-ROUPA");
     expect(status("hair_topete")).toBe("30g");
     expect(status("top_jaqueta")).toBe("150c");
-    // the card shows the player's own hero wearing the option
-    expect(card("hair_topete").querySelector("canvas")!.dataset.look).toContain("/art/sprite/hero/hair-topete.png");
+    expect(card("hair_topete").querySelector("img")).toHaveAttribute("src", "/cast/hero-m-idle.png");
+    expect(card("hair_moicano").querySelector("img")).toHaveAttribute("src", "/cast/hero-m-idle.png");
   });
 
   it.each([

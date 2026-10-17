@@ -1,25 +1,34 @@
-import { castBox, castById, castFxStyle } from "@/lib/cast";
+import { CAST_HEIGHT, castBox, castById, castFxStyle } from "@/lib/cast";
 
-type Props = { id: string; alt?: string; className?: string };
+type Props = { id: string; alt?: string; className?: string; height?: number; anim?: string };
 
 /**
- * A painted cast piece. A still is an img at the arena height; a 4-frame strip
- * plays with the same steps() motion as the battle fx. Reduced motion leaves frame 0.
+ * A painted cast piece. A still is an img; a 4-frame strip plays with steps().
+ * Reduced motion leaves frame 0. `height` overrides the arena default.
  */
-export function CastSprite({ id, alt = "", className }: Props) {
+export function CastSprite({ id, alt = "", className, height = CAST_HEIGHT, anim }: Props) {
   const item = castById(id);
+  const box = castBox(item, height);
   if (item.frames === 1) {
-    const box = castBox(item);
     return (
       // eslint-disable-next-line @next/next/no-img-element -- cast art is a fixed bitmap, same as GameArt
-      <img src={item.src} alt={alt} width={box.width} height={box.height} className={`cast-sprite ${className ?? ""}`} />
+      <img
+        src={item.src}
+        alt={alt}
+        width={box.width}
+        height={box.height}
+        data-anim={anim}
+        className={`cast-sprite ${className ?? ""}`}
+        style={{ height: box.height, width: box.width }}
+      />
     );
   }
   return (
     <span
       className={`cast-strip ${className ?? ""}`}
       data-frames={item.frames}
-      style={castFxStyle(item)}
+      data-anim={anim}
+      style={{ ...castFxStyle(item, height), height: box.height, width: box.width }}
       role={alt ? "img" : undefined}
       aria-label={alt || undefined}
       aria-hidden={alt ? undefined : true}

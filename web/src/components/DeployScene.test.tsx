@@ -482,6 +482,7 @@ describe("DeployScene hero anim", () => {
     renderScene();
     await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" });
     expect(hero().dataset.anim).toBe("interact");
+    expect(hero().style.backgroundImage.replace(/"/g, "")).toBe("url(/cast/hero-m-interact.png)");
   });
 
   it("hero anim: idle when the job is ready", async () => {
@@ -489,6 +490,7 @@ describe("DeployScene hero anim", () => {
     renderScene();
     await within(panel()).findByRole("button", { name: "COLETAR RECOMPENSA" });
     expect(hero().dataset.anim).toBe("idle");
+    expect(hero().getAttribute("src")).toBe("/cast/hero-m-idle.png");
   });
 });
 

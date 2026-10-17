@@ -96,7 +96,7 @@ describe("Hud", () => {
     const level = screen.getByText("LEVEL 15");
     expect(level.parentElement).toBe(sair.parentElement);
     expect(level.compareDocumentPosition(sair) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(level.closest(".hud-card")!.querySelector(".hud-hero canvas")).not.toBeNull();
+    expect(level.closest(".hud-card")!.querySelector(".hud-hero img")).toHaveAttribute("src", "/cast/hero-m-idle.png");
   });
 
   it("shows SAIR only when a logout handler is given", () => {
@@ -173,7 +173,7 @@ describe("Hud hero", () => {
         <Hud player={p} />
       </GameContext.Provider>,
     );
-    expect(document.querySelector("canvas")?.getAttribute("data-look")).toContain("/art/sprite/hero/laptop-raro.png");
+    expect(document.querySelector(".hud-hero img")).toHaveAttribute("src", "/cast/hero-m-idle.png");
   });
 
   it("the hero and dev name link to BASE", () => {
@@ -185,7 +185,7 @@ describe("Hud hero", () => {
     );
     const link = screen.getByRole("link", { name: "OCTOCAT · ir para a base" });
     expect(link.getAttribute("href")).toBe("/office");
-    expect(link.querySelector("canvas.hero-avatar")).not.toBeNull();
+    expect(link.querySelector("img")).toHaveAttribute("src", "/cast/hero-m-idle.png");
     expect(link).toHaveTextContent("OCTOCAT");
   });
 });
