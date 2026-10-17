@@ -34,18 +34,18 @@ web/public/art/generated/
     └── kernel-panic.png
 ```
 
-### Como usar no jogo
+### Status atual
+- Skill removida.
+- README e este documento atualizados.
+- Set completo de referências **aprovado** e pronto para ser colocado nas pastas acima.
+- As imagens geradas estão disponíveis na conversa do projeto para download e organização.
 
-- Coloque os PNGs gerados (aprovados) na estrutura acima.
+### Como finalizar a integração
+1. Baixe as imagens aprovadas da conversa.
+2. Renomeie e coloque em `web/public/art/generated/` seguindo a estrutura.
+3. Commit e push.
+4. Atualize as referências no front conforme necessário.
+
+## Como usar no jogo
 - Use `className="pixelated"` e escalas inteiras.
-- Para strips de animação (4 frames), use CSS `background-position` + `steps()` ou recorte em frames individuais.
-
-### Ícones e tiles simples
-
-Continuam podendo ser feitos manualmente (Aseprite) ou mantidos os existentes da skill antiga até serem substituídos.
-
-## Status
-
-- Skill `pixel-assets` removida.
-- Set inicial de herói (m/f), skills principais, mobs e boss Kernel Panic **aprovado** e pronto para integração.
-- Próximo: subir os PNGs finais e ajustar referências no front.
+- Para strips de animação, use CSS sprite ou recorte os frames.
